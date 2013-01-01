@@ -1,0 +1,1639 @@
+function NTU_CheckMyStats()
+{ 
+	var Merc = NTC_GetMerc();
+	DiffMod = (me.diff == 1) ? -40 : (me.diff == 2) ? -100 : 0;
+	Resi = [(me.GetStat(39) + DiffMod), (me.GetStat(43) + DiffMod), (me.GetStat(41) + DiffMod), (me.GetStat(45) + DiffMod)];
+	
+	var StatLogMang =  COLOR_5 + me.name + "'s Stats" + ";";
+		StatLogMang += COLOR_1 + "--------------------------------" + "\n";
+		StatLogMang += COLOR_4 + "HP/Max : " + COLOR_1 + me.GetStat(6) + COLOR_4 + "/" + COLOR_1 + me.GetStat(7) + "\n";
+		StatLogMang += COLOR_4 + "MP/Max: " + COLOR_3 + me.GetStat(8) + COLOR_4 + "/" + COLOR_3 + me.GetStat(9) + "\n";
+		StatLogMang += COLOR_4 + "Strength: (" + COLOR_8 + me.GetStat(0) + COLOR_4 + ") Dexterity: (" + COLOR_8 + me.GetStat(2) + COLOR_4 + ")" + "\n";
+		StatLogMang += COLOR_4 + "Vitality: (" + COLOR_8 + me.GetStat(3) + COLOR_4 + ") Energy: (" + COLOR_8 + me.GetStat(1) + COLOR_4 + ")" + "\n";
+		if(Resi[0] != 0) { StatLogMang += COLOR_4 + "Fire Res: " + COLOR_1 + Resi[0] + "\n"; }
+		if(Resi[1] != 0) { StatLogMang += COLOR_4 + "Cold Res: " + COLOR_3 + Resi[1] + "\n"; }
+		if(Resi[2] != 0) { StatLogMang += COLOR_4 + "Light Res: " + COLOR_9 + Resi[2] + "\n"; }
+		if(Resi[3] != 0) { StatLogMang += COLOR_4 + "Poison Res: " + COLOR_2 + Resi[3] + "\n"; }
+		if(me.GetStat(80) > 0) { StatLogMang += COLOR_4 + "% Magic Find: " + COLOR_8 + me.GetStat(80) + "\n"; }
+		if(me.GetStat(79) > 0) { StatLogMang += COLOR_4 + "% Gold Find: " + COLOR_8 + me.GetStat(79) + "\n"; }
+		if(me.GetStat(142 || 143 || 144 || 145 || 146 || 147 || 148 || 149) > 0) { StatLogMang += COLOR_4 + "Absorbs are listed as 'Percent(Static)'" + "\n"; }
+		if(me.GetStat(142 || 143) > 0) { StatLogMang += COLOR_4 + "Fire Sorb: " + COLOR_1 + me.GetStat(142) + "(" + me.GetStat(143) + ")" + "\n"; }
+		if(me.GetStat(144 || 145) > 0) { StatLogMang += COLOR_4 + "Light Sorb: " + COLOR_9 + me.GetStat(144) + "(" + me.GetStat(145) + ")" + "\n"; }
+		if(me.GetStat(146 || 147) > 0) { StatLogMang += COLOR_4 + "Magic Sorb: " + COLOR_8 + me.GetStat(146) + "(" + me.GetStat(147) + ")" + "\n"; }
+		if(me.GetStat(148 || 149) > 0) { StatLogMang += COLOR_4 + "Cold Sorb: " + COLOR_3 + me.GetStat(148) + "(" + me.GetStat(149) + ")" + "\n"; }
+		if(me.GetStat(105) > 0) { StatLogMang += COLOR_4 + "Faster Cast Rate: " + COLOR_8 + me.GetStat(105) + "\n"; }
+		if(me.GetStat(93) > 0) { StatLogMang += COLOR_4 + "Increased Attack Speed: " + COLOR_8 + me.GetStat(93) + "\n"; }
+		if(me.GetStat(99) > 0) { StatLogMang += COLOR_4 + "Faster Hit Recovery: " + COLOR_8 + me.GetStat(99) + "\n"; }
+		if(me.GetStat(136) > 0) { StatLogMang += COLOR_4 + "% Crushing Blow: " + COLOR_8 + me.GetStat(136) + "\n"; }
+		if(me.GetStat(142) > 0) { StatLogMang += COLOR_4 + "% Deadly Stirke: " + COLOR_8 + me.GetStat(142) + "\n"; }
+		if(me.GetStat(20) > 0) { StatLogMang += COLOR_4 + "% Chance to Block: " + COLOR_8 + me.GetStat(20) + "\n"; }
+		if(me.GetStat(135) > 0) { StatLogMang += COLOR_4 + "% Open Wounds: " + COLOR_8 + me.GetStat(135) + "\n"; }
+		if(me.GetStat(60) > 0) { StatLogMang += COLOR_4 + "% Life Leech: " + COLOR_8 + me.GetStat(60) + "\n"; }
+		if(me.GetStat(36) > 0) { StatLogMang += COLOR_4 + "% Damage Reduced: " + COLOR_8 + me.GetStat(36) + "\n"; }
+		if(me.GetStat(37) > 0) { StatLogMang += COLOR_4 + "% Magic Dmg Reduced: " + COLOR_8 + me.GetStat(37) + "\n"; }
+		if(me.GetStat(96) > 0) { StatLogMang += COLOR_4 + "Faster Run/Walk: " + COLOR_8 + me.GetStat(96) + "\n"; }
+		if(me.GetStat(153) == 1) { StatLogMang += COLOR_3 + "You also cannot be frozen!" + "\n"; }
+		StatLogMang += COLOR_1 + "--------------------------------" + "\n";
+	NTC_SendLogToOOG(NTC_LOG_COMMON, StatLogMang);
+	Print(COLOR_2 + me.name + " stats sent to Manager Common Log!");
+	
+	var Merc = NTC_GetMerc();
+	if(Merc && NTConfig_MercStats){
+		var MercResi = [(Merc.GetStat(39) + DiffMod), (Merc.GetStat(43) + DiffMod), (Merc.GetStat(41) + DiffMod), (Merc.GetStat(45) + DiffMod)];
+		var MercStatMgr =  COLOR_5 + Merc.name + "'s Stats (Merc)" + ";";
+			MercStatMgr += COLOR_1 + "--------------------------------" + "\n";
+			MercStatMgr += COLOR_4 + "HP/Max : " + COLOR_1 + Merc.GetStat(6) + COLOR_4 + "/" + COLOR_1 + Merc.GetStat(7) + "\n";
+			MercStatMgr += COLOR_4 + "MP/Max: " + COLOR_3 + Merc.GetStat(8) + COLOR_4 + "/" + COLOR_3 + Merc.GetStat(9) + "\n";
+			MercStatMgr += COLOR_4 + "Strength: (" + COLOR_8 + Merc.GetStat(0) + COLOR_4 + ") Dexterity: (" + COLOR_8 + Merc.GetStat(2) + COLOR_4 + ")" + "\n";
+			MercStatMgr += COLOR_4 + "Vitality: (" + COLOR_8 + Merc.GetStat(3) + COLOR_4 + ") Energy: (" + COLOR_8 + Merc.GetStat(1) + COLOR_4 + ")" + "\n";
+			if(MercResi[0] != 0) { MercStatMgr += COLOR_4 + "Fire Res: " + COLOR_1 + MercResi[0] + "\n"; }
+			if(MercResi[1] != 0) { MercStatMgr += COLOR_4 + "Cold Res: " + COLOR_3 + MercResi[1] + "\n"; }
+			if(MercResi[2] != 0) { MercStatMgr += COLOR_4 + "Light Res: " + COLOR_9 + MercResi[2] + "\n"; }
+			if(MercResi[3] != 0) { MercStatMgr += COLOR_4 + "Poison Res: " + COLOR_2 + MercResi[3] + "\n"; }
+			if(Merc.GetStat(80) > 0) { MercStatMgr += COLOR_4 + "% Magic Find: " + COLOR_8 + Merc.GetStat(80) + "\n"; }
+			if(Merc.GetStat(79) > 0) { MercStatMgr += COLOR_4 + "% Gold Find: " + COLOR_8 + Merc.GetStat(79) + "\n"; }
+			if(Merc.GetStat(142 || 143 || 144 || 145 || 146 || 147 || 148 || 149) > 0) { MercStatMgr += COLOR_4 + "Absorbs are listed as 'Percent(Static)'" + "\n"; }
+			if(Merc.GetStat(142 || 143) > 0) { MercStatMgr += COLOR_4 + "Fire Sorb: " + COLOR_1 + Merc.GetStat(142) + "(" + Merc.GetStat(143) + ")" + "\n"; }
+			if(Merc.GetStat(144 || 145) > 0) { MercStatMgr += COLOR_4 + "Light Sorb: " + COLOR_9 + Merc.GetStat(144) + "(" + Merc.GetStat(145) + ")" + "\n"; }
+			if(Merc.GetStat(146 || 147) > 0) { MercStatMgr += COLOR_4 + "Magic Sorb: " + COLOR_8 + Merc.GetStat(146) + "(" + Merc.GetStat(147) + ")" + "\n"; }
+			if(Merc.GetStat(148 || 149) > 0) { MercStatMgr += COLOR_4 + "Cold Sorb: " + COLOR_3 + Merc.GetStat(148) + "(" + Merc.GetStat(149) + ")" + "\n"; }
+			if(Merc.GetStat(105) > 0) { MercStatMgr += COLOR_4 + "Faster Cast Rate: " + COLOR_8 + Merc.GetStat(105) + "\n"; }
+			if(Merc.GetStat(93) > 0) { MercStatMgr += COLOR_4 + "Increased Attack Speed: " + COLOR_8 + Merc.GetStat(93) + "\n"; }
+			if(Merc.GetStat(99) > 0) { MercStatMgr += COLOR_4 + "Faster Hit Recovery: " + COLOR_8 + Merc.GetStat(99) + "\n"; }
+			if(Merc.GetStat(136) > 0) { MercStatMgr += COLOR_4 + "% Crushing Blow: " + COLOR_8 + Merc.GetStat(136) + "\n"; }
+			if(Merc.GetStat(142) > 0) { MercStatMgr += COLOR_4 + "% Deadly Stirke: " + COLOR_8 + Merc.GetStat(142) + "\n"; }
+			if(Merc.GetStat(20) > 0) { MercStatMgr += COLOR_4 + "% Chance to Block: " + COLOR_8 + Merc.GetStat(20) + "\n"; }
+			if(Merc.GetStat(135) > 0) { MercStatMgr += COLOR_4 + "% Open Wounds: " + COLOR_8 + Merc.GetStat(135) + "\n"; }
+			if(Merc.GetStat(60) > 0) { MercStatMgr += COLOR_4 + "% Life Leech: " + COLOR_8 + Merc.GetStat(60) + "\n"; }
+			if(Merc.GetStat(36) > 0) { MercStatMgr += COLOR_4 + "% Damage Reduced: " + COLOR_8 + Merc.GetStat(36) + "\n"; }
+			if(Merc.GetStat(37) > 0) { MercStatMgr += COLOR_4 + "% Magic Dmg Reduced: " + COLOR_8 + Merc.GetStat(37) + "\n"; }
+			if(Merc.GetStat(96) > 0) { MercStatMgr += COLOR_4 + "Faster Run/Walk: " + COLOR_8 + Merc.GetStat(96) + "\n"; }
+			if(Merc.GetStat(153) == 1) { MercStatMgr += COLOR_3 + Merc.name + " also cannot be frozen!" + "\n"; }
+			MercStatMgr += COLOR_1 + "--------------------------------" + "\n";
+		NTC_SendLogToOOG(NTC_LOG_COMMON, MercStatMgr);
+		Print(COLOR_2 + "Merc stats sent to Manager Common Log!");
+	}
+}
+
+function NTU_CheckCoord()	
+	{
+		_area = GetArea();
+	 	if(_area)
+			{
+				Print(COLOR_9 + " X=" + me.x + ", Y=" + me.y);
+				Print(COLOR_9 + "  In AreaID " + me.areaid + " , " + _area.name);
+			}
+	} 
+	
+	
+function Key_HotList()
+{
+	HotKeys = COLOR_1 + "Etal HotKeys" + ";";
+	HotKeys += COLOR_1 + "---------------------------------------------------" + "\n";
+	HotKeys += COLOR_4 + "All keys are located on your NumberPad!" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_DropItems) + "]" + COLOR_4 + " Drop Inventory and Stash items" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_DevTools) + "]" + COLOR_4 + " Use NTU_DevelopementTools" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_CoordLog) + "]" + COLOR_4 + " Logs current X/Y coord to logs/testlog/yourcharname-Coords" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_HotKeyList) + "]" + COLOR_4 + " To see this list!" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_InvTxtLog) + "]" + COLOR_4 + " Log inventory to a text file" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_CursorILvL) + "]" + COLOR_4 + " View iLvl of item on cursor" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_CheckSpace) + "]" + COLOR_4 + " View Stash/Inventory space checking" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_StatsLog) + "]" + COLOR_4 + " Log Character/Merc stats+ to manager" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_NipCheck) + "]" + COLOR_4 + " Run the .nip error checker" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_CheckBPs) + "]" + COLOR_4 + " Print current FCR/FHR Breakpoints in game" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_PrintCoord) + "]" + COLOR_4 + " Print X/Y coordinates and area name/ID" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_PrevScript) + "]" + COLOR_4 + " Scroll to previous scripts" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_NextScript) + "]" + COLOR_4 + " Scroll to future scripts" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_PauseBot) + "]" + COLOR_4 + " Pause/Resume current script" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Do_ExitGame) + "]" + COLOR_4 + " Exit Game manually (Will Print Game Stats)" + "\n";
+	HotKeys += COLOR_1 + "---------------------------------------------------" + "\n";
+	NTC_SendLogToOOG(NTC_LOG_COMMON, HotKeys);
+	Print(COLOR_1 + "Etal Hotkeys sent to manager Common Log!");
+}
+
+function WhichHotKey(ThisKey)
+{
+	switch(ThisKey) {
+		case 8: ThisKey = "Backspace"; break;
+		case 9: ThisKey = "Tab"; break;
+		case 13: ThisKey = "Enter"; break;
+		case 16: ThisKey = "Shift"; break;
+		case 17: ThisKey = "Ctrl"; break;
+		case 18: ThisKey = "Alt"; break;
+		case 19: ThisKey = "Pause"; break;
+		case 20: ThisKey = "Caps Lock"; break;
+		case 27: ThisKey = "Esc"; break;
+		case 33: ThisKey = "Pg Up"; break;
+		case 34: ThisKey = "Pg Dn"; break;
+		case 35: ThisKey = "End"; break;
+		case 36: ThisKey = "Home"; break;
+		case 45: ThisKey = "Ins"; break;
+		case 46: ThisKey = "Del"; break;
+		case 48: ThisKey = "0"; break;
+		case 49: ThisKey = "1"; break;
+		case 50: ThisKey = "2"; break;
+		case 51: ThisKey = "3"; break;
+		case 52: ThisKey = "4"; break;
+		case 53: ThisKey = "5"; break;
+		case 54: ThisKey = "6"; break;
+		case 55: ThisKey = "7"; break;
+		case 56: ThisKey = "8"; break;
+		case 57: ThisKey = "9"; break;
+		case 65: ThisKey = "A"; break;
+		case 66: ThisKey = "B"; break;
+		case 67: ThisKey = "C"; break;
+		case 68: ThisKey = "D"; break;
+		case 69: ThisKey = "E"; break;
+		case 70: ThisKey = "F"; break;
+		case 71: ThisKey = "G"; break;
+		case 72: ThisKey = "H"; break;
+		case 73: ThisKey = "I"; break;
+		case 74: ThisKey = "J"; break;
+		case 75: ThisKey = "K"; break;
+		case 76: ThisKey = "L"; break;
+		case 77: ThisKey = "M"; break;
+		case 78: ThisKey = "N"; break;
+		case 79: ThisKey = "O"; break;
+		case 80: ThisKey = "P"; break;
+		case 81: ThisKey = "Q"; break;
+		case 82: ThisKey = "R"; break;
+		case 83: ThisKey = "S"; break;
+		case 84: ThisKey = "T"; break;
+		case 85: ThisKey = "U"; break;
+		case 86: ThisKey = "V"; break;
+		case 87: ThisKey = "W"; break;
+		case 88: ThisKey = "X"; break;
+		case 89: ThisKey = "Y"; break;
+		case 90: ThisKey = "Z"; break;
+		case 96: ThisKey = "Num 0"; break;
+		case 97: ThisKey = "Num 1"; break;
+		case 98: ThisKey = "Num 2"; break;
+		case 99: ThisKey = "Num 3"; break;
+		case 100: ThisKey = "Num 4"; break;
+		case 101: ThisKey = "Num 5"; break;
+		case 102: ThisKey = "Num 6"; break;
+		case 103: ThisKey = "Num 7"; break;
+		case 104: ThisKey = "Num 8"; break;
+		case 105: ThisKey = "Num 9"; break;
+		case 106: ThisKey = "Num *"; break;
+		case 107: ThisKey = "Num +"; break;
+		case 109: ThisKey = "Num -"; break;
+		case 110: ThisKey = "Num ."; break;
+		case 111: ThisKey = "Num /"; break;
+		case 112: ThisKey = "F1"; break;
+		case 113: ThisKey = "F2"; break;
+		case 114: ThisKey = "F3"; break;
+		case 115: ThisKey = "F4"; break;
+		case 116: ThisKey = "F5"; break;
+		case 117: ThisKey = "F6"; break;
+		case 118: ThisKey = "F7"; break;
+		case 119: ThisKey = "F8"; break;
+		case 120: ThisKey = "F9"; break;
+		case 121: ThisKey = "F10"; break;
+		case 122: ThisKey = "F11"; break;
+		case 123: ThisKey = "F12"; break;
+		case 144: ThisKey = "Num Lock"; break;
+		case 145: ThisKey = "Scroll Lock"; break;
+		case 186: ThisKey = "Semi-Colon"; break;
+		case 187: ThisKey = "="; break;
+		case 188: ThisKey = "Comma"; break;
+		case 189: ThisKey = "-"; break;
+		case 190: ThisKey = "Period"; break;
+		case 191: ThisKey = "/"; break;
+		case 192: ThisKey = "~"; break;
+		case 219: ThisKey = "["; break;
+		case 220: ThisKey = "BackSlash"; break;
+		case 221: ThisKey = "]"; break;
+		case 222: ThisKey = "'"; break;
+	} return ThisKey;
+}
+
+function T_BPsPrint()
+{
+	CurFCR = me.GetStat(68);
+	CurFHR = me.GetStat(99);
+	BreakPoints();
+	Print(COLOR_4 + me.charname + " (" + COLOR_9 + IdToName() + COLOR_4 + ") current BPs!");
+	Print(COLOR_4 + "FCR/FHR: " + COLOR_8 + CurFCR + COLOR_4 + "/" + COLOR_8 + CurFHR + COLOR_4 + "!");
+	Print(COLOR_4 + "Frames: " + COLOR_8 + FCRFrm + COLOR_4 + "/" + COLOR_8 + FHRFrm + COLOR_4 + "!");
+	if(me.classid == 1) { Print(COLOR_4 + "Lite Frames: " + COLOR_8 + FCRFrmSorc + COLOR_4 + "!"); }
+}
+
+function BreakPoints()
+{
+	switch(me.classid) {
+		case 0:
+			FCRFrm = (CurFCR >= 152) ? "11" : (CurFCR >= 99) ? "12" : (CurFCR >= 68) ? "13" : (CurFCR >= 48) ? "14" : (CurFCR >= 32) ? "15" : (CurFCR >= 22) ? "16" : (CurFCR >= 14) ? "17" : (CurFCR >= 7) ? "18" : "19";
+			FHRFrm = (CurFHR >= 600) ? "3" : (CurFHR >= 174) ? "4" : (CurFHR >= 86) ? "5" : (CurFHR >= 52) ? "6" : (CurFHR >= 32) ? "7" : (CurFHR >= 20) ? "8" : (CurFHR >= 13) ? "9" : (CurFHR >= 6) ? "10" : "11";
+			break;
+		case 1:
+			FCRFrm = (CurFCR >= 200) ? "7" : (CurFCR >= 105) ? "8" : (CurFCR >= 63) ? "9" : (CurFCR >= 37) ? "10" : (CurFCR >= 20) ? "11" : (CurFCR >= 9) ? "12" : "13";
+			FHRFrm = (CurFHR >= 280) ? "5" : (CurFHR >= 142) ? "6" : (CurFHR >= 86) ? "7" : (CurFHR >= 60) ? "8" : (CurFHR >= 42) ? "9" : (CurFHR >= 30) ? "10" : (CurFHR >= 20) ? "11" : (CurFHR >= 14) ? "12" : (CurFHR >= 9) ? "13" : (CurFHR >= 5) ? "14" : "15";
+			FCRFrmSorc = (CurFCR >= 194) ? "11" : (CurFCR >= 117) ? "12" : (CurFCR >= 78) ? "13" : (CurFCR >= 52) ? "14" : (CurFCR >= 35) ? "15" : (CurFCR >= 23) ? "16" : (CurFCR >= 15) ? "17" : (CurFCR >= 7) ? "18" : "19";
+			break;
+		case 2:
+			FCRFrm = (CurFCR >= 125) ? "9" : (CurFCR >= 75) ? "10" : (CurFCR >= 48) ? "11" : (CurFCR >= 30) ? "12" : (CurFCR >= 18) ? "13" : (CurFCR >= 9) ? "14" : "15";
+			FHRFrm = (CurFHR >= 377) ? "4" : (CurFHR >= 152) ? "5" : (CurFHR >= 86) ? "6" : (CurFHR >= 56) ? "7" : (CurFHR >= 39) ? "8" : (CurFHR >= 26) ? "9" : (CurFHR >= 16) ? "10" : (CurFHR >= 10) ? "11" : (CurFHR >= 5) ? "12" : "13";
+			break;
+		case 3:
+			FCRFrm = (CurFCR >= 125) ? "9" : (CurFCR >= 75) ? "10" : (CurFCR >= 48) ? "11" : (CurFCR >= 30) ? "12" : (CurFCR >= 18) ? "13" : (CurFCR >= 9) ? "14" : "15";
+			FHRFrm = (CurFHR >= 200) ? "3" : (CurFHR >= 86) ? "4" : (CurFHR >= 48) ? "5" : (CurFHR >= 27) ? "6" : (CurFHR >= 15) ? "7" : (CurFHR >= 7) ? "8" : "9";
+			break;
+		case 4:
+			FCRFrm = (CurFCR >= 200) ? "7" : (CurFCR >= 105) ? "8" : (CurFCR >= 63) ? "9" : (CurFCR >= 37) ? "10" : (CurFCR >= 20) ? "11" : (CurFCR >= 9) ? "12" : "13";
+			FHRFrm = (CurFHR >= 200) ? "3" : (CurFHR >= 86) ? "4" : (CurFHR >= 48) ? "5" : (CurFHR >= 27) ? "6" : (CurFHR >= 15) ? "7" : (CurFHR >= 7) ? "8" : "9";
+			break;
+		case 5:
+			if(me.GetState(139) == 2048) {
+				FCRFrm = (CurFCR >= 157) ? "9" : (CurFCR >= 95) ? "10" : (CurFCR >= 60) ? "11" : (CurFCR >= 40) ? "12" : (CurFCR >= 26) ? "13" : (CurFCR >= 14) ? "14" : (CurFCR >= 6) ? "15" : "16";
+				FHRFrm = (CurFHR >= 280) ? "2" : (CurFHR >= 86) ? "3" : (CurFHR >= 42) ? "4" : (CurFHR >= 20) ? "5" : (CurFHR >= 9) ? "6" : "7";
+			}
+			else if(me.GetState(140) == 4096) {
+				FCRFrm = (CurFCR >= 163) ? "9" : (CurFCR >= 99) ? "10" : (CurFCR >= 63) ? "11" : (CurFCR >= 40) ? "12" : (CurFCR >= 26) ? "13" : (CurFCR >= 15) ? "14" : (CurFCR >= 7) ? "15" : "16";
+				FHRFrm = (CurFHR >= 360) ? "4" : (CurFHR >= 152) ? "5" : (CurFHR >= 86) ? "6" : (CurFHR >= 54) ? "7" : (CurFHR >= 37) ? "8" : (CurFHR >= 24) ? "9" : (CurFHR >= 16) ? "10" : (CurFHR >= 10) ? "11" : (CurFHR >= 5) ? "12" : "13";
+			}
+			else {
+				FCRFrm = (CurFCR >= 163) ? "10" : (CurFCR >= 99) ? "11" : (CurFCR >= 68) ? "12" : (CurFCR >= 46) ? "13" : (CurFCR >= 30) ? "14" : (CurFCR >= 19) ? "15" : (CurFCR >= 10) ? "16" : (CurFCR >= 4) ? "17" : "18";
+				FHRFrm = (CurFHR >= 456) ? "4" : (CurFHR >= 175) ? "5" : (CurFHR >= 99) ? "6" : (CurFHR >= 63) ? "7" : (CurFHR >= 42) ? "8" : (CurFHR >= 29) ? "9" : (CurFHR >= 19) ? "10" : (CurFHR >= 13) ? "11" : (CurFHR >= 7) ? "12" : (CurFHR >= 3) ? "13" : "14";
+			}
+			break;
+		case 6:
+			FCRFrm = (CurFCR >= 174) ? "9" : (CurFCR >= 102) ? "10" : (CurFCR >= 65) ? "11" : (CurFCR >= 42) ? "12" : (CurFCR >= 27) ? "13" : (CurFCR >= 16) ? "14" : (CurFCR >= 8) ? "15" : "16";
+			FHRFrm = (CurFHR >= 200) ? "3" : (CurFHR >= 86) ? "4" : (CurFHR >= 48) ? "5" : (CurFHR >= 27) ? "6" : (CurFHR >= 15) ? "7" : (CurFHR >= 7) ? "8" : "9";
+			break;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// nip checker by frickaline based on gumshield aka toothless NIP Checker////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var _TLAliases = new Array();
+var NTConfig_CheckCodes = true;
+
+function NTU_TLNipCheck()
+{
+	Print(COLOR_3 + "[Frickaline's NIP Checker 1.0.0] - Load");
+	
+	if (NTConfig_NIPFilePath && NTConfig_NIPFilePath.length > 0)
+	{
+		var msg;
+		msg = NTConfig_NIPFilePath.length + 
+			" nip file" + 
+			(NTConfig_NIPFilePath.length==1?"":"s") + 
+			" found."
+		Print(msg);
+		
+		var woops;
+		var item;
+		try { item = me.GetItems()[0]; woops = false;}
+		catch (error) { Print("Please have at least one item on this character"); woops = true;}
+		if (!woops) TLNC_DoIt(item);
+	}
+	else
+		Print("No nip files found - check your character config file.");
+}
+
+function TLNC_DoIt(item)
+{
+	var passRT = 0;
+	var failRT = 0;
+	var nipsRT = 0;
+
+	var pass = 0;
+	var fail = 0;
+	var nips = 0;
+
+	var input;
+	var line;
+	var nip;
+	var evals;
+	var output;
+	var fileNameNip;
+	var fileNameOutput;
+	var woops;
+	var msg;
+	var parseResult = 0;
+	
+	for (var nipfile = 0 ; nipfile < NTConfig_NIPFilePath.length ; nipfile++)
+	{
+		fileNameNip = "NTBot/item_configs/" + NTConfig_NIPFilePath[nipfile];
+		nip = FileOpen(fileNameNip, 0);
+		if (nip)
+		{
+			TLNC_LoadItemAliases();
+
+			pass = 0;
+			fail = 0;
+			nips = 0;
+
+			var fso = "NTBot/item_configs/TLNipCheck_snags.txt";
+			var snags = FileOpen(fso, 1);
+			for (var i = 0; i < _NTIP_CheckList.length; i++) {
+				snags.WriteLine(i+": "+_NTIP_CheckList[i]);
+			}
+			snags.Close();
+			
+			fileNameOutput = "NTBot/item_configs/TLNipCheck_" + NTConfig_NIPFilePath[nipfile].replace("/", "_") + ".txt";
+			output = FileOpen(fileNameOutput, 1);
+			if (output)
+			{
+				while (!nip.eof)
+				{
+					input = nip.ReadLine();
+					input = input.replace(/^\s+/, '');
+					
+					var i = input.indexOf("//");
+					line = i >= 0 ? input.slice(0, i) : input;
+					line = line.replace(/ |;|\t|\v|\f|\r|\n/g, '').toLowerCase();
+
+					if (line.length == 0)
+						continue;
+					
+					nips++;
+					woops = false;
+
+					parseResult = NTIPCheckNipSyntax(line,output)
+					if (!parseResult)
+					{
+						fail++;
+						continue;
+					} else
+					{
+						pass++;
+					}
+				}
+				
+				msg = "File (" + eval(nipfile+1) + "/" + NTConfig_NIPFilePath.length + ") " + NTConfig_NIPFilePath[nipfile];
+				msg += fail > 0 ? COLOR_1 + " FAIL" : COLOR_2 +" OK";
+				msg += fail > 0 ? COLOR_0 : COLOR_2;
+				msg += " (" + pass + "/" + nips + ")";
+				msg += fail > 0 ? COLOR_1 : COLOR_0;
+				msg += " (" + fail + "/" + nips + ")";
+				Print(msg);
+
+				TLNC_WriteIt(output, "PASS : " + pass, "FAIL : " + fail);
+				output.Close();
+			}
+			else
+				Print(COLOR_1 + "Error creating output file : " + fileNameOutput);
+				
+			nip.Close();
+			passRT += pass;
+			failRT += fail;
+			nipsRT += nips;
+		}
+		else
+			Print(COLOR_1 + "Error opening nip file : " + fileNameNip);
+	}
+
+	Print("TOTALS : " + nipsRT + " total, " + COLOR_2 + passRT + " pass, " + COLOR_1 + failRT + " fail");
+	if ((failRT > 0) || (parseResult != 0))
+		Print(COLOR_1 + "Check output files in /NTBot/item_configs/ directory");
+}
+
+function TLNC_WriteIt(f, l1, l2)
+{
+	f.WriteLine(l1);
+	f.WriteLine(l2);
+	f.WriteLine(" ");
+}
+
+function TLNC_LoadItemAliases()
+{
+	var arr, arr1;
+
+	arr = new Array();
+	arr1 = new Array();
+	for (k in _NTIPAliasType)
+	{
+		arr.push(k);
+		arr1["c" + _NTIPAliasType[k]] = k;
+	}
+	_TLAliases["t"] = arr;
+	_TLAliases["t1"] = arr1;	
+
+	arr = new Array();
+	arr1 = new Array();
+	for (k in _NTIPAliasClassID)
+	{
+		arr.push(k);
+		arr1["c" + _NTIPAliasClassID[k]] = k;
+	}
+	_TLAliases["n"] = arr;
+	_TLAliases["n1"] = arr1;	
+
+	arr = new Array();
+	arr1 = new Array();
+	for (k in _NTIPAliasClass)
+	{
+		arr.push(k);
+		arr1["c" + _NTIPAliasClass[k]] = k;
+	}
+	_TLAliases["c"] = arr;
+	_TLAliases["c1"] = arr1;	
+
+	arr = new Array();
+	arr1 = new Array();
+	for (k in _NTIPAliasQuality)
+	{
+		arr.push(k);
+		arr1["c" + _NTIPAliasQuality[k]] = k;
+	}
+	_TLAliases["q"] = arr;
+	_TLAliases["q1"] = arr1;	
+	
+	arr = new Array();
+	arr1 = new Array();
+	for (k in _NTIPAliasFlag)
+	{
+		arr.push(k);
+		arr1["c" + _NTIPAliasFlag[k]] = k;
+	}
+	_TLAliases["f"] = arr;
+	_TLAliases["f1"] = arr1;	
+
+	// #
+
+	arr = new Array();
+	arr1 = new Array();
+	for (k in _NTIPAliasStat)
+	{
+		arr.push(k);
+		arr1["c" + _NTIPAliasStat[k]] = k;
+	}
+	_TLAliases["s"] = arr;	
+	_TLAliases["s1"] = arr1;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////// NIP CHECK END ////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function NTU_TLInventory() {
+	NTConfig_TLInventory_SkipEquipped   = false;         // true = just log stash and inventory
+	NTConfig_TLInventory_Delimeter      = "-";            // output file delimiter - see function TTL_WriteIt()
+	NTConfig_TLInventory_SortOrder      = "QUALITY|TYPE|CLASS|NAME";
+	
+	Print(COLOR_3 + "[Toothless Inventory] - Load");
+   
+	TLI_DoIt();
+	Print ("Finished");
+}
+
+function TLI_DoIt(verbose) {
+	Print ("Attempting to log inventory ...");
+   
+   	if(arguments.length < 1)
+		var verbose = false;
+		
+	var items = me.GetItems();
+	items.sort(function(a, b){
+		var nameA=a.name.toLowerCase(), nameB=b.name.toLowerCase()
+		if (nameA < nameB) //sort string ascending
+			return -1
+		if (nameA > nameB)
+			return 1
+		return 0 //default return value (no sorting)
+	});
+	var logged = new Array();
+	if (items) {
+		for(var i = 0 ; i < items.length ; i++) {
+			item = items[i];
+			ignore = _NTT_IgnoredItems.join("-");
+			ignore += "-box";
+         
+			if(ignore.indexOf(item.code) == -1) {
+				if(!NTConfig_TLInventory_SkipEquipped)
+					logged.push(item);
+				else if (item.mode == 0)
+					logged.push(item);
+			}
+		}
+		if (logged.length) {
+			var fileName = "logs/" + me.account + "." + me.name + ".txt";
+			_file = FileOpen(fileName, 1);
+			if (_file) {
+				for (var i = 0; i < logged.length; i++)
+					TLI_LogItem(_file, logged[i], verbose);
+				_file.Close();
+				Print (COLOR_2 + logged.length + " items written to - " + fileName + " -");
+			}
+			else
+				Print(COLOR_1 + "Unable to write file to - " + fileName);
+		}
+		else
+			Print(COLOR_1 + "No items on this character to log");
+	}
+	else
+		Print(COLOR_1 + "No items on this character to log");
+}
+
+function TLI_LogItem(file, item, verbose) {
+	var name = item.name;
+	var UNIDtext = "";
+	
+	name = name.replace(/\n/g, " ");
+	file.WriteLine("\t"+name);
+	if (!(item.itemflag & 0x10)) {
+		for (var qual in _NTIPAliasQuality) {
+			if (_NTIPAliasQuality[qual]==item.quality) UNIDtext+=qual.charAt(0).toUpperCase() + qual.substr(1) + "/";
+		}
+		var s = item.itemdesc;
+		s = s.replace(REGEX6, REPLACE6); 
+		var def = s.match(/.*(Defense: \d+).*/);
+		if (def!=null) {
+			def[0] = def[0].replace(/Defense:/,"Def");
+			UNIDtext += def[0]+"/";
+		}
+		UNIDtext += "Unidentified";
+		if (item.itemflag & 0x400000) UNIDtext+="/Ethereal";
+		 file.WriteLine(UNIDtext);
+	// 74 is rune, 91 - 102 is gem  
+	} else if (item.itemtype!=74 && !(item.itemtype >= 91 && item.itemtype <= 102)) {
+		file.WriteLine(TLI_ItemDesc(item.itemdesc, item.name, verbose));
+	}
+	file.WriteLine("");
+}
+
+function TLI_ItemDesc(s, name, verbose) {
+	s = s.replace(REGEX6, REPLACE6);  
+	re = new RegExp(name, "gi");
+	s = s.replace(re, "");
+	s = s.replace("Keep in Inventory to Gain Bonus\n", "");
+	s = s.replace("Can be Inserted into Socketed Items\n", "");
+	
+	s = s.replace(/Angelic \w+\s*/gi, "");
+	s = s.replace(/Arcanna's \w+\s*/gi, "");
+	s = s.replace(/Arctic \w+\s*/gi, "");
+	s = s.replace(/Berserker's \w+\s*/gi, "");
+	s = s.replace(/Cathan's \w+\s*/gi, "");
+	s = s.replace(/Civerb's \w+\s*/gi, "");
+	s = s.replace(/Cleglaw's \w+\s*/gi, "");
+	s = s.replace(/Death's \w+\s*/gi, "");
+	s = s.replace(/Hsarus' Defense\s*/gi, "");
+	s = s.replace(/Hsarus' Iron \w+\s*/gi, "");
+	s = s.replace(/Infernal \w+\s*/gi, "");
+	s = s.replace(/Iratha's \w+\s*/gi, "");
+	s = s.replace(/Isenhart's \w+\s*/gi, "");
+	s = s.replace(/Milabrega's \w+\s*/gi, "");
+	s = s.replace(/Sigon's Complete \w+\s*/gi, "");
+	s = s.replace(/Sigon's \w+\s*/gi, "");
+	s = s.replace(/Tancred's \w+\s*/gi, "");
+	s = s.replace(/Vidala's \w+\s*/gi, "");
+	s = s.replace(/Aldur's Stony Gaze\s*/i, "");
+	s = s.replace(/Aldur's \w+\s*/gi, "");
+	s = s.replace(/Bul-Kathos' Sacred \w+\s*/i, "");
+	s = s.replace(/Bul-Kathos' Tribal \w+\s*/i, "");
+	s = s.replace(/Bul-Kathos' Children\s*/i, "");
+	s = s.replace(/Cow King's \w+\s*/gi, "");
+	s = s.replace(/Telling of Beads\s*/i, "");
+	s = s.replace(/Laying of Hands\s*/i, "");
+	s = s.replace(/Dark Adherent\s*/gi, "");
+	s = s.replace(/Rite of Passage\s*/gi, "");
+	s = s.replace(/Credendum\s*/gi, "");
+	s = s.replace(/The Disciple\s*/gi, "");
+	s = s.replace(/Griswold's \w+\s*/gi, "");
+	s = s.replace(/Haemosu's \w+\s*/gi, "");
+	s = s.replace(/Dangoon's \w+\s*/gi, "");
+	s = s.replace(/Taebaek's \w+\s*/gi, "");
+	s = s.replace(/Ondal's \w+\s*/gi, "");
+	s = s.replace(/Heaven's Brethren\s*/gi, "");
+	s = s.replace(/Hwanin's \w+\s*/gi, "");
+	s = s.replace(/Immortal King's Soul \w+\s*/gi, "");
+	s = s.replace(/Immortal King's Stone \w+\s*/gi, "");
+	s = s.replace(/Immortal King's \w+\s*/gi, "");
+	s = s.replace(/Immortal King\s*/gi, "");
+	s = s.replace(/M'avina's True \w+\s*/gi, "");
+	s = s.replace(/M'avina's Icy \w+\s*/gi, "");
+	s = s.replace(/M'avina's Battle \w+\s*/gi, "");
+	s = s.replace(/M'avina's \w+\s*/gi, "");
+	s = s.replace(/Natalya's \w+\s*/gi, "");
+	s = s.replace(/Naj's Light \w+\s*/gi, "");
+	s = s.replace(/Naj's Ancient \w+\s*/gi, "");
+	s = s.replace(/Naj's \w+\s*/gi, "");
+	s = s.replace(/Guillaume's \w+\s*/gi, "");
+	s = s.replace(/Whitstan's \w+\s*/gi, "");
+	s = s.replace(/Magnus' \w+\s*/gi, "");
+	s = s.replace(/Wilhelm's \w+\s*/gi, "");
+	s = s.replace(/Orphan's \w+\s*/gi, "");
+	s = s.replace(/Sander's \w+\s*/gi, "");
+	s = s.replace(/Sazabi's \w+\s+\w+\s*/gi, "");
+	s = s.replace(/Tal Rasha's Fine-Spun \w+\s*/gi, "");
+	s = s.replace(/Tal Rasha's Lidless \w+\s*/gi, "");
+	s = s.replace(/Tal Rasha's Horadric \w+\s*/gi, "");
+	s = s.replace(/Tal Rasha's \w+\s*/gi, "");
+	s = s.replace(/Trang-Oul's \w+\s*/gi, "");
+	
+	s = s.replace(/\n\n/g, "\n");
+	s = s.replace(/^\s*/, "");
+	s = s.replace(/\s*$/, "");
+	
+	if (!verbose) {
+	s = s.replace(/Throw Damage: \d+ to \d+/, "");
+	s = s.replace(/Quantity:\s+\d+/, "");
+	s = s.replace(/\(\d+% Bonus to Attack Rating\)/g, "Visionary");
+	s = s.replace(/\d+% Bonus to Attack Rating/g, "Visionary");
+	s = s.replace(/Visionary (Based on Character Level)/g, "Visionary per cLvl");
+	s = s.replace(/Keep in Inventory to Gain Bonus/g, "");
+	s = s.replace(/Better Chance of Getting Magic Items/g, "MF");
+	s = s.replace(/Extra Gold from Monsters/g, "GF");
+	s = s.replace(/Hit Causes Monster to Flee \d+%/, "");
+	s = s.replace(/Faster Run\/Walk/g, "FRW");
+	s = s.replace(/Replenish Life/g, "Rep Life");
+	s = s.replace(/Regenerate Mana/g, "Regen Mana");
+	s = s.replace(/Damage Taken Goes To Mana/g, "Dmg To Mana");
+	s = s.replace(/\+\d+ to Light Radius/g, "");
+	s = s.replace(/\+\d+ Maximum Stamina/g, "");
+	s = s.replace(/Heal Stamina Plus \d+\%/g, "");
+	s = s.replace(/Indestructible/g, "Indestr");
+	s = s.replace(/All Resistances/g, "All Res");
+	s = s.replace(/to all Attributes/g, "All Attribs");
+	s = s.replace(/\d+ Absorbs Cold Damage \(Based on Character Level\)/g, "Cold Absorb");
+	s = s.replace(/\d+ Absorbs Fire Damage \(Based on Character Level\)/g, "Fire Absorb");
+	s = s.replace(/\d+ Absorbs Lightning Damage \(Based on Character Level\)/g, "Lite Absorb");
+	s = s.replace(/\d+ Absorbs Magic Damage \(Based on Character Level\)/g, "Magic Absorb");
+	s = s.replace(/Requirements/g, "Req");
+	s = s.replace(/Increased Attack Speed/g, "IAS");
+	s = s.replace(/Poison Length Reduced by/g, "Psn LRB");
+	s = s.replace(/\d+\% Chance to cast level \d+ /g, "");
+	s = s.replace(/Aura When Equipped/g, "Aura");
+	s = s.replace(/Level \d+ /g, "");
+	s = s.replace(/\(\d+\/\d+ Charges\)/g, "Charges");
+	s = s.replace(/to Maximum Damage/g, "Max Dmg");
+	s = s.replace(/to Minimum Damage/g, "Min Dmg");
+	s = s.replace(/\(\w+ Only\)/g, "");
+	s = s.replace(/to Experience Gained/g, "XP");
+	s = s.replace(/Cannot Be Frozen/g, "CBF");
+	s = s.replace(/Freezes target \+\d+/g, "Freezes target");
+	s = s.replace(/Chance of Open Wounds/g, "Open Wounds");
+	s = s.replace(/Prevent Monster Heal/g, "PMH");
+	s = s.replace(/Slows Target by \d+%/g, "Slows");
+	s = s.replace(/ Skill Levels/g, "");
+	s = s.replace(/to All Skills/g, "Skills");
+	s = s.replace(/ Socketed \(/g, "Sockets(");
+	s = s.replace(/Socketed \(/g, "Sockets(");
+	s = s.replace(/Knockback/g, "KB");
+	s = s.replace(/Ignore Target's Defense/g, "ITD");
+	s = s.replace(/\w+-Hand Damage: \d+ to \d+/g, "");
+	s = s.replace(/\w+ Class - \w+ Attack Speed/g, "");
+	s = s.replace(/\w+ Class - \w+ \w+ Attack Speed/g, "");
+	s = s.replace(/Enhanced Defense/g, "ED");
+	s = s.replace(/Enhanced Damage/g, "EDam");
+	s = s.replace(/Reduces all Vendor Prices/g, "VP");
+	s = s.replace(/Mana stolen per hit/g, "ML");
+	s = s.replace(/Life stolen per hit/g, "LL");
+	s = s.replace(/('\w+')/, "");
+	s = s.replace(/(Durability:\s+\d+\s+\w{2}\s+\d+)/, "")
+	s = s.replace(/(Durability:\s+\d{2}\s+\w{2}\s+\d{2})/, "");
+	s = s.replace(/(Durability:\s+\d\s+\w{2}\s+\d{2})/, "");
+	s = s.replace(/to Mana/g, "Mana");
+	s = s.replace(/to Strength/g, "STR");
+	s = s.replace(/to Dexterity/g, "DEX");
+	s = s.replace(/to Life/g, "Life");
+	s = s.replace(/to Vitality/g, "Vita");
+	s = s.replace(/to Energy/g, "Energy");
+	s = s.replace(/Faster Hit Recovery/g, "FHR");
+	s = s.replace(/Damage Reduced by/g, "DR");
+	s = s.replace(/Faster Cast Rate/g, "FCR");
+	s = s.replace(/Faster Block Rate/g, "FBR");
+	s = s.replace(/\(Based on Character Level\)/g, "per cLvl");
+	s = s.replace(/Damage of \d+/g, "Damage");
+	s = s.replace(/against/g, "vs.");
+	s = s.replace(/Damage to Demons/g, "vs. Demons");
+	s = s.replace(/to Maximum/g, "Max");
+	s = s.replace(/to Cold Skill Damage/g, "Cold Damage");
+	s = s.replace(/to Fire Skill Damage/g, "Fire Damage");
+	s = s.replace(/to Lightning Skill Damage/g, "Lightning Damage");
+	s = s.replace(/Increase Maximum Mana/g, "Max Mana +");
+	s = s.replace(/Increase Maximum Mana/g, "Max Life +");
+	s = s.replace(/Half Freeze Duration/g, "");
+	s = s.replace(/Slower Stamina Drain/g, "");
+	s = s.replace(/Mana after each Kill/g, "MPK");
+	s = s.replace(/Life after each Kill/g, "LPK");
+	s = s.replace(/Replenishes quantity/g, "Rep Quantity");
+	s = s.replace(/Increased Stack Size/g, "");
+	s = s.replace(/\d+% Reanimate as: Returned/g, "Reanimate");
+	s = s.replace(/Chance of Crushing Blow/g, "CB");
+	s = s.replace(/after each Demon Kill/g, "per Demon Kill");
+	s = s.replace(/\+\d+% Damage to Undead/g, "");
+	s = s.replace(/Increased Chance of Blocking/g, "ICB");
+	s = s.replace(/Slain Monsters Rest in Peace/g, "Monsters RIP");
+	s = s.replace(/Chance to Block: \d+%/g, "");
+	s = s.replace(/Increase Maximum Durability/g, "Dura +");
+	s = s.replace(/\(poison damage over \d seconds\)/, "pdsc");
+	s = s.replace(/\(poison damage over \d+ seconds\)/, "pdsc");
+	s = s.replace(/poison damage over /g, "poison/");
+	s = s.replace(/Required Level:/, "Lvl Req");
+	s = s.replace(/Required Strength: \d+/, "");
+	s = s.replace(/Required Dexterity: \d+/, "");
+	s = s.replace(/to Enemy Fire Resistance/g, "Enemy FRes");
+	s = s.replace(/to Enemy Lightning Resistance/g, "Enemy LRes");
+	s = s.replace(/to Enemy Cold Resistance/g, "Enemy CRes");
+	s = s.replace(/to Enemy Poison Resistance/g, "Enemy PRes");
+	s = s.replace(/Fire Resist/g, "FRes");
+	s = s.replace(/Lightning Resist/g, "LRes");
+	s = s.replace(/Cold Resist/g, "CRes");
+	s = s.replace(/Poison Resist/g, "PRes");
+	s = s.replace(/to Attack Rating/g, "AR");
+	s = s.replace(/Repairs \d+ durability in \d+ secs/g, "Self-Repair");
+	s = s.replace(/Ethereal \(Cannot be Repaired\)/g, "Ethereal");
+	s = s.replace(/Can be Inserted into Socketed Items\/Weapons:/g, "");
+	s = s.replace(/Adds /g, "+");
+	s = s.replace(/to Sorceress/g, "Sorceress");
+	s = s.replace(/to Paladin/g, "Paladin");
+	s = s.replace(/to Druid/g, "Druid");
+	s = s.replace(/to Barbarian/g, "Barbarian");
+	s = s.replace(/to Assassin/g, "Assassin");
+	s = s.replace(/to Amazon/g, "Amazon");
+	s = s.replace(/to Necromancer/g, "Necromancer");
+	s = s.replace(/ to /g, " ");
+	s = s.replace(/seconds/gi, "secs");
+	s = s.replace(/Defense/gi, "Def");
+	s = s.replace(/^Def:/i, "Def");
+	
+	re = new RegExp("\\n", "gi");
+	s = s.replace(re, ",");
+	s = s.replace(/,,/g, ",");
+	s = s.replace(/,,/g, ",");
+	s = s.replace(/,,/g, ",");
+	s = s.replace(/,/g, ", ");
+	s = s.replace(/^,/, "");
+	s = s.replace(/,$/, "");
+	} return s;
+}
+
+function NTU_DropItems() {
+	var _script = NTC_FindScript(NTConfig_Script[CurScriptIndex]);
+	if (_script.running && NTC_InTown())
+		return;
+	
+	Print("Dropping Inventory and Stash");
+	NTU_MoveToStash();
+	NTU_ClearInventory();
+	NTU_DropStash();
+	Print("Done Dropping Inventory and Stash");
+}
+
+function NTU_ClearInventory() {
+	var _items = me.GetItems();
+
+	if(!_items)
+		return false;	
+	
+	for(var i = 0 ; i < _items.length ; i++) {		
+		if(_items[i].itemloc == 0  && !NTSI_IsIgnoredItemInt(_items[i].classid) && NTConfig_Columns[_items[i].y][_items[i].x] > 0) {
+			NTT_DropItem(_items[i]);		
+		}
+	}
+}
+
+function NTU_MoveToStash() {
+	var _stash;
+
+	NTTM_TownMove("stash");
+
+	_stash = NTC_FindUnit(NTC_UNIT_OBJECT, NTC_UNIT_STASH, 5);
+
+	if(_stash) {
+		NTT_DoInteract(_stash);
+	}
+}
+
+function NTU_DropStash() {
+	var _items = me.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(var i = 0 ; i < _items.length ; i++) {
+		if(_items[i].mode == 0 && _items[i].itemloc == 4 && _items[i].classid != 549) {
+			NTT_DropItem(_items[i]);		
+         	}
+	}
+	me.Cancel(1);
+} 
+
+function NTU_CursorILvl() {
+	if(me.itemoncursor) {
+		Print(COLOR_4 + me.GetCursorItem().name.split("\n")[0] + COLOR_8 + " - " + COLOR_4 + "Item Level " + COLOR_8 + me.GetCursorItem().itemlevel);
+	}
+	else
+		Print(COLOR_8 + "Nothing On Cursor To Check.");
+}
+// ubi21 Enigma reset start
+////////////////////////////
+
+// Need a msging system to prevent certain code from executing when another is running.
+function NTU_LogExitStatus(value)
+{   
+   var _hfile = FileOpen(me.account + "_exitValue.txt", 1);
+   if(!_hfile)
+      return false;
+
+   _hfile.WriteLine(value);
+   _hfile.Close();
+}
+
+function NTU_GetExitStatus()
+{
+   var _script;
+   
+   var _hfile = FileOpen(me.account + "_exitValue.txt", 2);
+   if(!_hfile)
+      return "E";
+
+   _script = _hfile.ReadLine();
+   
+   _hfile.Close();
+   
+   return _script;
+}
+// ubi21 Enigma reset end
+////////////////////////////
+
+function NTU_DontOpenAreas() {
+	
+	var _presentarea = me.areaid
+
+	for (var i = 0; i < NTConfig_DontOpenChestAreas.length; i++) {
+		if (_presentarea == NTConfig_DontOpenChestAreas[i]){
+			return false;
+		}
+	}
+	return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//																													                      //
+// NT_Developement tools started by stairbuilder on 11-26-10                                                                              //
+// My hope is that others will contribute to this script so we can have a nice little development file to work from                       //
+// Feel free to add to this file or to change anything to make it more useful                                                             //
+// also as we all know some of the id names are wrong/different so if you find something that is wrong or different feel free to chang it //										 //
+//																													                      //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function NTU_DevelopementTools()
+{
+	NTU_getlocalstringids = false;			// pretty much same as objects
+	NTU_objectids = true;
+	NTU_monsterids = false;					// prints the name and id number of monsters.  Probably should set a range for it but been using it for summons
+	getstate = false;					// prints id # of state and "active" if the state is active
+	var MonsterIdRange = 	[0, 575];	// set the range of id's you want to look for ie [420, 432] looks for druid summons
+										// you can set the MonsterRange = [0, 575] and it will give all monsters near you, but to be effective need to add a range to it
+	var StateIdRange = 	[0, 159];		// set the range of me.states you want to check if active ie [141, 154] looks for druid states
+	var _mestate;
+	var ObjectIdRange = [0, 600];		// this is range of object id's similar to above ranges
+	var _objectlookrange = 5;			// this is the distance that you wish to look for objects from your toon
+	var StringIdRange = [2500, 4000];	// this is range getlocalstrings  id's similar to above ranges
+	var _stringlookrange = 5;			// this is the distance that you wish to look for getlocalstrings from your toon
+
+	Print(COLOR_2 + IdToName() + " - CharacterClass(" +me.classid+ ")");
+	Print("   ");
+	
+	if(NTU_monsterids){
+		for(var i = MonsterIdRange[0]; i < MonsterIdRange[1] ; i++){
+			var _monster = NTC_FindUnit(NTC_UNIT_MONSTER, i);
+			if(NTC_FindUnit(NTC_UNIT_MONSTER, i)){
+				if(_monster.GetParent() != null)
+					Print(COLOR_8 + _monster.name + " - monsterid(" + i + ") - parent is (" +_monster.GetParent().name + ")" + " - monster mode is " + "[" + _monster.mode + "]");
+				else
+					Print(COLOR_8 + _monster.name + " - monsterid(" + i + ")" + " - monster mode is " + "[" + _monster.mode + "]");
+				Delay(500);
+			}
+		}
+	}
+	Print("   ");
+
+	if(NTU_getstate){
+		for(var i = StateIdRange[0]; i < StateIdRange[1]; i++){
+			if(me.GetState(i)){
+				Print(COLOR_9 + StateToName(i).toLowerCase() + " - me.GetState(" + i  +") is active ");
+				Delay(500);	
+			}
+		}
+	}
+	Print("   ");
+
+	if(NTU_objectids){
+		for(var i = ObjectIdRange[0]; i < ObjectIdRange[1] ; i++){
+			var _object = NTC_FindUnit(NTC_UNIT_OBJECT, i);
+			if(NTC_FindUnit(NTC_UNIT_OBJECT, i) && (GetDistance(me.x,me.y,_object.x,_object.y)<_objectlookrange))
+				Print(COLOR_14 + "object name is - " + _object.name + " - objectid - (" + i + ")" + " - objects mode is " + "[" + _object.mode + "]");
+			//Delay(500);
+		}
+	}
+	Print("   ");
+	if(NTU_getlocalstringids){
+		for(var i = StringIdRange[0]; i < StringIdRange[1]; i++){
+			var _stringobject = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(i));
+			if(NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(i)) && (GetDistance(me.x,me.y,_stringobject.x,_stringobject.y)<_stringlookrange))
+				Print(COLOR_14 + "String name is - " + _stringobject.name + " - stringid - (" + i + ")" + " - objects mode is " + "[" + _stringobject.mode + "]");
+			//Delay(30);
+		}
+	}
+	Print("   ");
+
+}
+
+function IdToName(){
+	
+	switch(me.classid)
+	{
+		case 0:
+			return "Amazon";
+		case 1:
+			return "Sorceress";
+		case 2:
+			return "Necromancer";
+		case 3:
+			return "Paladin";			
+		case 4:
+			return "Barbarian";						
+		case 5:
+			return "Druid";						
+		case 6:
+			return "Assassin";			
+	}
+}
+
+function StateToName(_mestate){
+	
+	var _state;
+	
+	switch(_mestate)
+	{
+		case 0:
+			return "NONE"; 
+				break;
+		case 1:
+			return "FREEZE";
+				break;
+		case 2:
+			return "POISON";
+				break;
+		case 3:
+			return "RESISTFIRE";
+				break;				
+		case 4:
+			return "RESISTCOLD";
+				break;							
+		case 5:
+			return "RESISTLIGHT";
+				break;							
+		case 6:
+			return "RESISTMAGIC ";
+				 	
+		case 7:
+			return "PLAYERBODY"; 
+				break;
+		case 8:
+			return "RESISTALL";
+				break;
+		case 9:
+			return "AMPLIFYDAMAGE ";
+				break;
+		case 10:
+			return "FROZENARMOR"; 
+				break;
+		case 11:
+			return "COLD";
+				break;
+		case 12:
+			return "INFERNO";
+				break;
+		case 13:
+			return "BLAZE";
+				break;				
+		case 14:
+			return "BONEARMOR";
+				break;							
+		case 15:
+			return "CONCENTRATE";
+				break;							
+		case 16:
+			return "ENCHANT";
+				break;	
+		case 17:
+			return "INNERSIGHT"; 
+				break;
+		case 18:
+			return "SKILL_MOVE";
+				break;
+		case 19:
+			return "WEAKEN";
+				break;
+		case 20:
+			return "CHILLINGARMOR"; 
+				break;
+		case 21:
+			return "STUNNED";
+				break;
+		case 22:
+			return "SPIDERLAY";
+				break;
+		case 23:
+			return "DIMVISION";
+				break;				
+		case 24:
+			return "SLOWED";
+				break;							
+		case 25:
+			return "FETISHAURA";
+				break;							
+		case 26:
+			return "SHOUT";
+				break;	
+		case 27:
+			return "TAUNT"; 
+				break;
+		case 28:
+			return "CONVICTION";
+				break;
+		case 29:
+			return "CONVICTED";
+				break;
+		case 30:
+			return "ENERGYSHIELD"; 
+				break;
+		case 31:
+			return "VENOMCLAWS";
+				break;
+		case 32:
+			return "BATTLEORDERS";
+				break;
+		case 33:
+			return "MIGHT";
+				break;				
+		case 34:
+			return "PRAYER";
+				break;							
+		case 35:
+			return "HOLYFIRE";
+				break;							
+		case 36:
+			return "THORNS";
+				break;	
+		case 37:
+			return "DEFIANCE"; 
+				break;
+		case 38:
+			return "THUNDERSTORM";
+				break;
+		case 39:
+			return "LIGHTNINGBOLT";
+				break;
+		case 40:
+			return "BLESSEDAIM"; 
+				break;
+		case 41:
+			return "STAMINA";
+				break;
+		case 42:
+			return "CONCENTRATION";
+				break;
+		case 43:
+			return "HOLYWIND";
+				break;				
+		case 44:
+			return "HOLYWINDCOLD";
+				break;							
+		case 45:
+			return "CLEANSING";
+				break;							
+		case 46:
+			return "HOLYSHOCK";
+				break;	
+		case 47:
+			return "SANCTUARY"; 
+				break;
+		case 48:
+			return "MEDITATION";
+				break;
+		case 49:
+			return "FANATICISM";
+				break;
+		case 50:
+			return "REDEMPTION"; 
+				break;
+		case 51:
+			return "BATTLECOMMAND";
+				break;
+		case 52:
+			return "PREVENTHEAL";
+				break;
+		case 53:
+			return "CONVERSION";
+				break;				
+		case 54:
+			return "UNINTERRUPTABLE";
+				break;							
+		case 55:
+			return "IRONMAIDEN";
+				break;							
+		case 56:
+			return "TERROR";
+				break;	
+		case 57:
+			return "ATTRACT"; 
+				break;
+		case 58:
+			return "LIFETAP";
+				break;
+		case 59:
+			return "CONFUSE";
+				break;
+		case 60:
+			return "DECREPIFY"; 
+				break;
+		case 61:
+			return "LOWERRESIST";
+				break;
+		case 62:
+			return "OPENWOUNDS";
+				break;
+		case 63:
+			return "DOPPLEZON";
+				break;				
+		case 64:
+			return "CRITICALSTRIKE";
+				break;							
+		case 65:
+			return "DODGE";
+				break;							
+		case 66:
+			return "AVOID";
+				break;	
+		case 67:
+			return "PENETRATE"; 
+				break;
+		case 68:
+			return "EVADE";
+				break;
+		case 69:
+			return "PIERCE";
+				break;
+		case 70:
+			return "WARMTH"; 
+				break;
+		case 71:
+			return "FIREMASTERY";
+				break;
+		case 72:
+			return "LIGHTNINGMASTERY";
+				break;
+		case 73:
+			return "COLDMASTERY";
+				break;				
+		case 74:
+			return "SWORDMASTERY";
+				break;							
+		case 75:
+			return "AXEMASTERY";
+				break;							
+		case 76:
+			return "MACEMASTERY";
+				break;	
+		case 77:
+			return "POLEARMMASTERY"; 
+				break;
+		case 78:
+			return "THROWINGMASTERY";
+				break;
+		case 79:
+			return "SPEARMASTERY";
+				break;
+		case 80:
+			return "INCREASEDSTAMINA"; 
+				break;
+		case 81:
+			return "IRONSKIN";
+				break;
+		case 82:
+			return "INCREASEDSPEED";
+				break;
+		case 83:
+			return "NATURALRESISTANCE";
+				break;				
+		case 84:
+			return "FINGERMAGECURSE";
+				break;							
+		case 85:
+			return "NOMANAREGEN";
+				break;							
+		case 86:
+			return "JUSTHIT";
+				break;	
+		case 87:
+			return "SLOWMISSILES"; 
+				break;
+		case 88:
+			return "SHIVERARMOR";
+				break;
+		case 89:
+			return "BATTLECRY";
+				break;
+		case 90:
+			return "BLUE"; 
+				break;
+		case 91:
+			return "RED";
+				break;
+		case 92:
+			return "DEATH_DELAY";
+				break;
+		case 93:
+			return "VALKYRIE";
+				break;				
+		case 94:
+			return "FRENZY";
+				break;							
+		case 95:
+			return "BERSERK";
+				break;							
+		case 96:
+			return "REVIVE";
+				break;	
+		case 97:
+			return "ITEMFULLSET"; 
+				break;
+		case 98:
+			return "SOURCEUNIT";
+				break;
+		case 99:
+			return "REDEEMED";
+				break;
+		case 100:
+			return "HEALTHPOT"; 
+				break;
+		case 101:
+			return "HOLYSHIELD";
+				break;
+		case 102:
+			return "JUST_PORTALED";
+				break;
+		case 103:
+			return "MONFRENZY";
+				break;				
+		case 104:
+			return "CORPSE_NODRAW";
+				break;							
+		case 105:
+			return "ALIGNMENT";
+				break;							
+		case 106:
+			return "MANAPOT";
+				break;	
+		case 107:
+			return "SHATTER"; 
+				break;
+		case 108:
+			return "SYNC_WARPED";
+				break;
+		case 109:
+			return "CONVERSION_SAVE";
+				break;
+		case 110:
+			return "PREGNANT"; 
+				break;
+		case 111:
+			return "111";
+				break;
+		case 112:
+			return "RABIES";
+				break;
+		case 113:
+			return "DEFENSE_CURSE";
+				break;				
+		case 114:
+			return "BLOOD_MANA";
+				break;							
+		case 115:
+			return "BURNING";
+				break;							
+		case 116:
+			return "DRAGONFLIGHT";
+				break;	
+		case 117:
+			return "MAUL"; 
+				break;
+		case 118:
+			return "CORPSE_NOSELECT";
+				break;
+		case 119:
+			return "SHADOWWARRIOR";
+				break;
+		case 120:
+			return "FERALRAGE"; 
+				break;
+		case 121:
+			return "SKILLDELAY";
+				break;
+		case 122:
+			return "PROGRESSIVE_DAMAGE";
+				break;
+		case 123:
+			return "PROGRESSIVE_STEAL";
+				break;				
+		case 124:
+			return "PROGRESSIVE_OTHER";
+				break;							
+		case 125:
+			return "PROGRESSIVE_FIRE";
+				break;							
+		case 126:
+			return "PROGRESSIVE_COLD";
+				break;	
+		case 127:
+			return "PROGRESSIVE_LIGHTNING"; 
+				break;
+		case 128:
+			return "SHRINE_ARMOR";
+				break;
+		case 129:
+			return "SHRINE_COMBAT";
+				break;
+		case 130:
+			return "SHRINE_RESIST_LIGHTNING"; 
+				break;
+		case 131:
+			return "SHRINE_RESIST_FIRE";
+				break;
+		case 132:
+			return "SHRINE_RESIST_COLD";
+				break;
+		case 133:
+			return "SHRINE_RESIST_POISON";
+				break;				
+		case 134:
+			return "SHRINE_SKILL";
+				break;							
+		case 135:
+			return "SHRINE_MANA_REGEN";
+				break;							
+		case 136:
+			return "SHRINE_STAMINA";
+				break;	
+		case 137:
+			return "SHRINE_EXPERIENCE"; 
+				break;
+		case 138:
+			return "FENRIS_RAGE";
+				break;
+		case 139:
+			return "WOLF";
+				break;
+		case 140:
+			return "BEAR"; 
+				break;
+		case 141:
+			return "BLOODLUST";
+				break;
+		case 142:
+			return "CHANGECLASS";
+				break;
+		case 143:
+			return "ATTACHED";
+				break;				
+		case 144:
+			return "HURRICANE";
+				break;							
+		case 145:
+			return "ARMAGEDDON";
+				break;							
+		case 146:
+			return "INVIS";
+				break;	
+		case 147:
+			return "BARBS"; 
+				break;
+		case 148:
+			return "WOLVERINE";
+				break;
+		case 149:
+			return "OAKSAGE";
+				break;
+		case 150:
+			return "VINE_BEAST"; 
+				break;
+		case 151:
+			return "CYCLONEARMOR";
+				break;
+		case 152:
+			return "CLAWMASTERY";
+				break;
+		case 153:
+			return "CLOAK_OF_SHADOWS";
+				break;				
+		case 154:
+			return "RECYCLED";
+				break;							
+		case 155:
+			return "WEAPONBLOCK";
+				break;							
+		case 156:
+			return "CLOAKED";
+				break;	
+		case 157:
+			return "QUICKNESS"; 
+				break;
+		case 158:
+			return "BLADESHIELD";
+				break;
+		case 159:
+			return "FADE";
+				break;
+			
+	}
+	return _state;
+}
+
+function NTU_LogPrint(filepath, mesg){
+	
+	var _Myarea = GetArea();
+	var _filepath = filepath;
+	var _mesg = mesg;
+	
+	var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
+	var logfile = FileOpen(_filepath, 2); // opens file 
+	if(!logfile)
+		var logfile = FileOpen(_filepath, 1); // if file not there then creates it
+
+	logfile.WriteLine(date + " " + _mesg + "Area[" + _Myarea.name + "]");
+	logfile.Close();
+}
+
+function NTU_DeathLog(Corpses, InitLife) {
+	var logMessage = "";
+	var _time = NTU_timeStamp();
+	logMessage += COLOR_1 + "Death Log ;";
+	logMessage += COLOR_1 + "--------------------------------------------------";
+	logMessage += COLOR_1 + "\n Probable death detected.";
+	if (Corpses > 0) logMessage += COLOR_8 + "\n Corpse recovered.";
+	logMessage += COLOR_8 + "\n Starting Life: " + InitLife;
+	logMessage += COLOR_4 + "\n Time: " + _time;
+	logMessage += COLOR_1 + "\n --------------------------------------------------";
+	NTC_SendLogToOOG(NTC_LOG_COMMON, logMessage);
+}
+
+function NTU_MercReviveLog() {
+	var _area = GetArea();
+	var areaName = "unknown area";
+	if (_area) areaName = _area.name;
+	var _time = NTU_timeStamp();
+	NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_8 + "Mercenary Revived " + ";" +
+	COLOR_1 + "--------------------------------------------------" +
+	COLOR_8 + "\n Mercenary revived in " + areaName +
+	COLOR_4 + "\n Time: " + _time +
+	COLOR_1 + "\n --------------------------------------------------");
+}
+
+function NTU_MercDeathLog() {
+	var _area = GetArea();
+	var areaName = "unknown area";
+	if (_area) areaName = _area.name;
+	var _time = NTU_timeStamp();
+	NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_8 + "Mercenary Death Log " + ";" +
+	COLOR_1 + "--------------------------------------------------" +
+	COLOR_8 + "\n Mercenary died in " + areaName +
+	COLOR_4 + "\n Time: " + _time +
+	COLOR_1 + "\n --------------------------------------------------");
+}
+
+function NTU_ChickenLog(_type) {
+	var _area = GetArea();
+	var _time;
+	var logMessage = "";
+	var areaName = "unknown area";
+	var exitingGame = false;
+	var _monster;
+	var _nearbyMonsters = new Array();
+	
+	_nearbyMonsters = NTU_GetNearbyMonsters(50);
+	
+	if (_type == "EtalLifeChicken" || _type == "EtalManaChicken") exitingGame = true;
+
+	if (_area) areaName = _area.name;
+
+	if (exitingGame) {
+		logMessage += COLOR_1 + "Game is terminated by Etal chicken (" + areaName + ")" + ";";
+	} else {
+		logMessage += COLOR_9 + "Game is interrupted by "+_type+" (" + areaName + ")" + ";";
+	}
+	
+	logMessage += COLOR_1 + "--------------------------------------------------";
+	
+	if (_type == "EtalLifeChicken") {
+		var _threshold = parseInt(me.hpmax * NTConfig_EtalLifeChicken,10) / 100;
+		logMessage += COLOR_9 + "\n " + "EtalLifeChicken ("+NTConfig_EtalLifeChicken+"% / "+_threshold+" hp) triggered";
+	}
+	
+	if (_type == "EtalManaChicken") {
+		var _threshold = parseInt(me.mpmax * NTConfig_EtalManaChicken,10) / 100;
+		logMessage += COLOR_9 + "\n " + "EtalManaChicken ("+NTConfig_EtalManaChicken+"% / "+_threshold+" mp) triggered";
+	}
+	
+	if (me.hp <= 0) logMessage += COLOR_8 + "\n ** Character Death **";
+	logMessage += COLOR_1 + "\n Life: " + me.hp;
+	logMessage += COLOR_3 + "\n Mana: " + me.mp;
+	_time = NTU_timeStamp();
+	logMessage += COLOR_4 + "\n Time: " + _time;
+	
+	logMessage += COLOR_2 + "\n\n Nearby Monsters: ";
+
+	if (_nearbyMonsters.length < 20) {
+		for (_index in _nearbyMonsters) {
+			_monster = _nearbyMonsters[_index];
+			logMessage += COLOR_2 + "\n  " + _monster;
+		}
+	} else {
+		logMessage += COLOR_2 + "\n  Too many to list.";
+	}
+	logMessage += COLOR_1 + "\n --------------------------------------------------";
+
+	SendCopyData("D2NT Manager", null, 7<<16, logMessage);	
+}
+
+// Code from kolton's Hostile Catch scripts, augmented for millisecond output
+// Added to a common file for global access
+function NTU_timeStamp() 
+{		
+   var now    = new Date();
+   var hour   = now.getHours();
+   var minute = now.getMinutes();
+   var second = now.getSeconds();
+   var millisecond = now.getMilliseconds();
+   var DoN = "AM";
+	
+	if (hour > 11) { DoN = "PM"; }
+	if (hour > 12) { hour = hour - 12; }
+	if (hour == 0) { hour = 12; }
+	if (hour < 10) { hour = "0" + hour; }
+	if (minute < 10) { minute = "0" + minute; }
+	if (second < 10) { second = "0" + second; }
+	
+	var timeString = hour +	':' +  minute + ':' + second + '.' + millisecond + " " + DoN;
+
+   return timeString;
+}	
+
+// loosely based on NTBaal.ntj function _announceTMobs
+function NTU_GetNearbyMonsters(_range) {
+	var _nearbyMonsters = [];
+
+	if(arguments.length < 1)
+		var _range = 50;
+	
+	var _monster = NTC_FindUnit(NTC_UNIT_MONSTER);
+
+	if(_monster){
+		do {
+			if ((!_inRange(me.x, me.y, _monster.x, _monster.y, _range)) || (!_monster.IsAttackable()))
+				continue;
+			_nearbyMonsters.push(_monster.name);
+		} while(_monster.GetNext())
+	}
+	
+	_nearbyMonsters = _simplifyArray(_nearbyMonsters);
+
+	function _inRange(meX, meY, monX, monY, range) {
+		// In an x-y Cartesian coordinate system, the circle with centre coordinates (a, b) 
+		// and radius r is the set of all points (x, y) such that
+		// (x - a)^2 + (y - b)^2 = r^2
+		if(Math.pow((monX - meX),2) + Math.pow((monY - meY),2) > Math.pow(range,2)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	// removes duplicate entries
+	function _simplifyArray(ar) {
+		var f = {},
+		i = 0,
+		l = ar.length,
+		r = [];
+		while (i < l) {
+			!f[ar[i]] && r.push(ar[i]);
+			f[ar[i++]] = 1;
+		}
+		return r;
+	}
+	return _nearbyMonsters;
+}
+
+/*function NTU_LogPrintSimple(filepath, mesg, printareaid){ // will eventually conbine the log print functions, but for now.....
+
+	if(arguments.length < 3 || printareaid)
+		var _Myarea = GetArea();
+	else if(!printareaid)
+		var _Myarea = "";
+	var _filepath = filepath;
+	var _mesg = mesg;
+	
+	var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
+	var logfile = FileOpen(_filepath, 2); // opens file 
+	if(!logfile)
+		var logfile = FileOpen(_filepath, 1); // if file not there then creates it
+
+	logfile.WriteLine(date + " " + _mesg + "Area[" + _Myarea.name + "]");
+	logfile.Close();
+}*/

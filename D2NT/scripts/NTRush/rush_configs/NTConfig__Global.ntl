@@ -1,0 +1,29 @@
+/*	Global Config Settings 	*/
+/*	The following settings will affect all characters.	*/
+
+var runtimeParse = false;
+var createCharConfigs = true; 	/*	Set true to create a character config clone based off the default config.									
+									Will then advise you to close and edit the new config once created.
+									Set false to disable character config auto creation & use default config.
+								*/
+
+// Here are the Custom HotKey settings
+// ONLY change the #'s if you know what you're doing
+// Set to 0 to turn off the feature
+Do_PauseBot = 19;			// Pause/Resume bot
+Do_PrevScript = 33;			// Scroll to Previous Script
+Do_NextScript = 34;			// Scroll to Next Script
+Do_DropItems = 97;			// Drop items in Inv/Stash
+Do_DevTools = 98;			// Use NTU_DevelopmentToold
+Do_CoordLog = 99;			// Log current X/Y coordinates to text file
+Do_HotKeyList = 100;		// Send this Hotkey list to manager Common Log
+Do_InvTxtLog = 101;			// Log inventory and stash to a text file
+Do_CursorILvL = 102;		// Check Ilvl of item on cursor
+Do_CheckSpace = 103;		// Check Inv/Stash space
+	CheckStashSpace = true; // True to check Stash space
+	CheckInvSpace = true;	// True to check Inv space
+Do_StatsLog = 105;			// Log Stats to manager to Common Log
+Do_PrintCoord = 106;		// Print current X/Y coordinates
+Do_NipCheck = 107;			// Do a .nip check to find errors
+Do_CheckBPs = 104;			// Print your current FCR/FHR Breakpoints to screen
+Do_ExitGame = 46;			// Exit Game on command (will print Game Statistics)

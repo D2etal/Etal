@@ -1,0 +1,1593 @@
+const NTA_DAMAGE_NONE = 0;
+const NTA_DAMAGE_PHYSICAL = 1;
+const NTA_DAMAGE_MAGIC = 2;
+const NTA_DAMAGE_FIRE = 3;
+const NTA_DAMAGE_LIGHTNING = 4;
+const NTA_DAMAGE_COLD = 5;
+const NTA_DAMAGE_POISON = 6;
+
+var _NTA_SkillHand = [];
+var _NTA_SkillDamage = [];
+var _NTA_SkillRange = [];
+var _NTA_CurseState = [];
+
+var _NTA_NovaTick;
+var _sorcattack = 0;
+var skippedImmuneBoss = false;
+
+function NTA_Initialize() {
+	if (NTConfig_AttackSkill[1] == -1 || NTConfig_AttackSkill[3] == -1) {
+		//NTA_DetectAttackPattern(); // the onld detection method disabling unless someone updates the list for the default attacks
+		switch (me.classid) {
+		case NTC_CHAR_CLASS_AMAZON: Print("No attacks where set in your NTConfig_Amazon_" + me.charname + ".ntl file!"); break;
+		case NTC_CHAR_CLASS_SORCERESS: Print("No attacks where set in your NTConfig_Sorceress_" + me.charname + ".ntl file!"); break;
+		case NTC_CHAR_CLASS_NECROMANCER: Print("No attacks where set in your NTConfig_Necromancer_" + me.charname + ".ntl file!"); break;
+		case NTC_CHAR_CLASS_PALADIN: Print("No attacks where set in your NTConfig_Paladin_" + me.charname + ".ntl file!"); break;
+		case NTC_CHAR_CLASS_BARBARIAN: Print("No attacks where set in your NTConfig_Barbarian_" + me.charname + ".ntl file!"); break;
+		case NTC_CHAR_CLASS_DRUID: Print("No attacks where set in your NTConfig_Druid_" + me.charname + ".ntl file!"); break;
+		case NTC_CHAR_CLASS_ASSASSIN: Print("No attacks where set in your NTConfig_Assassin_" + me.charname + ".ntl file!"); break;
+		default: Print("No attacks where set in your NTConfig_Class_" + me.charname + ".ntl file!"); break;
+		}
+		Print("Please set them then restart the bot");
+		while (1) {
+			Delay(500);
+		}
+	}
+	for (var i = 0; i < NTConfig_AttackSkill.length; i++) {
+		if (NTConfig_AttackSkill[i] > -1) {
+			_NTA_SkillHand[i] = GetBaseStat("skills.txt", NTConfig_AttackSkill[i], 166) ? 2 : NTC_HAND_RIGHT;
+			_NTA_SkillDamage[i] = NTA_GetDamageType(NTConfig_AttackSkill[i]);
+
+			switch (NTConfig_AttackSkill[i]) {
+			case 0: //Normal Attack
+				if (NTA_RangedNormal()) { _NTA_SkillRange[i] = 20; } 
+				else { _NTA_SkillRange[i] = 2; }
+				break;
+			case 1: //Kicks
+				_NTA_SkillRange[i] = 2;
+				break;
+			case 5: // Left Hand Swing
+				_NTA_SkillRange[i] = 2;
+				break;
+			case 6: //Magic Arrow
+				break;
+			case 7: //Fire Arrow
+				_NTA_SkillRange[i] = 20;
+				break;
+			case 8: //Inner Sight
+				_NTA_SkillRange[i] = 13;
+				break;
+			case 10: //Jab
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 11: //Cold Arrow
+				break;
+			case 12: //Multiple Shot
+				_NTA_SkillRange[i] = 20;
+				break;
+			case 14: //Power Strike
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 15: //Poison Javelin
+				_NTA_SkillRange[i] = 10;
+				break;
+			case 16: //Exploding Arrow
+				_NTA_SkillRange[i] = 20;
+				break;
+			case 17: //Slow Missiles
+				_NTA_SkillRange[i] = 13;
+				break;
+			case 19: //Impale
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 20: //Lightning Bolt
+				break;
+			case 21: //Ice arrow
+				break;
+			case 22: //Guided arrow
+				_NTA_SkillRange[i] = 20;
+				break;
+			case 24: //Charged Strike
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 25: //Plague jav
+				_NTA_SkillRange[i] = 10;
+				break;
+			case 26: //Strafe
+				break;
+			case 27: //Immolation Arrow
+				_NTA_SkillRange[i] = 20;
+				break;
+			case 30: //Fend
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 31: //Freezing arrow
+				_NTA_SkillRange[i] = 20;
+				break;
+			case 34: //Lightning Strike
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 35: //Lightning Fury
+				_NTA_SkillRange[i] = 15;
+				break;
+			case 38: //charged bolt
+				_NTA_SkillRange[i] = 7;
+				break;
+			case 41: // Inferno
+				break;
+			case 42: // Static
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 44: //Frost Nova
+				_NTA_SkillRange[i] = 7;
+				break;
+			case 46: // Blaze
+				_NTA_SkillRange[i] = 2;
+				break;
+			case 48: // Nova
+				_NTA_SkillRange[i] = 7;
+				break;
+			case 64: // Frozen Orb
+				_NTA_SkillRange[i] = 15;
+				break;
+			case 84: // Bone Spear
+				_NTA_SkillRange[i] = 15;
+				break;
+			case 91: //Lower Resist
+				_NTA_SkillRange[i] = 50;
+				break;
+			case 92: // Poison Nova
+				_NTA_SkillRange[i] = 15;
+				break;
+			case 93: //Bone Spirit
+				_NTA_SkillRange[i] = 15;
+				break;
+			case 95: //Revive
+				_NTA_SkillRange[i] = 20;
+				break;
+			case 96: //Sacrifice
+				break;
+			case 97: //Smite
+				_NTA_SkillRange[i] = 2;
+				break;
+			case 101: //Holy Bolt
+				_NTA_SkillRange[i] = 15;
+				break;
+			case 106: //Zeal
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 111: //Vengeance
+				_NTA_SkillRange[i] = 2;
+				break;
+			case 112: //Blessed Hammer
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 121: // FOH
+				_NTA_SkillRange[i] = 20;
+				break;
+			case 126: // Bash
+				break;
+			case 130: // Howl
+				_NTA_SkillRange[i] = 2;
+				break;
+			case 131: // find Potion
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 132: // Leap // this is limited by lvl so i set it to lvl 1 increase as needed
+				_NTA_SkillRange[i] = 4;
+				break;
+			case 133: // Double Swing
+				break;
+			case 139: // stun
+				_NTA_SkillRange[i] = 2;
+				break;
+			case 140: // Double Throw
+				_NTA_SkillRange[i] = 20;
+				break;
+			case 142: // Find item
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 144: //Concentrate
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 146: // Battle cry
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 147: //Frenzy
+				_NTA_SkillRange[i] = 2;
+				break;
+			case 150: //grim ward
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 151: //Whirlwind
+				_NTA_SkillRange[i] = 8;
+				break;
+			case 152: //Berserk
+				_NTA_SkillRange[i] = 2;
+				break;
+			case 154: // War Cry
+				_NTA_SkillRange[i] = 4;
+				break;
+			case 225: //Fire Storm
+				break;
+			case 229: //Molten Boulder
+				break;
+			case 230: //Arctic Blast
+				break;
+			case 232: //Feral Rage
+				break;
+			case 233: //Maul
+				break;
+			case 234: //Fissure
+				break;
+			case 238: //Rabies
+				break;
+			case 239: //Fire Claws
+				break;
+			case 240: //Twister
+				break;
+			case 242: //Hunger
+				break;
+			case 243: //Shockwave
+				break;
+			case 244: //Volcano
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 245: //Tornado
+				_NTA_SkillRange[i] = NTConfig_NadoDist;
+				break;
+			case 248: //Fury      
+				_NTA_SkillRange[i] = 3;
+				break;
+			case 249: //Armageddon      
+				_NTA_SkillRange[i] = 9;
+				break;
+			case 255: //Dragon Talon
+				_NTA_SkillRange[i] = 2;
+				break;
+			case 271: // Lightning Sentry
+				break;
+			case 276: // Death Sentry
+				break;
+			case 261: // Charged Bolt Sentry
+				_NTA_SkillRange[i] = 20;
+				break;
+			case 251: // Fire Blast
+				break;
+			case 256: // Shockweb Sentry
+				_NTA_SkillRange[i] = 15;
+				break;
+			default: _NTA_SkillRange[i] = 25; 
+				break;
+			}
+		}
+	}
+	if (me.classid == NTC_CHAR_CLASS_ASSASSIN) { NTA_InitializeAssassinAttacks(); }
+	
+	if (me.classid == NTC_CHAR_CLASS_NECROMANCER) {
+		for (var i = 0 ; i < 2 ; i+= 1) {
+			if (NTConfig_Curse[i] > 0) {
+				switch (NTConfig_Curse[i]) {
+					case 0: //nothing
+						_NTA_CurseState[i] = 0;
+						break;
+					case 66: //amplify damage
+						_NTA_CurseState[i] = 9;
+						break;
+					case 71: //dim vision
+						_NTA_CurseState[i] = 23;
+						break;
+					case 72: //weaken
+						_NTA_CurseState[i] = 19;
+						break;
+					case 76: //iron maiden
+						_NTA_CurseState[i] = 55;
+						break;
+					case 77: //terror
+						_NTA_CurseState[i] = 56;
+						break;
+					case 81: //confuse
+						_NTA_CurseState[i] = 59;
+						break;
+					case 82: //life tap
+						_NTA_CurseState[i] = 58;
+						break;
+					case 86: //attract
+						_NTA_CurseState[i] = 57;
+						break;
+					case 87: //decrepify
+						_NTA_CurseState[i] = 60;
+						break;
+					case 91: //lower resist
+						_NTA_CurseState[i] = 61;
+						break;
+					default:
+						NTConfig_Curse[i] = 0;
+						Print("Invalid curse id");
+						break;
+				}
+			}
+		}
+	}
+}
+
+function NTA_KillMonster(classid) {
+	var _target;
+
+	if (NTConfig_AttackSkill[1] < 0) { return false; }
+
+	_target = NTC_FindUnit(NTC_UNIT_MONSTER, classid, 5);
+
+	if (!_target) { return false; }
+	
+	if (NTConfig_PrioritizeWeakerFoes && NTConfig_PrioritizeWeakerFoesAreaDisable.indexOf(me.areaid) < 0) {
+            NTA_ClearPosition(20, true, 2);
+    }
+
+	if (_target.IsAttackable()) {
+		var _attackcount = 0;
+		while (_attackcount < 300 && NTA_IsValidMonster(_target)) {
+			if (NTA_Attack(_target, (_attackcount % 30) == 0) < 2) {
+				break;
+			}
+			if(_attackcount == 0) {
+				if(NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) {
+					NTTMGR_VisitTown();
+				} else if( NTTMGR_CheckSafe(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)){
+					NTTMGR_VisitTown();
+				}
+			}
+			if((_attackcount % 5) == 0) {
+				if(NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) {
+					NTTMGR_VisitTown();
+				} else if( NTTMGR_CheckSafe(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)){
+					NTTMGR_VisitTown();
+				}
+			}
+			_attackcount++;
+			_sorcattack++;
+		}
+	}
+	if(skippedImmuneBoss){
+		Print(COLOR_2 + "skipping " + _target.name + " because of your skip immune settings");
+		return true;
+	}
+	return (_target.hp <= 0 || _target.mode == 0 || _target.mode == 12);
+}
+
+function NTA_ClearPosition(range, pickitem, safelevel) {
+	var _orgx, _orgy;
+	var _spectype = [0x0A, 0x01];
+	var _skiplist;
+	var _gid_attackcount;
+	var _attackcount = 0;
+	var _target;
+	var _distance, _mingid, _minshamangid, _mindistance, _minshamandistance;
+	var _result;
+
+    if (NTConfig_PrioritizeWeakerFoes && NTConfig_PrioritizeWeakerFoesAreaDisable.indexOf(me.areaid) < 0) {
+        _spectype = [0x10, 0x01, 0x04, 0x0A];
+    }	
+	
+	if (NTConfig_AttackSkill[1] < 0 || NTConfig_AttackSkill[3] < 0) { return false; }
+
+	switch (arguments.length) {
+	case 0:
+		range = 20;
+		break;
+	case 1:
+		pickitem = true;
+		break;
+	case 2:
+		safelevel = 0;
+		break;
+	default:
+		if ((NTConfig_CheckSelfSafe.length < 1) && (NTConfig_CheckMercSafe.length < 1)) { safelevel = 0; }
+		break;
+	}
+
+	_orgx = me.x;
+	_orgy = me.y;
+
+	for (var i = 0; i < _spectype.length; i++) {
+		_skiplist = new Array();
+		_gid_attackcount = new Array();
+
+		while (_attackcount < (i + 1) * 100) {
+			_minshamandistance = 100000;
+			_mindistance = 100000;
+
+			_target = NTC_FindUnit(NTC_UNIT_MONSTER);
+
+			if (_target) {
+				do {
+					if (_skiplist.indexOf(_target.gid) < 0) {
+						if (_target.IsAttackable() && (_target.spectype & _spectype[i])) {
+							if (GetDistance(_orgx, _orgy, _target.x, _target.y) <= range && NTA_IsValidMonster(_target)) {
+								_distance = GetDistance(me, _target);
+								if (_distance < _mindistance) {
+									_mingid = _target.gid;
+									_mindistance = _distance;
+								}
+								if ((MonstersToAttackFirst.indexOf(_target.classid) > -1) && _distance < _minshamandistance) {
+									_minshamangid = _target.gid;
+									_minshamandistance = _distance;
+								}
+							}
+						} else { _skiplist.push(_target.gid);
+						}
+					}
+				} while(_target.GetNext());
+			}
+
+			if (_minshamandistance < 100000) {
+				_target = NTC_FindUnit(NTC_UNIT_MONSTER, _minshamangid);
+
+				if (_target) {
+					if (_gid_attackcount[_minshamangid] == undefined) { _gid_attackcount[_minshamangid] = 1; }
+					else { _gid_attackcount[_minshamangid]++; }
+					if (NTconfig_HighMaxAttack || NTA_HighMaxAttackAreas()) {
+						if (_gid_attackcount[_minshamangid] > NTConfig_HighMaxAttacks) {
+							_skiplist.push(_minshamangid);
+						}
+					} else if (!NTconfig_HighMaxAttack || !NTA_HighMaxAttackAreas()) {
+						if (_gid_attackcount[_minshamangid] > NTConfig_LowMaxAttacks) {
+							Print(COLOR_1 + "I can't hit him!!! -> skipped");
+							_skiplist.push(_minshamangid);
+						}
+					}
+
+					_result = NTA_Attack(_target, (_attackcount % 30) === 0);
+
+					switch (_result) {
+					case 1:
+						_skiplist.push(_minshamangid);
+						break;
+					case 2:
+						break;
+					case 3:
+						if (_target.mode === 0 || _target.mode === 12) {
+							NTSI_FastPick();
+						}
+						_attackcount++;
+						_sorcattack++;
+						break;
+					default:
+						return false;
+					}
+				}
+			} else if (_mindistance < 100000) {
+				_target = NTC_FindUnit(NTC_UNIT_MONSTER, _mingid);
+
+				if (_target) {
+					if (_gid_attackcount[_mingid] == undefined) { _gid_attackcount[_mingid] = 1; }
+					else { _gid_attackcount[_mingid]++; }
+					if (NTconfig_HighMaxAttack || NTA_HighMaxAttackAreas()) {
+						if (_gid_attackcount[_mingid] > NTConfig_HighMaxAttacks) {
+							_skiplist.push(_mingid);
+						}
+					} else if (!NTconfig_HighMaxAttack || !NTA_HighMaxAttackAreas()) {
+						if (_gid_attackcount[_mingid] > NTConfig_LowMaxAttacks) {
+							Print(COLOR_1 + "I can't hit him!!! -> skipped");
+							_skiplist.push(_mingid);
+						}
+					}
+
+					_result = NTA_Attack(_target, (_attackcount % 30) === 0);
+
+					switch (_result) {
+					case 1:
+						_skiplist.push(_mingid);
+						break;
+					case 2:
+						break;
+					case 3:
+						if (_target.mode === 0 || _target.mode === 12) {
+							NTSI_FastPick();
+						}
+						_attackcount++;
+						_sorcattack++;
+						break;
+					default:
+						return false;
+					}
+				}
+			} else { break; }
+		}
+	}
+
+	if (me.classid == NTC_CHAR_CLASS_PALADIN) {
+		if (_attackcount > 2 && ((parseFloat(me.hp * 100 / me.hpmax) < NTConfig_UseRedemptionHP) || (parseInt(me.mp * 100 / me.mpmax, 10) < NTConfig_UseRedemptionMP))) {
+			if (NTC_PutSkill(124, NTC_HAND_RIGHT)) { NTC_PingDelay(1000); }
+		}
+	} else if (me.classid == NTC_CHAR_CLASS_NECROMANCER) {
+		NTA_SkeletonArmy(NTConfig_SkeletonArmy);
+		NTA_MageArmy(NTConfig_MageArmy);
+		NTA_ReviveArmy(NTConfig_ReviveArmy);
+	} else if (me.classid == NTC_CHAR_CLASS_BARBARIAN) {
+		if (NTConfig_UseFindItem && _attackcount > 2) {
+			if (!NTA_CheckForCloseMonsters(10)) {
+				//Print(COLOR_25 + "No Monsters close - looting");
+				NTA_FindItem(NTConfig_FindItemRange);
+			}
+		}
+	}
+
+	if (NTConfig_OpenChest) {
+		_target = NTC_GetSpecialChest();
+
+		if (_target && GetDistance(_orgx, _orgy, _target.x, _target.y) <= range && NTC_OpenChest(_target)) { _attackcount++; _sorcattack++; }
+	}
+	if (NTConfig_OpenChestsInAreaClearing && NTConfig_AreasToOpenChestClearing.indexOf(me.areaid) != -1) {
+		NTC_OpenChestsInAreaNear(_orgx, _orgy, range);
+	}
+
+	if(NTConfig_IdInField){
+		if (!NTT_CheckSpace(NTConfig_FreeSpaceXY[0], NTConfig_FreeSpaceXY[1])) { 
+			NT_FieldID(); 
+		} // id in field add
+	}
+	
+	if (pickitem && _attackcount > 0) { NTSI_PickItems(); }
+	
+	if(NTConfig_IdInField){
+		if (!NTT_CheckSpace(NTConfig_FreeSpaceXY[0], NTConfig_FreeSpaceXY[1])) { 
+			NT_FieldID(); 
+		} // id in field add
+	}
+
+/*
+	switch (safelevel) {
+	case 1:
+		return NTTMGR_CheckSafe(NTConfig_CheckMercSafe);
+	case 2:
+		return NTTMGR_CheckSafe(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe);
+	default:
+		break;
+	}
+*/
+	if(NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) {
+		NTTMGR_VisitTown();
+	} else if( NTTMGR_CheckSafe(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) {
+		NTTMGR_VisitTown();
+	}
+
+	return true;
+}
+
+function NTA_ClearLevel(pickitem, safelevel) {
+	var i;
+	var _room, _rooms;
+	var _distance, _minindex, _mindistance;
+
+	_room = GetRoom();
+
+	if (!_room) { return false; }
+
+	switch (arguments.length) {
+	case 0:
+		pickitem = true;
+		break;
+	case 1:
+		safelevel = 2;
+		break;
+	default:
+		if ((NTConfig_CheckSelfSafe.length < 1) && (NTConfig_CheckMercSafe.length < 1)) { safelevel = 0; }
+		break;
+	}
+
+	_rooms = new Array();
+
+	do {
+		_rooms.push([parseFloat(_room.x * 5 + _room.xsize * 5 / 2), parseFloat(_room.y * 5 + _room.ysize * 5 / 2)]);
+	} while(_room.GetNext());
+
+	while (_rooms.length > 0) {
+		_mindistance = 100000;
+
+		for (i = 0; i < _rooms.length; i++) {
+			_distance = GetDistance(me.x, me.y, _rooms[i][0], _rooms[i][1]);
+
+			if (_distance < _mindistance) {
+				_minindex = i;
+				_mindistance = _distance;
+			}
+		}
+
+		if (NTM_MoveTo(me.areaid, _rooms[_minindex][0], _rooms[_minindex][1], 1, false, false)) {
+			if (!NTA_ClearRoom(pickitem, safelevel)) { return false; }
+
+			NTP_DoPrecast(false);
+		}
+
+		_rooms.splice(_minindex, 1);
+	}
+
+	return true;
+}
+
+function NTA_ClearRoom(pickitem, safelevel) {
+	var _room;
+	var _spectype = [0x0A, 0x01];
+	var _skiplist, _gid_attackcount;
+	var _attackcount = 0;
+	var _target;
+	var _distance, _mingid, _mindistance, _minshamangid, _minshamandistance;
+	var _result;
+
+    if (NTConfig_PrioritizeWeakerFoes && NTConfig_PrioritizeWeakerFoesAreaDisable.indexOf(me.areaid) < 0) {
+        _spectype = [0x10, 0x01, 0x04, 0x0A];
+    }	
+	
+	if (NTConfig_AttackSkill[1] < 0 || NTConfig_AttackSkill[3] < 0) return false;
+
+	_room = me.GetRoom();
+
+	if (!_room) return false;
+
+	switch (arguments.length) {
+	case 0:
+		pickitem = false;
+	case 1:
+		safelevel = 0;
+	default:
+		if ((NTConfig_CheckSelfSafe.length < 1) && (NTConfig_CheckMercSafe.length < 1)) safelevel = 0;
+		break;
+	}
+
+	for (var i = 0; i < _spectype.length; i++) {
+		_skiplist = new Array();
+		_gid_attackcount = new Array();
+
+		while (_attackcount < (i + 1) * 100) {
+			_mindistance = 100000;
+			_minshamandistance = 100000;
+
+			_target = NTC_FindUnit(NTC_UNIT_MONSTER);
+
+			if (_target) {
+				do {
+					if (_skiplist.indexOf(_target.gid) < 0) {
+						if (_target.IsAttackable() && (_target.spectype & _spectype[i])) {
+							if (_room.UnitInRoom(_target) && NTA_IsValidMonster(_target)) {
+								if (MonstersToAttackFirst.indexOf(_target.classid) > -1) {
+									_distance = GetDistance(me, _target);
+
+									if (_distance < _minshamandistance) {
+										_minshamangid = _target.gid;
+										_minshamandistance = _distance;
+									}
+								} else {
+									_distance = GetDistance(me, _target);
+
+									if (_distance < _mindistance) {
+										_mingid = _target.gid;
+										_mindistance = _distance;
+									}
+								}
+							}
+						} else _skiplist.push(_target.gid);
+					}
+				} while (_target.GetNext());
+			}
+
+			if (_minshamandistance < 100000) {
+				_target = NTC_FindUnit(NTC_UNIT_MONSTER, _minshamangid);
+
+				if (_target) {
+					_result = NTA_Attack(_target, (_attackcount % 30) == 0);
+
+					if (_gid_attackcount[_minshamangid] == undefined) _gid_attackcount[_minshamangid] = 1;
+					else _gid_attackcount[_minshamangid]++;
+					if (NTconfig_HighMaxAttack || NTA_HighMaxAttackAreas()) {
+						if (_gid_attackcount[_minshamangid] > NTConfig_HighMaxAttacks) {
+							_skiplist.push(_minshamangid);
+						}
+					} else if (!NTconfig_HighMaxAttack || !NTA_HighMaxAttackAreas()) {
+						if (_gid_attackcount[_minshamangid] > NTConfig_LowMaxAttacks) {
+							Print(COLOR_1 + "I can't hit him!!! -> skipped");
+							_skiplist.push(_minshamangid);
+						}
+					}
+
+					switch (_result) {
+					case 1:
+						_skiplist.push(_minshamangid);
+						break;
+					case 2:
+					case 3:
+						if (_target.mode === 0 || _target.mode === 12) {
+							NTSI_FastPick();
+						}
+						_attackcount++;
+						_sorcattack++;
+						break;
+					default:
+						return false;
+					}
+				}
+			} else if (_mindistance < 100000) {
+				_target = NTC_FindUnit(NTC_UNIT_MONSTER, _mingid);
+
+				if (_target) {
+					_result = NTA_Attack(_target, (_attackcount % 30) == 0);
+
+					if (_gid_attackcount[_mingid] == undefined) _gid_attackcount[_mingid] = 1;
+					else _gid_attackcount[_mingid]++;
+					if (NTconfig_HighMaxAttack || NTA_HighMaxAttackAreas()) {
+						if (_gid_attackcount[_mingid] > NTConfig_HighMaxAttacks) {
+							_skiplist.push(_mingid);
+						}
+					} else if (!NTconfig_HighMaxAttack || !NTA_HighMaxAttackAreas()) {
+						if (_gid_attackcount[_mingid] > NTConfig_LowMaxAttacks) {
+							Print(COLOR_1 + "I can't hit him!!! -> skipped");
+							_skiplist.push(_mingid);
+						}
+					}
+
+					switch (_result) {
+					case 1:
+						_skiplist.push(_mingid);
+						break;
+					case 2:
+					case 3:
+						if (_target.mode === 0 || _target.mode === 12) {
+							NTSI_FastPick();
+						}
+						_attackcount++;
+						_sorcattack++;
+						break;
+					default:
+						return false;
+					}
+				}
+			} else break;
+		}
+	}
+
+	if (me.classid == NTC_CHAR_CLASS_PALADIN) {
+		if (_attackcount > 2 && (parseInt(me.hp * 100 / me.hpmax) < NTConfig_UseRedemptionHP || parseInt(me.mp * 100 / me.mpmax) < NTConfig_UseRedemptionMP)) {
+			if (NTC_PutSkill(124, NTC_HAND_RIGHT)) NTC_PingDelay(1000);
+		}
+	} else if (me.classid == NTC_CHAR_CLASS_NECROMANCER) {
+		NTA_SkeletonArmy(NTConfig_SkeletonArmy);
+		NTA_MageArmy(NTConfig_MageArmy);
+		NTA_ReviveArmy(NTConfig_ReviveArmy);
+	} else if (me.classid == NTC_CHAR_CLASS_BARBARIAN) {
+		if (NTConfig_UseFindItem && _attackcount > 2) {
+			if (!NTA_CheckForCloseMonsters(10)) {
+				//Print(COLOR_25 + "No Monsters close - looting");
+				NTA_FindItem(NTConfig_FindItemRange);
+			}
+		}
+	}
+
+	if (NTConfig_OpenChest) {
+		_target = NTC_GetSpecialChest();
+
+		if (_target && _room.UnitInRoom(_target) && NTC_OpenChest(_target)) _attackcount++;
+		_sorcattack++;
+	}
+
+	if (NTConfig_OpenChestsInAreaClearing && NTConfig_AreasToOpenChestClearing.indexOf(me.areaid) != -1) {
+		NTC_OpenChestsInAreaNear(me.x, me.y, 20);
+	}
+	
+	if(NTConfig_IdInField){
+		if (!NTT_CheckSpace(NTConfig_FreeSpaceXY[0], NTConfig_FreeSpaceXY[1])) { 
+			NT_FieldID(); 
+		} // id in field add
+	}
+	
+	if (pickitem && _attackcount > 0) { NTSI_PickItems(); }
+	
+	if(NTConfig_IdInField){
+		if (!NTT_CheckSpace(NTConfig_FreeSpaceXY[0], NTConfig_FreeSpaceXY[1])) { 
+			NT_FieldID(); 
+		} // id in field add
+	}
+
+	if(NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) {
+		NTTMGR_VisitTown();
+	} else if( NTTMGR_CheckSafe(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) {
+		NTTMGR_VisitTown();
+	}
+	return true;
+}
+
+function NTA_IsValidMonster(monster) {
+	var _classid;
+
+	if (monster.hp <= 0 || monster.mode == 0 || monster.mode == 12) return false;
+
+	_classid = monster.classid;
+
+	if (((_classid >= 110 && _classid <= 113) || _classid == 608) && monster.mode == 8) // ignore flying scavengers
+		return false;
+
+	if (_classid == 68 && monster.mode == 14) // ignore burrowing maggots
+		return false;
+
+	if (_classid >= 258 && _classid <= 263 && monster.mode == 14) // ignore submerged WaterWatchers
+		return false;
+
+	if (monster.GetState(53) || monster.GetState(96)) // Conversion, Revive
+		return false;
+
+	if (monster.name == GetLocaleString(3162) && GetDistance(me.x, me.y, monster.x, monster.y) < 20) if (!CheckCollision(me.areaid, monster.x, monster.y, 0) || !CheckCollision(me.areaid, monster.x, monster.y, 1) || !CheckCollision(me.areaid, monster.x, monster.y, 5)) return false;
+
+	if (NTConfig_SkipRegularMonsters) if (monster.spectype == 1 && me.areaid != 131) return false;
+
+	if (me.classid == NTC_CHAR_CLASS_DRUID) {
+		if (!me.GetState(144)) NTC_CastSkill(250, NTC_HAND_RIGHT);
+		if (!me.GetState(151)) NTC_CastSkill(235, NTC_HAND_RIGHT);
+		if (!me.GetState(149)) NTC_CastSkill(226, NTC_HAND_RIGHT);
+
+	}
+	
+	if (NTConfig_AreasToNotSkipImmunes.indexOf(me.areaid) == -1) {
+		skippedImuneBoss = false;
+		if (NTConfig_SkipSingle[0]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_PHYSICAL) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipSingle[1]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_MAGIC) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipSingle[2]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_FIRE) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipSingle[3]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_LIGHTNING) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipSingle[4]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_COLD) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipSingle[5]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_POISON) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[0]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_PHYSICAL) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_MAGIC) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[1]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_PHYSICAL) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_FIRE) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[2]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_PHYSICAL) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_LIGHTNING) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[3]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_PHYSICAL) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_COLD) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[4]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_PHYSICAL) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_POISON) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[5]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_MAGIC) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_FIRE) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[6]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_MAGIC) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_LIGHTNING) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[7]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_MAGIC) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_COLD) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[8]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_MAGIC) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_POISON) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[9]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_FIRE) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_LIGHTNING) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[10]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_FIRE) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_COLD) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[11]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_FIRE) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_POISON) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[12]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_LIGHTNING) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_COLD) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[13]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_LIGHTNING) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_POISON) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+		if (NTConfig_SkipDual[14]) {
+			if (NTA_GetResistance(monster, NTA_DAMAGE_COLD) > 95 && NTA_GetResistance(monster, NTA_DAMAGE_POISON) > 95) {
+				skippedImmuneBoss = true;
+				return false;
+			}
+		}
+	}
+	
+	if(NTConfig_AttackingThis && monster.IsAttackable()){
+		Say("!" + "Attacking:                   " + monster.name + " - " + monster.classid);
+	}
+	
+	return true;
+}
+
+function NTA_GetDamageType(skillid) {
+	if (skillid == 74 || skillid == 147 || skillid == 97) // Corpse Explosion && Frenzy && Smite
+	return NTA_DAMAGE_PHYSICAL;
+	if (skillid == 111) // Vengeance
+	return NTA_DAMAGE_NONE;
+	if (me.classid == NTC_CHAR_CLASS_PALADIN && (NTConfig_AttackSkill[1] == 112 && NTConfig_AttackSkill[5] > -1)) {
+		if (skillid == 101) //holy bolt
+		return NTA_DAMAGE_NONE;
+	} else {
+		if (skillid == 112) // Blessed Hammer
+		return NTA_DAMAGE_NONE;
+	}
+
+	switch (GetBaseStat("skills.txt", skillid, 233)) {
+	case "cold":
+		return NTA_DAMAGE_COLD;
+	case "fire":
+		return NTA_DAMAGE_FIRE;
+	case "ltng":
+		return NTA_DAMAGE_LIGHTNING;
+	case "mag":
+		return NTA_DAMAGE_MAGIC;
+	case "pois":
+		return NTA_DAMAGE_POISON;
+	case "stun":
+		return NTA_DAMAGE_NONE;
+	default:
+		if (GetBaseStat("skills.txt", skillid, 178) || GetBaseStat("skills.txt", skillid, 182)) // aura or passive
+		return NTA_DAMAGE_NONE;
+	}
+
+	return NTA_DAMAGE_PHYSICAL;
+}
+
+function NTA_GetResistance(enemy, type) {
+	switch (type) {
+	case NTA_DAMAGE_PHYSICAL:
+		return enemy.GetStat(36);
+	case NTA_DAMAGE_MAGIC:
+		return enemy.GetStat(37);
+	case NTA_DAMAGE_FIRE:
+		return enemy.GetStat(39);
+	case NTA_DAMAGE_LIGHTNING:
+		return enemy.GetStat(41);
+	case NTA_DAMAGE_COLD:
+		return enemy.GetStat(43);
+	case NTA_DAMAGE_POISON:
+		return enemy.GetStat(45);
+	}
+	return 0;
+}
+
+function NTA_IsWeaponBroken() {
+	var _weapon;
+	_weapon = me.GetItems();
+
+	if (_weapon) {
+		for (var i = 0; i < _weapon.length; i++) {
+			if (_weapon[i].itemflag & 0x100) {
+				if (_weapon[i].mode == 1 && _weapon[i].itemloc == 4 || _weapon[i].itemloc == 5) {
+					Print(COLOR_8 + "My weapon broke, I am going to town to repair it.");
+					NTTMGR_VisitTown();
+					break;
+
+				}
+			}
+		}
+	}
+}
+
+function NTA_GetAttackType(target, startIndex, resistMaxPrimary, resistMaxSecondary, resistMaxTertiary) {
+
+	var _currIndex;
+	var _holdMinResist = [999, startIndex];
+	var _resistArray = [999, 999, 999];
+	var _holdResistMax = [resistMaxPrimary, resistMaxSecondary, resistMaxTertiary];
+	var i;
+
+	for (i = 0, _currIndex = startIndex; i < 3; i++, _currIndex += 2) {
+		if (NTConfig_AttackSkill[_currIndex] > -1) {
+			_resistArray[i] = NTA_GetResistance(target, _NTA_SkillDamage[_currIndex]);
+			if(_resistArray[i] < 100) {
+				switch(_NTA_SkillDamage[_currIndex])
+				{
+				case NTA_DAMAGE_PHYSICAL:	
+					_resistArray[i] = target.GetStat(36);
+					break;
+				case NTA_DAMAGE_MAGIC:
+					_resistArray[i] = target.GetStat(37) - me.GetStat(358);
+					break;
+				case NTA_DAMAGE_FIRE:
+					_resistArray[i] = target.GetStat(39) - me.GetStat(333);
+					break;
+				case NTA_DAMAGE_LIGHTNING:
+					_resistArray[i] = target.GetStat(41) - me.GetStat(334);
+					break;
+				case NTA_DAMAGE_COLD:
+					_resistArray[i] = target.GetStat(43) - me.GetStat(335);
+					break;
+				case NTA_DAMAGE_POISON:
+					_resistArray[i] = target.GetStat(45) - me.GetStat(336);
+					break;
+				}	
+				
+				if(_resistArray[i] < -100)
+					_resistArray[i] = -100;
+			}					
+			if (_resistArray[i] < _holdResistMax[i]) // Return index if attack is < our max resist requirement
+			return _currIndex;
+		}
+
+		if (_resistArray[i] < _holdMinResist[0]) { // Store lowest resist attack
+			_holdMinResist[0] = _resistArray[i];
+			_holdMinResist[1] = _currIndex;
+		}
+
+		if (_currIndex == 1 || _currIndex == 2) // Skip non boss primary if boss attack
+		_currIndex += 2;
+	}
+
+
+	if (_holdMinResist[0] >= 100) // Every attack is immune
+	return startIndex;
+	else // At this point all available skills are greater than given max resist settings. Use lowest resist skill.
+	return _holdMinResist[1];
+}
+
+function NTA_HighMaxAttackAreas() {
+
+	var _presentarea = me.areaid
+
+	for (var i = 0; i < NTConfig_HighMaxAttackAreas.length; i++) {
+		if (_presentarea == NTConfig_HighMaxAttackAreas[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function NTA_ClearPositionGoodMonsters(range, pickitem, safelevel) {
+	var _orgx, _orgy;
+	var _spectype = [0x0A];
+	var _skiplist;
+	var _attackcount = 0;
+	var _target;
+	var _distance, _mingid, _mindistance;
+	var _result;
+
+	if (NTConfig_AttackSkill[1] < 0 || NTConfig_AttackSkill[3] < 0) return false;
+
+	switch (arguments.length) {
+	case 0:
+		range = 20;
+	case 1:
+		pickitem = false;
+	case 2:
+		safelevel = 0;
+	default:
+		if (NTConfig_CheckSelfSafe.length < 1 && NTConfig_CheckMercSafe.length < 1) safelevel = 0;
+		break;
+	}
+
+	_orgx = me.x;
+	_orgy = me.y;
+
+	for (var i = 0; i < _spectype.length; i++) {
+		_skiplist = new Array();
+
+		while (_attackcount < (i + 1) * 100) {
+			_mindistance = 100000;
+
+			_target = NTC_FindUnit(NTC_UNIT_MONSTER);
+
+			if (_target) {
+				do {
+					if (_skiplist.indexOf(_target.gid) < 0) {
+						if (_target.IsAttackable() && (_target.spectype & _spectype[i])) {
+							if (GetDistance(_orgx, _orgy, _target.x, _target.y) <= range && NTA_IsValidMonster(_target)) {
+								_distance = GetDistance(me, _target);
+
+								if (_distance < _mindistance) {
+									_mingid = _target.gid;
+									_mindistance = _distance;
+								}
+							}
+						} else _skiplist.push(_target.gid);
+					}
+				} while (_target.GetNext());
+			}
+
+			if (_mindistance < 100000) {
+				_target = NTC_FindUnit(NTC_UNIT_MONSTER, _mingid);
+
+				if (_target) {
+					_result = NTA_Attack(_target, (_attackcount % 30) == 0);
+
+					switch (_result) {
+					case 1:
+						_skiplist.push(_mingid);
+						break;
+					case 2:
+					case 3:
+						_attackcount++;
+						_sorcattack++;
+						if (_target.mode === 0 || _target.mode === 12) {
+							NTSI_FastPick();
+						}
+						break;
+					default:
+						return false;
+					}
+				}
+			} else break;
+		}
+	}
+
+	if (me.classid == NTC_CHAR_CLASS_PALADIN) {
+		if (_attackcount > 2 && (parseInt(me.hp * 100 / me.hpmax) < NTConfig_UseRedemptionHP || parseInt(me.mp * 100 / me.mpmax) < NTConfig_UseRedemptionMP)) {
+			if (NTC_PutSkill(124, NTC_HAND_RIGHT)) NTC_PingDelay(1000);
+		}
+	} else if (me.classid == NTC_CHAR_CLASS_NECROMANCER) {
+		NTA_SkeletonArmy(NTConfig_SkeletonArmy);
+		NTA_MageArmy(NTConfig_MageArmy);
+		NTA_ReviveArmy(NTConfig_ReviveArmy);
+	} else if (me.classid == NTC_CHAR_CLASS_BARBARIAN) {
+		if (NTConfig_UseFindItem && _attackcount > 2) {
+			if (!NTA_CheckForCloseMonsters(10)) {
+				//Print(COLOR_25 + "No Monsters close - looting");
+				NTA_FindItem(NTConfig_FindItemRange);
+			}
+		}
+	}
+
+	if (NTConfig_OpenChest) {
+		_target = NTC_GetSpecialChest();
+
+		if (_target && GetDistance(_orgx, _orgy, _target.x, _target.y) <= range && NTC_OpenChest(_target)) _attackcount++;
+		_sorcattack++;
+	}
+
+	if (pickitem && _attackcount > 0) NTSI_PickItems();
+
+	switch (safelevel) {
+	case 1:
+		return NTTMGR_CheckSafe(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe);
+	case 2:
+		return NTTMGR_CheckSafe(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe);
+	}
+
+	return true;
+}
+
+function NTA_CheckMercInfinity() {
+	var _weapon, _merc;
+	var Merc_HaveInfinty = false;
+	_merc = NTC_GetMerc();
+	if (!_merc) {
+		if (DebugAttacksInGame) {
+			Print(COLOR_8 + "merc is dead or not hired");
+		}
+		return false;
+	}
+	if (_merc && _merc.hp > 0 && _merc.mode != 0 && _merc.mode != 12) {
+		_weapon = _merc.GetItems();
+		if (_weapon) {
+			for (var i = 0; i < _weapon.length && !Merc_HaveInfinty; i++) {
+				if ((_weapon[i].itemflag & 0x4000000) && _weapon[i].itemprefix == 20566) {
+					Merc_HaveInfinty = true;
+					if (DebugAttacksInGame) {
+						Print(COLOR_8 + "merc has infinity");
+					}
+					return true;
+				}
+			}
+		}
+	}
+	if (!Merc_HaveInfinty) {
+		if (DebugAttacksInGame) {
+			Print(COLOR_8 + "merc has no infinity");
+		}
+		return false;
+	}
+}
+
+function NTA_CheckMyHp() {
+	_LifeMax = me.hpmax;
+	_ManaMax = me.mpmax;
+
+	if (NTConfig_DanceStartHp > 0 || NTConfig_DanceStartMp > 0) {
+		if (parseInt(me.hp * 100 / _LifeMax) < NTConfig_DanceStartHp || parseInt(me.mp * 100 / _ManaMax) < NTConfig_DanceStartMp){
+			return true;
+		}
+	} else {
+		return false;
+	}
+}
+
+function NTA_Bounce(target,damType) {
+	if(!NTA_CheckMyHp()){
+		if(NTA_GetResistance(target, _NTA_SkillDamage[damType]) >= 95){ // want to add another condition for this so it will only check if you are one attack short of a jump
+			//Print("Monster is immune if no monsters close not going to jump");
+			if(!NTA_CheckForCloseMonsters(10, target)){			// ^^^^actaully don't want to make this light only
+				_sorcattack = 0; // make all this config options resist amount before staying stationary, the # of monsters EVERYTHING
+				return;
+			}
+		}
+	}
+	//if (me.x - target.x >= 0 && me.y - target.y >= 0) NTC_CastSkill(54, NTC_HAND_RIGHT, target.x - NTConfig_BounceRange, target.y - NTConfig_BounceRange);
+	if (me.x - target.x >= 0 && me.y - target.y >= 0) { 
+		TD_Deploy(target.x - NTConfig_BounceRange, target.y - NTConfig_BounceRange, 5, 5);
+	}
+
+	//else if (me.x - target.x >= 0 && me.y - target.y < 0) NTC_CastSkill(54, NTC_HAND_RIGHT, target.x - NTConfig_BounceRange, target.y + NTConfig_BounceRange);
+	else if (me.x - target.x >= 0 && me.y - target.y < 0) {
+		TD_Deploy(target.x - NTConfig_BounceRange, target.y + NTConfig_BounceRange, 5, 5);
+	}
+	//else if (me.x - target.x < 0 && me.y - target.y >= 0) NTC_CastSkill(54, NTC_HAND_RIGHT, target.x + NTConfig_BounceRange, target.y + NTConfig_BounceRange);
+	else if (me.x - target.x < 0 && me.y - target.y >= 0) {
+		TD_Deploy(target.x + NTConfig_BounceRange, target.y + NTConfig_BounceRange, 5, 5);	
+	}
+	//else NTC_CastSkill(54, NTC_HAND_RIGHT, target.x + NTConfig_BounceRange, target.y - NTConfig_BounceRange);
+	else {
+		TD_Deploy(target.x + NTConfig_BounceRange, target.y - NTConfig_BounceRange, 5, 5);
+	}
+	_sorcattack = 0;
+}
+
+function NTA_ClearPos(repeat, range, delay, backxy) {
+	var presx = me.x;
+	var presy = me.y;
+	if (arguments.length < 4) backxy = false;
+	if (arguments.length < 3) delay = 0;
+	if (arguments.length < 2) range = 25;
+	if (arguments.length < 1) repeat = 2;
+	if (DebugAttacksInGame) {
+		Print(COLOR_17 + "delay= " + delay + ", range =" + range + ", repeat =" + repeat);
+	}
+	for (var k = 0; k < repeat; k++) {
+		NTA_ClearPosition(range);
+		if (backxy) NTM_MoveTo(108, presx, presy, 3, false, false);
+		Delay(delay);
+		if (DebugAttacksInGame) {
+			Print(COLOR_8 + "Loop" + "[" + k + "]");
+		}
+	}
+}
+
+function NTA_CheckForCloseMonsters(range, target) {
+	if (range < 1 || arguments.length < 1) return false;
+
+	var _monstersClose = false;
+	var _checkMonster = NTC_FindUnit(NTC_UNIT_MONSTER);
+
+	if (_checkMonster) {
+		do {
+			if(arguments.length > 1 && target == _checkMonster){
+				continue;
+			}
+			if (_checkMonster.IsAttackable() && GetDistance(me.x, me.y, _checkMonster.x, _checkMonster.y) < range && NTA_IsValidMonster(_checkMonster)) {
+				_monstersClose = true;
+				break;
+			}
+		} while (_checkMonster.GetNext());
+	}
+	return _monstersClose;
+}
+
+function NT_FieldID() {
+	var result;
+	var resultArray = new Array();
+	var i, location, tome, scroll, length,
+	items = NTT_GetUnidItems();
+	
+	if(!items || items.length < 1){
+		NTT_ClearInventory();
+		return false;
+	}
+		
+	tome = NTT_GetTome();
+
+	if (!tome || tome.GetStat(70) < items.length) { // no tome or not enough scrolls in it
+		return false;
+	}
+	for (i = 0; i < items.length; i++) {
+		if(NTSI_CheckItem(items[i])[0] == -1){
+			SetUIState(0x01, true);
+			break;
+		}
+	}
+	length = items.length;
+	for (i = 0; i < length; i = i + 1) {
+		switch (NTSI_CheckItem(items[i])[0]) {
+			case -1:
+			if (tome) {
+				NTT_IdItem(tome, items[i]);
+			}
+
+			break;
+		}
+	}
+	_location = GetArea();
+	for (i = length - 1; i > -1; i = i - 1) {
+		// item logger stuff here - location and ethereal
+		resultArray = NTSI_CheckItem(items[i]);
+		result = resultArray[0];
+		switch (result) {
+		case 1:
+			if(items[i].itemflag & 0x10){
+				NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_2 + "Field id Kept: " + NTC_ItemQualityToMGRColor[items[i].quality] + items[i].name.split("\n")[0]+ ";" + items[i].itemdesc + COLOR_2 + "\n iLvl: " + items[i].itemlevel + COLOR_2 + "\n Area: " + _location.name+ "\n" + COLOR_2 +resultArray[1]+", "+resultArray[2]);
+			}
+		case 2:
+			break;
+		default:
+			if(NTConfig_LogSoldItemQuality != 0 && items[i].quality >= NTConfig_LogSoldItemQuality) {	
+				NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_1 + "Field id Dropped " + NTC_ItemQualityToMGRColor[items[i].quality] + items[i].name.split("\n")[0]+ ";" + items[i].itemdesc + COLOR_2 + "\n iLvl: " + items[i].itemlevel + COLOR_2 + "\n Area: " + _location.name);
+			}
+			if(NTConfig_AnnounceDroppedItems){
+				Say(NTC_RandomSelect(NTConfig_dropMessages) + NTC_ItemQualityToName[items[i].quality] + " " + items[i].name.split("\n")[0]);
+				Delay(100);
+			}
+			NTT_DropItem(items[i]);
+			break;
+		}
+	}
+	NTT_ClearInventory();
+	me.Cancel(1);
+	return true;
+}
+
+function TD_Deploy(x, y, blocksize, range){
+	var _minimum = 999;
+	var _coords = new Array(2);
+	var c, dx, dy;
+	var _monster;
+	
+	for(dx = -2 ; dx < 3 ; dx++){
+		for(dy = -2 ; dy < 3 ; dy++){
+			c = 0;
+			
+			_monster = NTC_FindUnit(NTC_UNIT_MONSTER);
+			if(!_monster){
+				if (DebugAttacksInGame) {
+					Print("No monsters around");
+				}
+				return NTM_MoveTo(me.areaid, x, y);
+			}
+			
+			do{
+				if(GetDistance(_monster.x, _monster.y, parseInt(x + dx*blocksize), parseInt(y + dy*blocksize)) <= range){
+					if(!CheckCollision(me.areaid, parseInt(x + dx*blocksize), parseInt(y + dy*blocksize), 0) ||
+					!CheckCollision(me.areaid, parseInt(x + dx*blocksize), parseInt(y + dy*blocksize), 4) ||
+					!CheckCollision(me.areaid, parseInt(x + dx*blocksize), parseInt(y + dy*blocksize), 5))
+						c = 9999;
+					
+					if(_monster.hp > 0)
+						c++;
+				}
+			}while(_monster.GetNext());
+			
+			if(dx == 0 && dy == 0 && c == 0){ //center position correction
+				_minimum = 0;
+				_coords = [parseInt(x + dx*blocksize), parseInt(y + dy*blocksize)];
+			}
+			
+			if(c < _minimum){
+				_minimum = c;
+				_coords = [parseInt(x + dx*blocksize), parseInt(y + dy*blocksize)];
+			}
+		}
+	}
+	if (DebugAttacksInGame) {
+		Print("Safest position: " + parseInt((_coords[0] - x)) + ", " + parseInt((_coords[1] - y)) + ". Monsters: " + _minimum);
+	}
+	
+	return NTM_MoveTo(me.areaid, _coords[0], _coords[1]);	
+}
+
+function NTA_RangedNormal() {
+	var _weapon;
+	var _range;
+
+	_weapon = me.GetItems();
+
+	if (_weapon) {
+		for (var i = 0; i < _weapon.length; i++) {
+			if (_weapon[i].mode == 1 && (_weapon[i].itemloc == 4 || _weapon[i].itemloc == 5)) {
+				switch (_weapon[i].classid) {
+					//Bows
+				case 68:
+					//Short Bow
+				case 69:
+					//Hunter's Bow
+				case 70:
+					//Longbow
+				case 71:
+					//Composite Bow
+				case 72:
+					//Short Battle Bow
+				case 73:
+					//Long Battle Bow
+				case 74:
+					//short war bow
+				case 75:
+					//Long War Bow
+				case 161:
+					//Edge Bow
+				case 162:
+					//Razor Bow
+				case 163:
+					//Cedar Bow
+				case 164:
+					//Double Bow
+				case 165:
+					//Short Siege Bow
+				case 166:
+					//Large Siege Bow
+				case 167:
+					//Rune Bow
+				case 168:
+					//Gothic Bow
+				case 264:
+					//Spider Bow
+				case 265:
+					//Blade Bow
+				case 266:
+					//Shadow Bow
+				case 267:
+					//Great Bow
+				case 268:
+					//Diamond Bow
+				case 269:
+					//Crusader Bow
+				case 270:
+					//Ward Bow
+				case 271:
+					//Hydra Bow
+				case 281:
+					//Stag Bow
+				case 282:
+					//Reflex Bow
+				case 291:
+					//Ashwood Bow
+				case 292:
+					//Cermonial Bow
+				case 301:
+					//Matriarchal Bow
+				case 302:
+					//Grand Matron Bow
+					//CrossBows
+				case 76:
+					//Light Crossbow
+				case 77:
+					//Crossbow
+				case 78:
+					//Heavy Crossbow
+				case 79:
+					//Repeating Crossbow
+				case 169:
+					//Arbalest
+				case 170:
+					//Siege Crossbow
+				case 171:
+					//Ballista
+				case 172:
+					//Chu-Ko-Nu
+				case 272:
+					//Pellet Bow
+				case 273:
+					//Gorgon Crossbow
+				case 274:
+					//Colossus Crossbow
+				case 275:
+					//Demon Crossbow
+					_range = true;
+					break;
+
+				default:
+
+					_range = false;
+					break;
+				}
+			}
+		}
+	}
+	if (_range) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function NTA_HaveArrows() {
+	var _weapon;
+	var _haveAmmo = false;
+	_weapon = me.GetItems();
+
+	if (_weapon) {
+		for (var i = 0; i < _weapon.length; i++) {
+			if ((_weapon[i].classid == 526 || _weapon[i].classid == 528) && (_weapon[i].itemloc == 4 || _weapon[i].itemloc == 5)) {
+				if (_weapon[i].GetStat(70) < 10) {
+					Print(COLOR_8 + "I'm low on " + _weapon[i].name + ", I am going to town to buy more.")
+					NTTMGR_VisitTown();
+				}
+				_haveAmmo = true;
+				break;
+			}
+		}
+	}
+
+	if (!_haveAmmo) {
+		Print(COLOR_8 + "I have no ammo, I am going to town to buy some.")
+		NTTMGR_VisitTown();
+	}
+}
+
+/*function NTA_CheckForCTA() {
+	var _weapon = me.GetItems();
+	var haveCTA = false;
+	if (_weapon ) {
+		for(var i = 0 ; i < _weapon.length ; i++){
+			if(_weapon[i].mode == 1 && (_weapon[i].itemflag&0x4000000) && _weapon[i].itemprefix == 0x5027){
+				haveCTA = true;
+				break;
+			}
+		}
+	}
+	return haveCTA;
+}*/

@@ -1,0 +1,202 @@
+// ##### Helms #########################
+[Type] == helm && [Class] >= elite && [Quality] == superior && [Flag] != ethereal # [Sockets] == 3 && [EnhancedDefense] >= 15 // Delirium or Dream
+//DREAM WHITE HELMETS
+[Name] == Demonhead && [Flag] == ethereal && [Quality] <= Superior # [Sockets] == 0 && [Defense] >= 220           
+[Name] == BoneVisage && [Flag] == ethereal && [Quality] <= Superior # [Sockets] == 0 && [Defense] >= 225           
+[Name] == Diadem && [Flag] == ethereal && [Quality] <= Superior # [Sockets] == 0 && [Defense] >= 85           
+
+// ##### Armor #########################
+[Name] == MagePlate && [Quality] == superior && [Flag] != ethereal # ([Sockets] == 0 || [Sockets] == 3) && [EnhancedDefense] >= 15 // Enigma
+[Type] == armor && [Class] == elite && [Quality] == superior && [Flag] != ethereal # ([Sockets] == 0 || [Sockets] >= 3 || [Sockets] >= 4) && [EnhancedDefense] >= 15 // Variable
+[Type] == armor && [Quality] == normal && [Flag] == ethereal # [Defense] >= 750 && [Sockets] == 0 // ebugable
+[Type] == armor && [Quality] == normal # [Defense] >= 1200 && [Sockets] >= 3 // Variable
+
+// ##### Shields #######################
+[Type] == shield && [Class] == elite && [Quality] == superior && [Flag] != ethereal # [Sockets] == 3 && [EnhancedDefense] >= 15 // Dream
+[Name] == Monarch && [Quality] == superior && [Flag] != ethereal # ([Sockets] == 0 || [Sockets] == 4) && [EnhancedDefense] >= 5 // Phoenix or Spirit
+
+// ##### Gloves ########################
+
+// ##### Boots #########################
+
+// ##### Belts #########################
+
+// ##### Barbarian Helms ###############
+[Type] == primalhelm && [Class] == elite && [Quality] <= superior && [Flag] != ethereal # [Sockets] == 3 && [SkillBattleOrders]+[SkillBattleCommand] >= 6 // Delirium
+[Type] == primalhelm && [Class] == elite && [Quality] <= superior && [Flag] != ethereal # [Sockets] == 3 && [SkillBattleOrders]+[SkillFindItem] >= 6 // Delirium
+[Type] == primalhelm && [Class] == elite && [Quality] <= superior && [Flag] != ethereal # [Sockets] == 3 && [SkillBattleOrders]+[SkillShout] >= 6 // Delirium
+
+// ##### Druid Pelts ###################
+[Type] == pelt && [Class] == elite && [Quality] <= superior && [Flag] != ethereal # [Sockets] == 3 && [SkillHurricane]+[SkillTornado] >= 6 // Delirium
+
+// ##### Paladin Shields ###############
+[Type] == auricshields && [Class] == elite && [Quality] == superior && [Flag] != ethereal # ([Sockets] == 0 || [Sockets] >= 3) && [EnhancedDefense] >= 15 && [FireResist] >= 40 // Dream or Spirit
+[Type] == auricshields && [Class] == elite && [Quality] == superior && [Flag] != ethereal # ([Sockets] == 0 || [Sockets] == 4) && [EnhancedDefense] >= 15 && [EnhancedDamage] >= 55 // Phoenix
+[Type] == auricshields && [Quality] == normal # [Defense] >= 300 && [Sockets] == 4 && [FireResist] >= 40 // Exile
+[Type] == auricshields && [Quality] == normal # [Defense] >= 50 && [Sockets] == 4 && [FireResist] >= 35 // Exile starting out
+
+
+// ##### Necromancer Shrunken Heads ####
+[Type] == voodooheads && [Class] == elite && [Quality] <= superior && [Flag] != ethereal # [Sockets] == 2 && [SkillBoneSpear]+[SkillBoneSpirit] >= 6 // Splender
+[Type] == voodooheads && [Class] == elite && [Quality] <= superior && [Flag] != ethereal # [Sockets] == 2 && [SkillPoisonExplosion]+[SkillPoisonNova] >= 6 // Splender
+
+// ##### Axes ##########################
+[Name] == BerserkerAxe && [Quality] == superior && [Flag] != ethereal # [Sockets] == 5 && [EnhancedDamage] >= 15 // Grief
+[Name] == BerserkerAxe && [Quality] == superior && [Flag] == ethereal # ([Sockets] == 0 || [Sockets] == 6) && [EnhancedDamage] >= 15 // Breath of the Dying
+[Name] == BerserkerAxe && [Quality] == superior && [Flag] == ethereal # ([Sockets] == 0 || [Sockets] == 5) && [EnhancedDamage] >= 15 // 
+
+// ##### Bows ##########################
+[Type] == bow && [Class] == elite && [Quality] == superior # ([Sockets] == 4 || [Sockets] == 6) && [EnhancedDamage] >= 15 // Faith or Breath of the Dying
+[Name] == GreatBow && [Quality] == superior # [Sockets] == 0 && [EnhancedDamage] >= 15 // Faith
+([Name] == CrusaderBow || [Name] == HydraBow) && [Quality] == superior # [Sockets] == 0 && [EnhancedDamage] >= 15 // Breath of the Dying
+
+// ##### Crossbows #####################
+([Name] == GorgonCrossbow || [Name] == ColossusCrossbow) && [Quality] == superior # [Sockets] == 4 && [EnhancedDamage] >= 15 // Faith
+
+// ##### Daggers #######################
+
+// ##### Javelins ######################
+
+// ##### Maces #########################
+[Name] == Flail && [Quality] <= superior && [Flag] == ethereal # [Sockets] == 4 // Heart of the Oak
+[Name] == Flail && [Quality] <= superior && [Flag] == ethereal # [Sockets] == 5 // cta
+[Name] == Flail && [Quality] <= superior && [Flag] != ethereal # [Sockets] == 5 // cta
+
+// ##### Polearms ######################
+//[Type] == polearm && [Class] == normal && [Quality] <= normal && [Flag] != ethereal # [Sockets] == 4 // Insight for Chaos
+//[Type] == polearm && [Class] == elite && [Quality] <= superior && [Flag] == ethereal # [Sockets] >= 4 // Variable
+[Name] == ColossusVoulge && [Quality] <= superior && [Flag] == ethereal # [Sockets] == 4
+[Name] == Thresher && [Quality] <= superior && [Flag] == ethereal # [Sockets] == 4
+[Name] == CrypticAxe && [Quality] <= superior && [Flag] == ethereal # [Sockets] == 4
+
+
+// ##### Scepters ######################
+[Type] == scepter && [Quality] <= superior # [Sockets] == 5 && [SkillBlessedHammer]+[SkillConcentration] >= 6 // Call to Arms
+[Type] == scepter && [Quality] <= superior # [Sockets] == 5 && [SkillFistOfTheHeavens]+[SkillConviction] >= 6 // Call to Arms
+[Type] == scepter && [Quality] <= superior # [Sockets] == 5 && [skillholyshield] >= 3 // Call to Arms
+
+// ##### Spears ########################
+[Type] == spear && [Class] == elite && [Quality] == superior && [Flag] == ethereal # [Sockets] == 6 && [EnhancedDamage] >= 15 // Breath of the Dying
+
+// ##### Staves ########################
+// es Memory Staves
+[Name] == ElderStaff && [Quality] == superior # ([Sockets] == 0 || [Sockets] == 4) &&  [skillenergyshield] >= 3 && ([skillshiverarmor] >= 1 || [skillfrozenarmor] >= 1 || [itemskillchillingarmor] >= 1)
+[Name] == Shillelagh && [Quality] == superior # ([Sockets] == 0 || [Sockets] == 4) &&  [skillenergyshield] >= 3 && ([skillshiverarmor] >= 1 || [skillfrozenarmor] >= 1 || [itemskillchillingarmor] >= 1)
+[Name] == GothicStaff && [Quality] == superior # ([Sockets] == 0 || [Sockets] == 4) && [skillenergyshield] >= 3 && ([skillshiverarmor] >= 1 || [skillfrozenarmor] >= 1 || [itemskillchillingarmor] >= 1)
+[Name] == CedarStaff && [Quality] == superior # ([Sockets] == 0 || [Sockets] == 4) &&  [skillenergyshield] >= 3 && ([skillshiverarmor] >= 1 || [skillfrozenarmor] >= 1 || [itemskillchillingarmor] >= 1)
+[Name] == GnarledStaff && [Quality] == superior # ([Sockets] == 0 || [Sockets] == 4) && [skillenergyshield] >= 3 && ([skillshiverarmor] >= 1 || [skillfrozenarmor] >= 1 || [itemskillchillingarmor] >= 1)
+[Name] == BattleStaff && [Quality] == superior # ([Sockets] == 0 || [Sockets] == 4) && [skillenergyshield] >= 3 && ([skillshiverarmor] >= 1 || [skillfrozenarmor] >= 1 || [itemskillchillingarmor] >= 1)
+
+[Name] == WarStaff && [Quality] == superior # [Sockets] == 4 && [skillenergyshield] >= 3 && ([skillshiverarmor] >= 1 || [skillfrozenarmor] >= 1 || [itemskillchillingarmor] >= 1)
+[Name] == RuneStaff && [Quality] == superior # [Sockets] == 4 && [skillenergyshield] >= 3 && ([skillshiverarmor] >= 1 || [skillfrozenarmor] >= 1 || [itemskillchillingarmor] >= 1)
+[Name] == ArchonStaff && [Quality] == superior # [Sockets] == 4 && [skillenergyshield] >= 3 && ([skillshiverarmor] >= 1 || [skillfrozenarmor] >= 1 || [itemskillchillingarmor] >= 1)
+
+// ##### Swords ########################
+([Name] == CrystalSword || [Name] == BroadSword) && [Quality] <= superior && [Flag] == ethereal # [Sockets] == 4 // spirit
+[Name] == CrystalSword && [Quality] <= superior && [Flag] == ethereal # [Sockets] == 5 // Call to Arms
+[Name] == CrystalSword && [Quality] <= superior && [Flag] != ethereal # [Sockets] == 5 // Call to Arms
+([Name] == Zweihander || [Name] == ColossusBlade) && [Quality] == superior && [Flag] != ethereal # [Sockets] == 5 && [EnhancedDamage] >= 5 // Grief
+[Name] == ColossusBlade && [Quality] == superior && [Flag] == ethereal # ([Sockets] == 0 || [Sockets] == 6) && [EnhancedDamage] >= 15 // Breath of the Dying
+[Name] == PhaseBlade && [Quality] == superior # ([Sockets] == 6 || [Sockets] == 5) && [EnhancedDamage] >= 15 // Last Wish
+[Name] == PhaseBlade && [Quality] == superior # ([Sockets] == 0 || [Sockets] == 4) && [EnhancedDamage] >= 15 // Last Wish
+
+// ##### Throwing ######################
+
+// ##### Wands #########################
+[Type] == wand && [Quality] <= superior # [Sockets] != 1 && [SkillBoneSpear]+[SkillBoneSpirit] >= 6 // White
+
+// ##### Amazon Weapons ################
+[Type] == amazonbow && [Class] == elite && [Quality] == superior # [Sockets] == 4 && [EnhancedDamage] >= 15 && [BowAndCrossbowSkillTab] >= 3 // Faith
+
+// ##### Assassin Katars ###############
+([Name] == Suwayyah || [Name] == ScissorsSuwayyah) && [Quality] == superior && [Flag] != ethereal # ([Sockets] == 0 || [Sockets] == 3) && [EnhancedDamage] >= 15 // Chaos
+
+// ##### Sorceress Orbs ################
+
+// ##### Circlets ######################
+[Type] == circlet && [Quality] == superior && [Flag] != ethereal # [Sockets] == 3 && [EnhancedDefense] >= 15 // Dream
+
+// ##### Runes #########################
+//[Name] == ElRune
+//[Name] == EldRune
+//[Name] == TirRune
+//[Name] == NefRune
+//[Name] == EthRune
+//[Name] == IthRune
+//[Name] == TalRune
+//[Name] == RalRune
+//[Name] == OrtRune
+//[Name] == ThulRune
+//[Name] == AmnRune
+//[Name] == SolRune
+//[Name] == ShaelRune
+//[Name] == DolRune
+//[Name] == HelRune
+//[Name] == IoRune
+//[Name] == LumRune
+//[Name] == KoRune
+//[Name] == FalRune
+[Name] == LemRune
+[Name] == PulRune
+[Name] == UmRune
+[Name] == MalRune
+[Name] >= IstRune && [Name] <= ZodRune
+
+// ##### Gems ##########################
+//[Name] == ChippedAmethyst
+//[Name] == ChippedDiamond
+//[Name] == ChippedEmerald
+//[Name] == ChippedRuby
+//[Name] == ChippedSapphire
+//[Name] == ChippedSkull
+//[Name] == ChippedTopaz
+//[Name] == FlawedAmethyst
+//[Name] == FlawedDiamond
+//[Name] == FlawedEmerald
+//[Name] == FlawedRuby
+//[Name] == FlawedSapphire
+//[Name] == FlawedSkull
+//[Name] == FlawedTopaz
+//[Name] == Amethyst
+//[Name] == Diamond
+//[Name] == Emerald
+//[Name] == Ruby
+//[Name] == Skull
+//[Name] == Sapphire
+//[Name] == Topaz
+//[Name] == FlawlessAmethyst
+//[Name] == FlawlessDiamond
+//[Name] == FlawlessEmerald
+//[Name] == FlawlessRuby
+//[Name] == FlawlessSapphire
+//[Name] == FlawlessSkull
+//[Name] == FlawlessTopaz
+//[Name] == PerfectAmethyst
+//[Name] == PerfectDiamond
+//[Name] == PerfectEmerald
+//[Name] == PerfectRuby
+//[Name] == PerfectSapphire
+//[Name] == PerfectSkull
+//[Name] == PerfectTopaz
+
+// ##### Potions #######################
+[Name] == GreaterHealingPotion
+[Name] == SuperHealingPotion
+[Name] == GreaterManaPotion
+[Name] == SuperManaPotion
+//[Name] == RejuvenationPotion
+[Name] == FullRejuvenationPotion
+
+// ##### Keys ##########################
+//[Name] == KeyOfTerror
+//[Name] == KeyOfHate
+//[Name] == KeyOfDestruction
+
+// ##### Organs ########################
+//[Name] == mephisto'sbrain
+//[Name] == baal'seye
+//[Name] == diablo'shorn
+
+
+// ##### Gold ##########################
+[Type] == gold # [Gold] >= 1000

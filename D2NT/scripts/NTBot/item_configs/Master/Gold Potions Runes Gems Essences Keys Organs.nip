@@ -1,0 +1,113 @@
+//##########GOLD##########
+[Type] == Gold # [Gold] >= 4000
+
+//##########SCROLLS##########
+[Name] == scrolloftownportal 
+[Name] == scrollofidentify
+
+//##########Normal Key##########
+[Name] == key 
+
+//##########KEYS##########
+[Name] == KeyOfTerror # # [MaxQuantity] == 3
+[Name] == KeyOfHate # # [MaxQuantity] == 3
+[Name] == KeyOfDestruction # # [MaxQuantity] == 3
+
+//##########ORGANS##########
+[Name] == Mephisto'sBrain
+[Name] == Baal'sEye
+[Name] == Diablo'sHorn
+
+// ##### Torch ######################
+//[Name] == LargeCharm && [Quality] == unique
+[Name] == LargeCharm && [Quality] == unique # [itemaddAssassinSkills] >= 1 && [Strength] >= 10 && [FireResist] >= 10 
+[Name] == LargeCharm && [Quality] == unique # [itemaddDruidSkills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+[Name] == LargeCharm && [Quality] == unique # [itemaddSorceressSkills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+[Name] == LargeCharm && [Quality] == unique # [itemaddPaladinSkills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+[Name] == LargeCharm && [Quality] == unique # [itemaddamazonskills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+[Name] == LargeCharm && [Quality] == unique # [itemaddnecromancerskills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+[Name] == LargeCharm && [Quality] == unique # [itemaddbarbarianskills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+
+//##########ESSENCES##########
+//[Name] == TwistedEssenceOfSuffering # # [MaxQuantity] == 2
+//[Name] == ChargedEssenceOfHatred # # [MaxQuantity] == 2
+//[Name] == BurningEssenceOfTerror # # [MaxQuantity] == 2
+//[Name] == FesteringEssenceOfDestruction # # [MaxQuantity] == 2
+[Name] == TokenOfAbsolution # # [MaxQuantity] == 1
+
+//##########RUNES##########
+//[Name] == ElRune # # [MaxQuantity] == 3
+//[Name] == EldRune # # [MaxQuantity] == 3
+//[Name] == TirRune # # [MaxQuantity] == 3
+//[Name] == NefRune # # [MaxQuantity] == 3
+//[Name] == EthRune # # [MaxQuantity] == 3
+//[Name] == IthRune # # [MaxQuantity] == 3
+//[Name] == TalRune # # [MaxQuantity] == 3
+//[Name] == RalRune # # [MaxQuantity] == 3
+//[Name] == OrtRune # # [MaxQuantity] == 3
+//[Name] == ThulRune # # [MaxQuantity] == 3
+//[Name] == AmnRune # # [MaxQuantity] == 3
+//[Name] == SolRune # # [MaxQuantity] == 3
+//[Name] == ShaelRune # # [MaxQuantity] == 3
+//[Name] == DolRune # # [MaxQuantity] == 3
+//[Name] == HelRune # # [MaxQuantity] == 3
+//[Name] == IoRune # # [MaxQuantity] == 3
+//[Name] == LumRune # # [MaxQuantity] == 3
+//[Name] == KoRune # # [MaxQuantity] == 3
+//[Name] == FalRune # # [MaxQuantity] == 3
+//[Name] == LemRune # # [MaxQuantity] == 3
+[Name] == PulRune # # [MaxQuantity] == 5
+[Name] == UmRune # # [MaxQuantity] == 5
+[Name] == MalRune # # [MaxQuantity] == 5
+[Name] >= IstRune && [Name] <= ZodRune
+
+//##########GEMS##########
+//[Name] == ChippedAmethyst # # [MaxQuantity] == 1
+//[Name] == ChippedDiamond # # [MaxQuantity] == 1
+//[Name] == ChippedEmerald # # [MaxQuantity] == 1
+//[Name] == ChippedRuby # # [MaxQuantity] == 1
+//[Name] == ChippedSapphire # # [MaxQuantity] == 1
+//[Name] == ChippedSkull # # [MaxQuantity] == 1
+//[Name] == ChippedTopaz # # [MaxQuantity] == 1
+//[Name] == FlawedAmethyst # # [MaxQuantity] == 1
+//[Name] == FlawedDiamond # # [MaxQuantity] == 1
+//[Name] == FlawedEmerald # # [MaxQuantity] == 1
+//[Name] == FlawedRuby # # [MaxQuantity] == 1
+//[Name] == FlawedSapphire # # [MaxQuantity] == 1
+//[Name] == FlawedSkull # # [MaxQuantity] == 1
+//[Name] == FlawedTopaz # # [MaxQuantity] == 1
+//[Name] == Amethyst # # [MaxQuantity] == 1
+//[Name] == Diamond # # [MaxQuantity] == 1
+//[Name] == Emerald # # [MaxQuantity] == 1
+//[Name] == Ruby # # [MaxQuantity] == 1
+//[Name] == Skull # # [MaxQuantity] == 1
+//[Name] == Sapphire # # [MaxQuantity] == 1
+//[Name] == Topaz # # [MaxQuantity] == 1
+//[Name] == FlawlessAmethyst # # [MaxQuantity] == 1
+//[Name] == FlawlessDiamond # # [MaxQuantity] == 1
+//[Name] == FlawlessEmerald # # [MaxQuantity] == 1
+//[Name] == FlawlessRuby # # [MaxQuantity] == 1
+//[Name] == FlawlessSapphire # # [MaxQuantity] == 1
+//[Name] == FlawlessSkull # # [MaxQuantity] == 1
+//[Name] == FlawlessTopaz # # [MaxQuantity] == 1
+[Name] == PerfectAmethyst # # [MaxQuantity] == 3
+[Name] == PerfectDiamond # # [MaxQuantity] == 3
+[Name] == PerfectEmerald # # [MaxQuantity] == 3
+[Name] == PerfectRuby # # [MaxQuantity] == 3
+[Name] == PerfectSapphire # # [MaxQuantity] == 3
+[Name] == PerfectSkull # # [MaxQuantity] == 3
+[Name] == PerfectTopaz # # [MaxQuantity] == 3
+
+//##########POTIONS##########
+[Name] == SuperHealingPotion
+[Name] == SuperManaPotion
+[Name] == RejuvenationPotion
+[Name] == FullRejuvenationPotion
+
+//###########EAR#############
+// Used in conjunction with the HostileKill function
+// If you want to collect ears, then simply uncomment
+
+//[Type] == playerbodypart && [Quality] == normal
+
+

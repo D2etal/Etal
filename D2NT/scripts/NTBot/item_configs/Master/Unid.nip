@@ -1,0 +1,97 @@
+//UNIQUE
+//[Name] == VampireboneGloves && [Quality] == Unique && [Flag] != Ethereal		//DRACUL'S GRASP
+[Name] == OgreGauntlets && [Quality] == Unique && [Flag] != Ethereal			//STEELREND
+
+[Name] == SpiderwebSash && [Quality] == Unique && [Flag] != Ethereal			//ARACHNID MESH
+//[Name] == MithrilCoil && [Quality] == Unique && [Flag] != Ethereal				//VERDUNGO'S HEARTY CORD
+
+//[Name] == Boots && [Quality] == Unique && [Flag] != Ethereal					//HOTSPUR
+//[Name] == SharkskinBoots && [Quality] == Unique && [Flag] != Ethereal			//WATERWALK
+//[Name] == BattleBoots && [Quality] == Unique && [Flag] != Ethereal				//WAR TRAVELER
+//[Name] == WarBoots && [Quality] == Unique && [Flag] != Ethereal					//GORE RIDER
+//[Name] == ScarabshellBoots && [Quality] == Unique && [Flag] != Ethereal			//SANDSTORM TREK
+[Name] == ScarabshellBoots && [Quality] == Unique && [Flag] == Ethereal			//Ethereal SANDSTORM TREK
+//[Name] == BoneweaveBoots && [Quality] == Unique && [Flag] != Ethereal			//MARROWWALK
+[Name] == MyrmidonGreaves && [Quality] == Unique && [Flag] != Ethereal			//SHADOW DANCER
+
+//[Name] == GrimHelm && [Quality] == Unique && [Flag] != Ethereal					//VAMPIRE GAZE
+[Name] == GrimHelm && [Quality] == Unique && [Flag] == Ethereal					//Ethereal VAMPIRE GAZE
+//[Name] == Shako && [Quality] == Unique && [Flag] != Ethereal					//HARLEQUIN CREST
+//[Name] == Demonhead && [Quality] == Unique && [Flag] != Ethereal				//ANDARIEL's VISAGE
+[Name] == Demonhead && [Quality] == Unique && [Flag] == Ethereal				//Ethereal ANDARIEL's VISAGE
+//[Name] == BoneVisage && [Quality] == Unique										//GIANT SKULL
+//[Name] == Tiara && [Quality] == Unique && [Flag] != Ethereal					//KIRA'S GUARDIAN
+[Name] == Diadem && [Quality] == Unique && [Flag] != Ethereal					//GRIFFON'S EYE
+[Name] == Corona && [Quality] == Unique											//CROWN OF AGES
+
+//[Name] == Cuirass && [Quality] == Unique && [Flag] == Ethereal				//Ethereal DURIEL'S SHELL
+//[Name] == MeshArmor && [Quality] == Unique && [Flag] != Ethereal				//SHAFTSTOP
+[Name] == MeshArmor && [Quality] == Unique && [Flag] == Ethereal				//Ethereal SHAFTSTOP
+//[Name] == RussetArmor && [Quality] == Unique && [Flag] != Ethereal				//SKULLDER'S IRE
+//[Name] == RussetArmor && [Quality] == Unique && [Flag] == Ethereal				//Ethereal SKULLDER'S IRE
+//[Name] == TemplarCoat && [Quality] == Unique && [Flag] != Ethereal				//GUARDIAN ANGEL
+//[Name] == TemplarCoat && [Quality] == Unique && [Flag] == Ethereal				//Ethereal GUARDIAN ANGEL
+[Name] == SharktoothArmor && [Quality] == Unique && [Flag] == Ethereal			//Ethereal TOOTHROW
+[Name] == KrakenShell && [Quality] == Unique									//LEVIATHAN
+[Name] == ShadowPlate && [Quality] == Unique && [Flag] == Ethereal				//Ethereal STEEL CARAPACE
+[Name] == SacredArmor && [Quality] == Unique									//TEMPLAR'S/TYREAL'S MIGHT
+
+//[Name] == BattleSword && [Quality] == Unique && [Flag] == Ethereal				//Ethereal HEADSTRIKER
+[Name] == ColossusBlade && [Quality] == Unique									//THE GRANDFATHER
+
+//[Name] == Tomahawk && [Quality] == Unique && [Flag] == Ethereal					//Ethereal RAZOR'S EDGE
+//[Name] == EttinAxe && [Quality] == Unique && [Flag] == Ethereal					//Ethereal RUNE MASTER
+//[Name] == BerserkerAxe && [Quality] == Unique && [Flag] != Ethereal				//DEATH CLEAVER
+[Name] == BerserkerAxe && [Quality] == Unique && [Flag] == Ethereal				//Ethereal DEATH CLEAVER
+
+//[Name] == WardBow && [Quality] == Unique										//WIDOWMAKER
+//[Name] == HydraBow && [Quality] == Unique										//WINDFORCE
+
+//[Name] == Thresher && [Quality] == Unique && [Flag] == Ethereal					//Ethereal THE REAPER'S TOLL
+[Name] == CrypticAxe && [Quality] == Unique && [Flag] == Ethereal				//Ethereal TOMB REAVER
+
+[Name] == Caduceus && [Quality] == Unique										//ASTREON'S IRON WARD
+
+//[Name] == Yari && [Quality] == Unique && [Flag] == Ethereal						//Ethereal HONE SUNDAN
+
+//[Name] == Quarterstaff && [Quality] == Unique && [Flag] == Ethereal				//Ethereal RIBCRACKER
+[Name] == ElderStaff && [Quality] == Unique && [Flag] == Ethereal				//Ethereal ONDAL'S WISDOM
+
+[Name] == WingedKnife && [Quality] == Unique && [Flag] == Ethereal				//Ethereal WARSHRIKE
+[Name] == WingedAxe && [Quality] == Unique && [Flag] == Ethereal				//Ethereal LACERATOR
+
+//[Name] == BurntWand && [Quality] == Unique && [Flag] == Ethereal				//Ethereal SUICIDE BRANCH
+[Name] == UnearthedWand && [Quality] == Unique									//DEATH'S WEB
+
+//[Name] == Ceremonial Javelin && [Quality] == Unique && [Flag] == Ethereal		//Ethereal TITAN'S REVENGE
+
+[Name] == SlayerGuard && [Quality] == Unique && [Flag] == Ethereal				//Ethereal ARREAT'S FACE
+
+//[Name] == BloodlordSkull && [Quality] == Unique && [Flag] != Ethereal			//DARKFORCE SPAWN
+
+[Name] == SacredRondache && [Quality] == Unique && [Flag] == Ethereal			//Ethereal ALMA NEGRA
+[Name] == GildedShield && [Quality] == Unique && [Flag] != Ethereal				//HERALD OF ZAKARUM
+[Name] == GildedShield && [Quality] == Unique && [Flag] == Ethereal				//Ethereal HERALD OF ZAKARUM
+
+//[Name] == SwirlingCrystal && [Quality] == Unique && [Flag] == Ethereal			//Ethereal THE OCULUS
+//[Name] == EldritchOrb && [Quality] == Unique && [Flag] == Ethereal				//Ethereal ESCHUTA'S TEMPER
+[Name] == DimensionalShard && [Quality] == Unique								//DEATH'S FATHOM
+
+//[Name] == GrandCharm && [Quality] == Unique										//GHEED'S FORTUNE
+//[Name] == LargeCharm && [Quality] == Unique										//HELLFIRE TORCH
+//[Name] == SmallCharm && [Quality] == Unique										//ANNIHILUS
+
+//[Type] == Ring && [Quality] == Unique											//UNIQUE RING
+//[Type] == Amulet && [Quality] == Unique											//UNIQUE AMULET
+//[Type] == Jewel && [Quality] == Unique											//FACET
+
+//RARE
+//[Type] == Ring && [Quality] == Rare												//RARE RING
+//[Type] == Amulet && [Quality] == Rare											//RARE AMULET
+//[Type] == Jewel && [Quality] == Rare											//RARE JEWEL
+//[Type] == Pelt && [Quality] == Rare												//RARE PELT
+//[Type] == Circlet && [Quality] == Rare											//RARE CIRCLET/TIARA/CORONET/DIADEM
+
+//MAGIC
+//[Name] == GrandCharm && [Quality] == Magic && [Level] >= 94 //BAAL GC
+//[Name] == SmallCharm && [Quality] == Magic && [Level] >= 94 //BAAL SC

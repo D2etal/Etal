@@ -1,0 +1,25 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// NTWPGrabber.ntj first release 1-27-11 by stairbuilder //////////////////////////////////////////////////
+// credit to ned, ethic, kolton, and those koreans that make problem spots so easy to resolve /////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	Include("libs/common/NTVoyage.ntl");
+
+	checknext = false;	
+	NTConfig_Shrines = [];
+	
+	NTTMGR_TownManager();
+	
+	NTV_GetWPs();
+}

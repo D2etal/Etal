@@ -1,0 +1,248 @@
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	NTTMGR_TownManager();
+	if(!NTTM_TownMove("waypoint")){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	if(!NTM_TakeWaypoint(101)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+	NTP_DoPrecast(true);
+	if(NTConfig_ClearDury > 0){
+		if(NTConfig_ClearDury == 1) {
+			NTConfig_SkipRegularMonsters = false;
+			NTP_DoPrecast();
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+			}
+		}
+		if(NTConfig_ClearDury == 2) {
+			NTConfig_SkipRegularMonsters = true;
+			NTP_DoPrecast();
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+			}
+		}
+		if(!NTM_MoveToStair(me.areaid, 102)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToStair()");
+			return;
+		}
+		if(!NTM_TakeStair(102)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+			return;
+		}
+	}
+	if(NTConfig_KillDuryCouncil){
+		if(me.areaid == 101) {
+			if(!NTM_MoveToStair(me.areaid, 102)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToStair()");
+				return;
+			}
+			if(!NTM_TakeStair(102)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+				return;
+			}
+			NTC_Delay(200);
+		}
+		NTP_DoPrecast();
+		var _attackpos = [
+						17651, 8066, 17630, 8069, 17625, 8048, 17647, 8040, //bottom council members
+						17610, 8124, 17603, 8138, 17623, 8138, 17571, 8121, //left-side council member
+						17609, 8022, 17616, 8006, 17592, 8015, 17575, 8012  // right-side council member
+						];
+		for(var i = 0 ; i < _attackpos.length ; i += 2){
+			NTM_MoveTo(me.areaid, _attackpos[i], _attackpos[i+1]);
+			NTA_ClearPosition();
+			NTSI_PickItems();
+		}
+	}
+	if(NTConfig_KillMeph){
+		if(me.areaid != 102){
+			if(!NTM_MoveToStair(me.areaid, 102)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToStair()");
+				return;
+			}
+			if(!NTM_TakeStair(102)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+				return;
+			}
+		}
+		if(!NTM_MoveTo(me.areaid, 17564, 8069)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+			return;
+		}
+		NTC_Delay(200);
+		if(me.classid != NTC_CHAR_CLASS_PALADIN && me.classid != NTC_CHAR_CLASS_BARBARIAN)
+			NTM_MoveTo(me.areaid, 17573, 8071);
+		if (NTConfig_MoatTrick[0] && me.classid == NTC_CHAR_CLASS_SORCERESS){
+			if (!MyMep_KillMephisto(20, 9))
+				return "MyMep_KillMephisto()";
+			NTM_MoveTo(me.areaid, 17588, 8087);
+			NTSI_PickItems();
+		}
+		else{
+			if(!NTA_KillMonster(242)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+				return;
+			}
+		}
+		if(NTConfig_ClearPosition)
+			NTA_ClearPosition();
+		NTSI_PickItems();
+		if(NTConfig_OpenChest){
+			var _chest;
+		if(NTM_MoveTo(me.areaid, 17520, 8063))
+			NTA_ClearPosition(30, true);
+		_chest = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3260), 1);
+		if(_chest){
+			do{
+				if(_chest.x == 17513 && _chest.y == 8063){
+					if(NTC_OpenChest(_chest))
+						NTSI_PickItems();
+					break;
+					}
+				} 	while(_chest.GetNext());
+			}
+		}
+		if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+			OpenChestsInArea();
+		}
+	}
+	if(NTConfig_RedPortal){
+		if(me.areaid == 100) {
+			for(var i = 1; i < 3; i++) {
+				if(!NTM_MoveToStair(me.areaid, 100+i)){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToStair()");
+					return;
+				}
+				if(!NTM_TakeStair(100+i)){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+					return;
+				}
+				if(me.areaid == 102)
+					break;
+			}
+		}
+		var _isTelekinesis = NTC_GetSkillLevel(43);
+		if (NTConfig_Telekinesis && (me.classid == NTC_CHAR_CLASS_SORCERESS) && (_isTelekinesis)) {
+			NTM_MoveTo(me.areaid, 17586, 8068);
+			var bridge = GetUnit(NTC_UNIT_OBJECT, 341);
+			if(bridge){
+				while(bridge.mode != 2){
+					Delay(500);
+				}
+			}
+			NTM_MoveTo(me.areaid, 17590, 8068);
+			var _portal = GetUnit(NTC_UNIT_OBJECT, 342);
+			if(_portal){
+				while(_portal.mode != 2){
+					Delay(500);
+				}
+				Delay(1000);
+				for(var i = 0 ; i < 3 ; i++){
+					NTC_CastSkill(43, NTC_HAND_RIGHT, _portal);
+					Delay(500)
+					if(me.areaid != 102){
+						break;
+					}
+				}
+			}
+		}
+		if(me.areaid == 102) {
+			NTM_MoveTo(me.areaid, 17590, 8068);
+			var bridge = GetUnit(NTC_UNIT_OBJECT, 341);
+			if(bridge){
+				while(bridge.mode != 2){
+					Delay(500);
+				}
+			}
+			var _portal = GetUnit(NTC_UNIT_OBJECT, 342);
+			if(_portal){
+				while(_portal.mode != 2){
+					Delay(500);
+				}
+				NTM_TakeUnit(NTC_UNIT_OBJECT, 342);
+			}
+		}
+		while(me.areaid == 0){
+			Delay(500);
+		}
+	}
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function MyMep_KillMephisto(distance, move)
+{
+    var _iAttack, _targetHp;
+    var _target = NTC_FindUnit(NTC_UNIT_MONSTER, 242, 10);
+    if (!_target)
+		return true;
+	Delay(200);
+	MyMep_EnticeTo(_target, distance, move, 17609, 8092);
+		_iAttack  = 0;
+		_targetHp = _target.hp;
+	while (_target.hp > 0 && _target.mode != 0 && _target.mode != 12) {
+		if (GetDistance(me.x, me.y, 17609, 8092) <= 3) {
+			if (NTA_ClearPosition(10))
+				NTM_MoveTo(me.areaid, 17609, 8092);
+			}
+		NTC_CastSkill(NTConfig_AttackSkill[1], NTC_HAND_RIGHT, _target);
+		while (_target.hp > 0 && _target.mode != 0 && _target.mode != 12 && me.GetSkillStatus(NTConfig_AttackSkill[1]) == 8){
+			if (NTConfig_MoatTrick[1]) {
+				if (me.GetSkillStatus(NTConfig_AttackSkill[2]) != 8)
+					NTC_CastSkill(NTConfig_AttackSkill[2], NTC_HAND_LEFT, _target);
+				else
+					Delay(NTC_DELAY_FRAME);
+			}
+			else
+				Delay(NTC_DELAY_FRAME);
+		}
+		if ((++_iAttack % 7) == 0) {
+		if (_target.hp < _targetHp)
+			_targetHp = _target.hp;
+		else
+			return false;
+		}
+	}
+    return true;
+}
+
+function MyMep_EnticeTo(target, distance, move, targetX, targetY)
+{
+    var _distance;
+	var TickCount = 0;
+
+    TickCount = GetTickCount();
+
+    while (true) {
+		if (GetDistance(me, target) <= distance) {
+			_distance = GetDistance(me.x, me.y, targetX, targetY);
+			if (_distance <= Math.round(move * 1.5))
+				return NTM_TeleportTo(targetX, targetY);
+			if (!NTM_TeleportTo(me.x + Math.round(move * (targetX - me.x) / _distance), me.y + Math.round(move * (targetY - me.y) / _distance)))
+			return false;
+			TickCount = GetTickCount();
+		}
+		else{
+			if (GetTickCount() <= (TickCount + 3500))
+				Delay(200);
+			else
+				return false;
+		}
+	}
+}

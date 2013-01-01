@@ -1,0 +1,568 @@
+var debugSnagit = false;
+var _location;
+var _NTSI_IgnoredList = new Array(
+88, //Wirt's Leg
+526, // Arrows quiver
+528, // Bolts quiver
+//543, // Keys
+518, // Tome of Town Portal
+519, // Tome of Identify
+//529, // Scroll of Town Portal
+//530, // Scroll of Identify
+514, // Antidote potion
+513, // Stamina potion
+517, // Thawing potion
+80, // Rancid Gas Pot
+81, // Oil Potion
+82, // Choking Gas Pot
+83, // Exploding Pot
+84, // Strangling Gas
+85); // Fulminating Pot
+
+
+var _NTSI_BeltSize;
+
+_IgnoredItems = new Array();
+
+function NTSI_ClearIgnoredItems() { _IgnoredList = new Array(); }
+
+function NTSI_LoadNIPFiles(filepath) {
+	for(var i = 0 ; i < NTConfig_NIPFilePath.length ; i++) {
+		NTIPOpenFile(filepath + "/" + NTConfig_NIPFilePath[i]);
+	}
+
+	_NTSI_BeltSize = NTC_GetBeltSize();
+}
+
+function NTSI_PickItems() {
+	var i, _mode;
+
+	for(i = 0 ; i < 25 ; i++) {
+		_mode = me.mode;
+
+		if((_mode >= 1 && _mode <= 3) || _mode == 5 || _mode == 6) { break; }
+
+		NTC_Delay(NTC_DELAY_FRAME);
+	}
+
+	if(i < parseInt(NTConfig_SnagDelay / NTC_DELAY_FRAME)) {
+		NTC_PingDelay(NTConfig_SnagDelay - (i*NTC_DELAY_FRAME));
+	}
+
+	Include("libs/common/NTItemlogger.ntl");
+	NTSI_SnagIt();
+}
+
+function NTSI_SnagIt() {
+	var i;
+	var _item;
+	var _checkeditem, _checkeditems;
+	var _value;
+	var resultArray = new Array();
+	var _minindex, _mindistance;
+	var _location;
+	var _area = GetArea();
+
+	_item = NTC_FindUnit(NTC_UNIT_ITEM);
+
+	if(!_item) { return; }
+
+	var _mename = me.name;
+	var _isEthereal = ((_item.itemflag & 0x400000) == 0x400000);
+	_checkeditems = new Array();
+
+	do {
+		if(_item.mode == 3 || _item.mode == 5) {
+			if(NTSI_IsIgnoredItemInt(_item.classid)) { continue; }
+
+			var _skipitem=false;
+
+			for (jj = 0; jj < _IgnoredItems.length; jj+=1) {
+
+				if (_IgnoredItems[jj] == _item.gid) { _skipitem = true; }
+			}
+
+			if (_skipitem) { continue; }
+
+			//Checks if the item is in range.
+			if (GetDistance(me, _item) <= NTConfig_SnagRange) {
+
+				resultArray = NTSI_CheckItem(_item, false);
+				_value = resultArray[0];
+
+				//If Item passes check value, we pick it up.
+				if(_value) { _checkeditems.push(new NTSI_ItemInt(_item, _value, resultArray)); }
+
+				//Ignored Items Logging
+				else {
+					if (NTConfig_LogIgnoredItems) {
+						if ((_item.quality == 2 && _item.classid > 609) || (_item.quality >= NTConfig_LogItemQuality && (_item.classid != 515 && _item.classid != 523 && _item.classid != 516 && _item.classid != 587 && _item.classid != 588 && _item.classid != 589 && _item.classid != 590 && _item.classid != 591 && _item.classid != 592 && _item.classid != 593 && _item.classid != 594 && _item.classid != 595 && _item.classid != 596))) {
+							if(NTConfig_UseXMLItemlog) {
+								if(NTConfig_IndependantLog) {
+									NTI_WriteILog(_item, me, _isEthereal, 14);
+								} else {
+									NTI_WriteLog(_item, me, _isEthereal, 14);
+								}
+							}
+							Print(COLOR_5 + "Ignored: " + NTC_ItemQualityToD2Color[_item.quality] + _item.name);
+							NTC_LogLocation(_area.name);
+							_IgnoredItems.push(_item.gid);
+						}
+					}
+				}
+			}
+		}
+	} while(_item.GetNext());
+
+	while(_checkeditems.length > 0)
+	{
+		_mindistance = 100000;
+
+		for(i = 0 ; i < _checkeditems.length ; i++)
+		{
+			_value = GetDistance(me.x, me.y, _checkeditems[i].x, _checkeditems[i].y);
+
+			if(_value < _mindistance)
+			{
+				_minindex = i;
+				_mindistance = _value;
+			}
+		}
+
+		_checkeditem = _checkeditems.splice(_minindex, 1)[0];
+
+		_item = NTC_FindUnit(NTC_UNIT_ITEM, _checkeditem.GID);
+
+		if(_item) {
+			if(!NTSI_IsLimitedItemInt(_item)) {
+				if(NTT_CheckSpace(_item.xsize, _item.ysize) || _item.itemtype === 9 || _item.itemtype >= 76 && _item.itemtype <= 78) { // potion pick on full inventory fix
+					if(NTSI_PickUpItemInt(_item)) {
+						switch(_checkeditem.ClassID) {
+
+						case 515: 	// Rejuvenation Potion
+						case 516: 	// Full Rejuvenation Potion
+
+							Print("Picked up "+ NTC_ItemQualityToD2Color[9] + GetLocaleString(2209+_checkeditem.ClassID-515));
+							break;
+
+						case 523: 	//Gold
+
+							Print("Picked up "+ NTC_ItemQualityToD2Color[7] + GetLocaleString(2215));
+							break; 
+
+						case 587: 	// Minor Healing Potion
+						case 588: 	// Light Healing Potion
+						case 589: 	// Healing Potion
+						case 590: 	// Greater Healing Potion
+						case 591: 	// Super Healing Potion
+
+							Print("Picked up "+ NTC_ItemQualityToD2Color[10] + GetLocaleString(2266+_checkeditem.ClassID-587));
+							break;
+
+						case 592: 	// Minor Mana Potion
+						case 593: 	// Light Mana Potion
+						case 594: 	// Mana Potion
+						case 595: 	// Greater Mana Potion
+						case 596: 	// Super Mana Potion
+
+							Print("Picked up "+ NTC_ItemQualityToD2Color[4] + GetLocaleString(2271+_checkeditem.ClassID-592));
+							break;
+
+						default:
+							//Print("Picked up " + NTC_ItemQualityToD2Color[_item.quality] + _item.name.split("\n")[0]);
+							if(_item.itemtype == 74 || (_item.classid >= 654 && _item.classid <= 657) || (_item.classid >= 647 && _item.classid <= 652)) {
+								Print("Picked up " + NTC_ItemQualityToD2Color[8] + _item.name.split("\n")[0]);
+							}
+							else if((_item.classid >= 544 && _item.classid <= 555) || _item.classid == 524 || _item.classid == 525){
+								Print(COLOR_4 + "Picked Quest Item " + COLOR_17 + _item.name.split("\n")[0]);
+							}
+							else {
+								Print("Picked up " + NTC_ItemQualityToD2Color[_item.quality] + _item.name.split("\n")[0]);
+							}
+							
+							NTC_LogLocation(_area.name);
+							//if(_item.quality < 4 && _checkeditem.Status < 2 && _item.itemtype != 4 && (_item.itemtype < 76 || _item.itemtype > 81))
+							if(_checkeditem.Status > -1 && _checkeditem.Status < 2 && _item.itemtype != 4 && (_item.itemtype < 76 || _item.itemtype > 81)) // first half of repeating item log fix
+							{
+								NTC_LogLocation(_area.name);
+								if(NTConfig_UseXMLItemlog) {
+									if(NTConfig_IndependantLog) {
+										NTI_WriteILog(_item, me, _isEthereal, 12);// need to check the arguements eventually for this
+									} else {
+										NTI_WriteLog(_item, me, _isEthereal, 12);
+									}
+								}
+								resultArray = NTSI_CheckItem(_item, true);
+								if(_item.itemtype == 74 || (_item.classid >= 654 && _item.classid <= 657) || (_item.classid >= 647 && _item.classid <= 652))	
+									NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_2 + " Kept: " + NTC_ItemQualityToMGRColor[8] + _item.name.split("\n")[0]+ ";" + _item.itemdesc + "\n" + COLOR_2 + "iLvl: " + _item.itemlevel + "\n" + COLOR_2 + "Area: " +_area.name+ "\n" + COLOR_2 +resultArray[1]+", "+resultArray[2]);
+								else
+									NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_2 + " Kept: " + NTC_ItemQualityToMGRColor[_item.quality] + _item.name.split("\n")[0]+ ";" + _item.itemdesc + "\n" + COLOR_2 + "iLvl: " + _item.itemlevel + "\n" + COLOR_2 + "Area: " +_area.name+ "\n" + COLOR_2 +resultArray[1]+", "+resultArray[2]);
+
+								//_location = NTC_GetScript(true);//jinay edits for item log
+								//NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_2 + "(" + _location + ") Field Kept " + NTC_ItemQualityToMGRColor[_item.quality] + _item.name.split("\n")[0] + ";" + _item.itemdesc + "\n" + COLOR_2 + "Itemlevel: " + _item.itemlevel);
+							}
+							break;
+						 }  
+					}
+				}
+
+				else {
+					if(!_checkeditem.Retry) {
+						_checkeditem.Retry = true;
+						NTT_ClearInventory();
+						if(NTConfig_IdInField && NTSI_FieldItemsToId()){ // id in field add
+							NT_FieldID(); 
+						}
+						else if(!NTTMGR_VisitTown()){
+							return;
+						}
+						_checkeditems.push(_checkeditem);
+					}
+				}
+			}
+		}
+	}
+	function devNames() {
+		var eEtalPrep = [
+			"acien's",
+			"alogwe's",
+			"cajcarter's",
+			"CyNDaR's",
+			"Ethic's",
+			"kolton's",
+			"Laggy's",
+			"Noviet's",
+			"nullard's",
+			"pq's",
+			"sinful's",
+			"stairbuilder's"];
+		return (eEtalPrep[Random(0, eEtalPrep.length - 1)] + " ");
+	}
+}
+
+// Internal function
+function NTSI_ItemInt(item, checkedstatus) {
+	this.ClassID = item.classid;
+	this.GID = item.gid;
+	this.x = item.x;
+	this.y = item.y;
+	this.Status = checkedstatus;
+	this.Retry = false;
+}
+
+function NTSI_PickUpItemInt(snagitem) {
+	var i;
+	var _classid;
+	var _result;
+	var _itemType      = snagitem.itemtype;
+	var _isTelekinesis = me.classid === 1 && NTConfig_Telekinesis && NTC_GetSkillLevel(43) && (_itemType == 4 || (_itemType > 75 && _itemType < 82));
+
+	_classid = snagitem.classid;
+
+	for(i = 0 ; i < 40 ; i++) {
+		if((i % 10) == 0 && (snagitem.mode == 3 || snagitem.mode == 5)) {
+			_result = false;
+			if(_isTelekinesis) {
+				if(GetDistance(me, snagitem) > 5 && GetDistance(me, snagitem) < 20 && CheckCollision(me, snagitem, 5))
+					_result = true;
+			}
+			if(NTC_ClearCursor()) {
+				if (_result) {
+					NTC_CastSkill(43, NTC_HAND_RIGHT, snagitem);
+				}
+				else if(GetDistance(me.x, me.y, snagitem.x, snagitem.y) <= 3) {
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, snagitem);
+				}
+				else if(NTM_MoveTo(snagitem.areaid, snagitem.x, snagitem.y, 3, false, false)) {
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, snagitem);
+				}
+			}
+		}
+		NTC_Delay(NTC_DELAY_FRAME);
+
+		if(_classid == 523) {
+			Print("Picked up " + NTC_ItemQualityToD2Color[7] + GetLocaleString(2215));
+			return false;
+		}
+		if(_classid == 543) {
+			Print("Picked up " + NTC_ItemQualityToD2Color[7] +GetLocaleString(2221));
+			return false;
+		}
+		if(_classid == 529) {
+			Print("Picked up " + GetLocaleString(2200));
+			return false;
+		}
+		if(_classid == 530) {
+			Print("Picked up " + GetLocaleString(2202));
+			return false;
+		
+		} else if(snagitem.mode != 3 && snagitem.mode != 5) {
+			var _parent;
+
+			NTC_PingDelay(100);
+
+			_parent = snagitem.GetParent();
+
+			return (_parent && _parent.gid == me.gid);
+		}
+	}
+
+	return false;
+}
+
+function NTSI_CheckItem(item, checkonly)
+{
+	if(arguments.length < 2)
+		checkonly = true;
+		
+	var _resultArray = new Array();
+
+	switch(item.quality)
+	{
+	case 5:
+	case 8:
+		_resultArray = NTIPCheckItem(item);
+		break;
+	default:
+		_resultArray = NTIPCheckItem(item);
+		
+		if(NTCU_CheckItem(item, _resultArray[0]) || NTRW_CheckItem(item, checkonly))
+			_resultArray[0] = 2;
+		break;
+	}
+
+	return _resultArray;
+}
+
+function NTSI_IsIgnoredItemInt(classid)
+{
+	for(var i = 0 ; i < _NTSI_IgnoredList.length ; i++)
+	{
+		if(classid == _NTSI_IgnoredList[i])
+			return true;
+	}
+
+	return false;
+}
+
+function NTSI_IsLimitedItemInt(item) 	// Note that returning true means don't pick.  Returning false means pick the item
+{
+	_NTSI_CarryKeys = NTT_GetKey();
+	var i;
+	var _items;
+	if(item.classid == 523){ // add to not pick gold if carry gold is full
+		return (NTC_StashGoldFull() && NTC_CharGoldFull()); // checks both stash ad inv gold
+	}
+	else if (item.classid == 529){ // tp scrolls
+		var _tome = NTT_GetTome(1);
+		if(!_tome) {
+			return true;
+		}
+		return !(_tome.GetStat(70) < 20);
+	}
+	else if (item.classid == 530){ // id scrolls
+		var _tome = NTT_GetTome(0);
+		if(!_tome) {
+			return true;
+		}		
+		return !(_tome.GetStat(70) < 20);
+	}	
+	else if (item.classid == 543) { // key note hard coded to only grab if amount is less than 8 else because keys drop in stacks you can end with a ton of keys
+		if(!_NTSI_CarryKeys) {
+			return true;
+		}
+		return !(NTTMGR_CheckKeys() < 8);
+	}
+	//If item is a potion
+	else if(item.itemtype >= 76 && item.itemtype <= 78) 
+	{
+		var _code, _type;
+		var _potnum = 0;
+
+		_code = item.code;
+		_type = item.itemtype;
+
+		for(i = 0 ; i < 4 ; i++)
+		{
+			if(_code.indexOf(NTConfig_BeltColType[i]) != -1)
+			//sets _potnum to the size of the belt
+			_potnum += _NTSI_BeltSize;
+		}
+
+		_items = me.GetItems();
+
+		if(_items)
+		{
+			//goes through all items
+			for(i = 0 ; i < _items.length ; i++)    {
+				//if it is a potion decrease number of potions previously the size of the belt
+				if(_items[i].mode == 2 && _items[i].itemtype == _type)
+				_potnum--;
+			}
+			
+			//If your belt is full
+			if(_potnum < 1) {
+				//Rejuv Swapping
+				//if you find a Rejuv Potion
+				if(_type == 78 && _code == "rvl") {
+					for(i = 0 ; i < _items.length ; i++) {
+						//Look for a small rejuv
+						if(_items[i].mode == 2 && _items[i].code == "rvs") {
+							//if found drink the small rejuv
+							SetUIState(0x1F, true);
+							if (NTConfig_DropExtraRejuvs)
+							NTT_DropItem(_items[i]);
+							else
+							me.ClickItem (1, _items[i]);
+							me.Cancel(1);
+							return false;  //return not full now after drinking a juv
+							//It will now pick up Rejuv on the ground
+						}                                               
+					}
+					if (!NTConfig_DropExtraRejuvs) {
+						for(i = 0 ; i < _items.length ; i++) {
+							//Look for a full rejuv
+							if (_items[i].mode == 2 && _items[i].code == "rvl" && _code == "rvl") {
+								//If found drink the full rejuv
+								SetUIState(0x1F, true);
+								me.ClickItem (1, _items[i]);
+								me.Cancel(1);
+								return false;  //return not full now after drinking a juv
+								//It will now pick up Rejuv on the ground
+							}
+						}
+					}
+				}
+				return true;
+			} 
+		}
+	}
+	else if(item.quality == 7 && item.classid >= 603 && item.classid <= 605)
+	{
+		_items = me.GetItems(item.classid);
+
+		if(_items)
+		{
+			for(i = 0 ; i < _items.length ; i++)
+			{
+				if(_items[i].quality == 7)
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+function NTSI_FieldItemsToId(){
+	items =  me.GetItems();
+	if(!items || items.length < 1){
+		return false;
+	}
+	for(var i = 0; i < items.length; i++){
+		if(items[i].mode == 0 && items[i].itemloc == 0){
+			var _value = NTSI_CheckItem(items[i])[0];
+			if(_value == -1){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function NTSI_FastPick() {
+	if (!NTConfig_FastPickit) {
+		return;
+	}
+
+	//Print(ignoredGids.length + " items on skip list.") // DEBUG
+	
+	var area, item, string, result;
+	var resultArray = new Array();
+	
+	item = NTC_FindUnit(NTC_UNIT_ITEM);
+	
+	if (item) {
+		do {
+			if (ignoredClassids.indexOf(item.classid) < 0 && ignoredGids.indexOf(item.gid) < 0) {
+				resultArray = NTSI_CheckItem(item, false);
+				result = resultArray[0];
+				
+				if (result) {
+					if (GetDistance(me, item) <= NTConfig_SnagRange && !NTSI_IsLimitedItemInt(item) && NTT_CheckSpace(item.xsize, item.ysize)) {
+						if(item.classid == 515 || item.classid == 516) {
+							string = (COLOR_2 + "Fast Pick" + COLOR_8 + ":: " + NTC_ItemQualityToD2Color[9] + item.name);
+						} 
+						else if(item.itemtype == 74 || (item.classid >= 654 && item.classid <= 657) || (item.classid >= 647 && item.classid <= 652)) {
+							string = (COLOR_2 + "Fast Pick" + COLOR_8 + ":: " + NTC_ItemQualityToD2Color[8] + item.name);						
+						}
+						else {
+							string = (COLOR_2 + "Fast Pick" + COLOR_8 + ":: " + NTC_ItemQualityToD2Color[item.quality] + item.name);
+						}
+						
+						if (NTSI_PickUpItemInt(item)) {
+							Print(string);
+							
+							area = GetArea();
+							
+							NTC_LogLocation(area.name);
+							
+							if (result === 1 && item.itemtype !== 4 && (item.itemtype < 76 || item.itemtype > 81)) {
+								if (item.itemtype == 74 || (item.classid >= 654 && item.classid <= 657) || (item.classid >= 647 && item.classid <= 652)) {
+									NTC_SendLogToOOG(NTC_LOG_ITEM,COLOR_2 + "Fast Pick Kept: " + NTC_ItemQualityToMGRColor[8] + item.name.split("\n")[0]+ ";" + item.itemdesc + COLOR_2 + "\n iLvl: " + item.itemlevel + COLOR_2 + "\n Area: " + area.name+ "\n" + COLOR_2 +resultArray[1]+", "+resultArray[2]);
+								} else {
+									NTC_SendLogToOOG(NTC_LOG_ITEM,COLOR_2 + "Fast Pick Kept: " + NTC_ItemQualityToMGRColor[item.quality] + item.name.split("\n")[0]+ ";" + item.itemdesc + COLOR_2 + "\n iLvl: " + item.itemlevel + COLOR_2 + "\n Area: " + area.name+ "\n" + COLOR_2 +resultArray[1]+", "+resultArray[2]);
+								}
+							}
+						}
+					}
+				} else {
+					ignoredGids.push(item.gid);
+				}
+			}
+		} while (item.GetNext());
+	}
+}
+
+var ignoredClassids = [
+	80, // Rancid Gas Pot
+	81, // Oil Potion
+	82, // Choking Gas Pot
+	83, // Exploding Pot
+	84, // Strangling Gas
+	85, // Fulminating Pot
+	513, // Stamina potion
+	514, // Antidote potion
+	517, // Thawing potion
+	518, // Tome of Town Portal
+	519, // Tome of Identify
+	523, // Gold
+	526, // Arrows quiver
+	528, // Bolts quiver
+	543, // Keys
+	529, // Scroll of Town Portal
+	530, // Scroll of Identify
+	587, // minor healing
+	588, // light healing
+	589, // healing
+	590, // greater healing
+	591, // super healing
+	592, // minor mana
+	593, // light mana
+	594, // mana
+	595, // greater mana
+	596, // super mana
+	529, // tp scroll
+	530 // id scroll
+];
+
+var ignoredGids = [];
+
+function NTSI_CheckKurastChest() {
+	for(var i = 0 ; i < NTConfig_Script.length; i++) {
+		if(NTConfig_Script[i].toLowerCase().indexOf("chest") != -1) {
+			return true;
+		}
+	}
+	return false;
+}

@@ -1,0 +1,295 @@
+function NTA_DetectAttackPattern() {
+	return NTA_AssassinAttackPatternInt();
+}
+
+function NTA_Attack(target, firstorder) {
+	return NTA_AssassinAttackInt(target, firstorder);
+}
+
+function NTA_AssassinAttackPatternInt() {
+	return false;
+}
+
+function NTA_AssassinAttackInt(target, firstorder) {
+	var _primaryindex;
+	var _attackIndex;
+	var _skillCasted = 0;
+
+	if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (me.hp <= parseInt(me.hpmax * NTConfig_TPChicken,10) / 100)) {
+		if (!NTTMGR_VisitTown()) { return 0; }
+	}
+	_merc = NTC_GetMerc();
+	if(_merc){
+		if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (_merc.hp <= parseInt(_merc.hpmax * NTConfig_MercTPChicken,10) / 100)) {
+			if (!NTTMGR_VisitTown()) { return 0; }
+		}
+	}
+
+	if (firstorder && NTConfig_AttackSkill[0] > -1 && NTA_GetResistance(target, _NTA_SkillDamage[0]) < 100) {
+		if (GetDistance(me, target) > _NTA_SkillRange[0] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[0], 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		if (!NTC_CastSkill(NTConfig_AttackSkill[0], _NTA_SkillHand[0], target)) return 2;
+
+		return 3;
+	}
+
+	if (NTConfig_UseTraps) NTA_CheckTraps(target);
+
+	_primaryindex = (target.spectype & 0x0A) ? 1 : 3;
+
+	_attackIndex = NTA_GetAttackType(target, _primaryindex, 91, 81, 81);
+
+	if (NTConfig_AttackSkill[_attackIndex] > -1) {
+		_skillCasted = _attackIndex;
+		if (_NTA_SkillRange[_attackIndex] < 4 && !CheckCollision(target.areaid, target.x, target.y, 1)) return 1;
+
+		if (!NTA_AssassinCastSkillInt(_attackIndex, target, _primaryindex)) return 2;
+
+		return 3;
+	}
+
+	if (NTConfig_UseTraps) {
+		if (_skillCasted == 0) NTC_Delay(NTConfig_AttackSkill);
+
+		return 3;
+	}
+
+	return 1;
+}
+
+function NTA_AssassinCastSkillInt(index, target, primaryIndex) {
+	if ((target.name == "Mephisto" || target.name == "Andariel" || target.name == "Duriel" || target.name == "Diablo" || target.name == "Baal") && NTConfig_AttackSkill[9] > -1) {
+		index = 9;
+	}
+	var secondarySkill = 0;
+	if (NTConfig_AttackSkill[index] == 151) {
+		var _castx, _casty;
+
+		if (GetDistance(me, target) > _NTA_SkillRange[index] || !CheckCollision(me, target, 5)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 5);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		_castx = target.x > me.x ? target.x + 3 : target.x - 3;
+		_casty = target.y > me.y ? target.y + 3 : target.y - 3;
+
+		return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], _castx, _casty);
+	}
+	if (me.GetSkillStatus(NTConfig_AttackSkill[index]) != 8) {
+		if (GetDistance(me, target) > _NTA_SkillRange[index] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], target);
+	}
+
+	secondarySkill = NTA_GetAttackType(target, primaryIndex + 1, 81, 81, 81);
+	if (NTConfig_AttackSkill[secondarySkill] > -1) {
+		if (GetDistance(me, target) > _NTA_SkillRange[secondarySkill] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[secondarySkill], 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		return NTC_CastSkill(NTConfig_AttackSkill[secondarySkill], _NTA_SkillHand[secondarySkill], target);
+	}
+	for (var i = 0; i < 25; i++) {
+		NTC_Delay(NTC_DELAY_FRAME);
+
+		if (me.GetSkillStatus(NTConfig_AttackSkill[index]) != 8) break;
+	}
+
+	return false;
+}
+
+function NTA_CheckTraps(target) {
+	var traps = NTC_FindUnit(NTC_UNIT_MONSTER);
+	var trapcount = 0;
+	//var warr=0;
+	var x, y;
+	var parent;
+	var _isActBoss = false;
+	var _trapOffset;
+
+	// || target.name == GetLocaleString(3021) - Andariel
+	if (target.name == GetLocaleString(3062) || target.name == GetLocaleString(3054) || target.name == GetLocaleString(3060) || target.name == GetLocaleString(3061)) _isActBoss = true;
+
+	if (traps) {
+		do {
+			if (traps.classid == 412 || traps.classid == 413 || traps.classid == 416 || traps.classid == 417) {
+
+				parent = traps.GetParent();
+				if (parent != null && parent.name == me.name) {
+					if (GetDistance(target.x, target.y, traps.x, traps.y) < (_isActBoss ? NTConfig_MinBossTrapRange : NTConfig_MinTrapRange) && traps.hp > 100) {
+						trapcount = trapcount + 1;
+					}
+				}
+			}
+/*if ((traps.classid == 418 || traps.classid == 419) && traps.mode == 12){ // apparently 417/418 are warrior/master. commented out for now
+				warr=1;
+			}*/
+		} while (traps.GetNext())
+
+		if (trapcount < (_isActBoss ? NTConfig_NumBossTrap : NTConfig_NumTraps) && target.hp > 0) {
+
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, 13, 10);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+
+
+			_trapOffset = NTA_GetTrapAttackPattern(_isActBoss);
+
+			for (var i = 0; i < 5; i++) {
+				if (NTConfig_TrapSet[i] > 0) {
+					if (i == 0 || i == 2 || i == 3) // Added delays to prevent trap miscast
+					NTC_Delay(25);
+					NTC_CastSkill((_isActBoss ? NTConfig_TrapSet[0] : NTConfig_TrapSet[i]), NTC_HAND_RIGHT, target.x + _trapOffset[i][0], target.y + _trapOffset[i][1]);
+					if(NTConfig_FastPickit && target.hp <= 0) {
+						break;
+					}				
+				}
+			}
+		}
+/*if (warr!=0)
+			NTP_DoPrecast(false);*/
+	}
+}
+
+function NTA_GetTrapAttackPattern(isActBoss) {
+	var _attackPattern = new Array(5);
+	var _bossOffset = 1;
+
+	if (NTConfig_TrapAttackPattern == 1) { // Pentagram
+		_attackPattern[0] = [-2 - (isActBoss ? _bossOffset : 0), -2 - (isActBoss ? _bossOffset : 0)];
+		_attackPattern[1] = [0, 2 + (isActBoss ? _bossOffset : 0)];
+		_attackPattern[2] = [2 + (isActBoss ? _bossOffset : 0), -2 - (isActBoss ? _bossOffset : 0)];
+		_attackPattern[3] = [-3 - (isActBoss ? _bossOffset : 0), 1 + (isActBoss ? _bossOffset : 0)];
+		_attackPattern[4] = [3 + (isActBoss ? _bossOffset : 0), 1 + (isActBoss ? _bossOffset : 0)];
+	} else if (NTConfig_TrapAttackPattern == 2) { // X - axis
+		_attackPattern[0] = [0, 0];
+		_attackPattern[1] = [1 + (isActBoss ? _bossOffset : 0), 0];
+		_attackPattern[2] = [-1 - (isActBoss ? _bossOffset : 0), 0];
+		_attackPattern[3] = [2 + (isActBoss ? _bossOffset : 0), 0];
+		_attackPattern[4] = [-2 - (isActBoss ? _bossOffset : 0), 0];
+
+	} else if (NTConfig_TrapAttackPattern == 3) { // Y - axis
+		_attackPattern[0] = [0, 0];
+		_attackPattern[1] = [0, 1 + (isActBoss ? _bossOffset : 0)];
+		_attackPattern[2] = [0, -1 - (isActBoss ? _bossOffset : 0)];
+		_attackPattern[3] = [0, 2 + (isActBoss ? _bossOffset : 0)];
+		_attackPattern[4] = [0, -2 - (isActBoss ? _bossOffset : 0)];
+	} else { // quincunx
+		_attackPattern[0] = [2 + (isActBoss ? _bossOffset : 0), 2 + (isActBoss ? _bossOffset : 0)];
+		_attackPattern[1] = [-2 - (isActBoss ? _bossOffset : 0), -2 - (isActBoss ? _bossOffset : 0)];
+		_attackPattern[2] = [-2 - (isActBoss ? _bossOffset : 0), 2 + (isActBoss ? _bossOffset : 0)];
+		_attackPattern[3] = [2 + (isActBoss ? _bossOffset : 0), -2 - (isActBoss ? _bossOffset : 0)];
+		_attackPattern[4] = [0, 0];
+	}
+
+	return _attackPattern;
+}
+
+/*
+	We want an attack that is less than our given max resist for a particular skill.  If all of our attacks don't meet our
+	requirement, return the lowest resist skill.
+*/
+
+function NTA_InitializeAssassinAttacks() {
+	// Find maximum range value for traps.
+	// No attacks should be set a high range value.
+	NTConfig_MinTrapRange = 999;
+	NTConfig_MinBossTrapRange = 999;
+	NTConfig_NumTraps = 0;
+	NTConfig_NumBossTrap = 0;
+
+	for (var i = 0; i < 5; i++) {
+		if (NTConfig_TrapSet[i] > 0) {
+			// Find the lowest trap range
+			switch (NTConfig_TrapSet[i]) {
+			case 271:
+				// Lightning Sentry
+			case 276:
+				// Death Sentry	
+				NTConfig_NumTraps++;
+				if (25 < NTConfig_MinTrapRange) {
+					NTConfig_MinTrapRange = 25;
+				}
+				break;
+			case 261:
+				// Charged Bolt Sentry
+				NTConfig_NumTraps++;
+				if (10 < NTConfig_MinTrapRange) {
+					NTConfig_MinTrapRange = 10;
+				}
+				break;
+			case 262:
+				// Wake of Fire
+				NTConfig_NumTraps++;
+				if (25 < NTConfig_MinTrapRange) {
+					NTConfig_MinTrapRange = 25;
+				}
+				break;
+			case 272:
+				// Wake of Inferno
+				NTConfig_NumTraps++;
+				if (15 < NTConfig_MinTrapRange) {
+					NTConfig_MinTrapRange = 15;
+				}
+				break;
+			default:
+				// User using invalid trap
+				// Do Nothing
+				break;
+			}
+
+		}
+
+		if (NTConfig_ActBossTrapSet[i] > 0) {
+			// Find the lowest trap range
+			switch (NTConfig_ActBossTrapSet[i]) {
+			case 271:
+				// Lightning Sentry
+			case 276:
+				// Death Sentry
+				NTConfig_NumBossTrap++;
+				if (25 < NTConfig_MinBossTrapRange) {
+					NTConfig_MinBossTrapRange = 25;
+				}
+				break;
+			case 261:
+				// Charged Bolt Sentry
+				NTConfig_NumBossTrap++;
+				if (10 < NTConfig_MinBossTrapRange) {
+					NTConfig_MinBossTrapRange = 10;
+				}
+				break;
+			case 262:
+				// Wake of Fire
+				NTConfig_NumBossTrap++;
+				if (25 < NTConfig_MinBossTrapRange) {
+					NTConfig_MinBossTrapRange = 25;
+				}
+				break;
+			case 272:
+				// Wake of Inferno
+				NTConfig_NumBossTrap++;
+				if (15 < NTConfig_MinBossTrapRange) {
+					NTConfig_MinBossTrapRange = 15;
+				}
+				break;
+			default:
+				// User using invalid trap
+				// Do Nothing
+				break;
+			}
+		}
+	}
+
+}

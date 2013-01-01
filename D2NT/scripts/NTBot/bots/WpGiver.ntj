@@ -1,0 +1,634 @@
+var _leader;
+var _player;
+var locked;
+var inuse;
+var skip = false;
+var abort = false;
+var tptown =true;
+var _area;
+var _joiner;
+var party_player;
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+	
+	NTConfig_PublicMode = true;
+
+	NTA_Initialize();
+	_leader = 1
+	RegisterEvent(EVENT_GAMEMSG, NT_GameMsgEvents);
+	partyforcer();
+	Say('Hi im here to give you wps. Please identify your self as the person who will receive them by typing "help me"');
+	
+	while(1){
+	Delay(1000);
+	}
+	
+}
+	
+function NT_GameMsgEvents(msg, type){
+
+   	if(type == 0 && msg.indexOf("help me") != -1){
+		
+		if(!locked){
+			var _split = msg.split(":");
+			_leader = _split[0].substring(3, _split[0].length - 3);
+			if(_leader == me.charname){
+				_leader = null
+			}
+			_player = GetPlayerUnit();
+			while(_leader != _player.name && _leader != 1 && _leader != null)
+				_player.GetNext();
+			if(_leader != null){
+				locked = true
+				Say("Im currently helping: " + _leader);
+			}
+			if(locked)
+				commands();
+		}
+		else
+			Say("Sorry i currently helping " + _leader + " please wait untill they done")
+	}
+	else if(type == 4 && (msg.indexOf("stronger") != -1)){
+		partyforcer();
+		var playername = msg.split("(")[0]; //)
+		_joiner = GetPlayerUnit();
+		while(playername != _joiner.name)
+			_joiner.GetNext();
+		if(_leader != null && _leader != 1)
+			Say("Welcome " + playername + " ,Sorry i currently helping " + _leader + " please wait untill they done");
+		else(_leader == null && _leader == 1)
+			Say("Welcome " + playername + " ,I'm currently avalible to help you please type 'help me' to get started");
+	}
+	else if(type == 4 && (msg.indexOf("weaken") != -1) && (msg.indexOf(_leader) != -1)) {
+		abort = true
+		Say("Aborting the person getting wps left i will be free in 5 seconds for a new leader")
+		_leader = 1
+		Delay(5000)
+	}
+   	else if(type == 4 && (msg.indexOf("dropped") != -1) && (msg.indexOf(_leader) != -1)) { // leader dropped
+		abort = true
+		Say("Aborting the person getting wps dropped i will be free in 5 seconds for a new leader")
+		_leader = 1
+		Delay(5000)
+	}
+	else if(type == 0 && (msg.indexOf("skip") != -1) && (msg.indexOf(_leader) != -1)) {
+		skip = true;
+	}
+	else if(type == 0 && (msg.indexOf("abort") != -1) && (msg.indexOf(_leader) != -1)) {
+		abort = true;
+		Say("Aborting...");
+	}
+	else if(type == 0 && (msg.indexOf("finished") != -1) && (msg.indexOf(_leader) != -1)) {
+		_leader = 1;
+		locked = false;
+		Say("Im ready to help some one else")
+		Say("Please end the game on irc if everybody is done with me")
+	}
+	else if(type == 0 && (msg.indexOf("act1") != -1) && (msg.indexOf(_leader) != -1)) {
+		if(inuse)
+			Say("Sorry i cant do that right now " + _leader + " please wait till im done with my current task")
+		else{
+			inuse = true;
+			act1();
+			inuse = false;
+			abort = false;
+			Say("Im finished with my current task")
+		}
+	}
+	else if(type == 0 && (msg.indexOf("act2") != -1) && (msg.indexOf(_leader) != -1)) {
+		if(inuse)
+			Say("Sorry i cant do that right now " + _leader + " please wait till im done with my current task")
+		else{
+			inuse = true;
+			act2();
+			inuse = false;
+			abort = false;
+			Say("Im finished with my current task")
+		}
+	}
+	else if(type == 0 && (msg.indexOf("act3") != -1) && (msg.indexOf(_leader) != -1)) {
+		if(inuse)
+			Say("Sorry i cant do that right now " + _leader + " please wait till im done with my current task")
+		else{
+			inuse = true;
+			act3();
+			inuse = false;
+			abort = false;
+			Say("Im finished with my current task")
+		}
+	}
+	else if(type == 0 && (msg.indexOf("act4") != -1) && (msg.indexOf(_leader) != -1)) {
+		if(inuse)
+			Say("Sorry i cant do that right now " + _leader + " please wait till im done with my current task")
+		else{
+			inuse = true;
+			act4();
+			inuse = false;
+			abort = false;
+			Say("Im finished with my current task")
+		}
+	}
+	else if(type == 0 && (msg.indexOf("act5") != -1) && (msg.indexOf(_leader) != -1)) {
+		if(inuse)
+			Say("Sorry i cant do that right now " + _leader + " please wait till im done with my current task")
+		else{
+			inuse = true;
+			act5();
+			inuse = false;
+			abort = false;
+			Say("Im finished with my current task")
+		}
+	}
+	else if(type == 0 && (msg.indexOf("all") != -1) && (msg.indexOf(_leader) != -1)) {
+		if(inuse)
+			Say("Sorry i cant do that right now " + _leader + " please wait till im done with my current task")
+		else{
+			inuse = true;
+			act1();
+			act2();
+			act3();
+			act4();
+			act5();
+			inuse = false;
+			abort = false;
+			Say("Im finished with my current task")
+		}
+	}
+	else if(type == 0 && (msg.indexOf("rush") != -1) && (msg.indexOf(_leader) != -1)) {
+		if(inuse)
+			Say("Sorry i cant do that right now " + _leader + " please wait till im done with my current task")
+		else{
+			inuse = true;
+			rush();
+			inuse = false;
+			abort = false;
+			Say("Im finished with my current task")
+		}
+	}
+	else if(type == 0 && (msg.indexOf("key") != -1) && (msg.indexOf(_leader) != -1)) {
+		if(inuse)
+			Say("Sorry i cant do that right now " + _leader + " please wait till im done with my current task")
+		else{
+			inuse = true;
+			key();
+			inuse = false;
+			abort = false;
+			Say("Im finished with my current task")
+		}
+	}
+	else if(type == 0 && (msg.indexOf("quest") != -1) && (msg.indexOf(_leader) != -1)) {
+		if(inuse)
+			Say("Sorry i cant do that right now " + _leader + " please wait till im done with my current task")
+		else{
+			inuse = true;
+			quest();
+			inuse = false;
+			abort = false;
+			Say("Im finished with my current task")
+		}
+	}
+}
+function commands(){
+	Say('Commands now availible are...');
+	Delay(200);
+	Say('"act#" replace # with 1-5 it will give you all wps for that act');
+	Delay(200);
+	Say('"all" will give you all wps in the game');
+	Delay(200);
+	Say('"rush" will give you all the rushing wps');
+	Delay(200);
+	Say('"quest" will give you the wps for all quests not coverd by "rush"');
+	Delay(200);
+	Say('"key" will give you the key boss wps');
+	Delay(200);
+	Say('"skip" will skip over the current wp its giving');
+	Delay(200);
+	Say('"abort" will abort it out of its current task and go to act 4 to wait for the next command');
+	Delay(200);
+	Say('"finished" will deidentify you so someone else can get the wps in the same game');
+}
+function filltpsJamella(){
+var _npc;
+var _BuyTP;
+_BuyTP = (NTTMGR_CheckScrolls(1) < 20);
+	if(_BuyTP){
+	NTTM_TownMove("jamella");
+
+	_npc = NTC_FindUnit(NTC_UNIT_NPC, NTC_NPC_ID_JAMELLA, 5);
+
+		if(_npc){
+				NTT_DoInteract(_npc)
+				NTT_DoTrade(_npc)
+				NTT_FillTome(_npc, 1);
+				me.Cancel(1);
+		}
+	}
+}
+
+function act1(){
+	if (abort)
+		return;
+	var _wps1 = [3, 4, 5, 6, 27, 29, 32, 35];
+	
+	NTTM_CheckAct(4);
+	NTTMGR_TownManager();
+	filltpsJamella();
+	NTTM_TownMove("waypoint");
+	for(var i = 0; i < _wps1.length; i++){
+		NTM_TakeWaypoint(_wps1[i]);
+		var _wppos = [me.x, me.y];
+		_area = GetArea();
+		NTM_MoveTo(me.areaid, me.x - 3, me.y + 5);
+		NTM_MakeTP();
+		Say("TP is up for " + _area.name);
+			while(!skip && (_player.areaid != me.areaid)){
+				if (abort)
+					break;
+				if(!me.GetState(51))
+					NTP_DoPrecast(true);
+				NTA_ClearPosition(10);
+				if (abort)
+					break;
+				NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+				if (abort)
+					break;
+				Delay(1500);
+			}
+		if(skip)
+			Say("Skiping ...");
+		Delay(1500);
+		skip = false;
+		NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+		
+		if (abort)
+			break;
+	}
+	if(me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109)
+		tptown = false;
+	if(tptown)
+		NTM_MakeTP(true);
+	NTTM_CheckAct(4);
+	tptown = true;
+}
+
+function act2(){
+	if (abort)
+		return;
+	var _wps2 = [48, 42, 57, 43, 44, 52, 74, 46];
+
+	NTTM_CheckAct(4);
+	NTTMGR_TownManager();
+	filltpsJamella();
+	NTTM_TownMove("waypoint");
+	
+	for(var i = 0; i < _wps2.length; i++){
+		NTM_TakeWaypoint(_wps2[i]);
+		var _wppos = [me.x, me.y];
+		_area = GetArea();
+		NTM_MoveTo(me.areaid, me.x - 3, me.y + 5);
+		NTM_MakeTP();
+		Say("TP is up for " + _area.name);			while(!skip && (_player.areaid != me.areaid)){
+				if (abort)
+					break;
+				if(!me.GetState(51))
+					NTP_DoPrecast(true);
+				NTA_ClearPosition(10);
+				if (abort)
+					break;
+				NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+				if (abort)
+					break;
+				Delay(1500);
+			}
+		if(skip)
+			Say("Skiping ...");
+		Delay(1500);
+		skip = false;
+		NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+		
+		if (abort)
+			break;
+	}
+	if(me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109)
+		tptown = false;
+	if(tptown)
+		NTM_MakeTP(true);
+	NTTM_CheckAct(4);
+	tptown = true;
+}
+
+function act3(){
+	if (abort)
+		return;
+	var _wps3 = [76, 77, 78, 79, 80, 81, 83, 101];
+
+	NTTM_CheckAct(4);
+	NTTMGR_TownManager();
+	filltpsJamella();
+	NTTM_TownMove("waypoint");
+	
+	for(var i = 0; i < _wps3.length; i++){
+		NTM_TakeWaypoint(_wps3[i]);
+		var _wppos = [me.x, me.y];
+		_area = GetArea();
+		NTM_MoveTo(me.areaid, me.x - 3, me.y + 5);
+		NTM_MakeTP();
+		Say("TP is up for " + _area.name);			while(!skip && (_player.areaid != me.areaid)){
+				if (abort)
+					break;
+				if(!me.GetState(51))
+					NTP_DoPrecast(true);
+				NTA_ClearPosition(10);
+				if (abort)
+					break;
+				NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+				if (abort)
+					break;
+				Delay(1500);
+			}
+		if(skip)
+			Say("Skiping ...");
+		Delay(1500);
+		skip = false;
+		NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+		
+		if (abort)
+			break;
+	}
+	if(me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109)
+		tptown = false;
+	if(tptown)
+		NTM_MakeTP(true);
+	NTTM_CheckAct(4);
+	tptown = true;
+}
+
+function act4(){
+	if (abort)
+		return;
+	var _wps4 = [106, 107];
+
+	NTTM_CheckAct(4);
+	NTTMGR_TownManager();
+	filltpsJamella();
+	NTTM_TownMove("waypoint");
+	
+	for(var i = 0; i < _wps4.length; i++){
+		NTM_TakeWaypoint(_wps4[i]);
+		var _wppos = [me.x, me.y];
+		_area = GetArea();
+		NTM_MoveTo(me.areaid, me.x - 3, me.y + 5);
+		NTM_MakeTP();
+		Say("TP is up for " + _area.name);			while(!skip && (_player.areaid != me.areaid)){
+				if (abort)
+					break;
+				if(!me.GetState(51))
+					NTP_DoPrecast(true);
+				NTA_ClearPosition(10);
+				if (abort)
+					break;
+				NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+				if (abort)
+					break;
+				Delay(1500);
+			}
+		if(skip)
+			Say("Skiping ...");
+		Delay(1500);
+		skip = false;
+		NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+		
+		if (abort)
+			break;
+	}
+	if(me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109)
+		tptown = false;
+	if(tptown)
+		NTM_MakeTP(true);
+	NTTM_CheckAct(4);
+	tptown = true;
+}
+
+function act5(){
+	if (abort)
+		return;
+	var _wps5 = [111, 112, 113, 115, 123, 117, 118, 129];
+
+	NTTM_CheckAct(4);
+	NTTMGR_TownManager();
+	filltpsJamella();
+	NTTM_TownMove("waypoint");
+	
+	for(var i = 0; i < _wps5.length; i++){
+		NTM_TakeWaypoint(_wps5[i]);
+		var _wppos = [me.x, me.y];
+		_area = GetArea();
+		NTM_MoveTo(me.areaid, me.x - 3, me.y + 5);
+		NTM_MakeTP();
+		Say("TP is up for " + _area.name);			while(!skip && (_player.areaid != me.areaid)){
+				if (abort)
+					break;
+				if(!me.GetState(51))
+					NTP_DoPrecast(true);
+				NTA_ClearPosition(10);
+				if (abort)
+					break;
+				NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+				if (abort)
+					break;
+				Delay(1500);
+			}
+		if(skip)
+			Say("Skiping ...");
+		Delay(1500);
+		skip = false;
+		NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+		
+		if (abort)
+			break;
+	}
+	if(me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109)
+		tptown = false;
+	if(tptown)
+		NTM_MakeTP(true);
+	NTTM_CheckAct(4);
+	tptown = true;
+}
+function rush(){
+	if (abort)
+		return;
+	var _rush = [35, 103, 57, 43, 44, 52, 74, 46, 103, 83, 101, 103, 107, 103, 118, 129];
+
+	NTTM_CheckAct(4);
+	NTTMGR_TownManager();
+	filltpsJamella();
+	NTTM_TownMove("waypoint");
+	
+	for(var i = 0; i < _rush.length; i++){
+		NTM_TakeWaypoint(_rush[i]);
+		if(me.areaid == 103){
+			NTTMGR_TownManager();
+			filltpsJamella();
+			NTTM_TownMove("waypoint");
+			i++
+			NTM_TakeWaypoint(_rush[i]);
+		}
+		var _wppos = [me.x, me.y];
+		_area = GetArea();
+		NTM_MoveTo(me.areaid, me.x - 3, me.y + 5);
+		NTM_MakeTP();
+		Say("TP is up for " + _area.name);			while(!skip && (_player.areaid != me.areaid)){
+				if (abort)
+					break;
+				if(!me.GetState(51))
+					NTP_DoPrecast(true);
+				NTA_ClearPosition(10);
+				if (abort)
+					break;
+				NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+				if (abort)
+					break;
+				Delay(1500);
+			}
+		if(skip)
+			Say("Skiping ...");
+		Delay(1500);
+		skip = false;
+		NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+		
+		if (abort)
+			break;
+	}
+	if(me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109)
+		tptown = false;
+	if(tptown)
+		NTM_MakeTP(true);
+	NTTM_CheckAct(4);
+	tptown = true;
+}
+function key(){
+	if (abort)
+		return;
+	var _key = [6, 74, 123];
+
+	NTTM_CheckAct(4);
+	NTTMGR_TownManager();
+	filltpsJamella();
+	NTTM_TownMove("waypoint");
+	
+	for(var i = 0; i < _key.length; i++){
+		NTM_TakeWaypoint(_key[i]);
+		var _wppos = [me.x, me.y];
+		_area = GetArea();
+		NTM_MoveTo(me.areaid, me.x - 3, me.y + 5);
+		NTM_MakeTP();
+		Say("TP is up for " + _area.name);			while(!skip && (_player.areaid != me.areaid)){
+				if (abort)
+					break;
+				if(!me.GetState(51))
+					NTP_DoPrecast(true);
+				NTA_ClearPosition(10);
+				if (abort)
+					break;
+				NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+				if (abort)
+					break;
+				Delay(1500);
+			}
+		if(skip)
+			Say("Skiping ...");
+		Delay(1500);
+		skip = false;
+		NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+		
+		if (abort)
+			break;
+	}
+	if(me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109)
+		tptown = false;
+	if(tptown)
+		NTM_MakeTP(true);
+	NTTM_CheckAct(4);
+	tptown = true;
+}
+function quest(){
+	if (abort)
+		return;
+	var _quest = [3, 4, 5, 6, 27, 48, 80, 106, 111, 113, 123];
+
+	NTTM_CheckAct(4);
+	NTTMGR_TownManager();
+	filltpsJamella();
+	NTTM_TownMove("waypoint");
+	
+	for(var i = 0; i < _quest.length; i++){
+		NTM_TakeWaypoint(_quest[i]);
+		var _wppos = [me.x, me.y];
+		_area = GetArea();
+		NTM_MoveTo(me.areaid, me.x - 3, me.y + 5);
+		NTM_MakeTP();
+		Say("TP is up for " + _area.name);			while(!skip && (_player.areaid != me.areaid)){
+				if (abort)
+					break;
+				if(!me.GetState(51))
+					NTP_DoPrecast(true);
+				NTA_ClearPosition(10);
+				if (abort)
+					break;
+				NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+				if (abort)
+					break;
+				Delay(1500);
+			}
+		if(skip)
+			Say("Skiping ...");
+		Delay(1500);
+		skip = false;
+		NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+		
+		if (abort)
+			break;
+	}
+	if(me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109)
+		tptown = false;
+	if(tptown)
+		NTM_MakeTP(true);
+	NTTM_CheckAct(4);
+	tptown = true;
+}
+function partyforcer(){
+party_player = GetPlayerUnit();
+
+				if(party_player){
+					_mypartyid = party_player.partyid;
+
+					while(party_player.GetNext()){
+					
+						if(party_player.partyid == 65535 || party_player.partyid != _mypartyid){
+							
+							if(party_player.partyflag == 2){
+								me.ClickParty(party_player, 2);
+								break;
+							}
+
+							if(party_player.partyid == 65535){
+								
+								if(party_player.partyflag == 4)
+									continue;
+
+								me.ClickParty(party_player, 2);
+								//NTC_Delay(NTC_DELAY_FRAME);
+
+								//if(party_player.partyflag == 4 || (party_player.partyid != 65535 && party_player.partyid == _mypartyid))
+									//break;
+							}
+						}
+					}
+				}
+}

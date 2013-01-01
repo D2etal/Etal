@@ -1,0 +1,22 @@
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	me.showenemyonautomap = true;
+	me.revealautomap	 = true;
+	me.maxgametime = 0;
+	
+	while(1) {
+		NTA_ClearPosition(40);
+		Delay(250)
+	}
+
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}

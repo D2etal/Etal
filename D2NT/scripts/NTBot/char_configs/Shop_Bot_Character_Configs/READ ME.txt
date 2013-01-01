@@ -1,0 +1,27 @@
+
+Simply copy the character type config that you are using and paste it into the character_conifgs folder, the one that the Shop_Bot_Character_Configs is in...the folder holding this doc. and configure it as you would a normal config file...rename adjust setting etc
+
+NOTE: THIS IS NOT FOR MF'ING, BUT FOR SHOP BOT, 
+
+I REPEAT THESE ARE NOT MF CHARACTER_CONFIGS
+
+IT IS BEST TO START WITH A EMPTY STASH AND IVENTORY, OBV
+
+THE PICKIT THAT IS USED WITH THIS IS GOING TO PICK A LOT OF STUFF SO CHANGING IT TO YOUR LIKING IS A MUST
+
+IF YOU WANT TO TEST IF THIS IS WORKING FIND THE Master/shop.nip	AND UNCOMMENT THE FIRST LINE.  THE BOT SHOULD FILL INVENTORY WITH CRAP AND AND THEN GO STASH
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                        
+//       ShopBot Script For D2NT 2.1                                                      
+//                     Edit BY Lamobchan    2010/1/20                         
+//                        Change For D2NT 3.1  2010/4/27						
+//	
+//	detaliled instructions can be found here: 								//		/http://edgeofnowhere.cc/viewtopic.php?t=456532			
+//	                               
+//              link to what npc can drop which item calculator:	                                                                                          
+//		http://calculators.newd2event.net/shopping/							//						  
+//										                      
+////////////////////////////////////////////////////////////////////////////////////////////////////////////

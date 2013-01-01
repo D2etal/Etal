@@ -1,0 +1,81 @@
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	NTTMGR_TownManager();
+	if(!NTTM_TownMove("waypoint")){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	if(!NTM_TakeWaypoint(79)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+	NTP_DoPrecast(true);
+	NTC_Delay(500);
+	if(NTConfig_ClearLower > 0) {
+		if(NTConfig_ClearLower == 1) {
+			NTConfig_SkipRegularMonsters = false;
+			NTP_DoPrecast();
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+			}
+		}
+		if(NTConfig_ClearLower == 2) {
+			NTConfig_SkipRegularMonsters = true;
+			NTP_DoPrecast();
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+			}
+		}
+	}
+
+	NTC_Delay(500);
+
+	if(NTConfig_LowerChests) {
+		_unit = GetPresetUnits(me.areaid, NTC_UNIT_OBJECT);
+		if(_unit){
+			for(n = 0 ; n < _unit.length ; n++){
+				if(_unit[n].id == 580){
+					NTM_MoveTo(me.areaid, _unit[n].roomx*5+_unit[n].x, _unit[n].roomy*5+_unit[n].y);
+					_chest = NTC_FindUnit(NTC_UNIT_OBJECT, "chest");
+					if(_chest){
+						do {
+							if(NTC_OpenChest(_chest))
+								NTSI_PickItems();
+						} while(_chest.GetNext());
+					}
+				}
+				else if(_unit[n].id == 104 || _unit[n].id == 105 || _unit[n].id == 106 || _unit[n].id == 107){
+					NTM_MoveTo(me.areaid, _unit[n].roomx*5+_unit[n].x, _unit[n].roomy*5+_unit[n].y);
+					_chest = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3247));
+					if(_chest){
+						do {
+							if(NTC_OpenChest(_chest))
+								NTSI_PickItems();
+						} while(_chest.GetNext());
+					}
+					_chest = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3248));
+					if(_chest){
+						do {
+							if(NTC_OpenChest(_chest))
+								NTSI_PickItems();
+						} while(_chest.GetNext());
+					}
+				}
+			}
+		}
+	}
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}

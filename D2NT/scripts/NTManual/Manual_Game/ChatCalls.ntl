@@ -1,0 +1,1762 @@
+function MG_GameMsgEvent(msg, type)
+{
+	if(ChatREnabled){
+		switch(type){
+			case 0:
+				if(msg.indexOf(": ") != -1) {
+					var Text = msg.split(": ")[1].replace(/ÿc(.)/g, "");
+					var Char = msg.split(": ")[0].replace(/ÿc(.)/g, ""); Delay(Random(100,200));
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(Char + ": " + Text);
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				if(msg.indexOf(" is no longer") != -1) {
+					var NoHost = msg.split(" is no longer")[0].replace(/ÿc(.)/g, ""); Delay(Random(100,200));
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(NoHost + " is no longer hostile towards you.");
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				break;
+			case 4:
+				if(msg.indexOf(" joined ") != -1) {
+					var Joiner = msg.split(" j")[0].replace(/ÿc(.)/g, ""); PiGN++
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(Joiner + " joined our world. (" + PiGN + ")");
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				if(msg.indexOf(" left ") != -1) {
+					var Leaver = msg.split(" l")[0].replace(/ÿc(.)/g, ""); PiGN--
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(Leaver + " left the game! (" + PiGN + ")");
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				if(msg.indexOf(" dropped ") != -1) {
+					var Dropped = msg.split(" d")[0].replace(/ÿc(.)/g, ""); PiGN--
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(Dropped + " dropped due to timeout. (" + PiGN + ")");
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				if(msg.indexOf(" was slain by ") != -1) {
+					var Winner = msg.split("n by ")[1].replace(/ÿc(.)/g, "");
+					var Loser = msg.split(" was s")[0].replace(/ÿc(.)/g, "");
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(Winner + " was slain by " + Loser);
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				if(msg.indexOf(GetLocaleString(11005)) != -1) {
+					var CDString = msg.replace(/ÿc(.)/g, "");
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(CDString);
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				if(msg.indexOf(GetLocaleString(11004).substr(3)) != -1) {
+					var SoJString = msg.replace(/ÿc(.)/g, "");
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(SoJString);
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				break;
+			case 2:
+				if(msg.indexOf(" whispers:") != -1) {
+					var WhispFrom = msg.split(" whispers:")[0].replace(/ÿc(.)/g, "");
+					var FromMsg = msg.split(" whispers: ")[1].replace(/ÿc(.)/g, "");
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(WhispFrom + " whispers: " + FromMsg);
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				if(msg.indexOf("You whispered to ") != -1) {
+					var WhispTo1 = msg.split(": ")[0].replace(/ÿc(.)/g, "");
+					var WhispTo2 = msg.split(": ")[1].replace(/ÿc(.)/g, "");
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(WhispTo1 + WhispTo2);
+					ChatLog.Close(); Delay(Random(200,400));
+				}
+				if(msg.indexOf(" has ") != -1) {
+					var PartyIn = msg.split(" has joined")[0].replace(/ÿc(.)/g, "");
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(PartyIn + " has joined your party to fight the forces of evil.");
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				if(msg.indexOf(" invites ") != -1) {
+					var InvitedMe = msg.split(" invites you")[0].replace(/ÿc(.)/g, "");
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(InvitedMe + " invites you to ally against the forces of evil.");
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				if(msg.indexOf("You are now allied with ") != -1) {
+					var NewAlly = msg.split("allied with ")[1].replace(/ÿc(.)/g, "");
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine("You are now allied with " + NewAlly);
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				break;
+			case 8:
+				if(msg.indexOf(" has expressed") != -1) {
+					var HostileR = msg.split(" has expressed hostility")[0].replace(/ÿc(.)/g, "");
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(HostileR + " has expressed hostility towards you.");
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				break;
+			case 9:
+				if(msg.indexOf(" has left") != -1) {
+					var PartyOut = msg.split(" has left your")[0].replace(/ÿc(.)/g, "");
+					ChatLog = FileOpen(ChatRLog, 2);
+						ChatLog.WriteLine(PartyOut + " has left your party.");
+					ChatLog.Close(); Delay(Random(100,200));
+				}
+				break;
+			default:
+				break;
+		}
+	}
+	if(ItemSInfo){
+	   if(msg.indexOf(me.name) != -1 && type == 0) {
+			// Main Commands
+			switch(true){
+				case (msg.toLowerCase().indexOf(".help")!= -1):
+					Delay(100);
+					Print("Type . before your command");
+					Print("Runeword list (.runewords)");
+					Print("Exp for Baaling (.baalruns)");
+					Print("A2 Merc Aruas (.mercs)");
+					Print("Set runeword info to public (.public)");
+					Print("Set runeword info to private (.private)");
+					break;
+				case (msg.toLowerCase().indexOf(".baalruns")!= -1):
+					Delay(100);
+					Print("Type . before your command");
+					Print("Using no Anni (baalexp1)");
+					Print("Using Anni (baalexp2)");
+					break;
+				case (msg.toLowerCase().indexOf(".public")!= -1):
+					Private = false;
+					Print("Runeword info set to public");
+					break;
+				case (msg.toLowerCase().indexOf(".private")!= -1):
+					Private = true;
+					Print("Runeword info set to private");
+					break;
+				//Runeword commands
+				case (msg.toLowerCase().indexOf(".runewords")!= -1):
+					Delay(100);
+					Print("Type . before your command");
+					Print("ancients pledge" +  COLOR_1 + "||" + COLOR_0 + "black" +  COLOR_1 + "||" + COLOR_0 + "fury" +  COLOR_1 + "||" + COLOR_0 + "holy thunder" +  COLOR_1 + "||" + COLOR_0 + "honor" +  COLOR_1 + "||" + COLOR_0 + "kings grace" +  COLOR_1 + "||" + COLOR_0 + "leaf" +  COLOR_1 + "||" + COLOR_0 + "lionheart" +  COLOR_1 + "||" + COLOR_0 + "lore");
+					Print("melody" +  COLOR_1 + "||" + COLOR_0 + "memory" +  COLOR_1 + "||" + COLOR_0 + "nadir" +  COLOR_1 + "||" + COLOR_0 + "radiance" +  COLOR_1 + "||" + COLOR_0 + "rhyme" +  COLOR_1 + "||" + COLOR_0 + "silence" +  COLOR_1 + "||" + COLOR_0 + "smoke" +  COLOR_1 + "||" + COLOR_0 + "stealth" +  COLOR_1 + "||" + COLOR_0 + "steel" +  COLOR_1 + "||" + COLOR_0 + "strength");
+					Print("white" +  COLOR_1 + "||" + COLOR_0 + "zephyr" +  COLOR_1 + "||" + COLOR_0 + "beast" +  COLOR_1 + "||" + COLOR_0 + "bramble" +  COLOR_1 + "||" + COLOR_0 + "botd" +  COLOR_1 + "||" + COLOR_0 + "cta" +  COLOR_1 + "||" + COLOR_0 + "coh" +  COLOR_1 + "||" + COLOR_0 + "chaos" +  COLOR_1 + "||" + COLOR_0 + "crescent moon" +  COLOR_1 + "||" + COLOR_0 + "delirium" +  COLOR_1 + "||" + COLOR_0 + "doom");
+					Print("enigma" +  COLOR_1 + "||" + COLOR_0 + "eternity" +  COLOR_1 + "||" + COLOR_0 + "exile" +  COLOR_1 + "||" + COLOR_0 + "famine" +  COLOR_1 + "||" + COLOR_0 + "gloom" +  COLOR_1 + "||" + COLOR_0 + "hoj" +  COLOR_1 + "||" + COLOR_0 + "hoto" +  COLOR_1 + "||" + COLOR_0 + "kingslayer" +  COLOR_1 + "||" + COLOR_0 + "passion" +  COLOR_1 + "||" + COLOR_0 + "duress");
+					Print("spledor" +  COLOR_1 + "||" + COLOR_0 + "stone" +  COLOR_1 + "||" + COLOR_0 + "wind" +  COLOR_1 + "||" + COLOR_0 + "brand" +  COLOR_1 + "||" + COLOR_0 + "death" +  COLOR_1 + "||" + COLOR_0 + "destruction" +  COLOR_1 + "||" + COLOR_0 + "dragon" +  COLOR_1 + "||" + COLOR_0 + "dream" +  COLOR_1 + "||" + COLOR_0 + "edge" +  COLOR_1 + "||" + COLOR_0 + "faith" +  COLOR_1 + "||" + COLOR_0 + "fort");
+					Print("ice" +  COLOR_1 + "||" + COLOR_0 + "infinity" +  COLOR_1 + "||" + COLOR_0 + "insight" +  COLOR_1 + "||" + COLOR_0 + "lw" +  COLOR_1 + "||" + COLOR_0 + "lawbringer" +  COLOR_1 + "||" + COLOR_0 + "oath" +  COLOR_1 + "||" + COLOR_0 + "obedience" +  COLOR_1 + "||" + COLOR_0 + "pheonix" +  COLOR_1 + "||" + COLOR_0 + "pride" +  COLOR_1 + "||" + COLOR_0 + "rift" +  COLOR_1 + "||" + COLOR_0 + "spirit")
+					Print("voice of reason" +  COLOR_1 + "||" + COLOR_0 + "greif" +  COLOR_1 + "||" + COLOR_0 + "harmony" +  COLOR_1 + "||" + COLOR_0 + "prudence" +  COLOR_1 + "||" + COLOR_0 + "sanctuary" +  COLOR_1 + "||" + COLOR_0 + "venom" +  COLOR_1 + "||" + COLOR_0 + "wealth")
+					Print("wrath" +  COLOR_1 + "||" + COLOR_0 + "bone" +  COLOR_1 + "||" + COLOR_0 + "enlightenment" +  COLOR_1 + "||" + COLOR_0 + "myth" +  COLOR_1 + "||" + COLOR_0 + "peace" +  COLOR_1 + "||" + COLOR_0 + "principle" +  COLOR_1 + "||" + COLOR_0 + "rain" +  COLOR_1 + "||" + COLOR_0 + "treachery" +  COLOR_1 + "||" + COLOR_0 + "malice")
+					break;
+				//Runewords
+				case (msg.toLowerCase().indexOf(".ancients pledge")!= -1):
+					Delay(100);
+					PrintOrSay("Ancient's Pledge");
+					PrintOrSay("Ral + Ort + Tal");
+					PrintOrSay("Level: 21");
+					PrintOrSay("+50% Enhanced Defense");
+					PrintOrSay("+48% Resistance to Fire, Lightning, Poison");
+					PrintOrSay("+43% Resistance to Cold");
+					PrintOrSay("10% of Damage goes to Mana");
+					break;
+				case (msg.toLowerCase().indexOf(".black")!= -1):
+					Delay(100);
+					PrintOrSay("Black");
+					PrintOrSay("Thul + Io + Nef");
+					PrintOrSay("Level: 35");
+					PrintOrSay("+120% to Enhanced Defense");
+					PrintOrSay("40% Chance of Crushing Blow");
+					PrintOrSay("+200 to Attack Rating");
+					PrintOrSay("+10 to Vitality");
+					PrintOrSay("15% increased Attack Speed");
+					PrintOrSay("Magic Damage Reduced by 2");
+					PrintOrSay("Level 4 Corpse Explosion (12 charges)");
+					PrintOrSay("Knockback");
+					break;
+				case (msg.toLowerCase().indexOf(".fury")!= -1):
+					Delay(100);
+					PrintOrSay("Fury");
+					PrintOrSay("Jah + Gul + Eth");
+					PrintOrSay("Level: 65");
+					PrintOrSay("+209% Enhanced Damage");
+					PrintOrSay("40% Increased Attack Speed");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("66% Chance of Open Wounds");
+					PrintOrSay("33% Chance of Deadly Strike");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("20% to Attack Rating");
+					PrintOrSay("6% Life stolen per hit");
+					PrintOrSay("Ignores Targets Defense");
+					PrintOrSay("+5 to Frenzy (Barbarian only)");
+					break;
+				case (msg.toLowerCase().indexOf(".holy thunder")!= -1):
+					Delay(100);
+					PrintOrSay("Holy Thunder");
+					PrintOrSay("Eth + Ral + Ort + Tal");
+					PrintOrSay("Level: 21");
+					PrintOrSay("+60% Enhanced Damage");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("Adds 5-30 Fire Damage");
+					PrintOrSay("Adds 21-110 Lightning Damage");
+					PrintOrSay("+10 to Maximum Damage");
+					PrintOrSay("+60% Lightning Resistance");
+					PrintOrSay("+5 to Maximum Lightning Resistance");
+					PrintOrSay("+3 to Holy Shock (Paladin only)");
+					PrintOrSay("Level 7 Chain Lightning (60 charges)");
+					break;
+				case (msg.toLowerCase().indexOf(".honor")!= -1):
+					Delay(100);
+					PrintOrSay("Honor");
+					PrintOrSay("Amn + El + Ith + Tir + Sol");
+					PrintOrSay("Level: 27");
+					PrintOrSay("+160% Enhanced Damage");
+					PrintOrSay("+9 to minimum Damage");
+					PrintOrSay("+9 to maximum Damage");
+					PrintOrSay("25% Deadly Strike");
+					PrintOrSay("+250 to Attack Rating");
+					PrintOrSay("+1 to All Skills");
+					PrintOrSay("7% Life Stolen per hit");
+					PrintOrSay("+10 Replenish Life");
+					PrintOrSay("+10 to Strength");
+					PrintOrSay("+1 to Light Radius");
+					PrintOrSay("+2 to Mana per Kill");
+					break;
+				case (msg.toLowerCase().indexOf(".kings grace")!= -1):
+					Delay(100);
+					PrintOrSay("King's Grace");
+					PrintOrSay("Amn + Ral + Thul");
+					PrintOrSay("Level: 25");
+					PrintOrSay("+100% Enhanced Damage");
+					PrintOrSay("+100% Damage against Demons");
+					PrintOrSay("+50% Damage against Undead");
+					PrintOrSay("Adds 5-30 Fire Damage");
+					PrintOrSay("Adds 3-14 Cold Damage for 3 seconds");
+					PrintOrSay("+150 to Attack Rating");
+					PrintOrSay("+100 to Attack Rating against Demons");
+					PrintOrSay("+100 to Attack Rating against Undead");
+					PrintOrSay("7% Life Stolen per hit");
+					break;
+				case (msg.toLowerCase().indexOf(".leaf")!= -1):
+					Delay(100);
+					PrintOrSay("Leaf");
+					PrintOrSay("Tir + Ral");
+					PrintOrSay("Level: 19");
+					PrintOrSay("Adds 5-30 Fire Damage");
+					PrintOrSay("+3 to Fire Skills");
+					PrintOrSay("+3 to Fire Bolt (Sorceress only)");
+					PrintOrSay("+3 to Inferno (Sorceress only)");
+					PrintOrSay("+3 to Warmth (Sorceress only)");
+					PrintOrSay("+ 2 to Mana per kill");
+					PrintOrSay("+ 2 per character level to Defense");
+					PrintOrSay("+33% Cold Resist");
+					break;
+				case (msg.toLowerCase().indexOf(".lionheart")!= -1):
+					Delay(100);
+					PrintOrSay("Lionheart");
+					PrintOrSay("Hel + Lum + Fal");
+					PrintOrSay("Level: 41");
+					PrintOrSay("+20% Enhanced Damage");
+					PrintOrSay("-15% to Requirements");
+					PrintOrSay("+25 to Strength");
+					PrintOrSay("+10 to Energy");
+					PrintOrSay("+20 to Vitality");
+					PrintOrSay("+15 to Dexterity");
+					PrintOrSay("+50 to Life");
+					PrintOrSay("+30% to All Resistances");
+					break;
+				case (msg.toLowerCase().indexOf(".lore")!= -1):
+					Delay(100);
+					PrintOrSay("Lore");
+					PrintOrSay("Ort + Sol");
+					PrintOrSay("Level: 27");
+					PrintOrSay("+1 to All Skill Levels");
+					PrintOrSay("+10 to Energy");
+					PrintOrSay("+2 to Mana per Kill");
+					PrintOrSay("+30% Lightning Resist");
+					PrintOrSay("Damage reduced by 7");
+					PrintOrSay("+2 to Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".malice")!= -1):
+					Delay(100);
+					PrintOrSay("Malice");
+					PrintOrSay("Ith + El + Eth");
+					PrintOrSay("Level: 15");
+					PrintOrSay("+33% Enhanced Damage");
+					PrintOrSay("+9 to maximum Damage");
+					PrintOrSay("100% chance of Open Wounds");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("-100 Monster Defense per hit");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+50 to Attack Rating");
+					PrintOrSay("-5 Drain Life");
+					break;
+				case (msg.toLowerCase().indexOf(".melody")!= -1):
+					Delay(100);
+					PrintOrSay("Melody");
+					PrintOrSay("Shael + Ko + Nef");
+					PrintOrSay("Level: 39");
+					PrintOrSay("+50% Enhanced Damage");
+					PrintOrSay("300% Damage against Undead");
+					PrintOrSay("+3 to Bow and Crossbow Skills (Amazon only)");
+					PrintOrSay("+3 to Critical Strike (Amazon only)");
+					PrintOrSay("+3 to Dodge (Amazon only)");
+					PrintOrSay("+3 to Slow Missiles (Amazon only)");
+					PrintOrSay("20% increased Attack Speed");
+					PrintOrSay("+10 to Dexterity");
+					PrintOrSay("Knockback");
+					break;
+				case (msg.toLowerCase().indexOf(".memory")!= -1):
+					Delay(100);
+					PrintOrSay("Memory");
+					PrintOrSay("Lum + Io + Sol + Eth");
+					PrintOrSay("Level: 37");
+					PrintOrSay("+3 to Sorceress Skills");
+					PrintOrSay("33% Faster Cast rate");
+					PrintOrSay("20% increased maximum Mana");
+					PrintOrSay("+3 Energy Shield (Sorceress only)");
+					PrintOrSay("+2 Static Field (Sorceress only)");
+					PrintOrSay("+10 to Energy");
+					PrintOrSay("+10 to Vitality");
+					PrintOrSay("+9 to minimum Damage");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("Magic Damage reduced by 7");
+					PrintOrSay("+50% Enhanced Defense");
+					break;
+				case (msg.toLowerCase().indexOf(".nadir")!= -1):
+					Delay(100);
+					PrintOrSay("Nadir");
+					PrintOrSay("Nef + Tir");
+					PrintOrSay("Level: 13");
+					PrintOrSay("+50% Enhanced Defense");
+					PrintOrSay("+10 to Defense");
+					PrintOrSay("+30 Defense against Missile");
+					PrintOrSay("Level 13 Cloak of Shadows (9 charges)");
+					PrintOrSay("+2 Mana per kill");
+					PrintOrSay("+5 to Strength");
+					PrintOrSay("-33% extra gold from Monsters");
+					PrintOrSay("-3 to Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".radiance")!= -1):
+					Delay(100);
+					PrintOrSay("Radiance");
+					PrintOrSay("Nef + Sol + Ith");
+					PrintOrSay("Level: 27");
+					PrintOrSay("+75% Enhanced Defense");
+					PrintOrSay("+30 Defense against Missiles");
+					PrintOrSay("+10 to Energy");
+					PrintOrSay("+10 to Vitality");
+					PrintOrSay("15% Damage goes to Mana");
+					PrintOrSay("Magic Damage reduced by 3");
+					PrintOrSay("+33 to Mana");
+					PrintOrSay("Damage reduced by 7");
+					PrintOrSay("+5 to Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".rhyme")!= -1):
+					Delay(100);
+					PrintOrSay("Rhyme");
+					PrintOrSay("Shael + Eth");
+					PrintOrSay("Level: 29");
+					PrintOrSay("20% increased chance of Blocking");
+					PrintOrSay("40% faster Block Rate");
+					PrintOrSay("+25 to All Resistances");
+					PrintOrSay("15% Regenerate Mana");
+					PrintOrSay("Cannot be Frozen");
+					PrintOrSay("50% extra Gold from Monsters");
+					PrintOrSay("25% better chance of getting Magic Items");
+					break;
+				case (msg.toLowerCase().indexOf(".silence")!= -1):
+					Delay(100);
+					PrintOrSay("Silence");
+					PrintOrSay("Dol + Eld + Hel + Ist + Tir + Vex");
+					PrintOrSay("Level: 55");
+					PrintOrSay("200% Enhanced Damage");
+					PrintOrSay("+75% Damage against Undead");
+					PrintOrSay("-20% Requirements");
+					PrintOrSay("20% increased Attack Speed");
+					PrintOrSay("+50 to Attack Rating against Undead");
+					PrintOrSay("+2 to all Skill Levels");
+					PrintOrSay("+75 to All Resistances");
+					PrintOrSay("20% Faster Hit Recoverty");
+					PrintOrSay("11% Mana stolen per Hit");
+					PrintOrSay("25% Hit Causes Monster to Flee");
+					PrintOrSay("+33 Hit Blinds Target");
+					PrintOrSay("+2 to Mana per Kill");
+					PrintOrSay("30% better chance of getting Magic Items");
+					break;
+				case (msg.toLowerCase().indexOf(".smoke")!= -1):
+					Delay(100);
+					PrintOrSay("Smoke");
+					PrintOrSay("Nef + Lum");
+					PrintOrSay("Level: 37");
+					PrintOrSay("+75% Enhanced Defense");
+					PrintOrSay("+280 Defense against Missiles");
+					PrintOrSay("+50 to All Resistances");
+					PrintOrSay("20% Faster Hit Recovery");
+					PrintOrSay("Level 6 Weaken (18 charges)");
+					PrintOrSay("+10 to Energy");
+					PrintOrSay("-1 to Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".stealth")!= -1):
+					Delay(100);
+					PrintOrSay("Stealth");
+					PrintOrSay("Tal + Eth");
+					PrintOrSay("Level: 17");
+					PrintOrSay("Magic Damage reduced by 3");
+					PrintOrSay("+6 to Dexterity");
+					PrintOrSay("+15 to maximum Stamina");
+					PrintOrSay("+30% Poison Resist");
+					PrintOrSay("15% Regenerate Mana");
+					PrintOrSay("25% Faster run/walk");
+					PrintOrSay("25% Faster Cast Rate");
+					PrintOrSay("25% Faster Hit Recovery");
+					break;
+				case (msg.toLowerCase().indexOf(".steel")!= -1):
+					Delay(100);
+					PrintOrSay("Steel");
+					PrintOrSay("Tir + El");
+					PrintOrSay("Level: 13");
+					PrintOrSay("20% Enhanced Damage");
+					PrintOrSay("+3 to minimum Damage");
+					PrintOrSay("+3 to maximum Damage");
+					PrintOrSay("+50 to Attack Rating");
+					PrintOrSay("50% chance of Open Wounds");
+					PrintOrSay("25% Increased Attack Speed");
+					PrintOrSay("+2 to Mana per Kill");
+					PrintOrSay("+1 to Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".strength")!= -1):
+					Delay(100);
+					PrintOrSay("Strength");
+					PrintOrSay("Amn + Tir");
+					PrintOrSay("Level: 25");
+					PrintOrSay("35% Enhanced Damage");
+					PrintOrSay("25% chance of Crushing Blow");
+					PrintOrSay("7% Life stolen per Hit");
+					PrintOrSay("7% Life stolen per Hit");
+					PrintOrSay("+20 to Strength");
+					PrintOrSay("+10 to Vitality");
+					break;
+				case (msg.toLowerCase().indexOf(".venom")!= -1):
+					Delay(100);
+					PrintOrSay("Venom");
+					PrintOrSay("Tal + Dol + Mal");
+					PrintOrSay("Level: 49");
+					PrintOrSay("25% Hit Causes Monsters to Flee");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("7% Mana Steal per hit");
+					PrintOrSay("Level 15 Poison Explosion (27 charges)");
+					PrintOrSay("Level 13 Poison Nova (11 charges)");
+					PrintOrSay("+273 Poison Damage for 6 seconds");
+					break;
+				case (msg.toLowerCase().indexOf(".wealth")!= -1):
+					Delay(100);
+					PrintOrSay("Holy Thunder");
+					PrintOrSay("Lem + Ko + Tir");
+					PrintOrSay("Level: 43");
+					PrintOrSay("+300% extra Gold from Monsters");
+					PrintOrSay("100% better chance of getting Magic Items");
+					PrintOrSay("+2 to Mana per Kill");
+					PrintOrSay("+10 to Dexterity");
+					break;
+				case (msg.toLowerCase().indexOf(".white")!= -1):
+					Delay(100);
+					PrintOrSay("Holy Thunder");
+					PrintOrSay("Dol + Io");
+					PrintOrSay("Level: 35");
+					PrintOrSay("25% Hit causes Monsters to Flee");
+					PrintOrSay("+10 to Vitality");
+					PrintOrSay("+3 to Poison and Bone Skills (Necromancer only)");
+					PrintOrSay("+3 to Bone Armor (Necromancer only)");
+					PrintOrSay("+2 to Bone Spear (Necromancer only)");
+					PrintOrSay("+4 to Skeleton Mastery (Necromancer only)");
+					PrintOrSay("Magic Damage reduced by 4");
+					PrintOrSay("20% Faster Cast Rate");
+					PrintOrSay("+13 to Mana");
+					break;
+				case (msg.toLowerCase().indexOf(".zephyr")!= -1):
+					Delay(100);
+					PrintOrSay("Zephyr");
+					PrintOrSay("Ort + Eth");
+					PrintOrSay("Level: 21");
+					PrintOrSay("+33% Enhanced Damage");
+					PrintOrSay("+66 to Attack Rating");
+					PrintOrSay("Adds 1-50 Lightning Damage");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("+25 Defense");
+					PrintOrSay("25% Faster run/walk");
+					PrintOrSay("25% Increased Attack Speed");
+					PrintOrSay("7% chance to cast level 1 Twister when hit");
+					break;
+				case (msg.toLowerCase().indexOf(".beast")!= -1):
+					Delay(100);
+					PrintOrSay("Beast");
+					PrintOrSay("Ber + Tir + Um + Mal + Lum");
+					PrintOrSay("Level: 63");
+					PrintOrSay("Level 9 Fanaticism Aura When Equipped");
+					PrintOrSay("+40% Increased Attack Speed");
+					PrintOrSay("+240-270% Enhanced Damage");
+					PrintOrSay("20% Chance of Crushing Blow");
+					PrintOrSay("25% Chance of Open Wounds");
+					PrintOrSay("+3 To Werebear");
+					PrintOrSay("+3 To Lycanthropy");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+25-40 To Strength");
+					PrintOrSay("+10 To Energy");
+					PrintOrSay("+2 To Mana After Each Kill");
+					PrintOrSay("5 Charges Level 13 Summon Grizzly ");
+					break;
+				case (msg.toLowerCase().indexOf(".bramble")!= -1):
+					Delay(100);
+					PrintOrSay("Bramble");
+					PrintOrSay("Ral + Ohm + Sur + Eth");
+					PrintOrSay("Level: 61");
+					PrintOrSay("Level 15-21 Thorns Aura When Equipped");
+					PrintOrSay("+50% Faster Hit Recovery");
+					PrintOrSay("+25-50% To Poison Skill Damage");
+					PrintOrSay("+300 Defense");
+					PrintOrSay("+5% Increased Maximum Mana");
+					PrintOrSay("+15% Regenerate Mana");
+					PrintOrSay("+5% To Maximum Cold Resist");
+					PrintOrSay("+30% Fire Resist");
+					PrintOrSay("100% Poison Resist");
+					PrintOrSay("+13 Life After Each Kill");
+					PrintOrSay("33 Charges Level 13 Spirit of Barbs");
+					break;
+				case (msg.toLowerCase().indexOf(".botd")!= -1):
+					Delay(100);
+					PrintOrSay("Breath of the Dying");
+					PrintOrSay("Vex + Hel + El + Eld + Zod + Eth");
+					PrintOrSay("Level: 69");
+					PrintOrSay("+50% Chance To Cast Level 20 Poison Nova When You Kill An Enemy");
+					PrintOrSay("Indestructible");
+					PrintOrSay("+60% Increased Attack Speed");
+					PrintOrSay("+350-400% Enhanced Damage");
+					PrintOrSay("+200% Damage To Undead");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("+50 To Attack Rating");
+					PrintOrSay("+50 To Attack Rating Against Undead");
+					PrintOrSay("7% Mana Stolen Per Hit");
+					PrintOrSay("12-15% Life Stolen Per Hit");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+30 To All Attributes");
+					PrintOrSay("+1 To Light Radius");
+					PrintOrSay("-20% Requirements");
+					break;
+				case (msg.toLowerCase().indexOf(".cta")!= -1):
+					Delay(100);
+					PrintOrSay("Call To Arms");
+					PrintOrSay("Amn + Ral + Mal + Ist + Ohm");
+					PrintOrSay("Level: 57");
+					PrintOrSay("+1 To All Skills");
+					PrintOrSay("+40% Increased Attack Speed");
+					PrintOrSay("+250-290% Enhanced Damage");
+					PrintOrSay("Adds 5-30 Fire Damage");
+					PrintOrSay("7% Life Stolen Per Hit");
+					PrintOrSay("+2-6 To Battle Command");
+					PrintOrSay("+1-6 To Battle Orders");
+					PrintOrSay("+1-4 To Battle Cry");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+12 Replenish Life");
+					PrintOrSay("30% Better Chance of Getting Magic Items ");
+					break;
+				case (msg.toLowerCase().indexOf(".coh")!= -1):
+					Delay(100);
+					PrintOrSay("Chains of Honor");
+					PrintOrSay("Dol + Um + Ber + Ist");
+					PrintOrSay("Level: 63");
+					PrintOrSay("+2 To All Skills");
+					PrintOrSay("+200% Damage To Demons");
+					PrintOrSay("+100% Damage To Undead");
+					PrintOrSay("8% Life Stolen Per Hit");
+					PrintOrSay("+70% Enhanced Defense");
+					PrintOrSay("+20 To Strength");
+					PrintOrSay("+7 to Replenish Life");
+					PrintOrSay("+65 to all Resistances");
+					PrintOrSay("Damage Reduced By 8%");
+					PrintOrSay("25% Better Chance of Getting Magic Items ");
+					break;
+				case (msg.toLowerCase().indexOf(".chaos")!= -1):
+					Delay(100);
+					PrintOrSay("Chaos");
+					PrintOrSay("Fal + Ohm + Um");
+					PrintOrSay("Level: 57");
+					PrintOrSay("9% Chance To Cast Level 11 Frozen Orb On Striking");
+					PrintOrSay("11% Chance To Cast Level 9 Charged Bolt On Striking");
+					PrintOrSay("+35% Increased Attacked Speed");
+					PrintOrSay("+290-340% Enhanced Damage");
+					PrintOrSay("Adds 216-471 Magic Damage");
+					PrintOrSay("25% Chance of Open Wounds");
+					PrintOrSay("+1 To Whirlwind");
+					PrintOrSay("+10 To Strength");
+					PrintOrSay("+15 Life After Each Demon Kill");
+					break;
+				case (msg.toLowerCase().indexOf(".crescent moon")!= -1):
+					Delay(100);
+					PrintOrSay("Crescent Moon");
+					PrintOrSay("Shael + Um + Tir");
+					PrintOrSay("Level: 47");
+					PrintOrSay("10% Chance To Cast Level 17 Chain Lightning On Striking");
+					PrintOrSay("7% Chance To Cast Level 13 Static Field On Striking");
+					PrintOrSay("+20% Increased Attack Speed");
+					PrintOrSay("+180-220% Enhanced Damage");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("-35% To Enemy Lightning Resistance");
+					PrintOrSay("25% Chance of Open Wounds");
+					PrintOrSay("+9-11 Magic Absorb");
+					PrintOrSay("+2 To Mana After Each Kill");
+					PrintOrSay("30 Charges Level 18 Summon Spirit Wolf");
+					break;
+				case (msg.toLowerCase().indexOf(".delirium")!= -1):
+					Delay(100);
+					PrintOrSay("Delirium");
+					PrintOrSay("Lem + Ist + Io");
+					PrintOrSay("Level: 51");
+					PrintOrSay("1% Chance To Cast Level 50 Delirium When Struck");
+					PrintOrSay("6% Chance To Cast Level 14 Mind Blast When Struck");
+					PrintOrSay("14% Chance To Cast Level 13 Terror When Struck");
+					PrintOrSay("11% Chance To Cast Level 18 Confuse On Striking");
+					PrintOrSay("+2 To All Skills");
+					PrintOrSay("+261 Defense");
+					PrintOrSay("+10 To Vitality");
+					PrintOrSay("50% Extra Gold From Monsters");
+					PrintOrSay("25% Better Chance of Getting Magic Items");
+					PrintOrSay("60 Charges Level 17 Attract");
+					break;
+				case (msg.toLowerCase().indexOf(".doom")!= -1):
+					Delay(100);
+					PrintOrSay("Doom");
+					PrintOrSay("Hel + Ohm + Um + Lo + Cham");
+					PrintOrSay("Level: 67");
+					PrintOrSay("5% Chance To Cast Level 18 Volcano On Striking");
+					PrintOrSay("Level 12 Holy Freeze Aura When Equipped");
+					PrintOrSay("+2 To All Skills");
+					PrintOrSay("+45% Increased Attack Speed");
+					PrintOrSay("+330-370% Enhanced Damage");
+					PrintOrSay("-40-60% To Enemy Cold Resistance");
+					PrintOrSay("0% Deadly Strike");
+					PrintOrSay("25% Chance of Open Wounds");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+3 Freezes Target");
+					PrintOrSay("-20% Requirements");
+					break;
+				case (msg.toLowerCase().indexOf(".duress")!= -1):
+					Delay(100);
+					PrintOrSay("Duress");
+					PrintOrSay("Shael + Um + Thul");
+					PrintOrSay("Level: 47");
+					PrintOrSay("+40% Faster Hit Recovery");
+					PrintOrSay("+10-20% Enhanced Damage");
+					PrintOrSay("+37-133 Cold Damage over 2 seconds");
+					PrintOrSay("15% chance of Crushing Blow");
+					PrintOrSay("33% chance of Open Wounds");
+					PrintOrSay("+150-200% Enhanced Defense");
+					PrintOrSay("-20% slower Stamina Drain");
+					PrintOrSay("+45% Cold Resist");
+					PrintOrSay("+15% Lightning Resist");
+					PrintOrSay("+15% Fire Resist");
+					PrintOrSay("+15% Poison Resist");
+					break;
+				case (msg.toLowerCase().indexOf(".enigma")!= -1):
+					Delay(100);
+					PrintOrSay("Enigma");
+					PrintOrSay("Jah + Ith + Ber");
+					PrintOrSay("Level: 65");
+					PrintOrSay("+2 To All Skills");
+					PrintOrSay("+45% Faster Run/Walk");
+					PrintOrSay("+1 To Teleport");
+					PrintOrSay("+750-775 Defense");
+					PrintOrSay("+ (0.75 Per Character Level) To Strength");
+					PrintOrSay("Increase Maximum Life 5%");
+					PrintOrSay("Damage Reduced By 8%");
+					PrintOrSay("+14 Life After Each Kill");
+					PrintOrSay("15% Damage Taken Goes To Mana");
+					PrintOrSay("+ (1 Per Character Level) Better Chance of Getting Magic Items ");
+					break;
+				case (msg.toLowerCase().indexOf(".eternity")!= -1):
+					Delay(100);
+					PrintOrSay("Eternity");
+					PrintOrSay("Amn + Ber + Ist + Sol + Sur");
+					PrintOrSay("Level: 63");
+					PrintOrSay("Indestructible");
+					PrintOrSay("+260-310% Enhanced Damage");
+					PrintOrSay("Adds 1-50 Lightning Damage");
+					PrintOrSay("+9 To Minimum Damage");
+					PrintOrSay("7% Life Stolen Per Hit");
+					PrintOrSay("20% Chance of Crushing Blow");
+					PrintOrSay("Hit Blinds Target");
+					PrintOrSay("Slows Target By 33%");
+					PrintOrSay("+16 Replenish Life");
+					PrintOrSay("16% Replenish Mana");
+					PrintOrSay("Cannot Be Frozen");
+					PrintOrSay("30% Better Chance Of Getting Magic Items");
+					PrintOrSay("88 Charges Level 8 Revive");
+					break;
+				case (msg.toLowerCase().indexOf(".exile")!= -1):
+					Delay(100);
+					PrintOrSay("Exile");
+					PrintOrSay("Vex + Ohm + Ist + Dol");
+					PrintOrSay("Level: 57");
+					PrintOrSay("15% Chance To Cast Level 5 Life Tap On Striking");
+					PrintOrSay("Level 13-16 Defiance Aura When Equipped");
+					PrintOrSay("+2 To Offensive Auras (Paladin Only)");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("+30% Faster Block Rate");
+					PrintOrSay("25% Faster run/walk");
+					PrintOrSay("Freezes Targe");
+					PrintOrSay("+220-260% Enhanced Defense");
+					PrintOrSay("+7 Replenish Life");
+					PrintOrSay("+5% To Maximum Cold Resist");
+					PrintOrSay("+5% To Maximum Fire Resist");
+					PrintOrSay("25% Better Chance Of Getting Magic Items");
+					PrintOrSay("Repairs 1 Durability in 4 Seconds ");
+					break;
+				case (msg.toLowerCase().indexOf(".famine")!= -1):
+					Delay(100);
+					PrintOrSay("Famine");
+					PrintOrSay("Fal + Ohm + Ort + Jah");
+					PrintOrSay("Level: 65");
+					PrintOrSay("+30% Increased Attack Speed");
+					PrintOrSay("+320-370% Enhanced Damage");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("Adds 180-200 Magic Damage");
+					PrintOrSay("Adds 50-200 Fire Damage");
+					PrintOrSay("Adds 51-250 Lightning Damage");
+					PrintOrSay("Adds 50-200 Cold Damage");
+					PrintOrSay("12% Life Stolen Per Hit");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+10 To Strength ");
+					break;
+				case (msg.toLowerCase().indexOf(".gloom")!= -1):
+					Delay(100);
+					PrintOrSay("Gloom");
+					PrintOrSay("Fal + Um + Pul");
+					PrintOrSay("Level: 47");
+					PrintOrSay("15% Chance To Cast Level 3 Dim Vision When Struck");
+					PrintOrSay("+10% Faster Hit Recovery");
+					PrintOrSay("+200-260% Enhanced Defense");
+					PrintOrSay("+10 To Strength");
+					PrintOrSay("+45 to all Resistances");
+					PrintOrSay("Half Freeze Duration");
+					PrintOrSay("5% Damage Taken Goes To Mana");
+					PrintOrSay("-3 To Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".hoj")!= -1):
+					Delay(100);
+					PrintOrSay("Hand of Justice");
+					PrintOrSay("Sur + Cham + Amn + Lo");
+					PrintOrSay("Level: 67");
+					PrintOrSay("100% Chance To Cast Level 36 Blaze When You Level-Up");
+					PrintOrSay("100% Chance To Cast Level 48 Meteor When You Die");
+					PrintOrSay("Level 16 Holy Fire Aura When Equipped");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("+33% Increased Attack Speed");
+					PrintOrSay("+280-330% Enhanced Damage");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("7% Life Stolen Per Hit");
+					PrintOrSay("-20% To Enemy Fire Resistance");
+					PrintOrSay("20% Deadly Strike");
+					PrintOrSay("Hit Blinds Target");
+					PrintOrSay("+3 Freezes Target ");
+					break;
+				case (msg.toLowerCase().indexOf(".hoto")!= -1):
+					Delay(100);
+					PrintOrSay("Heart of the Oak");
+					PrintOrSay("Ko + Vex + Pul + Thul");
+					PrintOrSay("Level: 55");
+					PrintOrSay("+3 To All Skills");
+					PrintOrSay("+40% Faster Cast Rate");
+					PrintOrSay("+75% Damage To Demons");
+					PrintOrSay("+100 To Attack Rating Against Demons");
+					PrintOrSay("Adds 3-14 Cold Damage for 3 seconds");
+					PrintOrSay("7% Mana Stolen Per Hit");
+					PrintOrSay("+10 To Dexterity");
+					PrintOrSay("+20 Replenish Life");
+					PrintOrSay("15% Increased Maximum Mana");
+					PrintOrSay("+30-40 to all Resistances");
+					PrintOrSay("25 Charges Level 4 Oak Sage");
+					PrintOrSay("60 Charges Level 14 Raven");
+					break;
+				case (msg.toLowerCase().indexOf(".kingslayer")!= -1):
+					Delay(100);
+					PrintOrSay("Kingslayer");
+					PrintOrSay("Mal + Um + Gul + Fal");
+					PrintOrSay("Level: 53");
+					PrintOrSay("+30% Increased Attack Speed");
+					PrintOrSay("+230-270% Enhanced Damage");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("33% Chance of Crushing Blow");
+					PrintOrSay("50% Chance of Open Wounds");
+					PrintOrSay("+1 To Vengeance");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+10 To Strengt");
+					PrintOrSay("40% Extra Gold From Monsters ");
+					break;
+				case (msg.toLowerCase().indexOf(".passion")!= -1):
+					Delay(100);
+					PrintOrSay("Passion");
+					PrintOrSay("Dol + Ort + Eld + Lem");
+					PrintOrSay("Level: 43");
+					PrintOrSay("+25% Increased Attack Speed");
+					PrintOrSay("+160-210% Enhanced Damage");
+					PrintOrSay("50-80% Bonus To Attack Rating");
+					PrintOrSay("+75% Damage To Undead");
+					PrintOrSay("+50 To Attack Rating Against Undead");
+					PrintOrSay("Adds 1-50 Lightning Damage");
+					PrintOrSay("+1 To Berserk");
+					PrintOrSay("+1 To Zeal");
+					PrintOrSay("+10 Hit Blinds Target");
+					PrintOrSay("25% Hit Causes Monster To Flee");
+					PrintOrSay("75% Extra Gold From Monsters");
+					PrintOrSay("12 Charges Level 3 Heart of Wolverine");
+					break;
+				case (msg.toLowerCase().indexOf(".prudence")!= -1):
+					Delay(100);
+					PrintOrSay("Prudence");
+					PrintOrSay("Mal + Tir");
+					PrintOrSay("Level: 49");
+					PrintOrSay("+25% Faster Hit Recovery");
+					PrintOrSay("+140-170% Enhanced Defense");
+					PrintOrSay("+25-35 to all Resistances");
+					PrintOrSay("Damage reduced by 3");
+					PrintOrSay("Magic damage reduced by 17");
+					PrintOrSay("+2 to Mana after each kill");
+					PrintOrSay("+1 to Light Radius");
+					PrintOrSay("Repairs 1 Durability in 4 seconds");;
+					break;
+				case (msg.toLowerCase().indexOf(".sanctuary")!= -1):
+					Delay(100);
+					PrintOrSay("Sanctuary");
+					PrintOrSay("Ko + Ko + Mal");
+					PrintOrSay("Level: 49");
+					PrintOrSay("+20% Faster Hit Recovery");
+					PrintOrSay("+20% Faster Block Rate");
+					PrintOrSay("20% Increased Chance of Blocking");
+					PrintOrSay("+130-160% Enhanced Defense");
+					PrintOrSay("+250 Defense vs. Missile");
+					PrintOrSay("+20 To Dexterity");
+					PrintOrSay("+50-70 to all Resistances");
+					PrintOrSay("Magic Damage Reduced By 7");
+					PrintOrSay("60 Charges Level 12 Slow Missiles");
+					break;
+				case (msg.toLowerCase().indexOf(".splendor")!= -1):
+					Delay(100);
+					PrintOrSay("Splendor");
+					PrintOrSay("Eth + Lum");
+					PrintOrSay("Level: 37");
+					PrintOrSay("+1 to all Skills");
+					PrintOrSay("+10% Faster Cast Rate");
+					PrintOrSay("+20% Faster Block Rate");
+					PrintOrSay("+60-100% Enhanced Defense");
+					PrintOrSay("+10 to Energy");
+					PrintOrSay("25% Faster run/walk");
+					PrintOrSay("15% Regenerate Mana");
+					PrintOrSay("50% extra Gold from Monsters");
+					PrintOrSay("20% better chance of getting Magic items");
+					PrintOrSay("+3 to Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".stone")!= -1):
+					Delay(100);
+					PrintOrSay("Stone");
+					PrintOrSay("Shael + Um + Pul + Lum");
+					PrintOrSay("Level: 47");
+					PrintOrSay("+60% Faster Hit Recovery");
+					PrintOrSay("+250-290% Enhanced Defense");
+					PrintOrSay("+300 Defense Vs. Missile");
+					PrintOrSay("+16 To Strength");
+					PrintOrSay("+16 To Vitality");
+					PrintOrSay("+10 To Energy");
+					PrintOrSay("+15 to all Resistances");
+					PrintOrSay("80 Charges Level 16 Molten Boulder");
+					PrintOrSay("16 Charges Level 16 Clay Golem");
+					PrintOrSay("7% chance to cast level 1 Twister when hit");
+					break;
+				case (msg.toLowerCase().indexOf(".wind")!= -1):
+					Delay(100);
+					PrintOrSay("Wind");
+					PrintOrSay("Sur + El	");
+					PrintOrSay("Level: 11");
+					PrintOrSay("10% chance to cast level 9 Tornado on striking");
+					PrintOrSay("+20% Faster Run/Walk");
+					PrintOrSay("+40% Increased Attack Speed");
+					PrintOrSay("+15% Faster Hit Recovery");
+					PrintOrSay("+120-160% Enhanced Damage");
+					PrintOrSay("-50% Target Defense");
+					PrintOrSay("+50 to Attack Rating");
+					PrintOrSay("Hit Blinds Target");
+					PrintOrSay("+1 to Light Radius");
+					PrintOrSay("127 Charges Level 13 Twister");
+					break;
+				case (msg.toLowerCase().indexOf(".brand")!= -1):
+					Delay(100);
+					PrintOrSay("Brand");
+					PrintOrSay("Jah + Lo + Mal + Gul");
+					PrintOrSay("Level: 65");
+					PrintOrSay("35% Chance to cast level 14 Amplify Damage when struck");
+					PrintOrSay("100% Chance to cast level 18 Bone Spear on striking");
+					PrintOrSay("Fires Explosive Arrows or Bolts");
+					PrintOrSay("+260-340% Enhanced Damage");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("20% bonus to Attack Rating");
+					PrintOrSay("+280-330% Damage to Demons");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("Knockback");
+					PrintOrSay("Fires explosive arrows or bolts");
+					break;
+				case (msg.toLowerCase().indexOf(".death")!= -1):
+					Delay(100);
+					PrintOrSay("Death");
+					PrintOrSay("Hel + El + Vex + Ort + Gul");
+					PrintOrSay("Level: 55");
+					PrintOrSay("100% chance to cast level 44 Chain Lightning when you die");
+					PrintOrSay("25% chance to cast level 18 Glacial Spike on attack");
+					PrintOrSay("Indestructible");
+					PrintOrSay("+300-385% Enhanced Damage");
+					PrintOrSay("20% bonus to Attack Rating");
+					PrintOrSay("+50 to Attack Rating");
+					PrintOrSay("Adds 1-50 Lightning Damage");
+					PrintOrSay("7% Mana stolen per hit");
+					PrintOrSay("50% chance of Crushing Blow");
+					PrintOrSay("+0.5 per character level to Deadly Strike");
+					PrintOrSay("+1 to Light Radius");
+					PrintOrSay("15 charges level 22 Blood Golem");
+					PrintOrSay("-20% Requirements");
+					break;
+				case (msg.toLowerCase().indexOf(".gestruction")!= -1):
+					Delay(100);
+					PrintOrSay("Destruction");
+					PrintOrSay("Vex + Lo + Ber + Jah + Ko");
+					PrintOrSay("Level: 65");
+					PrintOrSay("23% chance to cast level 12 Volcano on striking");
+					PrintOrSay("5% chance to cast level 23 Molten Boulder on striking");
+					PrintOrSay("100% chance to cast level 45 Meteor when you die");
+					PrintOrSay("15% chance to cast level 22 Nova on attack");
+					PrintOrSay("+350% Enhanced Damage");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("Adds 100-180 Magic Damage");
+					PrintOrSay("7% Mana stolen per hit");
+					PrintOrSay("20% chance of Crushing Blow");
+					PrintOrSay("20% Deadly Strike");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+10 to Dexterity");
+					break;
+				case (msg.toLowerCase().indexOf(".dragon")!= -1):
+					Delay(100);
+					PrintOrSay("Dragon");
+					PrintOrSay("Sur + Lo + Sol");
+					PrintOrSay("Level: 61");
+					PrintOrSay("20% chance to cast level 18 Venom when struck");
+					PrintOrSay("12% chance to cast level 15 Hydra on striking");
+					PrintOrSay("Level 14 Holy Fire Aura when equipped");
+					PrintOrSay("+360 to Defense");
+					PrintOrSay("+230 Defense against missiles");
+					PrintOrSay("+3-5 to all Attributes");
+					PrintOrSay("+0.375 per character level to Strength");
+					PrintOrSay("5% increased maximum Mana");
+					PrintOrSay("+5% maximum Lightning Resist");
+					PrintOrSay("Damage reduced by 7");
+					break;
+				case (msg.toLowerCase().indexOf(".dream")!= -1):
+					Delay(100);
+					PrintOrSay("Dream");
+					PrintOrSay("Io + Jah + Pul");
+					PrintOrSay("Level: 65");
+					PrintOrSay("10% chance to cast level 15 Confuse when struck");
+					PrintOrSay("Level 15 Holy Shock aura when equipped");
+					PrintOrSay("+20-30% Faster Hit Recovery");
+					PrintOrSay("+30% Enhanced Defense");
+					PrintOrSay("+150-220 Defense");
+					PrintOrSay("+10 to Vitality");
+					PrintOrSay("5% increased maximum Life");
+					PrintOrSay("+0.625 per character level to Mana");
+					PrintOrSay("+5-20 to All Resistances");
+					PrintOrSay("15-25% better chance of getting Magic Items");
+					break;
+				case (msg.toLowerCase().indexOf(".edge")!= -1):
+					Delay(100);
+					PrintOrSay("Edge");
+					PrintOrSay("Tir + Tal + Amn");
+					PrintOrSay("Level: 25");
+					PrintOrSay("Level 15 Thorns aura when equipped");
+					PrintOrSay("35% increased Attack Speed");
+					PrintOrSay("+320-380% damage to Demons");
+					PrintOrSay("+280% damage to Undead");
+					PrintOrSay("+75 Poison Damage for 5 seconds");
+					PrintOrSay("7% Life stolen per hit");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+5-10 to all Attributes");
+					PrintOrSay("+2 to Mana after each kill");
+					PrintOrSay("All Vendor Prices Reduced 15%");
+					break;
+				case (msg.toLowerCase().indexOf(".faith")!= -1):
+					Delay(100);
+					PrintOrSay("Faith");
+					PrintOrSay("Ohm + Jah + Lem + Eld");
+					PrintOrSay("Level: 65");
+					PrintOrSay("Level 12-15 Fanaticism aura when equipped");
+					PrintOrSay("+1-2 to all Skills");
+					PrintOrSay("+330% Enhanced Damage");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("300% bonus to Attack Rating");
+					PrintOrSay("+75% Damage to Undead");
+					PrintOrSay("+50 to Attack Rating against Undead");
+					PrintOrSay("+120 Fire Damage");
+					PrintOrSay("+15 to all Resistances");
+					PrintOrSay("10% Reaminate as Returned");
+					PrintOrSay("75% extra Gold from Monsters");
+					break;
+				case (msg.toLowerCase().indexOf(".1fort")!= -1):
+					Delay(100);
+					PrintOrSay("Fort (Weapon)");
+					PrintOrSay("El + Sol + Dol + Lo");
+					PrintOrSay("Level: 59");
+					PrintOrSay("20% chance to cast level 15 Chilling Armor when struck");
+					PrintOrSay("+25% Faster Cast Rate");
+					PrintOrSay("+300% Enhanced Damage");
+					PrintOrSay("+200% Enhanced Defense");
+					PrintOrSay("+9 to minimum Damage");
+					PrintOrSay("+50 to Attack Rating");
+					PrintOrSay("20% Deadly Strike");
+					PrintOrSay("25% hit causes monsters to flee");
+					PrintOrSay("+20-30 to all Resistances");
+					PrintOrSay("12% Damage taken goes to Mana");
+					PrintOrSay("+1 to Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".2fort")!= -1):
+					Delay(100);
+					PrintOrSay("Fortitude");
+					PrintOrSay("El + Sol + Dol + Lo");
+					PrintOrSay("Level: 59");
+					PrintOrSay("20% chance to cast level 15 Chilling Armor when struck");
+					PrintOrSay("+25% Faster Cast Rate");
+					PrintOrSay("+300% Enhanced Damage");
+					PrintOrSay("+200% Enhanced Defense");
+					PrintOrSay("+15 Defense");
+					PrintOrSay("+1-99 per character level to Life");
+					PrintOrSay("+7 Replenish Life");
+					PrintOrSay("+5% to maximum Lightning Resistance");
+					PrintOrSay("+20-30 to all Resistances");
+					PrintOrSay("Damage reduced by 7");
+					PrintOrSay("12% Damage taken goes to Mana");
+					PrintOrSay("+1 to Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".fort")!= -1):
+					Delay(100);
+					PrintOrSay("Fort Weapon (1fort)");
+					PrintOrSay("Fort Armor (2fort)");
+					PrintOrSay("To use commands type . before your runeword of choice");
+					break;
+				case (msg.toLowerCase().indexOf(".grief")!= -1):
+					Delay(100);
+					PrintOrSay("Grief");
+					PrintOrSay("Eth + Tir + Lo + Mal + Ral");
+					PrintOrSay("Level: 59");
+					PrintOrSay("35% chance to cast level 15 Venom on striking");
+					PrintOrSay("+30-40% Increased Attack Speed");
+					PrintOrSay("+340-400 to Damage");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("+1.875 per character level to Damage to Demons");
+					PrintOrSay("Adds 5-30 Fire Damage");
+					PrintOrSay("-20-25% to enemy Poison Resistance");
+					PrintOrSay("20% Deadly Strike");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+2 to Mana after each kill");
+					PrintOrSay("+10-15 Life after each kill");
+					break;
+				case (msg.toLowerCase().indexOf(".harmony")!= -1):
+					Delay(100);
+					PrintOrSay("Harmony");
+					PrintOrSay("Tir + Ith + Sol + Ko");
+					PrintOrSay("Level: 39");
+					PrintOrSay("Level 10 vigor aura when equipped");
+					PrintOrSay("+200-275% Enhanced Damage");
+					PrintOrSay("+9 to minimum Damage");
+					PrintOrSay("+9 to maximum Damage");
+					PrintOrSay("Adds 55-160 Lightning Damage");
+					PrintOrSay("Adds 55-160 Fire Damage");
+					PrintOrSay("Adds 55-160 Cold Damage");
+					PrintOrSay("+2-6 to Vakyrie");
+					PrintOrSay("+10 to Dexterity");
+					PrintOrSay("+2 to Mana after each kill");
+					PrintOrSay("+2 to Light Radius");
+					PrintOrSay("25 charges level 20 Revive");
+					break;
+				case (msg.toLowerCase().indexOf(".ice")!= -1):
+					Delay(100);
+					PrintOrSay("Ice");
+					PrintOrSay("Amn + Shael + Jah + Lo");
+					PrintOrSay("Level: 65");
+					PrintOrSay("100% chance to cast level 40 Blizzard when you level up");
+					PrintOrSay("25% chance to cast level 22 Frost Nova on striking");
+					PrintOrSay("Level 18 Holy Freeze aura when equipped");
+					PrintOrSay("+20% increased Attack Speed");
+					PrintOrSay("+140-210% Enhanced Damage");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("+25-30% to Cold Skill Damage");
+					PrintOrSay("-20% to enemy Cold Resistance");
+					PrintOrSay("7% Life stolen per hit");
+					PrintOrSay("20% Deadly Strike");
+					PrintOrSay("3.125 per character level Extra Gold from Monsters");
+					break;
+				case (msg.toLowerCase().indexOf(".infinity")!= -1):
+					Delay(100);
+					PrintOrSay("Infinity");
+					PrintOrSay("Ber + Mal + Ber + Ist");
+					PrintOrSay("Level: 63");
+					PrintOrSay("50% chance to cast level 20 Chain Lightning when you kill an enemy");
+					PrintOrSay(" Level 12 Conviction aura when equipped");
+					PrintOrSay("+35% Faster Run / Walk");
+					PrintOrSay("+255-325% Enhanced Damage");
+					PrintOrSay("-45-55% to enemy Lightning Resistance");
+					PrintOrSay("40% chance of Crushing Blow");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("0.5 per character level to Vitality");
+					PrintOrSay("30% better chance of getting Magic Items");
+					PrintOrSay("30 charges level 21 Cyclone Armor");
+					break;
+				case (msg.toLowerCase().indexOf(".insight")!= -1):
+					Delay(100);
+					PrintOrSay("Insight");
+					PrintOrSay("Ral + Tir + Tal + Sol");
+					PrintOrSay("Level: 27");
+					PrintOrSay("Level 12-17 Meditation aura when equipped");
+					PrintOrSay("+35% Faster Cast Rate");
+					PrintOrSay("+200-260% Enhanced Damage");
+					PrintOrSay("+9 to minimum Damage");
+					PrintOrSay("180-250% bonus to Attack Rating");
+					PrintOrSay("Adds 5-30 Fire Damage");
+					PrintOrSay("+75 Poison Damage for 5 seconds");
+					PrintOrSay("+1-6 to Critical Strike");
+					PrintOrSay("+5 to All Attributes");
+					PrintOrSay("+2 to Mana after each kill");
+					PrintOrSay("23% better chance of getting Magic Items");
+					break;
+				case (msg.toLowerCase().indexOf(".lastwish")!= -1):
+					Delay(100);
+					PrintOrSay("Last Wish");
+					PrintOrSay("Jah + Mal + Jah + Sur + Jah + Ber");
+					PrintOrSay("Level: 65");
+					PrintOrSay("6% chance to cast level 11 Fade when struck");
+					PrintOrSay("10% chance to cast level 18 Life Tap when striking");
+					PrintOrSay("20% chance to cast level 20 Charged Bolt on attack");
+					PrintOrSay("Level 17 Might aura when equipped");
+					PrintOrSay("+330-375% Enhanced Damage");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("60-70% chance of Crushing Blow");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("Hit Blinds Target");
+					PrintOrSay("0.5% per character level chance of getting Magic Items");
+					break;
+				case (msg.toLowerCase().indexOf(".lw")!= -1):
+					Delay(100);
+					PrintOrSay("Last Wish");
+					PrintOrSay("Jah + Mal + Jah + Sur + Jah + Ber");
+					PrintOrSay("Level: 65");
+					PrintOrSay("6% chance to cast level 11 Fade when struck");
+					PrintOrSay("10% chance to cast level 18 Life Tap when striking");
+					PrintOrSay("20% chance to cast level 20 Charged Bolt on attack");
+					PrintOrSay("Level 17 Might aura when equipped");
+					PrintOrSay("+330-375% Enhanced Damage");
+					PrintOrSay("Ignore Target's Defense");
+					PrintOrSay("60-70% chance of Crushing Blow");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("Hit Blinds Target");
+					PrintOrSay("0.5% per character level chance of getting Magic Items");
+					break;
+				case (msg.toLowerCase().indexOf(".lawbringer")!= -1):
+					Delay(100);
+					PrintOrSay("Lawbringer");
+					PrintOrSay("Amn + Lem + Ko");
+					PrintOrSay("Level: 43");
+					PrintOrSay("20% chance to cast level 15 Decrepify on striking");
+					PrintOrSay("Level 16-18 Sanctuary aura when equipped");
+					PrintOrSay("-50% Target Defense");
+					PrintOrSay("Adds 150-210 Fire Damage");
+					PrintOrSay("Adds 130-180 Cold Damage");
+					PrintOrSay("7% Life stolen per hit");
+					PrintOrSay("Slain Monsters Rest in Peace");
+					PrintOrSay("+200-250 Defense against missiles");
+					PrintOrSay("+10 to Dexterity");
+					PrintOrSay("75% extra Gold from Monsters");
+					break;
+				case (msg.toLowerCase().indexOf(".oath")!= -1):
+					Delay(100);
+					PrintOrSay("Oath");
+					PrintOrSay("Shael + Pul + Mal + Lum");
+					PrintOrSay("Level: 49");
+					PrintOrSay("30% chance to cast level 20 Bone Spirit on striking");
+					PrintOrSay("Indestructible");
+					PrintOrSay("+50% Increased Attack Speed");
+					PrintOrSay("+210-340% Enhanced Damage");
+					PrintOrSay("+75% Damage to Demons");
+					PrintOrSay("+100 to Attack Rating against Demons");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+10 to Energy");
+					PrintOrSay("+10-15 Magic Absorb");
+					PrintOrSay("20 charges level 16 Heart of Wolverine");
+					PrintOrSay("14 charges level 17 Iron Golem");
+					break;
+				case (msg.toLowerCase().indexOf(".obedience")!= -1):
+					Delay(100);
+					PrintOrSay("Obedience");
+					PrintOrSay("Hel + Ko + Thul + Eth + Fal");
+					PrintOrSay("Level: 41");
+					PrintOrSay("30% chance to cast level 21 Enchant when you kill an enemy");
+					PrintOrSay("40% Faster Hit Recovery");
+					PrintOrSay("+370% Enhanced Damage");
+					PrintOrSay("-25% Target Defense");
+					PrintOrSay("Adds 3-14 Cold Damage for 3 seconds");
+					PrintOrSay("-25% to enemy Fire Resistance");
+					PrintOrSay("40% chance of Crushing Blow");
+					PrintOrSay("+200-300 Defense");
+					PrintOrSay("+10 to Strength");
+					PrintOrSay("+10 to Dexterity");
+					PrintOrSay("+20-30 to All Resistances");
+					PrintOrSay("-20% Requirements");
+					break;
+				case (msg.toLowerCase().indexOf(".1pheonix")!= -1):
+					Delay(100);
+					PrintOrSay("Phoenix (Weapon)");
+					PrintOrSay("Vex + Vex + Lo + Jah");
+					PrintOrSay("Level: 65");
+					PrintOrSay("100% chance to cast level 40 Blaze when you level up");
+					PrintOrSay("40% chance to cast level 22 Firestorm on striking");
+					PrintOrSay("Level 10-15 Redemption aura when equipped");
+					PrintOrSay("+350-400% Enhanced Damage");
+					PrintOrSay("-28% to enemy Fire Resistance");
+					PrintOrSay("+350-400 Defense against missiles");
+					PrintOrSay("+15-21 Fire Absorb");
+					PrintOrSay("20% Deadly Strike");
+					PrintOrSay("Ignores Target Defense");
+					PrintOrSay("14% Mana stolen per hit");
+					break;
+				case (msg.toLowerCase().indexOf(".2pheonix")!= -1):
+					Delay(100);
+					PrintOrSay("Phoenix (Shield)");
+					PrintOrSay("Vex + Vex + Lo + Jah");
+					PrintOrSay("Level: 65");
+					PrintOrSay("100% chance to cast level 40 Blaze when you level up");
+					PrintOrSay("40% chance to cast level 22 Firestorm on striking");
+					PrintOrSay("Level 10-15 Redemption aura when equipped");
+					PrintOrSay("+350-400% Enhanced Damage");
+					PrintOrSay("-28% to enemy Fire Resistance");
+					PrintOrSay("+350-400 Defense against missiles");
+					PrintOrSay("+50 to Life");
+					PrintOrSay("+5% to maximum Lightning Resist");
+					PrintOrSay("+10% to maximum Fire Resist");
+					PrintOrSay("+15-21 Fire Absorb");
+					break;
+				case (msg.toLowerCase().indexOf(".pheonix")!= -1):
+					Delay(100);
+					PrintOrSay("Phoenix Weapon (1pheonix)");
+					PrintOrSay("Phoenix Sheild (2pheonix)");
+					PrintOrSay("To use commands type . before your runeword of choice");
+					break;
+				case (msg.toLowerCase().indexOf(".pride")!= -1):
+					Delay(100);
+					PrintOrSay("Pride");
+					PrintOrSay("Cham + Sur + Io + Lo");
+					PrintOrSay("Level: 67");
+					PrintOrSay("25% chance to cast level 17 Fire Wall when struck");
+					PrintOrSay("Level 16-20 Concentration aura when equipped");
+					PrintOrSay("260-300% bonus to Attack Rating");
+					PrintOrSay("+1-99% per character level Damage to Demons");
+					PrintOrSay("Adds 50-280 Lightning Damage");
+					PrintOrSay("20% Deadly Strike");
+					PrintOrSay("Hit Blinds Target");
+					PrintOrSay("+3 Freezes Target");
+					PrintOrSay("+10 to Vitality");
+					PrintOrSay("+8 Replenish Life");
+					PrintOrSay("1.875% per character level Extra Gold from Monsters");
+					break;
+				case (msg.toLowerCase().indexOf(".rift")!= -1):
+					Delay(100);
+					PrintOrSay("Rift");
+					PrintOrSay("Hel + Ko + Lem + Gul");
+					PrintOrSay("Level: 53");
+					PrintOrSay("20% chance to cast level 16 Tornado on striking");
+					PrintOrSay("16% chance to cast level 21 Frozen Orb on attack");
+					PrintOrSay("20% bonus to Attack Rating");
+					PrintOrSay("Adds 160-250 Magic Damage");
+					PrintOrSay("Adds 60-180 Fire Damage");
+					PrintOrSay("+5-10 to All Stats");
+					PrintOrSay("+10 to Dexterity");
+					PrintOrSay("38% Damage taken goes to Mana");
+					PrintOrSay("75% extra Gold from Monsters");
+					PrintOrSay("40 charges level 15 Iron Maiden");
+					PrintOrSay("-20% Requirements");
+					break;
+				case (msg.toLowerCase().indexOf(".1spirit")!= -1):
+					Delay(100);
+					PrintOrSay("Spirit (Weapon)");
+					PrintOrSay("Tal + Thul + Ort + Amn");
+					PrintOrSay("Level: 25");
+					PrintOrSay("+2 to All Skills");
+					PrintOrSay("+25-35% Faster Cast Rate");
+					PrintOrSay("+55% Faster Hit Recovery");
+					PrintOrSay("Adds 1-50 Lightning Damage");
+					PrintOrSay("Adds 3-14 Cold Damage for 3 seconds");
+					PrintOrSay("+75 Poison Damage for 5 seconds");
+					PrintOrSay("7% Life stolen per hit");
+					PrintOrSay("+250 Defense against missiles");
+					PrintOrSay("+22 to Vitality");
+					PrintOrSay("+89-112 to Mana");
+					PrintOrSay("+3-8 Magic Absorb");
+					break;
+				case (msg.toLowerCase().indexOf(".2spirit")!= -1):
+					Delay(100);
+					PrintOrSay("Spirit (Shield)");
+					PrintOrSay("Tal + Thul + Ort + Amn");
+					PrintOrSay("Level: 25");
+					PrintOrSay("+2 to All Skills");
+					PrintOrSay("+25-35% Faster Cast Rate");
+					PrintOrSay("+55% Faster Hit Recovery");
+					PrintOrSay("+250 Defense against missiles");
+					PrintOrSay("+22 to Vitality");
+					PrintOrSay("+89-112 to Mana");
+					PrintOrSay("+35% Cold Resist");
+					PrintOrSay("+35% Lightning Resist");
+					PrintOrSay("+35% Poison Resist");
+					PrintOrSay("+3-8 Magic Absorb");
+					PrintOrSay("Attacker takes Damage of 14");
+					break;
+				case (msg.toLowerCase().indexOf(".spirit")!= -1):
+					Delay(100);
+					PrintOrSay("Spirit Weapon (1spirit)");
+					PrintOrSay("Spirit Sheild (2spirit)");
+					PrintOrSay("To use commands type . before your runeword of choice");
+					break;
+				case (msg.toLowerCase().indexOf(".voice of reason")!= -1):
+					Delay(100);
+					PrintOrSay("Voice of Reason");
+					PrintOrSay("Lem + Ko + El + Eld");
+					PrintOrSay("Level: 43");
+					PrintOrSay("15% chance to cast level 13 Frozen Orb on striking");
+					PrintOrSay("18% chance to cast level 20 Ice Blast on striking");
+					PrintOrSay("+50 to Attack Rating");
+					PrintOrSay("+220-350% Damage to Demons");
+					PrintOrSay("+355-375% Damage to Undead");
+					PrintOrSay("+50 to Attack Rating against Undead");
+					PrintOrSay("Adds 100-220 Cold Damage");
+					PrintOrSay("-24% to enemy Cold Resistance");
+					PrintOrSay("+10 to Dexterity");
+					PrintOrSay("Cannot Be Frozen");
+					PrintOrSay("75% extra Gold from Monsters");
+					PrintOrSay("+1 to Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".vor")!= -1):
+					Delay(100);
+					PrintOrSay("Voice of Reason");
+					PrintOrSay("Lem + Ko + El + Eld");
+					PrintOrSay("Level: 43");
+					PrintOrSay("15% chance to cast level 13 Frozen Orb on striking");
+					PrintOrSay("18% chance to cast level 20 Ice Blast on striking");
+					PrintOrSay("+50 to Attack Rating");
+					PrintOrSay("+220-350% Damage to Demons");
+					PrintOrSay("+355-375% Damage to Undead");
+					PrintOrSay("+50 to Attack Rating against Undead");
+					PrintOrSay("Adds 100-220 Cold Damage");
+					PrintOrSay("-24% to enemy Cold Resistance");
+					PrintOrSay("+10 to Dexterity");
+					PrintOrSay("Cannot Be Frozen");
+					PrintOrSay("75% extra Gold from Monsters");
+					PrintOrSay("+1 to Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".wrath")!= -1):
+					Delay(100);
+					PrintOrSay("Wrath");
+					PrintOrSay("Pul + Lum + Ber + Mal");
+					PrintOrSay("Level: 63");
+					PrintOrSay("30% chance to cast level 1 Decrepify on striking");
+					PrintOrSay("5% chance to cast level 10 Life Tap on striking");
+					PrintOrSay("+375% Damage to Demons");
+					PrintOrSay("+250-300% Damage to Undead");
+					PrintOrSay("Adds 85-120 Magic Damage");
+					PrintOrSay("Adds 41-240 Lightning Damage");
+					PrintOrSay("20% chance of Crushing Blow");
+					PrintOrSay("Prevent Monster Heal");
+					PrintOrSay("+10 to Energy");
+					PrintOrSay("Cannot Be Frozen");
+					break;
+				case (msg.toLowerCase().indexOf(".bone")!= -1):
+					Delay(100);
+					PrintOrSay("Bone (Necromancer)");
+					PrintOrSay("Sol + Um + Um");
+					PrintOrSay("Level: 47");
+					PrintOrSay("15% Chance to cast level 10 Bone Armor when struck");
+					PrintOrSay("15% Chance to cast level 10 Bone Spear on striking");
+					PrintOrSay("+2 to Necromancer Skill Levels");
+					PrintOrSay("+100-150 to mana");
+					PrintOrSay("+30 to All Resistances");
+					PrintOrSay("Damage Reduced by 7");
+					break;
+				case (msg.toLowerCase().indexOf(".enlightenment")!= -1):
+					Delay(100);
+					PrintOrSay("Enlightenment (Sorceress)");
+					PrintOrSay("Pul + Ral + Sol");
+					PrintOrSay("Level: 45");
+					PrintOrSay("5% Chance to cast level 15 Blaze when struck");
+					PrintOrSay("5% Chance to cast level 15 Fire Ball on striking");
+					PrintOrSay("+2 to Sorceress Skill Levels");
+					PrintOrSay("+1 to Warmth ");
+					PrintOrSay("+30% Enhanced Defense");
+					PrintOrSay("+30% Fire Resist");
+					PrintOrSay("Damage Reduced by 7");
+					break;
+				case (msg.toLowerCase().indexOf(".myth")!= -1):
+					Delay(100);
+					PrintOrSay("Myth (Barbarian)");
+					PrintOrSay("Hel + Amn + Nef ");
+					PrintOrSay("Level: 25");
+					PrintOrSay("3% Chance to cast level 1 Howl when struck ");
+					PrintOrSay("10% Chance to cast level 1 Taunt on striking ");
+					PrintOrSay("+2 to Barbarian Skill Levels");
+					PrintOrSay("+30 Defense vs. Missle");
+					PrintOrSay("+10 Replenish Life");
+					PrintOrSay("Attacker takes Damage of 14");
+					PrintOrSay("Requirements -15%");
+					break;
+				case (msg.toLowerCase().indexOf(".peace")!= -1):
+					Delay(100);
+					PrintOrSay("Peace (Amazon)");
+					PrintOrSay("Shael + Thul + Amn");
+					PrintOrSay("Level: 29");
+					PrintOrSay("4% Chance to cast level 5 Slow Missles when struck");
+					PrintOrSay("2% Chance to cast level 15 Valkyrie on striking");
+					PrintOrSay("+2 to Amazon Skill Levels");
+					PrintOrSay("+20% Faster Hit Recovery ");
+					PrintOrSay("+2 to Critical Strike");
+					PrintOrSay("+30% Cold Resist");
+					PrintOrSay("Attacker Takes Damage of 14");
+					break;
+				case (msg.toLowerCase().indexOf(".principle")!= -1):
+					Delay(100);
+					PrintOrSay("Principle (Paladin)");
+					PrintOrSay("Ral + Gul + Eld");
+					PrintOrSay("Level: 53");
+					PrintOrSay("100% Chance to cast level 5 Holy Bolt on striking ");
+					PrintOrSay("+2 to Paladin Skill Levels");
+					PrintOrSay("15% Slower Stamina Drain");
+					PrintOrSay("+5% to Maximum Poison Resist");
+					PrintOrSay("+30% Fire Resist");
+					break;
+				case (msg.toLowerCase().indexOf(".rain")!= -1):
+					Delay(100);
+					PrintOrSay("Rain (Druid)");
+					PrintOrSay("Ort + Mal + Ith ");
+					PrintOrSay("Level: 49");
+					PrintOrSay("5% Chance to cast level 15 Cyclone Armor when struck");
+					PrintOrSay("5% Chance to cast level 15 Twister on striking");
+					PrintOrSay("+2 to Druid Skills ");
+					PrintOrSay("+100-150 to Mana");
+					PrintOrSay("Lightning Resist +30%");
+					PrintOrSay("Magic Damage Reduced by 7");
+					PrintOrSay("15% Damage Taken Goes To Mana");
+					break;
+				case (msg.toLowerCase().indexOf(".treachery")!= -1):
+					Delay(100);
+					PrintOrSay("Treachery (Assassin)");
+					PrintOrSay("Shael + Thul + Lem");
+					PrintOrSay("Level: 43");
+					PrintOrSay("5% Chance to cast level 15 Fade when struck");
+					PrintOrSay("25% Chance to cast level 15 Venom on striking");
+					PrintOrSay("+2 to Assassin Skills");
+					PrintOrSay("+45% Increased Attack Speed");
+					PrintOrSay("+20% Faster Hit Recovery");
+					PrintOrSay("+30% Cold Resist");
+					PrintOrSay("50% Extra Gold from Monsters");
+					break;
+				//Baalruns
+				case (msg.toLowerCase().indexOf(".baalexp1")!= -1):
+					Delay(100);
+					Print("=============");
+					//ITW_ANNI();
+					Print("=============");
+					Delay(2);
+					Print("Using no Anni");
+					Print("Level ---- Exp-break ---- Exp for next lvl -- Exp per run --- How many runs");
+					Print(".");
+					Print("90 ----- 1,618,470,619 ----- 146,072,446 ------ ca 5 mil ---------- 30");
+					Delay(2);
+					Print("91 ----- 1,764,543,065 ----- 159,218,965 ------ ca 3.5 mil -------- 45");
+					Delay(2);
+					Print("92 ----- 1,923,762,030 ----- 173,548,673 ------ ca 2 mil ---------- 87");
+					Delay(2);
+					Print("93 ----- 2,097,310,703 ----- 189,168,053 ------ ca 1.3 mil -------- 145");
+					Delay(2);
+					Print("94 ----- 2,286,478,756 ----- 206,193,177 ------ ca 800k ----------- 257");
+					Delay(2);
+					Print("95 ----- 2,492,671,933 ----- 224,750,564 ------ ca 445k ----------- 503");
+					Delay(2);
+					Print("96 ----- 2,717,422,497 ----- 244,978,115 ------ ca 320k ----------- 765");
+					Delay(2);
+					Print("97 ----- 2,962,400,612 ----- 267,026,144 ------ ca 164k ----------- 1628");
+					Delay(2);
+					Print("98 ----- 3,229,426,756 ----- 291,058,498 ------ ca 64k ------------ 4546");
+					Delay(2);
+					Print("99 ----- 3,520,485,254");
+					break;
+				case (msg.toLowerCase().indexOf(".baalexp2")!= -1):
+					Delay(100);
+					Print("=============");
+					//ITW_ANNI();
+					Print("=============");
+					Delay(2);
+					Print("Using +10% experience gained Anni and killing Baal + Minions each Run");
+					Print("Level ---- Exp-Break ---- Exp for Next Lvl -- Exp per Run --- How many Runs");
+					Print(".");
+					Print("90 ----- 1,618,470,619 ----- 146,072,446 ------ ca 5.5 mil -------- 27");
+					Delay(2);
+					Print("91 ----- 1,764,543,065 ----- 159,218,965 ------ ca 3.85 mil ------- 42");
+					Delay(2);
+					Print("92 ----- 1,923,762,030 ----- 173,548,673 ------ ca 2.2 mil -------- 79");
+					Delay(2);
+					Print("93 ----- 2,097,310,703 ----- 189,168,053 ------ ca 1.65 mil ------- 115");
+					Delay(2);
+					Print("94 ----- 2,286,478,756 ----- 206,193,177 ------ ca 880k ----------- 235");
+					Delay(2);
+					Print("95 ----- 2,492,671,933 ----- 224,750,564 ------ ca 490k ----------- 460");
+					Print("96 ----- 2,717,422,497 ----- 244,978,115 ------ ca 352k ----------- 696");
+					Delay(2);
+					Print("97 ----- 2,962,400,612 ----- 267,026,144 ------ ca 180k ----------- 1484");
+					Delay(2);
+					Print("98 ----- 3,229,426,756 ----- 291,058,498 ------ ca 70k ------------ 4135");
+					Delay(2);
+					Print("99 ----- 3,520,485,254");
+					break;
+				//Act2 Merc Auras
+				case (msg.toLowerCase().indexOf(".mercs")!= -1):
+					Delay(100);
+					Print("A2 Merc Aruas");
+					Print(".");
+					Print("Combat (Normal): Prayer");
+					Print("Combat (Nightmare): Thorns");
+					Print("Combat (Hell): Prayer");
+					Print("Defense (Normal): Defiance");
+					Print("Defense (Nightmare): Holy Freeze");
+					Print("Defense (Hell): Defiance");
+					Print("Offense (Normal): Blessed Aim");
+					Print("Offense (Nightmare): Might");
+					Print("Offense (Hell): Blessed Aim");
+					break;
+				// Runes
+				case (msg.toLowerCase().indexOf(".runes")!= -1):
+					Delay(100);
+					PrintOrSay("Example .el-rune");
+					PrintOrSay("AHS = Armor/Helm/Shield");
+					break;
+				case (msg.toLowerCase().indexOf(".el-rune")!= -1):
+					Delay(100);
+					PrintOrSay("El - Level Req = 11");
+					PrintOrSay("Weapon: +50 AR - +1 Light Radius");
+					PrintOrSay("AHS: +15 Def - +1 Light Radius");
+					break;
+				case (msg.toLowerCase().indexOf(".eld-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Eld - Level Req = 11");
+					PrintOrSay("Weapon: +75% Dmg to Undead - +50 AR to Undead");
+					PrintOrSay("AHS: 15% Slower Stam Drain - +7% Chance to Block");
+					break;
+				case (msg.toLowerCase().indexOf(".tir-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Tir - Level Req = 13");
+					PrintOrSay("Weapon: +2 Mana After Kill");
+					PrintOrSay("AHS: +2 Mana After Kill");
+					break;
+				case (msg.toLowerCase().indexOf(".nef-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Nef - Level Req = 13");
+					PrintOrSay("Weapon: Knockback");
+					PrintOrSay("AHS: +30 Def VS Missile");
+					break;
+				case (msg.toLowerCase().indexOf(".eth-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Eth - Level Req = 15");
+					PrintOrSay("Weapon: -25% Target Defense");
+					PrintOrSay("AHS: Regen Mana 15% - ");
+					break;
+				case (msg.toLowerCase().indexOf(".ith-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Ith - Level Req = 15");
+					PrintOrSay("Weapon: +9 Max Dmg");
+					PrintOrSay("AHS: 15% Dmg to Mana");
+					break;
+				case (msg.toLowerCase().indexOf(".tal-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Tal - Level Req = 17");
+					PrintOrSay("Weapon: +75 Psn/5 seconds - ");
+					PrintOrSay("AHS: +30% PRes - +35% PRes (Shields)");
+					break;
+				case (msg.toLowerCase().indexOf(".ral-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Ral - Level Req = 19");
+					PrintOrSay("Weapon: +5-30 Fire Dmg (Varies)");
+					PrintOrSay("AHS: +30% FRes - +35% FRes (Shields)");
+					break;
+				case (msg.toLowerCase().indexOf(".ort-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Ort - Level Req = 21");
+					PrintOrSay("Weapon: +1-50 Light Dmg (Varies)");
+					PrintOrSay("AHS: +30% LRes - +35% LRes (Shields)");
+					break;
+				case (msg.toLowerCase().indexOf(".thul-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Thul - Level Req = 23");
+					PrintOrSay("Weapon: 3-14 Cold Dmg - 3 Second Duration");
+					PrintOrSay("AHS: +30% CRes - +35% CRes (Shields)");
+					break;
+				case (msg.toLowerCase().indexOf(".amn-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Amn - Level Req = 25");
+					PrintOrSay("Weapon: 7% Life Leech");
+					PrintOrSay("AHS: Attacker Takes Dmg of 14");
+					break;
+				case (msg.toLowerCase().indexOf(".sol-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Sol - Level Req = 27");
+					PrintOrSay("Weapon: +9 Min Dmg");
+					PrintOrSay("AHS: Damaged Reduced by 7");
+					break;
+				case (msg.toLowerCase().indexOf(".shael-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Shael - Level Req = 29");
+					PrintOrSay("Weapon: 20% IAS");
+					PrintOrSay("AHS: +20% FHR - +20% Faster Block (Shields)");
+					break;
+				case (msg.toLowerCase().indexOf(".dol-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Dol - Level Req = 31");
+					PrintOrSay("Weapon: Hit Causes Mob to Flee 25%");
+					PrintOrSay("AHS: Replenish Life +7");
+					break;
+				case (msg.toLowerCase().indexOf(".hel-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Hel - Level Req = N/A");
+					PrintOrSay("Weapon: Requirements -20%");
+					PrintOrSay("AHS: Requirements -15%");
+					break;
+				case (msg.toLowerCase().indexOf(".io-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Io - Level Req = 35");
+					PrintOrSay("Weapon: +10 Vitality");
+					PrintOrSay("AHS: +10 Vitality");
+					break;
+				case (msg.toLowerCase().indexOf(".lum-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Lum - Level Req = 37");
+					PrintOrSay("Weapon: +10 Energy");
+					PrintOrSay("AHS: +10 Energy");
+					break;
+				case (msg.toLowerCase().indexOf(".ko-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Ko - Level Req = 39");
+					PrintOrSay("Weapon: +10 Dexterity");
+					PrintOrSay("AHS: +10 Dexterity");
+					break;
+				case (msg.toLowerCase().indexOf(".fal-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Fal - Level Req = 41");
+					PrintOrSay("Weapon: +10 Strength");
+					PrintOrSay("AHS: +10 Strength");
+					break;
+				case (msg.toLowerCase().indexOf(".lem-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Lem - Level Req = 43");
+					PrintOrSay("Weapon: +75% Gold Find");
+					PrintOrSay("AHS: +50% Gold Find");
+					break;
+				case (msg.toLowerCase().indexOf(".pul-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Pul - Level Req = 45");
+					PrintOrSay("Weapon: +75% Dmg & +100 AR to Demons");
+					PrintOrSay("AHS: +30% Enhanced Defense");
+					break;
+				case (msg.toLowerCase().indexOf(".um-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Um - Level Req = 47");
+					PrintOrSay("Weapon: 25% Chance of Open Wounds");
+					PrintOrSay("AHS: All Res +15 / All Res +22 (Shields)");
+					break;
+				case (msg.toLowerCase().indexOf(".mal-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Mal - Level Req = 49");
+					PrintOrSay("Weapon: Prevent Monster Heal");
+					PrintOrSay("AHS: Magic Damage Reduced By 7");
+					break;
+				case (msg.toLowerCase().indexOf(".ist-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Ist - Level Req = 51");
+					PrintOrSay("Weapon: 30% Magic Find");
+					PrintOrSay("AHS: 25% Magic Find");
+					break;
+				case (msg.toLowerCase().indexOf(".gul-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Gul - Level Req = 53");
+					PrintOrSay("Weapon: 20% Bonus AR");
+					PrintOrSay("AHS: +5% Max PRes");
+					break;
+				case (msg.toLowerCase().indexOf(".vex-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Vex - Level Req = 55");
+					PrintOrSay("Weapon: 7% Mana Leech");
+					PrintOrSay("AHS: +5% Max FRes");
+					break;
+				case (msg.toLowerCase().indexOf(".ohm-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Ohm - Level Req = 57");
+					PrintOrSay("Weapon: 50% Enhanced Def");
+					PrintOrSay("AHS: +5% Max CRes");
+					break;
+				case (msg.toLowerCase().indexOf(".lo-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Lo - Level Req = 59");
+					PrintOrSay("Weapon: 20% Deadly Strike");
+					PrintOrSay("AHS: +5% Max LRes");
+					break;
+				case (msg.toLowerCase().indexOf(".sur-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Sur - Level Req = 61");
+					PrintOrSay("Weapon: Hit Blinds Target");
+					PrintOrSay("AHS: Max Mana +5% - +50 Mana (Shields)");
+					break;
+				case (msg.toLowerCase().indexOf(".ber-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Ber - Level Req = 62");
+					PrintOrSay("Weapon: 20% Change of Crushing Blow");
+					PrintOrSay("AHS: Damage Reduced 8%");
+					break;
+				case (msg.toLowerCase().indexOf(".jah-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Jah - Level Req = 65");
+					PrintOrSay("Weapon: Ignore Target Defense");
+					PrintOrSay("AHS: Max Life + 5% - +50 Mana (Shields)");
+					break;
+				case (msg.toLowerCase().indexOf(".cham-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Cham - Level Req = 67");
+					PrintOrSay("Weapon: Freeze Target +3");
+					PrintOrSay("AHS: Cannot Be Frozen");
+					break;
+				case (msg.toLowerCase().indexOf(".zod-rune")!= -1):
+					Delay(100);
+					PrintOrSay("Zod - Level Req = 69");
+					PrintOrSay("Weapon: Indestructible");
+					PrintOrSay("AHS: Indestructible");
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	return;
+}
+
+function PrintOrSay(msg)
+{
+	if(Private){ Print(msg); }
+	else{ Say(msg); }
+	return;
+}

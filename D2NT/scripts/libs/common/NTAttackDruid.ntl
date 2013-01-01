@@ -1,0 +1,185 @@
+function NTA_DetectAttackPattern() {
+	return NTA_DruidAttackPatternInt();
+}
+
+function NTA_Attack(target, firstorder) {
+	return NTA_DruidAttackInt(target, firstorder);
+}
+
+function NTA_DruidAttackPatternInt() {
+	var _maxindex, _maxskill;
+	var _avgskilllevel = new Array();
+
+	_avgskilllevel[0] = me.GetSkill(245, false);
+	_maxindex = -1;
+	_maxskill = 0;
+
+	for (var i = 0; i < _avgskilllevel.length; i++) {
+		if (_avgskilllevel[i] > _maxskill) {
+			_maxindex = i;
+			_maxskill = _avgskilllevel[i];
+		}
+	}
+
+	switch (_maxindex) {
+	case 0:
+		//
+		NTConfig_AttackSkill[1] = 245;
+		NTConfig_AttackSkill[2] = 245;
+		NTConfig_AttackSkill[3] = 245;
+		NTConfig_AttackSkill[4] = 245;
+		NTConfig_AttackSkill[5] = 245;
+		NTConfig_AttackSkill[6] = 245;
+		break;
+	}
+
+	return (NTConfig_AttackSkill[1] && NTConfig_AttackSkill[3]);
+}
+
+function NTA_DruidAttackInt(target, firstorder) {
+	var _primaryindex;
+	var _attackSkill;
+
+	if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (me.hp <= parseInt(me.hpmax * NTConfig_TPChicken,10) / 100)) {
+		if (!NTTMGR_VisitTown()) { return 0; }
+	}
+	_merc = NTC_GetMerc();
+	if(_merc){
+		if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (_merc.hp <= parseInt(_merc.hpmax * NTConfig_MercTPChicken,10) / 100)) {
+			if (!NTTMGR_VisitTown()) { return 0; }
+		}
+	}
+
+	if (firstorder && NTConfig_AttackSkill[0] > -1 && NTA_GetResistance(target, _NTA_SkillDamage[0]) < 100) {
+
+
+		if (GetDistance(me, target) > NTConfig_AttackSkill[0] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		if (!NTC_CastSkill(NTConfig_AttackSkill[0], _NTA_SkillHand[0], target)) return 2;
+
+		return 3;
+	}
+
+
+	_primaryindex = (target.spectype & 0x0A) ? 1 : 3;
+	_attackIndex = NTA_GetAttackType(target, _primaryindex, 91, 81, 81);
+
+	if (me.GetSkill(245, true) > 1) if (target.name == "Andariel" || target.name == "Baal" || target.name == "Mephisto" || target.name == "Diablo") {
+		if (!NTA_DruidCastSkillIntNear(_primaryindex, target)) return 2;
+
+		return 3;
+	}
+
+
+	if (NTConfig_AttackSkill[_attackIndex] > -1) {
+		if (_NTA_SkillRange[_attackIndex] < 4 && !CheckCollision(target.areaid, target.x, target.y, 1)) return 1;
+
+		if (!NTA_DruidCastSkillInt(_attackIndex, target)) return 2;
+
+		return 3;
+	}
+
+/*
+   if(NTA_GetResistance(target, _NTA_SkillDamage[_primaryindex]) <= 90)
+   {
+      if(!NTA_DruidCastSkillInt(_primaryindex, target))
+         return 2;
+
+      return 3;
+   }
+
+   if(NTConfig_AttackSkill[5] > -1 && NTA_GetResistance(target, _NTA_SkillDamage[5]) <= 80)
+   {
+      if(!NTA_DruidCastSkillInt(5, target))
+         return 2;
+
+      return 3;
+   }
+	*/
+
+	if (NTA_GetResistance(target, _NTA_SkillDamage[index]) < 100 || (_primaryindex == 1 && NTC_GetMerc())) {
+		if (!NTA_DruidCastSkillInt(_primaryindex, target)) return 2;
+
+		return 3;
+	}
+
+	return 1;
+}
+
+function NTA_DruidCastSkillIntNear(index, target) {
+	if (NTConfig_AttackSkill[index] == 245) {
+		var _castx, _casty;
+
+		if (GetDistance(me, target) > 2 || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 5);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		_castx = target.x > me.x ? target.x + NTConfig_CastPast : target.x - NTConfig_CastPast;
+		_casty = target.y > me.y ? target.y + NTConfig_CastPast : target.y - NTConfig_CastPast;
+
+		return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], _castx, _casty);
+	}
+
+	if (NTConfig_AttackSkill[index + 1] > -1 && NTConfig_AttackSkill[index] != 245) {
+		if (GetDistance(me, target) > 3 || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, 3, 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+
+		}
+
+		return NTC_CastSkill(NTConfig_AttackSkill[index + 1], _NTA_SkillHand[index + 1], target);
+	}
+}
+
+function NTA_DruidCastSkillInt(index, target) {
+	
+	if ((target.name == "Mephisto" || target.name == "Andariel" || target.name == "Duriel" || target.name == "Diablo" || target.name == "Baal") && NTConfig_AttackSkill[9] > -1) {
+		index = 9;
+	}
+	
+	if (NTConfig_AttackSkill[index] == 245) {
+		var _castx, _casty;
+
+		if (GetDistance(me, target) > _NTA_SkillRange[index] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 5);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		_castx = target.x > me.x ? target.x + NTConfig_CastPast : target.x - NTConfig_CastPast;
+		_casty = target.y > me.y ? target.y + NTConfig_CastPast : target.y - NTConfig_CastPast;
+
+		return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], _castx, _casty);
+	}
+
+
+	if (GetDistance(me, target) > _NTA_SkillRange[index] || !CheckCollision(me, target, 4)) {
+		var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 4);
+
+		if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+
+	}
+
+
+	if (!me.GetState(139)) NTC_CastSkill(223, NTC_HAND_RIGHT) // Werewolf
+	else if (!me.GetState(140)) NTC_CastSkill(228, NTC_HAND_RIGHT) // Werebear   
+	return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], target);
+
+	if (NTConfig_AttackSkill[index + 1] > -1) {
+		if (GetDistance(me, target) > _NTA_SkillRange[index + 1] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index + 1], 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+
+		}
+
+		return NTC_CastSkill(NTConfig_AttackSkill[index + 1], _NTA_SkillHand[index + 1], target);
+	}
+}

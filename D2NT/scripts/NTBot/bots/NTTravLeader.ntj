@@ -1,0 +1,118 @@
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+	
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	var _waypoint;
+	var _deltax, _deltay;
+	var _attackpos = [5800, 1554, 5799, 1534, 5799, 1526, 5797, 1514, 5795, 1490, 5787, 1491, 5797, 1514, 5781, 1514];
+	
+	NTA_Initialize(); // 10
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}		
+	NTTMGR_TownManager();
+	if(!NTTM_TownMove("waypoint")){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	if(!NTM_TakeWaypoint(83)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}		
+	_waypoint = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(22526));
+	if(!_waypoint){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTC_FindUnit()");
+		return;
+	}
+	_deltax = _waypoint.x - 5699;	
+	_deltay = _waypoint.y - 1584;
+	NTP_DoPrecast(true);
+	NT_FindDurance();
+	if(!NTM_MoveTo(me.areaid, _todurx-2, _todury-35)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+		return;
+	}
+	var _pretp = [_todurx-2, _todury-35, me.x-30, me.y, me.x+60, me.y, me.x-30, me.y, _todurx-2, _todury-35];
+	for(var i = 0 ; i < _pretp.length ; i += 2){
+		NTM_MoveTo(me.areaid, _pretp[i], _pretp[i+1])
+		NTA_ClearPosition(10);
+		NTC_PingDelay(200);
+	}
+	NTA_ClearPosition(20, true)	
+	Delay(500);	
+	for(var i = 0 ; i < _pretp.length ; i += 2){
+		NTM_MoveTo(me.areaid, _pretp[i], _pretp[i+1])
+		NTA_ClearPosition(10);
+		NTC_PingDelay(200);
+	}
+	NTA_ClearPosition(20, true)	
+	Delay(500);	
+	Say(LeechTrav_TakeTp);
+	NTM_MakeTP();
+	while(!NTC_IsQuesterIn()){
+		Delay(1000)
+		NTC_TPGuard(30);
+	}
+	NTP_DoPrecast(true);	
+	if(!NTM_MoveTo(me.areaid, 5780+_deltax, 1555+_deltay)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+		return;
+	}
+	for(var i = 0 ; i < _attackpos.length ; i += 2){
+		NTM_MoveTo(me.areaid, _attackpos[i]+_deltax, _attackpos[i+1]+_deltay);
+		NTA_ClearPosition(25)
+		NTC_PingDelay(200);
+	}
+	NTSI_PickItems();	
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function NT_FindDurance(){
+	var _unit;
+	_unit = GetPresetUnits(me.areaid, NTC_UNIT_TILE);
+	for(var i = 0 ; i < _unit.length ; i++){
+		if(_unit[i].id == 64){
+			_todurx = (_unit[i].roomx*5+_unit[i].x);
+			_todury = (_unit[i].roomy*5+_unit[i].y);
+		}
+	}
+}
+
+function NTC_IsQuesterIn(area, name){
+	var _player;
+	var _myPartyId;
+	var _area;
+	_player = GetPlayerUnit();
+	_myPartyId = _player.partyid;
+	if(arguments.length < 1)
+		_area = me.areaid
+	if(arguments.length > 0)
+		_area = area;
+	do{
+		if(_player.areaid == _area && _myPartyId == _player.partyid){
+			if(!name)
+				return true;
+			else if(_player.name == name)
+				return true;
+		}
+		NTC_Delay(100);
+	}while(_player.GetNext());
+	return false;	
+}
+
+function NTC_TPGuard(radius){
+		NTA_ClearPosition(radius)
+		NTM_GetCloserInt(NTM_FindCorrectPortalInt(true, me.name))
+		NTC_Delay(500);
+}
+
+
+
+

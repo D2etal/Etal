@@ -1,0 +1,204 @@
+var _playersInGame;
+
+function NTMain() {
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+	NT_LoadConfig();
+	NTA_Initialize();
+
+	_checkPlayerTotal();
+	RegisterEvent(EVENT_GAMEMSG, _charTally);
+	Print(COLOR_11 + " Ethic's DPS Meter Loaded.");
+	_dpsScan();
+}
+
+function _dpsScan() {
+	var _dpsTimeFlag = GetTickCount();
+	var _dpsDmgTotal = 0;
+	var _dpsTotal = 0;
+	var _dpsTimeLog = [];
+	var _dpsPeak = _loadDPSPeak();
+	var _dpsGid = [];
+	var _dpsCurrentHP = [];
+	var _dpsHpMultiplier = [];
+	var _dpsLevelHP = [];
+	var _dpsLog = [];
+	var _bodyCount = 0;
+	var _statLevelSeed;
+	var _statMaxHp;
+
+	_seeds(me.diff);
+
+	while(me.ingame) {
+	Delay(DPSScanSpeed);
+		var _subject = NTC_FindUnit(NTC_UNIT_MONSTER);
+		if(_subject) {
+		//Set Level Seeded Vars.
+			do {
+				if(_dpsGid.indexOf(_subject.gid) < 0 && _subject.IsAttackable() && NTA_IsValidMonster(_subject)) {
+					_dpsGid.push(_subject.gid);
+					_dpsCurrentHP.push(_subject.hp);
+					_dpsHpMultiplier.push(GetBaseStat("monstats.txt", _subject.classid, _statMaxHp));
+					_dpsHpMultiplier[_dpsHpMultiplier.length - 1] = ((((_dpsLevelHP[GetBaseStat("monstats.txt", _subject.classid, _statLevelSeed)] * _dpsHpMultiplier[(_dpsHpMultiplier.length - 1)]) * ((_playersInGame * .5) + .5) ) / 100) / 128)
+				}
+			} while(_subject.GetNext());
+		}
+		for(var i = 0, _tempHP = 0, _shifted = false; i < _dpsGid.length;) {
+			var _scanSubject = NTC_FindUnit(NTC_UNIT_MONSTER, _dpsGid[i])
+			if(_scanSubject) {
+				if(!_shifted) {
+					_dpsLog.unshift(0);
+					_dpsTimeLog.unshift(GetTickCount());
+					_shifted = true;
+				}
+				_tempHP = _scanSubject.hp;
+				if(_tempHP <= 0 || _scanSubject.mode == 0 || _scanSubject.mode == 12) {
+					_tempHP = 0;
+					_bodyCount++;
+					_dpsDmgTotal += ((_dpsCurrentHP[i] - _tempHP) * _dpsHpMultiplier[i]);
+					_dpsLog[0] += ((_dpsCurrentHP[i] - _tempHP) * _dpsHpMultiplier[i]);
+					_spliceout(i);
+				}
+				else {
+					_dpsDmgTotal += ((_dpsCurrentHP[i] - _tempHP) * _dpsHpMultiplier[i]);
+					_dpsLog[0] += ((_dpsCurrentHP[i] - _tempHP) * _dpsHpMultiplier[i]);
+					_dpsCurrentHP[i] = _tempHP;
+					i++
+				}
+			}
+			else {
+				_spliceout(i);
+			}
+		}
+		if(GetTickCount() - _dpsTimeFlag >= DPSDisplayRate) {
+			_dpsTimeFlag = GetTickCount();
+			var _dpsTotal = 0;
+			for(var m = 0; m < _dpsLog.length; m++) {
+				if(_dpsTimeFlag - _dpsTimeLog[m] < (DPSScanHist * 1000)) {
+					_dpsTotal += _dpsLog[m];
+				}
+
+				else if(_dpsLog.length > 1) {
+					_dpsLog.length = (m + 1);
+					_dpsTimeLog.length = (m + 1);
+				}
+			}
+			if(_dpsTotal > 0)
+				_dpsTotal /= DPSScanHist;
+
+			if(_dpsTotal > _dpsPeak)
+					_dpsPeak = _updatePeakDPS(_dpsTotal);
+			if(me.ingame && GetUIState(0x05) == false)
+				printDps(_dpsTotal, _dpsPeak, _dpsDmgTotal, _bodyCount);
+			_dpsTimeFlag = GetTickCount();
+		}
+	}
+	function _seeds(diff) {
+		switch(diff) {
+			case 0:
+				_statLevelSeed = 31;
+				_statMaxHp = 156;
+				_loadLvlRef(diff);
+				break;
+			case 1:
+				_statLevelSeed = 32;
+				_statMaxHp = 169;
+				_loadLvlRef(diff);
+				break;
+			case 2:
+				_statLevelSeed = 33;
+				_statMaxHp = 182;
+				_loadLvlRef(diff);
+				break;
+		}
+	}
+	function _loadLvlRef(diff) {
+		var filehandler2 = FileOpen("logs/DPS/db.ntj", 0);
+		for(var i = 0, _tempLineReadArray; !filehandler2.eof; i++) {
+			_tempLineReadArray = filehandler2.ReadLine().split(",");
+			_dpsLevelHP.push(_tempLineReadArray[diff]);
+		}
+		filehandler2.Close();
+	}
+	function _spliceout(i) {
+		_dpsHpMultiplier.splice(i,1);
+		_dpsGid.splice(i,1);
+		_dpsCurrentHP.splice(i,1);
+		return;
+	}
+}
+
+function printDps(dps, tot, dmgtot, bodies) {
+	dps = dps >= 100 ? dps.toFixed(0) : (dps >= 10 ? dps.toFixed(1) : dps.toFixed(2));
+	DPSPrinted = "!" + "----------DPS Meter---------- ";
+
+	DmgLine = "DPS: " + dps;
+	a = (30 - DmgLine.length);
+	for(i = a ; i >= 0 ; i--) {
+		DmgLine = DmgLine + " ";
+	}
+	DPSPrinted += DmgLine;
+
+	PeakDPS = "Peak-DPS: " + tot.toFixed(0);
+	b = (30 - PeakDPS.length);
+	for(i = b ; i >= 0 ; i--) {
+		PeakDPS = PeakDPS + " ";
+	}
+	DPSPrinted += PeakDPS;
+
+	TotalDmg = "Total Dmg: " +  dmgtot.toFixed(0);
+	c = (28 - TotalDmg.length);
+	for(i = c ; i >= 0 ; i--) {
+		TotalDmg = TotalDmg + " ";
+	}
+	DPSPrinted += TotalDmg;
+
+	BodyCount = "Bodies: " + bodies;
+	d = (30 - BodyCount.length);
+	for(i = d ; i >= 0 ; i--) {
+		BodyCount = BodyCount + " ";
+	}
+	DPSPrinted += BodyCount;
+
+	DPSPrinted += "Players: " + _playersInGame;
+
+	Say(DPSPrinted);
+}
+
+function _checkPlayerTotal() {
+		_playersInGame = 1;
+	var _player = GetPlayerUnit();
+	while(_player.GetNext()){
+		_playersInGame++;
+	}
+}
+
+function _charTally(msg, type) {
+	if(type == 4) {
+		if(msg.indexOf("stronger") != -1)
+			_playersInGame++;
+		if(msg.indexOf("left") != -1 || msg.indexOf("dropped") != -1)
+			_playersInGame--;
+	}
+	return;
+}
+
+function _loadDPSPeak() {
+	var _loadingpeak = 0;
+	var filehandler2 = FileOpen("logs/DPS/" + me.charname + "_DPSLog.ntj", 2);
+	for(var i = 0, _tempLineReadArray; !filehandler2.eof; i++) {
+		_tempLineReadArray = filehandler2.ReadLine().split(",");
+		if(_loadingpeak < parseInt(_tempLineReadArray[0], 10))
+			_loadingpeak = parseInt(_tempLineReadArray[0], 10);
+	}
+	filehandler2.Close();
+	return _loadingpeak;
+}
+
+function _updatePeakDPS(Total) {
+	var filehandler2 = FileOpen("logs/DPS/" + me.charname + "_DPSLog.ntj", 2);
+	filehandler2.WriteLine(Total.toFixed(0) + "," + me.charname);
+	filehandler2.Close();
+	return Total;
+}

@@ -1,0 +1,1 @@
+Simply copy paste the ignorelist file into your diablo 2 directory generally C:\Program Files (x86)\Diablo II or C:\Program Files\Diablo II and it should block alot of the spam

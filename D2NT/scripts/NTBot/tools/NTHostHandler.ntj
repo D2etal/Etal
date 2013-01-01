@@ -1,0 +1,279 @@
+//	Original HostileCatch done by Young_Love - Original HostileWatch done by kolton
+//	Additional modifications originate from Diabolic - Implemented by Tru
+//	Combined - Edited/Updated by Tru V2.225 (31 Oct 2012)
+
+var HH_CampStairs = true;		// Set true to move to Throne of Destruction stairs to wait for hostile to come play
+var HH_CampSpam = -1;			// Set to the skill id for what attack you want to spam at the stairs
+var HH_ViperScramble = true;	// Set to true to run if the hostiler has revived vipers
+
+var HostileAccount;
+var Accounts = [];
+var Class = [];
+var Levels = [];
+var Names = [];
+var Ver = "2.225";
+var WhoDatIs;
+
+var GetWreckedTaunt = [
+		" is pure weakness!",
+		" can't fight me one on one huh, gotta come at me while I'm busy?",
+		" really wants to go toe-to-toe with a seasoned pro! Hey, I rhymed.",
+		" should not have done that, for your own health of course!",
+		" needs to get a life. I have one, which is why I bot!"];
+
+var GotWreckedTaunt = [
+					", want some more? Come get some!",
+					" can't hang with me!",
+					" should really respec after that show!",
+					"'s mom goes to college!",
+					" trained with nuns for that battle!",
+					" should stop crying, it's only gold loss!"];
+
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+	NT_LoadConfig();
+	NTA_Initialize();
+
+	RegisterEvent(EVENT_GAMEMSG, DumbassCity);
+	ScanPlayers();
+
+	Print(COLOR_4 + "HostHandler " + COLOR_2 + Ver + COLOR_4 + " Loaded");
+
+	while(1){ Delay(100); MyTime();
+		if(KillHostiler & !RunFromHostiles){ var _dumbass = NTC_FindUnit(NTC_UNIT_PLAYER);
+			if(_dumbass){
+				do{
+					if(!HH_CampStairs || me.areaid != 131){
+						if(GetPlayerFlag(me.gid, _dumbass.gid, 9) && /*GetDistance(me.x, me.y, _dumbass.x, _dumbass.y) < 60*/ me.areaid == _dumbass.areaid && !NTC_InTown() && NTA_IsValidTarget(_dumbass)){
+							NTC_SendMsgToScript("NTBotGame.ntj", "HOSTILE");
+							if(HH_ViperScramble) { ViperChecker(); }
+							if(NTA_KillDumbass(_dumbass.gid) && TauntHostile){
+								t = Random(0,(GotWreckedTaunt.length-1));
+								Say(_dumbass.name + GotWreckedTaunt[t]);
+								GotWreckedFunctionOhYeah();
+							} NTC_SendMsgToScript("NTBotGame.ntj", "HOSTILE");
+						}
+					}
+					else{
+						if(GetPlayerFlag(me.gid, _dumbass.gid, 9) && me.areaid == 131){
+							NTC_SendMsgToScript("NTBotGame.ntj", "HOSTILE");
+							NTM_MoveTo(131, 15112, 5248);
+							while(_dumbass.areaid != me.areaid) {
+								Delay(500);
+								if(HH_CampSpam > -1){
+									NTC_CastSkill(HH_CampSpam, NTC_HAND_RIGHT, 15099, 5237);
+								} return;
+							}
+							if(NTA_KillDumbass(_dumbass.gid) && TauntHostile){
+								t = Random(0,(GotWreckedTaunt.length-1));
+								Say(_dumbass.name + GotWreckedTaunt[t]);
+							} NTC_SendMsgToScript("NTBotGame.ntj", "HOSTILE");
+						}
+					}
+				} while(_dumbass.GetNext());
+			}
+		}
+	}
+}
+
+function DumbassCity(msg, type)
+{
+	switch(type){
+		case 0:
+			if(msg.length >= 150){
+				Delay(Random(2000,3000));
+				Say("Oh yeah dude?");
+			}
+			break;
+		case 2:
+			var ends = [".com", ".c0m", ".net", ".org", ".0rg"];
+			var DontIgnore = "ProjectEtal.com";
+			var x;
+			for (x in ends && !DontIgnore){
+				if (msg.toLowerCase().indexOf(ends[x]) != -1 && msg.indexOf(!me.charname) != -1){
+					SpamTastic = msg.split(": ")[0];
+					SpamTastic = stripColorCodes(SpamTastic);
+					Say("/ignore " + SpamTastic);
+				}
+			}
+			break;
+		case 3:
+			if(msg.indexOf("BattleNet>: That character is not") != -1){
+				Say("/ignore " + WhoDatIs);
+				return;
+			}
+			else if(msg.indexOf("BattleNet>: ") != -1){
+				HostileAccount = msg.split("*")[1];
+				HostileAccount = HostileAccount.split(") ")[0];
+				HostileAccount = stripColorCodes(HostileAccount);
+				if(HostileAccount == undefined) HostileAccount = 'N/A';
+				ScanPlayers();
+				return HostileAccount;
+			}
+			break;
+		case 4:
+			if(msg.indexOf(") joined our world") != -1){
+				WhoDatIs = msg.split("(")[0];
+				WhoDatIs = stripColorCodes(WhoDatIs);
+				Say("/whois " + WhoDatIs);
+				return WhoDatIs;
+			}
+			break;
+		//case 8:
+		//	if(msg.indexOf("has expressed hostility") != -1)
+		case 9:
+			if(msg.indexOf("has expressed hostility") != -1 || msg.indexOf("left") != -1){
+				var TheTime = MyTime();
+				var Today = new Date().toLocaleFormat("%d %b");
+				var Area = GetArea();
+				var _dumbass = GetPlayerUnit();
+				if(_dumbass){
+					do{
+						if(GetPlayerFlag(me.gid, _dumbass.gid, 9)){
+							_dumbass = stripColorCodes(_dumbass.name);
+
+							HostLog = FileOpen("logs/HostileLogs/" + me.charname + ".txt", 2);
+							if(!HostLog) HostLog = FileOpen("logs/HostileLogs/" + me.charname + ".txt", 2);
+								HostLog.WriteLine("---------" + Area.name + "---------");
+								HostLog.WriteLine("Date - Time: " + Today + " - " + TheTime);
+								HostLog.WriteLine("Character: " + Names[Names.indexOf(_dumbass)]);
+								HostLog.WriteLine("Account: " + Accounts[Names.indexOf(_dumbass)]);
+								HostLog.WriteLine("Game: " + me.gamename);
+								HostLog.WriteLine("Info: " + Class[Names.indexOf(_dumbass)] + " (" + Levels[Names.indexOf(_dumbass)] + ")");
+								HostLog.WriteLine("");
+							HostLog.Close(); Delay(Random(100,200));
+
+							HostileOOG = COLOR_1 + "HOSTILED IN " + Area.name.toUpperCase(1) + ";";
+							HostileOOG += COLOR_1 + "----------------------------------" + "\n";
+							HostileOOG += COLOR_4 + "Character: " + COLOR_8 + Names[Names.indexOf(_dumbass)] + "\n";
+							HostileOOG += COLOR_4 + "Account: " + COLOR_8 + Accounts[Names.indexOf(_dumbass)] + "\n";
+							HostileOOG += COLOR_4 + "Info: " + COLOR_8 + Class[Names.indexOf(_dumbass)] + " (" + Levels[Names.indexOf(_dumbass)] + ")" + "\n";
+							HostileOOG += COLOR_4 + "Game: " + COLOR_8 + me.gamename + "\n";
+
+							if(RunFromHostiles){
+								HostileOOG += COLOR_8 + "Hostile Chicken Activated" + "\n";
+								HostileOOG += COLOR_1 + "----------------------------------";
+								NTC_SendLogToOOG(NTC_LOG_COMMON, HostileOOG); Delay(200);
+								CloseD2();
+							}
+							else{
+								HostileOOG += COLOR_1 + "----------------------------------";
+								NTC_SendLogToOOG(NTC_LOG_COMMON, HostileOOG);
+								if(TauntHostile){
+									t = Random(0,(GetWreckedTaunt.length - 1));
+									Say(Names[Names.indexOf(_dumbass)] + GetWreckedTaunt[t]);
+								}
+							}
+						}
+					} while(_dumbass.GetNext());
+				} return;
+			} break;
+		default: break;
+	}
+}
+
+function GotWreckedFunctionOhYeah()
+{
+	var Area = GetArea();
+	HostileWrecked = COLOR_1 + "HOSTILE KILLED IN" + Area.name.toUpperCase(1) + ";";
+	NTC_SendLogToOOG(NTC_LOG_COMMON, HostileWrecked);
+	return;
+}
+
+function ScanPlayers()
+{
+	var Player = GetPlayerUnit();
+	if(Player){
+		do{
+			if(Names.indexOf(Player.name) == -1){
+				Names.push(Player.name);
+				Class.push(_classid(Player.classid));
+				Levels.push(Player.level);
+				Accounts.push(HostileAccount);
+			}
+		} while(Player.GetNext())
+	} return;
+}
+
+function NTA_KillDumbass(id)
+{
+	var _target;
+	if(NTConfig_AttackSkill[1] < 1)
+		return false;
+	_target = NTC_FindUnit(NTC_UNIT_PLAYER, id);
+	if(!_target)
+		return false;
+	if(_target.IsAttackable()){
+		var _attackcount = 0;
+		while(_attackcount < 600 && NTA_IsValidTarget(_target)){
+			if(NTA_Attack(_target, (_attackcount%30) == 0) < 2)
+				return false;
+			if(me.classid == 1 && GetDistance(me.x, me.y, _target.x, _target.y) < 10)
+			{
+				_castx =  _target.x > me.x ? _target.x+15 : _target.x-15;
+				_casty =  _target.y > me.y ? _target.y+15 : _target.y-15;
+				NTM_MoveTo(me.areaid, _castx, _casty);
+			} _attackcount++;
+		}
+	}
+	NTSI_PickItems();
+	return (_target.hp <= 0 || _target.mode == 0 || _target.mode == 17);
+}
+
+function ViperChecker()
+{
+	var ViperTypes = [NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(2752)), NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(2956)), NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(2957)), NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(2958)), NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(2959))];
+	for(i = 0 ; i < ViperTypes.length ; i++){
+		if(ViperTypes[i]){
+			VipersDaddy = ViperTypes[i].GetParent();
+			if(_dumbass.gid == VipersDaddy.gid){
+				Say("Oh snap, you brought vipers? See ya!");
+				ExitGame();
+			} break;
+		}
+	} return;
+}
+
+function NTA_IsValidTarget(target)
+{
+	if(target.mode == 17 || target.mode == 0 || NTC_InTown(target)){ return false; }
+	else{ return true; }
+}
+
+function MyTime()
+{
+	var NW = new Date();
+	var HR = NW.getHours();
+	var MM = NW.getMinutes();
+	var SS = NW.getSeconds();
+	var DT;
+
+	if (HR > 12){ HR = HR - 12; }
+	if (HR < 12){ DT = "AM"; }
+	if (HR > 11){ DT = "PM"; }
+	if (HR == 0){ HR = 12; }
+	if (HR < 10){ HR = "0" + HR; }
+	if (MM < 10){ MM = "0" + MM; }
+	if (SS < 10){ SS = "0" + SS; }
+
+	TheTime = HR + ":" + MM + ":" + SS + " " + DT;
+	return TheTime;
+}
+
+function _classid(i)
+{
+	switch(i){
+		case 0:	return "Amazon";
+		case 1: return "Sorceress";
+		case 2: return "Necromancer";
+		case 3: return "Paladin";
+		case 4: return "Barbarian";
+		case 5: return "Druid";
+		case 6: return "Assassin";
+	} return;
+}
+
+function stripColorCodes(input){ return input.replace(/ÿc\d+/g, ""); }

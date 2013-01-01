@@ -1,0 +1,202 @@
+function NTMain()
+{
+	var _target;
+	var _tombs;
+	var _unit;
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	NTTMGR_TownManager();
+	if(!NTTM_TownMove("waypoint")){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	if(!NTM_TakeWaypoint(46)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+	NTP_DoPrecast(true);
+	if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+		OpenChestsInArea();
+	}
+	if(NTConfig_ClearMagiCanyon == 1){
+		NTConfig_SkipRegularMonsters = false;
+		NTP_DoPrecast();
+		if(!NTA_ClearLevel()){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTA_ClearLevel()");
+			return;
+		}
+	}
+	if(NTConfig_ClearMagiCanyon == 2){
+		NTConfig_SkipRegularMonsters = true;
+		NTP_DoPrecast();
+		if(!NTA_ClearLevel()){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTA_ClearLevel()");
+			return;
+		}
+	}
+	if(NTConfig_RaidTombs > -1) {
+		var _taltomb;
+		var _stair = [69, 68, 67, 66, 70, 71, 72];
+		if(NTConfig_RaidTombs > 0) {
+			for(var i = 0; i < _stair.length; i++){
+				NTP_DoPrecast();
+				if(!NTM_MoveToStair(me.areaid, _stair[i])){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToStair()");
+					return;
+				}
+				if(!NTM_TakeStair(_stair[i])){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+					return;
+				}
+				if(NTConfig_RaidTombs == 1 || NTConfig_RaidTombs == 3){
+				NT_FindTalChest();
+				}
+				if(NTConfig_RaidTombs == 2 || NTConfig_RaidTombs == 3){
+					NTA_ClearLevel()
+				}
+				if(!NTM_MoveToStair(me.areaid, 46)){
+					Print(COLOR_1 + "Wall bug found, moving to next script!");
+					NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+					Delay(Random(1000,2000));
+				}
+				if(!NTM_TakeStair(46)){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+					return;
+				}
+			}
+		}
+		if(NTConfig_RaidTombs == 0 || NTConfig_RaidTombs == 3) {
+				_tombs = GetRoom();
+			if(!_tombs){
+				NTC_SendMsgToScript("NTBotGame.ntj", "GetRoom()");
+				return;
+			}
+			if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_TILE, _tombs.correcttomb-28)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+				return;
+			}
+			_unit = NTC_FindUnit(NTC_UNIT_TILE, _tombs.correcttomb-28, 5);
+			if(!_unit){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTC_FindUnit()");
+				return;
+			}
+			if(!NTM_TakeStair(_unit.subareaid)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+				return;
+			}
+			if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+				OpenChestsInArea();
+			}
+			if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 152, -2, 2)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+				return;
+			}
+			if(NTConfig_ClearPosition){
+				NTA_ClearPosition(20, true);
+			}
+			NTC_FindUnit(NTC_UNIT_OBJECT, 100, 10);
+			if(!NTM_TakeUnit(NTC_UNIT_OBJECT, 100)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeUnit()");
+				return;
+			}
+			if(NTConfig_AvoidDuriel){
+				NTConfig_DancingSorc = false;
+				NTM_MoveTo(me.areaid, 22638, 15724);
+				if(!NT_AvoidKillDuriel()) {
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+					return;
+				}
+			}
+			else if(!NTA_KillMonster(211)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+				return;
+			}
+			NTSI_PickItems();
+		}
+	}
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function NT_FindTalChest(){
+	var pre = GetPresetUnits(me.areaid, NTC_UNIT_OBJECT);
+	for (var i = 0; i < pre.length; i++){
+		if(pre[i].id == 397 || (pre[i].id >= 354 && pre[i].id <= 356) || (pre[i].id >= 405 && pre[i].id <= 407)){
+			NTM_MoveTo(me.areaid,(pre[i].roomx*5 + pre[i].x),(pre[i].roomy*5+pre[i].y));
+			_taltomb = false;
+			break;
+		}
+		_taltomb = true;
+	}
+	if(_taltomb)
+	Print("This is the real tomb, no chest here...");
+	var _chest = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3260), 1);
+	if(NTConfig_ClearPosition)
+		NTA_ClearPosition(20, true);
+	if(_chest){
+		if(NTC_OpenChest(_chest)){
+			NTSI_PickItems();
+		}
+		if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+			OpenChestsInArea();
+		}
+	}
+}
+
+function NT_AvoidKillDuriel()
+{
+	var duriel;
+	if (NTConfig_AttackSkill[1] < 0) {
+		return false;
+	}
+	duriel = NTC_FindUnit(NTC_UNIT_MONSTER, 211, 5);
+	if (!duriel) {
+		return false;
+	}
+	if (duriel.IsAttackable()) {
+		var _attackcount = 0;
+		var currentPosition = 1;
+		var posOne = [22638, 15687];
+		var posTwo = [22638, 15724];
+		while (_attackcount < 300 && NTA_IsValidMonster(duriel)) {
+			if((GetDistance(me, duriel)) <= 10) {
+				if(currentPosition%2 == 0) {
+					NTM_MoveTo(me.areaid, posTwo[0], posTwo[1]);
+					currentPosition++;
+				} else {
+					NTM_MoveTo(me.areaid, posOne[0], posOne[1]);
+					currentPosition++;
+				}
+			}
+			NT_SpecialCastSkillInt(duriel)
+		}
+	}
+	return (duriel.hp <= 0 || duriel.mode == 0 || duriel.mode == 12);
+}
+
+function NT_SpecialCastSkillInt(target)
+{
+	var castSkill = NTConfig_AttackSkill[9] > -1 ?	NTConfig_AttackSkill[9] : NTConfig_AttackSkill[1];
+	if(me.GetSkillStatus(castSkill) != 8) {
+		return NTC_CastSkill(castSkill, _NTA_SkillHand[castSkill], target);
+	}
+	if(NTConfig_AttackSkill[2] > -1) {
+		return NTC_CastSkill(NTConfig_AttackSkill[2], _NTA_SkillHand[NTConfig_AttackSkill[2]], target);
+	}
+	for(var i = 0 ; i < 25 ; i++) {
+		NTC_Delay(NTC_DELAY_FRAME);
+		if(me.GetSkillStatus(NTConfig_AttackSkill[castSkill]) != 8)
+			break;
+	}
+	return false;
+}

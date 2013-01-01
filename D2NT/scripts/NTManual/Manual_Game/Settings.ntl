@@ -1,0 +1,44 @@
+function MG_LoadConfig()
+{
+	MGConfig_LifeChicken = -1;	// This is your chicken life percent. If you go below this life total, exit game.
+	MGConfig_ManaChicken = -1;	// This is your chicken mana percent. If you go below this mana total, exit game.
+	MGConfig_ChickenWarn = true; // This will warn you to heal before exiting town if you'll chicken
+	MGConfig_AutoParty = true; // true will auto party with people who join, false won't
+	MGConfig_FriendsOnly = false; // true will auto party the people in your MG_SafeList only!
+	MG_SafeList = ["CharName1", "CharName2", "CharName3", "YouGetItRight?"];
+
+	MGConfig_ShowMap = true;
+	MGConfig_ShowEnemy = true;
+	MGConfig_ShowMissile = true;
+
+	NTConfig_HostileHandler = false; // true will make you quit when hostiled, false won't
+		RunFromHostiles = false;
+
+	Key_HotKeyInfo = 45;			// Insert
+	Key_ExitGame = 46;				// Del
+	Key_NextArea = 33;				// Pg Up
+	Key_LastArea = 34;				// Pg Dn
+	Key_GoToTown = 36;				// Home
+	Key_DoPrecast = 110;			// .
+	Key_PrintRes = 97;				// 1
+	Key_PrintFCRPlus = 98;			// 2
+	Key_PrintAbsorbs = 99;			// 3
+	Key_PrintBPs = 100;				// 4
+	Key_PrintChicken = 101;			// 5
+	Key_PrintStats = 102;			// 6
+		NTConfig_MercStats = true;	// true to get Merc stats, false if not
+	Key_StashCheck = 103;			// 7
+		StashChecking = "Mgr";		// "Game" to print in game "Mgr" to print in CommonLog
+	Key_InvCheck = 104;				// 8
+		InvChecking = "Mgr";		// "Game" to print in game "Mgr" to print in CommonLog
+	Key_GameStats = 105;			// 9
+	Key_EnemyOnMap = 111;			// Num /
+	Key_MissileOnMap = 106;			// Num *
+	Key_AutoParty = 109;			// Num -
+	Key_AntiIdle = 120;				// F9 - Turn on AntiIdle for extended AFK's
+	Key_ItemInfos = 122;			// F11 - Turn on ItemInfo, for information regarding Runewords, runes, gems, crafting
+	Key_LoadChatR = 123;			// F12 - Load ChatRecorder, to log all in game chat
+	Key_KeyCodeCheck = 19;			// Pause/Break - to turn on/off in game keycode checking - will print key and code for key you press
+
+	Key_Credits = 0;				// Set this key to check the credits (Currently empty)
+}

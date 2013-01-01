@@ -1,0 +1,30 @@
+// ##### Helms #########################
+[Type] == helm && [Quality] == crafted # [Sockets] >= 0 && [ItemDeadlyStrike] >= 5 && [LifeLeech] >= 1 && [ItemToHitPercentPerLevel] >= 1 && [FHR] >= 10 && ([EnhancedDefense] >= 120 || [MaxHP] >= 45)
+
+// ##### Armor #########################
+
+// ##### Shields #######################
+[Name] == Monarch && [Quality] == crafted # [Sockets] >= 0 && [EnhancedDefense] >= 150 && [FBR] >= 15 && (([FireResist] >= 15 && [LightResist] >= 15) || [FHR] >= 10)
+
+// ##### Gloves ########################
+[Type] == gloves && [Quality] == crafted # [ItemKnockBack] >= 1 && [ItemAddSkillTab] >= 2 && [IAS] >= 20 && ([Strength] >= 6 || [Dexterity] >= 6) && ([LifeLeech] >= 3 || [ManaLeech] >= 3)
+[Type] == gloves && [Quality] == crafted # [ItemKnockBack] >= 1 && [ItemAddSkillTab] >= 2 && [IAS] >= 20 && [Strength]+[Dexterity] >= 15
+[Type] == gloves && [Quality] == crafted # [ItemCrushingBlow] >= 5 && [LifeLeech] >= 4 && [IAS] >= 20 && ([Strength] >= 6 || [Dexterity] >= 6)
+[Type] == gloves && [Quality] == crafted # [ItemCrushingBlow] >= 5 && [LifeLeech] >= 4 && [Strength]+[Dexterity] >= 15
+
+// ##### Boots #########################
+[Type] == boots && [Quality] == crafted # [LifeLeech] >= 1 && [FRW] >= 30 && [FHR] >= 10 && [FireResist]+[LightResist]+[ColdResist]+[PoisonResist] >= 40
+[Type] == boots && [Quality] == crafted # [LifeLeech] >= 1 && [FRW] >= 30 && [FHR] >= 10 && [Dexterity] >= 4 && ([FireResist] >= 25 || [LightResist] >= 25 || [ColdResist] >= 25 || [PoisonResist] >= 25)
+
+// ##### Belts #########################
+[Type] == belt && [Quality] == crafted # [ItemOpenWounds] >= 5 && [LifeLeech] >= 1 && [FHR] >= 24 && [Strength] >= 15 && ([MaxHP] >= 50 || [ItemGoldBonus] >= 50)
+
+// ##### Rings #########################
+[Type] == ring && [Quality] == crafted # [LifeLeech] >= 8 && [ToHit] >= 70 && [FireResist]+[LightResist]+[ColdResist]+[PoisonResist] >= 32 && ([Strength] >= 10 || [Dexterity] >= 0 || [ManaLeech] >= 4)
+[Type] == ring && [Quality] == crafted # [LifeLeech] >= 8 && [ToHit] >= 70 && [Strength]+[Dexterity] >= 25
+
+// ##### Amulets #######################
+[Type] == amulet && [Quality] == crafted # [FCR] >= 15 && [ItemAddClassSkills] >= 2 && [FireResist]+[LightResist]+[ColdResist]+[PoisonResist] >= 50 && ([MaxMana] >= 80 || [MaxHP] >= 30 || [Strength] >= 15 || [Dexterity] >= 5)
+[Type] == amulet && [Quality] == crafted # [LifeLeech] >= 7 && [ItemAddClassSkills] >= 2 && [FireResist]+[LightResist]+[ColdResist]+[PoisonResist] >= 50 && ([ManaLeech] >= 6 || [MaxHP] >= 50 || [Strength] >= 15 || [Dexterity] >= 5)
+[Type] == amulet && [Quality] == crafted # [LifeLeech] >= 7 && [ItemAddClassSkills] >= 2 && [Strength]+[Dexterity] >= 30
+[Type] == amulet && [Quality] == crafted # [ToBlock] >= 5 && [ItemAddClassSkills] >= 2 && [FireResist]+[LightResist]+[ColdResist]+[PoisonResist] >= 50 && ([LifeLeech] >= 4 || [ManaLeech] >= 6 || [MaxHP] >= 30 || [Strength] >= 15 || [Dexterity] >= 5)

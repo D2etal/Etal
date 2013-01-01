@@ -1,0 +1,681 @@
+//##########GOLD##########
+[Type] == Gold # [Gold] >= 5000
+
+//##########RUNES##########
+[Name] == PulRune
+[Name] == UmRune
+[Name] == MalRune
+[Name] >= IstRune && [Name] <= ZodRune
+
+//##########GEMS##########
+[Name] == PerfectAmethyst
+[Name] == PerfectDiamond
+[Name] == PerfectEmerald
+[Name] == PerfectRuby
+[Name] == PerfectSapphire
+[Name] == PerfectSkull
+[Name] == PerfectTopaz
+
+//##########UNIQUE##########
+//UNIQUE GLOVES
+//[Name] == OgreGauntlets && [Quality] == Unique && [Flag] != Ethereal # (([EnhancedDamage] >= 60 && [Strength] >= 15) || ([EnhancedDamage] >= 30 && [Strength] >= 20))	//STEELREND
+
+//UNIQUE BELTS\\
+//[Name] == SpiderwebSash && [Quality] == Unique && [Flag] != Ethereal																																//UNID ARACHNID MESH
+[Name] == SpiderwebSash && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 115																										//ARACHNID MESH
+[Name] == MithrilCoil && [Quality] == Unique && [Flag] != Ethereal # ([Vitality] >= 1 && [DamageResist] >= 15 && [HPRegen] >= 1) || ([Vitality] >= 40 && [DamageResist] >= 14 && [HPRegen] >= 12)	//VERDUNGO'S HEARTY CORD
+
+//UNIQUE BOOTS
+//[Name] == ScarabshellBoots && [Quality] == Unique && [Flag] == Ethereal																				//UNID Ethereal SANDSTORM TREK
+[Name] == ScarabshellBoots && [Quality] == Unique && [Flag] == Ethereal # [Strength] >= 15 && [Vitality] >= 10 && [PoisonResist] >= 1				//Ethereal SANDSTORM TREK
+//[Name] == MyrmidonGreaves && [Quality] == Unique && [Flag] != Ethereal																				//UNID SHADOW DANCER
+[Name] == MyrmidonGreaves && [Quality] == Unique && [Flag] != Ethereal # [ShadowDisciplinesSkillTab] >= 1 && [Dexterity] >= 25						//SHADOW DANCER
+
+//UNIQUE HELMS
+//[Name] == GrimHelm && [Quality] == Unique && [Flag] == Ethereal # [LifeLeech] >= 6 && [ManaLeech] >= 6 && [DamageResist] >= 20 && [MagicDamageReduction] >= 1								//UNID Ethereal VAMPIRE GAZE
+[Name] == GrimHelm && [Quality] == Unique && [Flag] == Ethereal # [LifeLeech] >= 6 && [ManaLeech] >= 6 && [DamageResist] >= 20 && [MagicDamageReduction] >= 1								//Ethereal VAMPIRE GAZE
+[Name] == Shako && [Quality] == Unique && [Flag] != Ethereal # [Defense] >= 141																												//HARLEQUIN CREST
+[Name] == SpiredHelm && [Quality] == Unique && [Flag] != Ethereal # [Dexterity] >= 1 && [PassiveColdMastery] >= 15 && [ItemAbsorbCold] >= 1													//NIGHTWING'S VEIL
+[Name] == Demonhead && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 100 && [Strength] >= 30 && [LifeLeech] >= 10														//ANDARIEL'S VISAGE
+//[Name] == Demonhead && [Quality] == Unique && [Flag] == Ethereal																															//UNID Ethereal ANDARIEL's VISAGE
+[Name] == Demonhead && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 100 && [Strength] >= 25 && [LifeLeech] >= 8															//Ethereal ANDARIEL's VISAGE
+[Name] == BoneVisage && [Quality] == Unique # [Sockets] >= 2 && [Strength] >= 35 && [PlusDefense] >= 1																						//GIANT SKULL
+[Name] == Tiara && [Quality] == Unique # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 280 && [PlusDefense] >= 1																//KIRA'S GUARDIAN
+[Name] == Diadem && [Quality] == Unique && [Flag] != Ethereal																																//UNID GRIFFON'S EYE
+//[Name] == Diadem && [Quality] == Unique && [Flag] != Ethereal # (([PassiveLtngMastery] >= 10 && [PassiveLtngPierce] >= 20) || ([PassiveLtngMastery] >= 15 && [PassiveLtngPierce] >= 15))	//GRIFFON'S EYE
+[Name] == Corona && [Quality] == Unique																																						//UNID CROWN OF AGES
+//[Name] == Corona && [Quality] == Unique # [Sockets] >= 2 && [DamageResist] >= 13 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 80											//CROWN OF AGES
+
+//UNIQUE ARMOR
+[Name] == SerpentskinArmor && [Quality] == Unique && [Flag] != Ethereal # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] == 140 && [MagicDamageReduction] == 13				//SKIN OF THE VIPERMAGI
+//[Name] == MeshArmor && [Quality] == Unique && [Flag] == Ethereal																													//UNID Ethereal SHAFTSTOP
+[Name] == MeshArmor && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 210																							//Ethereal SHAFTSTOP
+[Name] == SharktoothArmor && [Quality] == Unique && [Flag] == Ethereal																												//UNID Ethereal TOOTHROW
+//[Name] == SharktoothArmor && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 215																					//Ethereal TOOTHROW
+[Name] == WireFleece && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 150 && [NormalDamageReduction] >= 20 && [MagicDamageReduction] >= 20						//THE GLADIATOR'S BANE
+[Name] == BalrogSkin && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 150 && [ItemAllSkills] >= 2 && [NormalDamageReduction] >= 15								//ARKAINE'S VALOR
+[Name] == KrakenShell && [Quality] == Unique # [EnhancedDefense] >= 170 && [PlusDefense] >= 100 && [DamageResist] >= 25 && [Strength] >= 48											//LEVIATHAN
+[Name] == ShadowPlate && [Quality] == Unique && [Flag] == Ethereal																													//UNID STEEL CARAPACE
+//[Name] == ShadowPlate && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 190 && [ManaRecovery] >= 10 && [ColdResist] >= 40 && [NormalDamageReduction] >= 14		//STEEL CARAPACE
+[Name] == SacredArmor && [Quality] == Unique																																		//UNID TEMPLAR'S MIGHT/TYREAL'S MIGHT
+//[Name] == SacredArmor && [Quality] == Unique # [EnhancedDefense] >= 170 && [OffensiveAurasSkillTab] >= 2 && [ArmorClassVSMissile] >= 250 && [Strength] >= 15 && [Vitality] >= 15	//TEMPLAR'S MIGHT
+//[Name] == SacredArmor && [Quality] == Unique # [EnhancedDefense] >= 120 && [Strength] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 80							//TYREAL'S MIGHT
+
+//UNIQUE SHIELDS
+[Name] == Monarch && [Quality] == Unique && [Flag] != Identified # [Defense] == 148																												//STORMSHIELD
+
+//UNIQUE SWORDS
+[Name] == PhaseBlade && [Quality] == Unique # [EnhancedDamage] >= 230 && [Strength] == 0 && [IAS] == 30	//AZUREWRATH
+
+//UNIQUE AXES
+[Name] == EttinAxe && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 265 && [Sockets] == 5					//RUNE MASTER
+[Name] == EttinAxe && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 220 && [Sockets] == 5					//Ethereal RUNE MASTER
+[Name] == BerserkerAxe && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 270 && [ItemHealAfterKill] >= 6	//DEATH CLEAVER
+//[Name] == BerserkerAxe && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 230 && [ItemHealAfterKill] >= 6	//Ethereal DEATH CLEAVER
+
+//UNIQUE BOWS
+[Name] == WardBow && [Quality] == Unique # [EnhancedDamage] >= 190 && [PlusSkillGuidedArrow] >= 5	//WIDOWMAKER
+
+//UNIQUE MACES
+[Name] == Scourge && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 240 && [ItemAbsorbLight] >= 3 && [IAS] >= 30					//Ethereal STORMLASH
+
+//UNIQUE POLEARMS
+[Name] == CrypticAxe && [Quality] == Unique && [Flag] != Ethereal # [Sockets] == 3 && [EnhancedDamage] >= 280 && [FireResist] >= 30 && [ItemHealAfterKill] >= 10 && [ItemMagicBonus] >= 50	//TOMB REAVER
+//[Name] == CrypticAxe && [Quality] == Unique && [Flag] == Ethereal																															//UNID Ethereal TOMB REAVER
+[Name] == CrypticAxe && [Quality] == Unique && [Flag] == Ethereal # [Sockets] == 3 && [EnhancedDamage] >= 200 && [FireResist] >= 30 && [ItemHealAfterKill] >= 10 && [ItemMagicBonus] >= 50	//Ethereal TOMB REAVER
+
+//UNIQUE SCEPTERS
+[Name] == Caduceus && [Quality] == Unique # [EnhancedDamage] >= 240 && [PaliCombatSkillTab] >= 4 && [NormalDamageReduction] >= 4 && [ItemToHitPercent] >= 150			//ASTREON'S IRON WARD
+
+//UNIQUE STAVES
+[Name] == Quarterstaff && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 290	//Ethereal RIBCRACKER
+[Name] == ElderStaff && [Quality] == Unique && [Flag] == Ethereal								//UNID Ethereal ONDAL'S WISDOM
+
+//UNIQUE WANDS 
+[Name] == BurntWand && [Quality] == Unique && [Flag] == Ethereal																														//Ethereal SUICIDE BRANCH
+[Name] == UnearthedWand && [Quality] == Unique																																			//UNID DEATH'S WEB
+//[Name] == UnearthedWand && [Quality] == Unique # [PoisonAndBoneSkillTab] >= 2 && [PassivePoisPierce] >= 40																				//DEATH'S WEB
+
+//UNIQUE AMAZON
+[Name] == CeremonialJavelin && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 150 && [LifeLeech] >= 5					//Ethereal TITAN'S REVENGE
+
+//UNIQUE BARBARIAN 
+[Name] == SlayerGuard && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 190 && [LifeLeech] >= 3																											//ARREAT'S FACE
+[Name] == SlayerGuard && [Quality] == Unique && [Flag] == Ethereal																																							//UNID Ethereal ARREAT'S FACE
+//[Name] == SlayerGuard && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 190 && [LifeLeech] >= 3																											//Ethereal ARREAT'S FACE
+
+//UNIQUE NECROMANCER 
+[Name] == BloodlordSkull && [Quality] == Unique && [Flag] != Ethereal # (([PoisonAndBoneSkillTab] >= 3) || ([NecromancerSummoningSkillTab] >= 3))					//DARKFORCE SPAWN
+
+//UNIQUE PALADIN
+[Name] == SacredRondache && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 180 && [EnhancedDamage] >= 40 && [PaladinSkills] >= 2 && [ItemToHitPercent] >= 40 && [MagicDamageReduction] >= 5	//ALMA NEGRA
+[Name] == GildedShield && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 175																													//HERALD OF ZAKARUM
+[Name] == GildedShield && [Quality] == Unique && [Flag] == Ethereal																																				//UNID Ethereal HERALD OF ZAKARUM
+//[Name] == GildedShield && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 175																													//Ethereal HERALD OF ZAKARUM
+
+//UNIQUE SORCERESS
+[Name] == EldritchOrb && [Quality] == Unique # [SorceressSkills] >= 3 && [Energy] >= 20 && ([PassiveFireMastery] >= 20 || [PassiveLtngMastery] >= 20)						//ESCHUTA'S TEMPER
+[Name] == DimensionalShard && [Quality] == Unique																															//UNID DEATH'S FATHOM
+//[Name] == DimensionalShard && [Quality] == Unique # [PassiveColdMastery] >= 20																								//DEATH'S FATHOM
+
+//UNIQUE AMULETS
+[Type] == Amulet && [Quality] == Unique # [ItemAllSkills] == 2 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 80					//MARA'S KALEIDOSCOPE
+[Type] == Amulet && [Quality] == Unique # [ToHit] >= 400 && [Defense] >= 300 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 140	//METALGRID
+
+//UNIQUE JEWELS
+[Name] == Jewel && [Quality] == Unique # (([PassiveColdMastery] >= 5 && [PassiveColdPierce] >= 5) || ([PassiveFireMastery] >= 5 && [PassiveFirePierce] >= 5) || ([PassiveLtngMastery] >= 5 && [PassiveLtngPierce] >= 5) || ([PassivePoisMastery] >= 5 && [PassivePoisPierce] >= 5))	//RAINBOW FACETS
+
+//UNIQUE RINGS
+[Type] == Ring && [Quality] == Unique # [ItemMaxManaPercent] >= 25								//STONE OF JORDAN
+[Type] == Ring && [Quality] == Unique # [Dexterity] >= 20 && [ToHit] >= 150						//RAVEN FROST
+[Type] == Ring && [Quality] == Unique # [LifeLeech] >= 3 && [ItemAllSkills] == 1				//BUL-KATHOS' WEDDING BAND
+[Type] == Ring && [Quality] == Unique # [LifeLeech] >= 9 && [ArmorClassVSMissile] >= 160		//CARRION WIND
+[Type] == Ring && [Quality] == Unique # [PoisonResist] >= 30 && [NormalDamageReduction] >= 11	//NATURE'S PEACE
+[Type] == Ring && [Quality] == Unique # [ItemAbsorbLightPercent] >= 10							//WISP PROTECTOR
+
+//UNIQUE CHARMS
+[Name] == GrandCharm && [Quality] == Unique # (([ItemMagicBonus] >= 40 && [ItemGoldBonus] >= 160) || ([ItemGoldBonus] >= 160 && [ItemReducedPrices] >= 15))	//GHEED'S FORTUNE
+
+//##########CHARMS##########
+//SKILLER GC
+[Name] == GrandCharm && [Quality] == Magic # [PaliCombatSkillTab] == 1
+[Name] == GrandCharm && [Quality] == Magic # [LightningSkillTab] == 1
+[Name] == GrandCharm && [Quality] == Magic # [ElementalSkillTab] == 1
+[Name] == GrandCharm && [Quality] == Magic # [TrapsSkillTab] == 1
+[Name] == GrandCharm && [Quality] == Magic # [FireSkillTab] == 1
+[Name] == GrandCharm && [Quality] == Magic # [ColdSkillTab] == 1
+[Name] == GrandCharm && [Quality] == Magic # [PoisonAndBoneSkillTab] == 1
+[Name] == GrandCharm && [Quality] == Magic # [JavelinAndSpearSkillTab] == 1
+[Name] == GrandCharm && [Quality] == Magic # [WarcriesSkillTab] == 1
+//[Name] == GrandCharm && [Quality] == Magic # [PaliCombatSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20 || [FRW] >= 7 || [Dexterity] >= 6 || [Strength] >= 6)
+//[Name] == GrandCharm && [Quality] == Magic # [LightningSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20 || [FRW] >= 7 || [Dexterity] >= 6 || [Strength] >= 6)
+//[Name] == GrandCharm && [Quality] == Magic # [ElementalSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20 || [FRW] >= 7 || [Dexterity] >= 6 || [Strength] >= 6)
+//[Name] == GrandCharm && [Quality] == Magic # [TrapsSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20 || [FRW] >= 7 || [Dexterity] >= 6 || [Strength] >= 6)
+//[Name] == GrandCharm && [Quality] == Magic # [FireSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20 || [FRW] >= 7 || [Dexterity] >= 6 || [Strength] >= 6)
+//[Name] == GrandCharm && [Quality] == Magic # [ColdSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20 || [FRW] >= 7 || [Dexterity] >= 6 || [Strength] >= 6)
+//[Name] == GrandCharm && [Quality] == Magic # [PoisonAndBoneSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20 || [FRW] >= 7 || [Dexterity] >= 6 || [Strength] >= 6)
+//[Name] == GrandCharm && [Quality] == Magic # [JavelinAndSpearSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20 || [FRW] >= 7 || [Dexterity] >= 6 || [Strength] >= 6)
+//[Name] == GrandCharm && [Quality] == Magic # [WarcriesSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20 || [ItemGoldBonus] >= 20)
+[Name] == GrandCharm && [Quality] == Magic # [ShadowDisciplinesSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20)
+[Name] == GrandCharm && [Quality] == Magic # [PassiveAndMagicSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 30)
+[Name] == GrandCharm && [Quality] == Magic # [BowAndCrossbowSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 30)
+[Name] == GrandCharm && [Quality] == Magic # [ShapeShiftingSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 30)
+[Name] == GrandCharm && [Quality] == Magic # [OffensiveAurasSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 20)
+[Name] == GrandCharm && [Quality] == Magic # [NecromancerSummoningSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 30)
+[Name] == GrandCharm && [Quality] == Magic # [DruidSummoningSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 30)
+[Name] == GrandCharm && [Quality] == Magic # [DefensiveAurasSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 30)
+[Name] == GrandCharm && [Quality] == Magic # [BarbCombatSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 30)
+[Name] == GrandCharm && [Quality] == Magic # [MasteriesSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 30)
+[Name] == GrandCharm && [Quality] == Magic # [MartialArtsSkillTab] == 1 && ([FHR] >= 12 || [MaxHP] >= 30)
+
+//GOLD FIND GC
+//[Name] == GrandCharm && [Quality] == Magic # [ItemGoldBonus] >= 40
+[Name] == GrandCharm && [Quality] == Magic # [ItemGoldBonus] >= 40 && (([ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 60) || [ColdResist] >= 26 || [FireResist] >= 26 || [LightResist] >= 26)
+[Name] == GrandCharm && [Quality] == Magic # [ItemGoldBonus] >= 40 && (([MAXDamage] >= 10 && [ToHit] >= 49) || [Mana] >= 40)
+
+//RESIST GC
+[Name] == GrandCharm && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 60
+[Name] == GrandCharm && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 56 && ([FRW] == 7 || [FHR] == 12)
+[Name] == GrandCharm && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [MaxHP] >= 25
+
+//MAX DAMAGE GC
+[Name] == GrandCharm && [Quality] == Magic # [MAXDamage] >= 9 && [ToHit] >= 49 && [MaxHP] >= 35
+[Name] == GrandCharm && [Quality] == Magic # [MAXDamage] >= 10 && [ToHit] >= 70 && [FRW] == 7
+[Name] == GrandCharm && [Quality] == Magic # [MAXDamage] >= 10 && [ToHit] >= 49 && [FHR] == 12
+
+//AR/LIFE GC
+[Name] == GrandCharm && [Quality] == Magic # [ToHit] >= 100 && [MaxHP] >= 35
+
+//LIFE/MANA GC
+[Name] == GrandCharm && [Quality] == Magic # [MaxHP] >= 40 && [Mana] >= 35
+
+//RESIST LC
+[Name] == LargeCharm && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 28 && [MaxHP] >= 25
+[Name] == LargeCharm && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 24 && ([MaxHP] >= 15 || [FHR] >= 8)
+
+//MAX DAMAGE LC
+[Name] == LargeCharm && [Quality] == Magic # [MAXDamage] >= 6 && [ToHit] >= 21 && [MaxHP] >= 26
+[Name] == LargeCharm && [Quality] == Magic # [MAXDamage] >= 6 && [ToHit] >= 40 && [FHR] >= 8
+[Name] == LargeCharm && [Quality] == Magic # [MAXDamage] >= 6 && [ToHit] >= 40 && [FRW] >= 5
+
+//AR/LIFE LC
+[Name] == LargeCharm && [Quality] == Magic # [ToHit] >= 75 && [MaxHP] >= 33
+
+//LIFE/MANA LC
+[Name] == GrandCharm && [Quality] == Magic # [MaxHP] >= 30 && [Mana] >= 30
+
+//LIFE SC
+[Name] == SmallCharm && [Quality] == Magic # [MaxHP] >= 20
+[Name] == SmallCharm && [Quality] == Magic # [MaxHP] >= 15 && [Mana] >= 10
+
+//MANA SC
+[Name] == SmallCharm && [Quality] == Magic # [Mana] >= 15 && [FHR] == 5
+//[Name] == SmallCharm && [Quality] == Magic # [Mana] >= 15 && [FRW] == 3
+//[Name] == SmallCharm && [Quality] == Magic # [Mana] >= 15 && [Strength] == 2
+//[Name] == SmallCharm && [Quality] == Magic # [Mana] >= 15 && [Dexterity] == 2
+
+//STAT SC
+//[Name] == SmallCharm && [Quality] == Magic # [Strength] == 2
+//[Name] == SmallCharm && [Quality] == Magic # [Dexterity] == 2
+
+//MF & GF SC
+[Name] == SmallCharm && [Quality] == Magic # [ItemMagicBonus] >= 7
+//[Name] == Smallcharm && [Quality] == Magic # [ItemGoldBonus] >= 10
+[Name] == SmallCharm && [Quality] == Magic # [Mana] >= 10 && ([ItemMagicBonus] >= 7 || [ItemGoldBonus] >= 10)
+[Name] == SmallCharm && [Quality] == Magic # [MAXDamage] == 3 && [ToHit] >= 10 && ([ItemMagicBonus] >= 7 || [ItemGoldBonus] >= 10)
+
+//RESIST SC
+[Name] == SmallCharm && [Quality] == Magic # [MaxHP] >= 15 && ([ColdResist] >= 9 || [FireResist] >= 9 || [LightResist] >= 9 || [PoisonResist] >= 12)
+[Name] == SmallCharm && [Quality] == Magic # ([FRW] >= 3 || [FHR] >= 5) && ([ColdResist] >= 9 || [FireResist] >= 9 || [LightResist] >= 9 || [PoisonResist] >= 12)
+[Name] == SmallCharm && [Quality] == Magic # ([ItemMagicBonus] >= 7 || [ItemGoldBonus] >= 10) && ([ColdResist] >= 9 || [FireResist] >= 9 || [LightResist] >= 9 || [PoisonResist] >= 12)
+[Name] == SmallCharm && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 20
+[Name] == SmallCharm && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 12 && ([MaxHP] >= 10 || [FRW] == 3 || [FHR] == 5 || [ItemMagicBonus] >= 7)
+//[Name] == SmallCharm && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 16 && ([ItemGoldBonus] == 10 || [Strength] == 2 || [Dexterity] == 2)
+
+//MAX DAMAGE SC
+[Name] == SmallCharm && [Quality] == Magic # [MAXDamage] == 3 && [ToHit] >= 20
+//[Name] == SmallCharm && [Quality] == Magic # [MAXDamage] == 3 && [ToHit] >= 18 && ([Strength] == 2 || [Dexterity] == 2)
+[Name] == Smallcharm && [Quality] == Magic # [MAXDamage] >= 3 && [ToHit] >= 10 && ([FHR] == 5 || [FRW] == 3)
+[Name] == Smallcharm && [Quality] == Magic # (([MAXDamage] >= 3 && [ToHit] >= 10 && [MaxHP] >= 10) || ([MAXDamage] >= 2 && [ToHit] >= 10 && [MaxHP] >= 18))
+
+//AR SC
+[Name] == SmallCharm && [Quality] == Magic # [ToHit] >= 25 && [MaxHP] >= 15
+[Name] == SmallCharm && [Quality] == Magic # [ToHit] >= 35 && ([FHR] == 5 || [FRW] == 3)
+//[Name] == SmallCharm && [Quality] == Magic # [ToHit] >= 34 && ([Strength] == 2 || [Dexterity] == 2)
+
+//POISON SC
+[Name] == SmallCharm && [Quality] == Magic # [PoisonMaxDam]/10.2 >= 20
+
+//##########RARE##########
+//RARE JEWELS
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [Dexterity]+[Strength] >= 12 && [ColdResist] >= 20
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [Dexterity]+[Strength] >= 12 && [FireResist] >= 20
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [Dexterity]+[Strength] >= 12 && [LightResist] >= 20
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [Dexterity]+[Strength] >= 16
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [Dexterity]+[Strength] >= 12 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 28
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && ([Dexterity] >= 6 || [Strength] >= 6) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 28
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [ColdResist] >= 20 && [FireResist]+[LightResist]+[PoisonResist] >= 24
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [FireResist] >= 20 && [ColdResist]+[LightResist]+[PoisonResist] >= 24
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [LightResist] >= 20 && [ColdResist]+[FireResist]+[PoisonResist] >= 24
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [PoisonResist] >= 20 && [ColdResist]+[FireResist]+[LightResist] >= 24
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [MaxHP] >= 15
+[Type] == Jewel && [Quality] == Rare # [EnhancedDamage] >= 25 && [Dexterity] >= 7
+[Type] == Jewel && [Quality] == Rare # [EnhancedDamage] >= 25 && [Strength] >= 7
+[Type] == Jewel && [Quality] == Rare # [EnhancedDamage] >= 25 && [ToHit] >= 50 && ([Dexterity] >= 6 || [Strength] >= 6)
+[Type] == Jewel && [Quality] == Rare # [EnhancedDamage] >= 28 && [FHR] >= 7
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [EnhancedDamage] >= 25
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 28
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && ([ColdResist] >= 25 || [FireResist] >= 25 || [LightResist] >= 25)
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [MAXDamage] >= 10
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [MINDamage] >= 9
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [Dexterity]+[Strength] >= 16
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && ([Dexterity] >= 8 || [Strength] >= 8)
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [FHR] >= 7 && ([ColdResist] >= 15 || [FireResist] >= 15 || [LightResist] >= 15)
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && ([Dexterity] >= 5 || [Strength] >= 5) && ([ColdResist] >= 10 || [FireResist] >= 10 || [LightResist] >= 10)
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && ([Dexterity] >= 6 || [Strength] >= 6) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 28
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && ([Dexterity] >= 6 || [Strength] >= 6) && [ToHit] >= 50
+[Type] == Jewel && [Quality] == Rare # [Dexterity] >= 7 && [Strength] >= 7
+[Type] == Jewel && [Quality] == Rare # ([Dexterity] >= 8 || [Strength] >= 8) && ([ColdResist] >= 10 || [FireResist] >= 10 || [LightResist] >= 10)
+[Type] == Jewel && [Quality] == Rare # [Dexterity] >= 5 && [Strength] >= 5 && ([ColdResist] >= 10 || [FireResist] >= 10 || [LightResist] >= 10)
+//[Name] == Jewel && ([Quality] == Rare || [Quality] == Magic) # [PoisonMinDam] >= 20
+
+//RARE RINGS
+[Type] == Ring && [Quality] == Rare # [ItemMagicBonus] >= 25
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && ([Dexterity] >= 10 || [Strength] >= 15) && [MaxHP] >= 15
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && ([Dexterity] >= 13 || [Strength] >= 17) && [HPRegen] >= 7
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && ([Dexterity] >= 13 || [Strength] >= 17) && ([ColdResist] >= 15 || [FireResist] >= 15 || [LightResist] >= 15)
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && ([Dexterity] >= 13 || [Strength] >= 17) && (([ColdResist]+[FireResist] >= 15) || ([ColdResist]+[LightResist] >= 15) || ([FireResist]+[LightResist] >= 15))
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && ([Dexterity] >= 13 || [Strength] >= 17) && [Mana] >= 50
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && [Strength]+[Dexterity] >= 20
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && [MaxHP] >= 25 && [HPRegen] >= 7
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && [MaxHP] >= 35 && ([ColdResist] >= 15 || [FireResist] >= 15 || [LightResist] >= 15)
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && [MaxHP] >= 25 && (([ColdResist]+[FireResist] >= 20) || ([ColdResist]+[LightResist] >= 20) || ([FireResist]+[LightResist] >= 20))
+[Type] == Ring && [Quality] == Rare # [Dexterity]+[Strength] >= 30 && (([ColdResist]+[FireResist] >= 15) || ([ColdResist]+[LightResist] >= 15) || ([FireResist]+[LightResist] >= 15))
+[Type] == Ring && [Quality] == Rare # [Dexterity]+[Strength] >= 30 && ([ColdResist] >= 15 || [FireResist] >= 15 || [LightResist] >= 15)
+[Type] == Ring && [Quality] == Rare # [Dexterity]+[Strength] >= 30 && [MaxHP] >= 15
+[Type] == Ring && [Quality] == Rare # [Dexterity]+[Strength] >= 30 && [Mana] >= 50
+[Type] == Ring && [Quality] == Rare # [Strength]+[Dexterity] >= 30 && [ManaLeech]+[LifeLeech] >= 6
+[Type] == Ring && [Quality] == Rare # ([Dexterity] >= 15 || [Strength] >= 20) && [MaxHP] >= 35
+[Type] == Ring && [Quality] == Rare # ([Dexterity] >= 15 || [Strength] >= 20) && [HPRegen] >= 7
+[Type] == Ring && [Quality] == Rare # ([Dexterity] >= 15 || [Strength] >= 17) && [ManaLeech]+[LifeLeech] >= 10
+[Type] == Ring && [Quality] == Rare # [ManaLeech]+[LifeLeech] >= 10 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Ring && [Quality] == Rare # [ManaLeech]+[LifeLeech] >= 10 && [MaxHP] >= 35
+
+//RARE MF AMULET
+[Type] == Amulet && [Quality] == Rare # [ItemMagicBonus] >= 35
+
+//RARE +2 CLASS AMULET
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [Dexterity]+[Strength] >= 20 && [MaxHP] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [Dexterity]+[Strength] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [Dexterity]+[Strength] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && [MaxHP] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && [Dexterity]+[Strength] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 15
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && [MaxHP] >= 25 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && [MaxHP] >= 25 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && [MaxHP] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && [ItemMagicBonus] >= 25
+
+//RARE +2 TREE AMULET
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [Dexterity]+[Strength] >= 20 && [MaxHP] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [Dexterity]+[Strength] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [Dexterity]+[Strength] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && [MaxHP] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && [Dexterity]+[Strength] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 15
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && [MaxHP] >= 25 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && [MaxHP] >= 25 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 5 && [MaxHP] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && [ItemGoldBonus] >= 75
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && [ItemMagicBonus] >= 25
+
+//RARE +2 CLASS SKILL CIRCLET
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && [MaxHP] >= 40
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 20
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && [MaxHP] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && [MaxHP] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] == 20 && [MaxHP] >= 40
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 20
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && [MaxHP] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && [MaxHP] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+
+//RARE +2 TREE SKILLS CIRCLET
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && [MaxHP] >= 40
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 20
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && [MaxHP] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && [MaxHP] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+
+//RARE VISIONARY CIRCLET
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [Sockets] == 2 && ([FCR] == 20 || [FRW] >= 20)
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([PaladinSkills] == 2 || [PaliCombatSkillTab] == 2 || [BarbarianSkills] == 2) && ([Sockets] == 2 || [FCR] == 20 || [FRW] >= 20)
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 20 && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30)) && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [MaxHP] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30)) && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [MaxHP] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [Sockets] == 2
+
+//RARE VISIONARY BARB HELM
+[Type] == PrimalHelm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [FHR] >= 10 && [MaxHP] >= 20 && [Sockets] == 2
+[Type] == PrimalHelm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [FHR] >= 10 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30)) && [Sockets] == 2
+[Type] == PrimalHelm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [FHR] >= 10 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [Sockets] == 2
+
+//RARE VISIONARY HELM
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([PaladinSkills] == 2 || [PaliCombatSkillTab] == 2 || [BarbarianSkills] == 2)
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [MaxHP] >= 40 && [Sockets] == 2
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 20 && [Sockets] == 2
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && ([ColdResist]+[FireResist] >= 30 || [ColdResist]+[LightResist] >= 30 || [FireResist]+[LightResist] >= 30) && [Sockets] == 2
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [Sockets] == 2
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [MaxHP] >= 20 && ([ColdResist]+[FireResist] >= 30 || [ColdResist]+[LightResist] >= 30 || [FireResist]+[LightResist] >= 30) && [Sockets] == 2
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [MaxHP] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [Sockets] == 2
+
+//RARE BATTLE ORDER HELM
+[Type] == PrimalHelm && [Quality] == Rare # [SkillBattleOrders] == 3 && [WarcriesSkillTab] >= 2 && [MaxHP] >= 20 && [FHR] >= 10 && [Sockets] == 2
+[Type] == PrimalHelm && [Quality] == Rare # [SkillBattleOrders] == 3 && [BarbarianSkills] == 2 && ([Sockets] == 2 || [FHR] >= 10 || [MaxHP] >= 30)
+
+//RARE PELT
+[Type] == Pelt && [Quality] == Rare # [DruidSkills]+[SkillTornado] >= 5 && ([Sockets] == 2 || [MaxHP] >= 20 || [FHR] >= 10)
+[Type] == Pelt && [Quality] == Rare # [ElementalSkillTab]+[SkillTornado] >= 5 && ([Sockets] == 2 || [MaxHP] >= 20 || [FHR] >= 10)
+[Type] == Pelt && [Quality] == Rare # [DruidSkills] == 2 && [SkillSummonGrizzly] == 3 && (([FHR] >= 10 && [MaxHP] >= 20) || ([FHR] >= 10 && [Sockets] == 2) || ([Sockets] == 2 && [MaxHP] >= 20))
+[Type] == Pelt && [Quality] == Rare # [DruidSkills] == 2 && [SkillFireClaws] == 3 && (([FHR] >= 10 && [MaxHP] >= 20) || ([FHR] >= 10 && [Sockets] == 2) || ([Sockets] == 2 && [MaxHP] >= 20))
+[Type] == Pelt && [Quality] == Rare # [DruidSkills] == 2 && [SkillFury] == 3 && (([FHR] >= 10 && [MaxHP] >= 20) || ([FHR] >= 10 && [Sockets] == 2) || ([Sockets] == 2 && [MaxHP] >= 20))
+
+//RARE ARMOR
+[Type] == Armor && [Quality] == Rare && [Class] == Elite && [Flag] == Ethereal # [Sockets] == 2 && [FHR] >= 17 && [ItemReplenishDurability] >= 1 && ([MaxHP] >= 35 || ([ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40))
+[Type] == Armor && [Quality] == Rare && [Class] == Elite && [Flag] == Ethereal # [EnhancedDefense] >= 150 && [Sockets] == 2 && [ItemReplenishDurability] >=1
+
+//RARE SHIELDS
+[Type] == Shield && [Quality] == Rare && [Class] == Elite && [Flag] != Ethereal # [FHR] >= 17 && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30
+[Type] == AuricShields && [Quality] == Rare && [Class] == Elite && [Flag] != Ethereal # [FHR] >= 17 && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30
+[Type] == AuricShields && [Quality] == Rare && [Class] == Elite && [Flag] != Ethereal # ([PaladinSkills] == 2 || [PaliCombatSkillTab] == 2) && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30
+[Type] == Shield && [Quality] == Rare && [Class] == Elite && [Flag] == Ethereal # [FHR] >= 17 && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30 && [ItemReplenishDurability] >= 1
+[Type] == AuricShields && [Quality] == Rare && [Class] == Elite && [Flag] == Ethereal # [FHR] >= 17 && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30 && [ItemReplenishDurability] >= 1
+[Type] == AuricShields && [Quality] == Rare && [Class] == Elite && [Flag] == Ethereal # ([PaladinSkills] == 2 || [PaliCombatSkillTab] == 2) && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30 && [ItemReplenishDurability] >= 1
+
+//RARE GLOVES
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [Dexterity]+[Strength] >= 20 && [ColdResist]+[FireResist]+[LightResist] >= 45
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # ([Dexterity] >= 15 || [Strength] >= 15) && (([ColdResist] >= 15 && [FireResist] >= 15 && [LightResist] >= 15) || ([ColdResist]+[FireResist] >= 35) || ([ColdResist]+[LightResist] >= 35) || ([FireResist]+[LightResist] >= 35))
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && (([ColdResist]+[FireResist] >= 20) || ([ColdResist]+[LightResist] >= 20) || ([FireResist]+[LightResist] >= 20))
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && [ColdResist]+[FireResist]+[LightResist] >= 21
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && ([BowAndCrossbowSkillTab] == 2 || [PassiveAndMagicSkillTab] == 2 || [JavelinAndSpearSkillTab] == 2)
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && (([ColdResist]+[FireResist] >= 16) || ([ColdResist]+[LightResist] >= 16) || ([FireResist]+[LightResist] >= 16))
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && [ColdResist]+[FireResist]+[LightResist] >= 18
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && ([BowAndCrossbowSkillTab] == 2 || [PassiveAndMagicSkillTab] == 2 || [JavelinAndSpearSkillTab] == 2)
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [Dexterity]+[Strength] >= 20 && [ColdResist]+[FireResist]+[LightResist] >= 30 && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # ([Dexterity] >= 15 || [Strength] >= 15) && (([ColdResist] >= 15 && [FireResist] >= 15 && [LightResist] >= 15) || ([ColdResist]+[FireResist] >= 35) || ([ColdResist]+[LightResist] >= 35) || ([FireResist]+[LightResist] >= 35)) && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && (([ColdResist]+[FireResist] >= 20) || ([ColdResist]+[LightResist] >= 20) || ([FireResist]+[LightResist] >= 20)) && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && [ColdResist]+[FireResist]+[LightResist] >= 21 && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && ([BowAndCrossbowSkillTab] == 2 || [PassiveAndMagicSkillTab] == 2 || [JavelinAndSpearSkillTab] == 2) && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && (([ColdResist]+[FireResist] >= 16) || ([ColdResist]+[LightResist] >= 16) || ([FireResist]+[LightResist] >= 16)) && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && [ColdResist]+[FireResist]+[LightResist] >= 18 && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && ([BowAndCrossbowSkillTab] == 2 || [PassiveAndMagicSkillTab] == 2 || [JavelinAndSpearSkillTab] == 2) && [ItemReplenishDurability] >= 1
+
+//RARE BOOTS
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 10 && (([ColdResist]+[FireResist] >= 70) || ([ColdResist]+[LightResist] >= 70) || ([FireResist]+[LightResist] >= 70))
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 10 && (([ColdResist]+[FireResist]+[LightResist] >= 75) || ([ColdResist]+[FireResist]+[PoisonResist] >= 90) || ([ColdResist]+[LightResist]+[PoisonResist] >= 90) || ([FireResist]+[LightResist]+[PoisonResist] >= 90))
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FRW] >= 30 && (([ColdResist]+[FireResist] >= 70) || ([ColdResist]+[LightResist] >= 70) || ([FireResist]+[LightResist] >= 70))
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FRW] >= 30 && (([ColdResist]+[FireResist]+[LightResist] >= 75) || ([ColdResist]+[FireResist]+[PoisonResist] >= 90) || ([ColdResist]+[LightResist]+[PoisonResist] >= 90) || ([FireResist]+[LightResist]+[PoisonResist] >= 90))
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 10 && [FRW] >= 10 && (([ColdResist]+[FireResist] >= 60) || ([ColdResist]+[LightResist] >= 60) || ([FireResist]+[LightResist] >= 60))
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 10 && [FRW] >= 10 && (([ColdResist]+[FireResist]+[LightResist] >= 60) || ([ColdResist]+[FireResist]+[PoisonResist] >= 75) || ([ColdResist]+[LightResist]+[PoisonResist] >= 75) || ([FireResist]+[LightResist]+[PoisonResist] >= 75))
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 10 && (([ColdResist]+[FireResist] >= 70) || ([ColdResist]+[LightResist] >= 70) || ([FireResist]+[LightResist] >= 70)) && [ItemReplenishDurability] >= 1
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 10 && (([ColdResist]+[FireResist]+[LightResist] >= 75) || ([ColdResist]+[FireResist]+[PoisonResist] >= 90) || ([ColdResist]+[LightResist]+[PoisonResist] >= 90) || ([FireResist]+[LightResist]+[PoisonResist] >= 90)) && [ItemReplenishDurability] >= 1
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FRW] >= 30 && (([ColdResist]+[FireResist] >= 70) || ([ColdResist]+[LightResist] >= 70) || ([FireResist]+[LightResist] >= 70)) && [ItemReplenishDurability] >= 1
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FRW] >= 30 && (([ColdResist]+[FireResist]+[LightResist] >= 75) || ([ColdResist]+[FireResist]+[PoisonResist] >= 90) || ([ColdResist]+[LightResist]+[PoisonResist] >= 90) || ([FireResist]+[LightResist]+[PoisonResist] >= 90)) && [ItemReplenishDurability] >= 1
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 10 && [FRW] >= 10 && (([ColdResist]+[FireResist] >= 60) || ([ColdResist]+[LightResist] >= 60) || ([FireResist]+[LightResist] >= 60)) && [ItemReplenishDurability] >= 1
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 10 && [FRW] >= 10 && (([ColdResist]+[FireResist]+[LightResist] >= 60) || ([ColdResist]+[FireResist]+[PoisonResist] >= 75) || ([ColdResist]+[LightResist]+[PoisonResist] >= 75) || ([FireResist]+[LightResist]+[PoisonResist] >= 75)) && [ItemReplenishDurability] >= 1
+
+//RARE BELTS
+[Type] == Belt && [Quality] == Rare && [Flag] != Ethereal # (([FHR] == 24 && [Strength] >= 20 && [MaxHP] >= 40) || ([FHR] >= 17 && [Strength] >= 25 && [MaxHP] >= 50))
+[Type] == Belt && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 17 && [Strength] >= 20 && [MaxHP] >= 30 && ([ColdResist] >= 20 || [FireResist] >= 20 || [LightResist] >= 20)
+[Type] == Belt && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 17 && [Strength] >= 20 && [MaxHP] >= 30 && (([ColdResist]+[FireResist] >= 20) || ([ColdResist]+[LightResist] >= 20) || ([FireResist]+[LightResist] >= 20))
+[Type] == Belt && [Quality] == Rare && [Flag] == Ethereal # (([FHR] == 24 && [Strength] >= 20 && [MaxHP] >= 40) || ([FHR] >= 17 && [Strength] >= 25 && [MaxHP] >= 50)) && [ItemReplenishDurability] >= 1
+[Type] == Belt && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 17 && [Strength] >= 20 && [MaxHP] >= 30 && ([ColdResist] >= 20 || [FireResist] >= 20 || [LightResist] >= 20) && [ItemReplenishDurability] >= 1
+[Type] == Belt && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 17 && [Strength] >= 20 && [MaxHP] >= 30 && (([ColdResist]+[FireResist] >= 20) || ([ColdResist]+[LightResist] >= 20) || ([FireResist]+[LightResist] >= 20)) && [ItemReplenishDurability] >= 1
+
+//RARE AXE
+[Type] == Axe && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+
+//RARE SWORD
+[Type] == Sword && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+
+//RARE MACE
+[Type] == Mace && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+
+//RARE HAMMER
+[Type] == Hammer && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+
+//RARE SCEPTER
+[Type] == Scepter && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+
+//RARE POLEARM
+[Type] == Polearm && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+
+//RARE KNIFE
+[Type] == Knife && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+
+//RARE BOW
+[Type] == Bow && [Quality] == Rare # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([Sockets] == 2 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+
+//RARE JAVELIN
+[Type] == Javelin && [Quality] == Rare && [Flag] == Ethereal # ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250)) && [ItemReplenishQuantity] >= 1
+
+//RARE THROWING WEAPONS
+[Type] == ThrownWeapon && [Quality] == Rare && [Flag] == Ethereal # ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250)) && [ItemReplenishQuantity] >= 1
+
+//RARE CLAWS
+[Type] == AssassinClaw && [Quality] == Rare # [IAS] >= 20 && (([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == AssassinClaw && [Quality] == Rare && [Flag] == Ethereal # [EnhancedDamage] >= 250 && [ItemReplenishDurability] >= 1
+[Type] == HandToHand && [Quality] == Rare # [IAS] >= 20 && (([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == HandToHand && [Quality] == Rare && [Flag] == Ethereal # [EnhancedDamage] >= 250 && [ItemReplenishDurability] >= 1
+
+//RARE SORCERESS ORBS
+[Type] == Orb && [Quality] == Rare # (([SorceressSkills]+[SkillLightning] >= 5) || ([SorceressSkills]+[SkillChainLightning] >= 5)) && [SkillLightningMastery] >= 1 && [FCR] >= 20
+[Type] == Orb && [Quality] == Rare # (([SorceressSkills]+[SkillFireball] >= 5) || ([SorceressSkills]+[SkillFirebolt] >= 5) || ([SorceressSkills]+[SkillEnchant] >= 5)) && [SkillFireMastery] >= 1 && [FCR] >= 20
+[Type] == Orb && [Quality] == Rare # (([SorceressSkills]+[SkillFireball] >= 5 && [SkillMeteor] >= 1) || ([SorceressSkills]+[SkillFireball] >= 5 && [SkillFirebolt] >= 1)) && [FCR] >= 20
+[Type] == Orb && [Quality] == Rare # (([SorceressSkills]+[SkillBlizzard] >= 5) || ([SorceressSkills]+[SkillFrozenOrb] >= 5)) && [SkillColdMastery] >= 1 && [FCR] >=20 && [Sockets] >= 2
+[Type] == Orb && [Quality] == Rare # (([LightningSkillTab]+[SkillLightning] >= 5) || ([LightningSkillTab]+[SkillChainLightning] >= 5)) && [SkillLightningMastery] >= 1 && [FCR] >= 20
+[Type] == Orb && [Quality] == Rare # (([FireSkillTab]+[SkillFireball] >= 5) || ([FireSkillTab]+[SkillFirebolt] >= 5) || ([FireSkillTab]+[SkillMeteor] >= 5)) && [SkillFireMastery] >= 1 && [FCR] >= 20
+[Type] == Orb && [Quality] == Rare # [FireSkillTab]+[SkillEnchant] >= 6
+[Type] == Orb && [Quality] == Rare # (([ColdSkillTab]+[SkillBlizzard] >= 5) || ([ColdSkillTab]+[SkillFrozenOrb] >= 5)) && [SkillColdMastery] >= 2 && [FCR] >=20 && [Sockets] >= 2
+
+//RARE NECRO WANDS
+[Type] == Wand && ([Quality] == Rare || [Quality] == Magic) # [FCR] == 20 && ([PoisonAndBoneSkillTab] >= 2 || [NecromancerSkills] == 2) && (([SkillBoneSpirit] == 3 && [SkillBoneSpear] == 3) || ([SkillPoisonNova] == 3))
+
+//##########MAGIC##########
+//MAGIC JEWELS
+[Type] == Jewel && [Quality] == Magic # [MAXDamage] >= 28 || ([MAXDamage] >= 13 && ([IAS] == 15 || [MaxHP] >= 15 || [Strength] >= 8 || [Dexterity] >= 8 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 8))
+[Type] == Jewel && [Quality] == Magic # [MAXDamage] == 20
+[Type] == Jewel && [Quality] == Magic # ([MINDamage] >= 18 || [MINDamage] == 8) && [ItemReqPercent] == -15
+[Type] == Jewel && [Quality] == Magic # [EnhancedDamage] >= 30 && ([IAS] == 15 || [MaxHP] >= 15 || [Strength] >= 8 || [Dexterity] >= 8 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 8)
+[Type] == Jewel && [Quality] == Magic # [ToHit] >= 75 && ([IAS] == 15 || [MaxHP] >= 15 || [Strength] >= 8 || [Dexterity] >= 8 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 8)
+[Type] == Jewel && [Quality] == Magic # [MaxMana] >= 15 && ([IAS] == 15 || [MaxHP] >= 20 || [Strength] >= 9 || [Dexterity] >= 9 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 10)
+[Type] == Jewel && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 48 && ([IAS] == 15 || [MaxHP] >= 15 || [Strength] >= 8 || [Dexterity] >= 8 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 8)
+[Type] == Jewel && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] == 60
+[Type] == Jewel && [Quality] == Magic # ([ColdResist] >= 25 || [FireResist] >= 25 || [LightResist] >= 25 || [PoisonResist] == 30) && ([IAS] == 15 || [MaxHP] >= 15 || [Strength] >= 8 || [Dexterity] >= 8 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 8)
+
+//MAGIC +2 CLASS SPECIFIC CIRCLETS
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # [AmazonSkills] == 2 && [FRW] >= 20
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # [ItemAddClassSkills] == 2 && [FCR] == 20
+
+//MAGIC +3 TREE SPECIFIC CIRCLETS
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # ([ColdSkillTab] == 3 || [FireSkillTab] == 3 || [LightningSkillTab] == 3 || [ElementalSkillTab] == 3 || [PoisonAndBoneSkillTab] == 3 || [PaliCombatSkillTab] == 3 || [TrapsSkillTab] == 3) && [FCR] == 20
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # ([ColdSkillTab] == 3 || [FireSkillTab] == 3 || [LightningSkillTab] == 3 || [ElementalSkillTab] == 3 || [PoisonAndBoneSkillTab] == 3 || [PaliCombatSkillTab] == 3 || [TrapsSkillTab] == 3) && [MaxHP] == 90
+
+//MAGIC JEWELERS CIRCLETS
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # [Sockets] == 3 && ([FCR] == 20 || [FRW] == 30 || [MaxHP] >= 60 || [Dexterity] >= 20)
+
+//MAGIC PELT
+[Type] == Pelt && [Quality] == Magic # (([DruidSkills]+[SkillTornado] >= 5) || ([ElementalSkillTab]+[SkillTornado] >= 6)) && ([SkillCycloneArmor] >= 1 || [SkillOakSage] >= 1 || [SkillPoisonCreeper] >= 1)
+[Type] == Pelt && [Quality] == Magic # (([DruidSkills]+[SkillTornado] >= 5) || ([ElementalSkillTab]+[SkillTornado] >= 5)) && [MaxHP] >= 20
+[Type] == Pelt && [Quality] == Magic # (([DruidSkills]+[SkillSummonGrizzly] >= 5) || ([DruidSummoningSkillTab]+[SkillSummonGrizzly] >= 5)) && [MaxHP] >= 20
+[Type] == Pelt && [Quality] == Magic # (([DruidSkills]+[SkillFireClaws] >= 5) || ([ShapeShiftingSkillTab]+[SkillFireClaws] >= 5)) && [MaxHP] >= 20
+[Type] == Pelt && [Quality] == Magic # (([DruidSkills]+[SkillFury] >= 5) || ([ShapeShiftingSkillTab]+[SkillFury] >= 5)) && [MaxHP] >= 20
+
+//MAGIC BATTLE ORDER HELMS
+[Type] == PrimalHelm && [Quality] == Magic # [SkillBattleOrders]+[WarcriesSkillTab] == 6
+[Type] == PrimalHelm && [Quality] == Magic # [SkillBattleOrders]+[WarcriesSkillTab] >= 5 && [MaxHP] >= 80
+[Type] == PrimalHelm && [Quality] == Magic # [SkillBattleOrders]+[BarbarianSkills] >= 5 && [MaxHP] >= 50
+
+//MAGIC SHIELDS
+[Name] == Monarch && [Quality] == Magic && [Flag] != Ethereal # [Sockets] >= 4 && ([ItemReqPercent] >= 20 || [FHR] >= 17 || [FBR] == 30 || [MaxHP] >= 40)
+[Type] == AuricShields && [Quality] == Magic && [Class] == Elite && [Flag] != Ethereal # [Sockets] >= 4 && ([ItemReqPercent] >= 20 || [FHR] >= 17 || [FBR] == 30 || [MaxHP] >= 40)
+
+//MAGIC SOCKET/LIFE ARMOR
+[Type] == Armor && [Quality] == Magic && [Class] == Elite # [Sockets] == 4 && [MaxHP] >= 75
+
+//MAGIC SOCKET/FHR ARMOR
+[Type] == Armor && [Quality] == Magic && [Class] == Elite # [Sockets] == 4 && [FHR] >= 24
+
+//MAGIC/RARE +5/+6 LS CLAWS
+[Type] == AssassinClaw && ([Quality] == Rare || [Quality] == Magic) # [AssassinSkills]+[SkillLightningSentry] >= 5
+[Type] == AssassinClaw && ([Quality] == Rare || [Quality] == Magic) # [TrapsSkillTab]+[SkillLightningSentry] >= 5
+[Type] == HandToHand && ([Quality] == Rare || [Quality] == Magic) # [AssassinSkills]+[SkillLightningSentry] >= 5
+[Type] == HandToHand && ([Quality] == Rare || [Quality] == Magic) # [TrapsSkillTab]+[SkillLightningSentry] >= 5
+
+//MAGIC/RARE +5/+6 JAV SKILLS 30+ [IAS] JAVELINS
+([Name] == MaidenJavelin || [Name] == CeremonialJavelin || [Name] == MatriarchalJavelin) && ([Quality] == Rare || [Quality] == Magic) # [IAS] >= 30 && [AmazonSkills]+[JavelinAndSpearSkillTab] >= 4
+([Name] == MaidenJavelin || [Name] == CeremonialJavelin || [Name] == MatriarchalJavelin) && ([Quality] == Rare || [Quality] == Magic) # [IAS] >= 30 && [JavelinAndSpearSkillTab] >= 4
+
+
+//##########WHITE##########
+//WHITE NON-ETH ARMOR
+[Name] == RingMail && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDefense] == 15 && [Sockets] == 3																			//Enigma
+[Name] == GothicPlate && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDefense] == 15 && ([Sockets] == 3 || [Sockets] == 4)													//Enigma, CoH
+[Name] == FullPlateMail && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDefense] == 15 && ([Sockets] == 3 || [Sockets] == 4)													//Enigma, CoH
+[Name] == MagePlate && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDefense] >= 15 && ([Sockets] == 0 || [Sockets] == 3)														//Enigma
+[Name] == DuskShroud && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDefense] >= 10 && [Sockets] == 3																			//Enigma
+[Name] == Wirefleece && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDefense] == 15 && ([Sockets] == 3 || [Sockets] == 4)														//Enigma, CoH, Fortitude
+[Name] == ArchonPlate && [Quality] <= Superior && [Flag] != Ethereal # (([EnhancedDefense] >= 15 && ([Sockets] == 0 || [Sockets] == 4)) || ([EnhancedDefense] >= 10 && [Sockets] == 3))	//Enigma, CoH, Fortitude
+
+//WHITE 0 SOCKET ETHEREAL ARMOR
+[Name] == ArchonPlate && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 700 && [Sockets] == 0	//Prudence, Duress, Fortitude, Stone
+[Name] == SacredArmor && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 850 && [Sockets] == 0	//Prudence, Duress, Fortitude, Stone
+
+//WHITE SHIELDS
+[Name] == SacredTarge && [Quality] <= Superior && [Flag] != Ethereal # [FireResist] >= 40 && [EnhancedDefense] >= 0 && ([Sockets] == 0 || [Sockets] == 3 || [Sockets] == 4)		//Sanctuary, Spirit, Phoenix
+[Name] == SacredTarge && [Quality] < Superior && [Flag] == Ethereal # [FireResist] >= 40 && [Sockets] == 0																		//Exile
+[Name] == SacredTarge && [Quality] < Superior && [Flag] == Ethereal # [EnhancedDamage] >= 60 && [Sockets] == 0																	//Exile
+[Name] == VortexShield && [Quality] <= Superior && [Flag] != Ethereal # [FireResist] >= 45 && [EnhancedDefense] >= 0 && ([Sockets] == 0 || [Sockets] == 3 || [Sockets] == 4)	//Sanctuary, Spirit, Phoenix
+[Name] == VortexShield && [Quality] < Superior && [Flag] == Ethereal # [FireResist] >= 35 && [Sockets] == 0																		//Exile
+[Name] == VortexShield && [Quality] < Superior && [Flag] == Ethereal # [EnhancedDamage] >= 60 && [Sockets] == 0																	//Exile
+[Name] == Monarch && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 215 && [Sockets] == 0																			//Spirit, Phoenix
+[Name] == Monarch && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDefense] >= 10 && ([Sockets] == 0 || [Sockets] == 4)												//Spirit, Phoenix
+
+//WHITE HELMS
+[Name] == BoneVisage && [Quality] == Superior && [Flag] != Ethereal # [EnhancedDefense] >= 15 && ([Sockets] == 0 || [Sockets] == 3)	//Dream
+
+//WHITE WEAPONS
+[Name] == DoubleAxe && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 5)																			//CtA
+([Name] == MilitaryPick || [Name] == WarAxe) && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && [Sockets] == 5																		//CtA
+[Name] == WarSpike && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 5 || [Sockets] == 6)															//Death, BotD
+[Name] == WarSpike && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDamage] >= 15 && [Sockets] == 5																								//Grief
+[Name] == BerserkerAxe && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 4 || [Sockets] == 5 || [Sockets] == 6)									//Oath, Death, BotD
+[Name] == BerserkerAxe && [Quality] <= Superior && [Flag] == Ethereal # ([Sockets] == 0 || [Sockets] == 5 || [Sockets] == 6)																				//Death, BotD
+[Name] == BerserkerAxe && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 6)																		//Last Wish
+[Name] == BerserkerAxe && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDamage] >= 1 && ([Sockets] == 4 || [Sockets] == 5)																			//HoJ, Grief
+[Name] == GloriousAxe && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && [Sockets] == 5																								//Death
+[Name] == Decapitator && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 5)																			//Death
+[Name] == ThunderMaul && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 6)																			//BotD
+[Name] == CrystalSword && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 4 || [Sockets] == 5)																		//Spirit, CtA
+([Name] == BroadSword || [Name] == LongSword) && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 4)													//Spirit
+[Name] == PhaseBlade && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 5 || [Sockets] == 6)														//Grief, Last Wish
+[Name] == BalrogBlade && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 ||[Sockets] == 4)																			//Oath
+[Name] == ColossusBlade && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 6)																		//BotD
+([Name] == ColossusSword || [Name] == Zweihander) && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 5)												//Grief
+[Name] == ColossusSword && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 5)																		//Death
+[Name] == Flail && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 4 || [Sockets] == 5)																//HotO, CtA
+([Name] == ArchonStaff || [Name] == GhostSpear || [Name] == WarPike) && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 6)							//BotD
+[Name] == Scythe && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && [Sockets] == 4																									//Infinity
+[Name] == ColossusVoulge && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 4)																		//Infinity, Insight, Pride
+([Name] == CrypticAxe || [Name] == Thresher) && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && [Sockets] == 4																		//Infinity, Insight, Pride, Obedience, Doom
+[Name] == GreatPoleaxe && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 4 || [Sockets] == 6)																		//Infinity, Insight, Pride, BotD
+[Name] == GiantThresher && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 4)																		//Infinity, Insight, Pride
+([Name] == MatriarchalPike || [Name] == MatriarchalSpear) && [Quality] <= Superior && [Flag] == Ethereal # [JavelinAndSpearSkillTab] >= 3 && [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 6)	//BotD
+([Name] == GrandMatronBow || [Name] == MatriarchalBow) && [Quality] <= Superior # [BowAndCrossbowSkillTab] == 3 && [EnhancedDamage] >= 15 && ([Sockets] == 4 || [Sockets] == 5)								//Brand, Faith, Harmony, Ice, Wrath, CtA
+[Name] == GreatBow && [Quality] <= Superior # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 4)																									//Brand, Faith, Harmony, Ice, Wrath
+([Name] == CrusaderBow || [Name] == DiamondBow || [Name] == HydraBow || [Name] == ShadowBow || [Name] == WardBow) && [Quality] <= Superior # [EnhancedDamage] >= 10 && [Sockets] == 4						//Brand, Faith, Harmony, Ice, Wrath
+
+//WHITE ES STAVES
+([Name] == GnarledStaff || [Name] == BattleStaff || [Name] == CedarStaff || [Name] == ElderStaff || [Name] == Shillelagh || [Name] == GothicStaff) && [Quality] <= Superior # [SkillEnergyShield] == 3 && [Sockets] == 4								//Memory
+([Name] == GnarledStaff || [Name] == BattleStaff || [Name] == CedarStaff || [Name] == ElderStaff || [Name] == Shillelagh || [Name] == GothicStaff) && [Quality] <= Superior # [SkillEnergyShield] == 3 && [SkillChillingArmor] >= 1 && [Sockets] == 4	//Memory
+([Name] == GnarledStaff || [Name] == BattleStaff || [Name] == CedarStaff || [Name] == ElderStaff || [Name] == Shillelagh || [Name] == GothicStaff) && [Quality] <= Superior # [SkillEnergyShield] == 3 && [SkillShiverArmor] >= 1 && [Sockets] == 4		//Memory
+([Name] == GnarledStaff || [Name] == BattleStaff || [Name] == CedarStaff || [Name] == ElderStaff || [Name] == Shillelagh || [Name] == GothicStaff) && [Quality] <= Superior # [SkillEnergyShield] == 3 && [SkillThunderstorm] >= 1 && [Sockets] == 4	//Memory
+([Name] == RuneStaff || [Name] == WarStaff || [Name] == ArchonStaff) && [Quality] <= Superior # [SkillEnergyShield] == 3 && ([Sockets] == 4 || [Sockets] == 5)																							//Memory, CtA
+([Name] == RuneStaff || [Name] == WarStaff || [Name] == ArchonStaff) && [Quality] <= Superior # [SkillEnergyShield] == 3 && [SkillChillingArmor] >= 1 && ([Sockets] == 4 || [Sockets] == 5)																//Memory, CtA
+([Name] == RuneStaff || [Name] == WarStaff || [Name] == ArchonStaff) && [Quality] <= Superior # [SkillEnergyShield] == 3 && [SkillShiverArmor] >= 1 && ([Sockets] == 4 || [Sockets] == 5)																//Memory, CtA
+([Name] == RuneStaff || [Name] == WarStaff || [Name] == ArchonStaff) && [Quality] <= Superior # [SkillEnergyShield] == 3 && [SkillThunderstorm] >= 1 && ([Sockets] == 4 || [Sockets] == 5)																//Memory, CtA
+
+//WHITE WANDS
+([Name] == BoneWand || [Name] == GrimWand || [Name] == PetrifiedWand || [Name] == TombWand) && [Quality] <= Superior # [SkillBoneSpear] >= 3 && ([SkillDecrepify] >= 1 || [SkillRevive] >= 1 || [SkillBoneSpirit] >= 1 || [SkillPoisonNova] >= 1) && [Sockets] != 1										//White
+([Name] == BoneWand || [Name] == GrimWand || [Name] == PetrifiedWand || [Name] == TombWand) && [Quality] <= Superior # [SkillBoneSpear] >= 3 && ([SkillLowerResist] >= 1 || [SkillAmplifyDamage] >= 1 || [SkillIronMaiden] >= 1 || [SkillLifeTap] >= 1) && [Sockets] != 1								//White
+([Name] == BoneWand || [Name] == GrimWand || [Name] == PetrifiedWand || [Name] == TombWand) && [Quality] <= Superior # [SkillBoneSpear] >= 3 && ([SkillRaiseSkeleton] >= 1 || [SkillSkeletalMage] >= 1 || [SkillFireGolem] >= 1) && [Sockets] != 1														//White
+([Name] == GraveWand || [Name] == PolishedWand || [Name] == GhostWand || [Name] == LichWand || [Name] == UnearthedWand) && [Quality] <= Superior # [SkillBoneSpear] >= 3 && ([SkillDecrepify] >= 1 || [SkillRevive] >= 1 || [SkillBoneSpirit] >= 1 || [SkillPoisonNova] >= 1) && [Sockets] != 1			//White
+([Name] == GraveWand || [Name] == PolishedWand || [Name] == GhostWand || [Name] == LichWand || [Name] == UnearthedWand) && [Quality] <= Superior # [SkillBoneSpear] >= 3 && ([SkillLowerResist] >= 1 || [SkillAmplifyDamage] >= 1 || [SkillIronMaiden] >= 1 || [SkillLifeTap] >= 1) && [Sockets] != 1	//White
+([Name] == GraveWand || [Name] == PolishedWand || [Name] == GhostWand || [Name] == LichWand || [Name] == UnearthedWand) && [Quality] <= Superior # [SkillBoneSpear] >= 3 && ([SkillRaiseSkeleton] >= 1 || [SkillSkeletalMage] >= 1 || [SkillFireGolem] >= 1) && [Sockets] != 1							//White
+
+//WHITE PALADIN SCEPTORS
+([Name] == WarScepter || [Name] == DivineScepter || [Name] == Caduceus) && [Quality] <= Superior # [SkillFistOfTheHeavens]+[SkillConviction] >= 4 && ([Sockets] == 0 || [Sockets] == 4 || [Sockets] == 5)		//HoJ, CtA
+([Name] == WarScepter || [Name] == DivineScepter || [Name] == Caduceus) && [Quality] <= Superior # [SkillHolyShield] >= 1 && ([Sockets] == 0 || [Sockets] == 4 || [Sockets] == 5)								//Fortitude, HoJ, CtA
+([Name] == WarScepter || [Name] == DivineScepter || [Name] == Caduceus) && [Quality] <= Superior # [SkillBlessedHammer]+[SkillConcentration] >= 4 && ([Sockets] == 0 || [Sockets] == 4 || [Sockets] == 5)		//Fortitude, CtA
+[Name] == Caduceus && [Quality] <= Superior # ([SkillFistOfTheHeavens] >= 1 || [SkillConviction] >= 1 || [SkillHolyShield] >= 1 || [SkillBlessedHammer] >= 1 || [SkillConcentration] >= 1) && [Sockets] == 4	//Fortitude 
+[Name] == Caduceus && [Quality] <= Superior # ([SkillHolyShock] >= 3 || [SkillZeal] >= 3) && [SkillRedemption] >= 1 && ([Sockets] == 0 || [Sockets] == 5)														//CtA
+
+//WHITE CLAWS
+([Name] == GreaterTalons || [Name] == GreaterClaws || [Name] == Suwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillLightningSentry] >= 3 && [SkillDragonFlight] >= 2 && ([Sockets] == 0 || [Sockets] == 3)					//Chaos, Fury
+([Name] == GreaterTalons || [Name] == GreaterClaws || [Name] == Suwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillLightningSentry] >= 3 && [SkillMindBlast] >= 2 && ([Sockets] == 0 || [Sockets] == 3)						//Chaos, Fury
+([Name] == GreaterTalons || [Name] == GreaterClaws || [Name] == Suwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillLightningSentry] >= 3 && [SkillVenom] >= 2 && ([Sockets] == 0 || [Sockets] == 3)							//Chaos, Fury
+([Name] == GreaterTalons || [Name] == GreaterClaws || [Name] == Suwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillLightningSentry] >= 3 && [SkillWakeOfInferno] >= 2 && ([Sockets] == 0 || [Sockets] == 3)					//Chaos, Fury
+([Name] == GreaterTalons || [Name] == GreaterClaws || [Name] == Suwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillDragonFlight] >= 2 && [SkillMindBlast] >= 3 && ([Sockets] == 0 || [Sockets] == 3)							//Chaos, Fury
+([Name] == GreaterTalons || [Name] == GreaterClaws || [Name] == Suwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillShadowMaster] >= 1 && [SkillWeaponBlock] >= 1 && [SkillVenom] >= 1 && ([Sockets] == 0 || [Sockets] == 3)	//Chaos, Fury
+([Name] == RunicTalons || [Name] == ScissorsSuwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillLightningSentry] >= 3 && [SkillDragonFlight] >= 2 && ([Sockets] == 0 || [Sockets] == 3)										//Chaos, Fury
+([Name] == RunicTalons || [Name] == ScissorsSuwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillLightningSentry] >= 3 && [SkillMindBlast] >= 2 && ([Sockets] == 0 || [Sockets] == 3)											//Chaos, Fury
+([Name] == RunicTalons || [Name] == ScissorsSuwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillLightningSentry] >= 3 && [SkillVenom] >= 2 && ([Sockets] == 0 || [Sockets] == 3)												//Chaos, Fury
+([Name] == RunicTalons || [Name] == ScissorsSuwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillLightningSentry] >= 3 && [SkillWakeOfInferno] >= 2 && ([Sockets] == 0 || [Sockets] == 3)										//Chaos, Fury
+([Name] == RunicTalons || [Name] == ScissorsSuwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillDragonFlight] >= 2 && [SkillMindBlast] >= 3 && ([Sockets] == 0 || [Sockets] == 3)												//Chaos, Fury
+([Name] == RunicTalons || [Name] == ScissorsSuwayyah) && [Quality] <= Superior && [Flag] != Ethereal # [SkillShadowMaster] >= 1 && [SkillWeaponBlock] >= 1 && [SkillVenom] >= 1 && ([Sockets] == 0 || [Sockets] == 3)						//Chaos, Fury
+
+//##########CUBE SOCKETED##########
+[Name] == ArchonPlate && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 1100 && [Sockets] == 4						//Fortitude, Stone
+[Name] == SacredArmor && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 1299 && ([Sockets] == 2 || [Sockets] == 4)	//Prudence, Fortitude, Stone
+[Name] == Monarch && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 320 && ([Sockets] == 3 || [Sockets] == 4)		//Dream, Sanctuary, Spirit, Phoenix
+
+//##########UPPED ITEMS##########
+[Name] == VampireboneGloves && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20 && [Defense] >= 85																	//BLOODFIST 2X Upped
+[Name] == CrusaderGauntlets && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 30 && [Defense] >= 96																	//MAGEFIST 2X Upped
+[Name] == WyrmhideBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20 && [Defense] >= 80																		//HOTSPUR 2X Upped
+[Name] == WyrmhideBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20 && [Defense] >= 80																		//INFERNOSTRIDE Upped
+[Name] == ScarabshellBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 100 && [MaxHP] >= 65 && [Defense] >= 200													//WATERWALK Upped
+[Name] == MyrmidonGreaves && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 195 && [Defense] >= 200																	//GORE RIDER Upped
+[Name] == Wyrmhide && [Quality] == Unique && [Flag] != Ethereal # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] == 140 && [MagicDamageReduction] == 13 && [Defense] >= 1000	//SKIN OF THE VIPERMAGI Upped
+[Name] == Boneweave && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 210 && [Defense] >= 2200																		//Ethereal SHAFTSTOP Upped
+[Name] == Diadem && [Quality] == Unique # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 280																					//KIRA'S GUARDIAN Upped
+[Name] == GhostSpear && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 200																								//Ethereal HONE SUNDAN Upped
+[Name] == Stalagmite && [Quality] == Unique # [EnhancedDamage] >= 290																													//RIBCRACKER Upped
+[Name] == PolishedWand && [Quality] == Unique && [Flag] == Ethereal																														//Ethereal SUICIDE BRANCH Upped
+[Name] == MatriarchalJavelin && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 150 && [LifeLeech] >= 5																	//Ethereal TITAN'S REVENGE Upped
+[Name] == GuardianCrown && [Quality] == Unique # [EnhancedDefense] >= 190 && [LifeLeech] >= 3																							//ARREAT'S FACE Upped
+[Name] == BloodlordSkull && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 195 && [Defense] >= 400																	//HOMUNCULUS Upped
+[Name] == ZakarumShield && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 190 && [Defense] >= 560																		//HERALD OF ZAKARUM Upped
+[Name] == ZakarumShield && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 190 && [Defense] >= 800																		//Ethreal HERALD OF ZAKARUM Upped
+
+//##########POTIONS##########
+[Name] == SuperHealingPotion
+[Name] == SuperManaPotion
+[Name] == RejuvenationPotion
+[Name] == FullRejuvenationPotion

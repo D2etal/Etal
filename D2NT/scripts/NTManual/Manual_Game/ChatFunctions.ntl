@@ -1,0 +1,66 @@
+// ChatR Functions Start
+
+var ChatRLog = "NTManual/Logs/" + me.charname + ".txt";
+var PiGN;
+var OpenLine;
+var TheTime = MyTime();
+var Today = new Date().toLocaleFormat("%d %b");
+
+function OpeningChatRLogs()
+{
+	MyTime();
+	if(me.gamepassword) ChatLog.WriteLine("Password: " + me.gamepassword);
+	var MyPassword = (!me.gamepassword) ? "" : ("//" + me.gamepassword);
+	OpenLine = "-----" + CurGame + "/" + MyPassword + " -----";
+	var ChatLog = FileOpen(ChatRLog, 2);
+		ChatLog.WriteLine("");
+		ChatLog.WriteLine(OpenLine);
+		ChatLog.WriteLine("Date - Time: " + Today + " - " + TheTime);
+		ChatLog.WriteLine("Char / Level: " + me.charname + " / " + me.GetStat(12));
+		ChatLog.WriteLine("Realm: " + CurRealm);
+		ChatLog.WriteLine("Current Players: " + PiGN);
+		ChatLog.Close();
+	Delay(Random(100,200));
+	return OpenLine;
+}
+
+function ClosingChatRLogs()
+{
+	CloseLine = "";
+	for(i = OpenLine.length ; i >= 0 ; i--) { CloseLine = CloseLine + "-"; }
+	ChatLog = FileOpen(ChatRLog, 2);
+	ChatLog.WriteLine(CloseLine);
+	ChatLog.Close();
+}
+
+function _checkPlayerTotal()
+{
+	PiGN = 1;
+	var _player = GetPlayerUnit();
+	if(_player){
+		while(_player.GetNext()){ PiGN++; }
+	}
+	return PiGN;
+}
+
+function MyTime()
+{
+	var now    	= new Date();
+	var HR   	= now.getHours();
+	var MM 		= now.getMinutes();
+	var SS 		= now.getSeconds();
+	var DT;
+
+	if (HR < 12) { DT = "AM"; }
+	if (HR > 11) { DT = "PM"; }
+	if (HR > 12) { HR = HR - 12; }
+	if (HR == 0) { HR = 12; }
+	if (HR < 10) { HR = "0" + HR; }
+	if (MM < 10) { MM = "0" + MM; }
+	if (SS < 10) { SS = "0" + SS; }
+
+	TheTime = HR + ":" + MM + ":" + SS + " " + DT;
+	return TheTime;
+}
+
+// ChatR Functions End

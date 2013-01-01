@@ -1,0 +1,401 @@
+function NTA_DetectAttackPattern() {
+	return NTA_NecromancerAttackPatternInt();
+}
+
+function NTA_Attack(target, firstorder) {
+	return NTA_NecromancerAttackInt(target, firstorder);
+}
+
+function NTA_NecromancerAttackPatternInt() {
+	return false;
+}
+
+function NTA_NecromancerAttackInt(target, firstorder) {
+	var _primaryindex;
+
+	if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (me.hp <= parseInt(me.hpmax * NTConfig_TPChicken,10) / 100)) {
+		if (!NTTMGR_VisitTown()) { return 0; }
+	}
+	_merc = NTC_GetMerc();
+	if(_merc){
+		if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (_merc.hp <= parseInt(_merc.hpmax * NTConfig_MercTPChicken,10) / 100)) {
+			if (!NTTMGR_VisitTown()) { return 0; }
+		}
+	}
+
+	if (NTT_CheckMerc()) { // merc revive
+		NTTMGR_VisitTown();
+	}
+	
+	if (!me.GetState(14)) { //check and recast bone armor
+		NTC_CastSkill(68, NTC_HAND_RIGHT);
+	}
+
+	if (firstorder && NTConfig_AttackSkill[0] > -1 && NTA_GetResistance(target, _NTA_SkillDamage[0]) < 100 && me.GetSkillStatus(NTConfig_AttackSkill[0]) != 8) {
+		if (GetDistance(me, target) > _NTA_SkillRange[0] || !CheckCollision(me, target, 4))	{
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[0], 4);
+
+			if (_pos) {
+				NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0);
+			}
+		}
+
+		if (!NTC_CastSkill(NTConfig_AttackSkill[0], _NTA_SkillHand[0], target)) {
+			return 2;
+		}
+
+		return 3;
+	}
+	
+	if (NTConfig_Curse[0] > 0 && target.spectype & 0x0A && !target.GetState(_NTA_CurseState[0]) && NTA_IsCursable(target))
+	{
+		if (GetDistance(me, target) > 25 || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, 25, 4);
+
+			if (_pos) {
+				NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0);
+			}
+		}
+
+		if (!NTC_CastSkill(NTConfig_Curse[0], NTC_HAND_RIGHT, target)) {
+			return 2;
+		}
+
+		return 3;
+	}
+	else if (NTConfig_Curse[1] > 0 && !(target.spectype&0x0A) && !target.GetState(_NTA_CurseState[1]) && NTA_IsCursable(target)) {
+		if (GetDistance(me, target) > 25 || !CheckCollision(me, target, 4))	{
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, 25, 4);
+
+			if (_pos) {
+				NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0);
+			}
+		}
+
+		if (!NTC_CastSkill(NTConfig_Curse[1], NTC_HAND_RIGHT, target)) {
+			return 2;
+		}
+
+		return 3;
+	}
+
+	_primaryindex = (target.spectype & 0x0A) ? 1 : 3;
+	
+	if (NTA_GetResistance(target, _NTA_SkillDamage[_primaryindex]) < 100) {
+		if (NTConfig_TeleStomp && _primaryindex === 1) {
+			NTM_GetCloserInt(target);
+		}
+	
+		if (!NTA_NecromancerCastSkillInt(_primaryindex, target)) {
+			return 2;
+		}
+
+		if (NTConfig_ActiveSummon) {
+			if (NTA_SkeletonArmy(NTConfig_SkeletonArmy)) {
+				if (NTA_MageArmy(NTConfig_MageArmy)) {
+					if (NTA_ReviveArmy(NTConfig_ReviveArmy)) {
+						NTA_ExplodeCorpses(target);
+					}
+				}
+			}
+		} else {
+			NTA_ExplodeCorpses(target);
+		}
+		
+		return 3;
+	}
+	
+	if (NTConfig_AttackSkill[5] > -1 && NTA_GetResistance(target, _NTA_SkillDamage[5]) < 100) {
+		if (!NTA_NecromancerCastSkillInt(5, target)) {
+			return 2;
+		}
+		
+		if (NTConfig_ActiveSummon) {
+			if (NTA_SkeletonArmy(NTConfig_SkeletonArmy)) {
+				if (NTA_MageArmy(NTConfig_MageArmy)) {
+					if (NTA_ReviveArmy(NTConfig_ReviveArmy)) {
+						NTA_ExplodeCorpses(target);
+					}
+				}
+			}
+		} else {
+			NTA_ExplodeCorpses(target);
+		}
+		
+		return 3;
+	}
+
+	if (NTConfig_TeleStomp && NTC_GetMerc() && NTA_GetResistance(target, NTA_DAMAGE_PHYSICAL) < 100) {
+		NTM_GetCloserInt(target);
+		
+		if (target.mode === 12) {
+			return 2;
+		}
+		
+		NTC_Delay(300);
+
+		if (NTConfig_ActiveSummon) {
+			if (NTA_SkeletonArmy(NTConfig_SkeletonArmy)) {
+				if (NTA_MageArmy(NTConfig_MageArmy)) {
+					if (NTA_ReviveArmy(NTConfig_ReviveArmy)) {
+						NTA_ExplodeCorpses(target);
+					}
+				}
+			}
+		} else {
+			NTA_ExplodeCorpses(target);
+		}
+
+		return 3;
+	}
+	
+	return 1;
+}
+
+function NTA_NecromancerCastSkillInt(index, target) {
+	if (NTConfig_AttackSkill[index] === 92) {
+		if (!_NTA_NovaTick || GetTickCount() > _NTA_NovaTick + NTConfig_PoisonNovaDelay) {
+			if (GetDistance(me, target) > _NTA_SkillRange[index] || !CheckCollision(me, target, 4))	{
+				var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 4); 
+
+				if (_pos) {
+					NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0);
+				}
+			}
+			
+			_NTA_NovaTick = GetTickCount();
+			
+			return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], target);
+		}
+	} else if (me.GetSkillStatus(NTConfig_AttackSkill[index]) != 8) {
+		if (GetDistance(me, target) > _NTA_SkillRange[index] || !CheckCollision(me, target, 4))	{
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 4); 
+
+			if (_pos) {
+				NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0);
+			}
+		}
+
+		return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], target);
+	}
+
+	if (NTConfig_AttackSkill[index+1] > -1) {
+		if (GetDistance(me, target) > _NTA_SkillRange[index+1] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index+1], 4);
+
+			if (_pos) {
+				NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0);
+			}
+		}
+
+		return NTC_CastSkill(NTConfig_AttackSkill[index+1], _NTA_SkillHand[index+1], target);
+	}
+
+	for (var i = 0; i < 25; i+= 1) {
+		NTC_Delay(NTC_DELAY_FRAME);
+
+		if (me.GetSkillStatus(NTConfig_AttackSkill[index]) != 8 && (GetTickCount() > _NTA_NovaTick + NTConfig_PoisonNovaDelay || !_NTA_NovaTick)) {
+			break;
+		}
+	}
+
+	return false;
+}
+
+function NTA_IsCursable(target) {
+	if (target.name.indexOf(GetLocaleString(11086)) != -1) { // Possessed
+		return false;
+	}
+
+	switch (target.classid) {
+    case 206: // Foul Crow Nest
+    case 258: // Water Watcher
+    case 261: // Water Watcher
+    case 266: // Flavie
+		return false;
+	}
+	
+	return true;
+}
+
+function NTA_SkeletonArmy(num)
+{
+	if (num <= 0) {
+		return true;
+	}
+	
+	if (NTA_GetMinionCount(0) >= num) {
+		return true;
+	}
+	
+	for (var i = 0; i < 5; i += 1) {
+		var corpse = NTC_FindUnit(NTC_UNIT_MONSTER);
+		
+		if (corpse) {
+			do {
+				if (NTA_IsValidCorpse(corpse)) {
+					if (NTA_GetMinionCount(0) >= num) {
+						return true;
+					}
+					
+					//Print("Skeleton Raising " + corpse.classid + " " + corpse.name);
+					
+					NTC_CastSkill(70, NTC_HAND_RIGHT, corpse);
+				}
+			} while (corpse.GetNext());
+		} else {
+			break;
+		}
+	}
+	
+	return false;
+}
+
+function NTA_MageArmy(num) {
+	if (num <= 0) {
+		return true;
+	}
+	
+	if (NTA_GetMinionCount(1) >= num) {
+		return true;
+	}
+	
+	for (var i = 0; i < 5; i += 1) {
+		var corpse = NTC_FindUnit(NTC_UNIT_MONSTER);
+		
+		if (corpse) {
+			do {
+				if (NTA_IsValidCorpse(corpse)) {
+					if (NTA_GetMinionCount(1) >= num) {
+						return true;
+					}	
+					
+					//Print("Mage Raising " + corpse.classid + " " + corpse.name);
+					
+					NTC_CastSkill(80, NTC_HAND_RIGHT, corpse);
+				}
+			} while (corpse.GetNext());
+		} else {
+			break;
+		}
+	}
+	
+	return false;
+}
+
+function NTA_ReviveArmy(num) {
+	if (num <= 0) {
+		return true;
+	}
+	
+	if (NTA_GetMinionCount(2) >= num) {
+		return true;
+	}
+	
+	for (var i = 0; i < 5; i += 1) {
+		var corpse = NTC_FindUnit(NTC_UNIT_MONSTER);
+		
+		if (corpse) {
+			do {
+				if(NTA_IsValidCorpse(corpse, true)) {
+					if (NTA_GetMinionCount(2) >= num) {
+						return true;
+					}
+					
+					//Print("Reviving " + corpse.classid + " " + corpse.name);
+					
+					NTC_CastSkill(95, NTC_HAND_RIGHT, corpse);
+				}
+			} while (corpse.GetNext());
+		} else {
+			break;
+		}
+	}
+	
+	return false;
+}
+
+function NTA_ExplodeCorpses(target) {
+	if (NTConfig_ExplodeCorpses === 0 || target.hp === 0 || target.mode === 0 || target.mode === 12) {
+		return false;
+	}
+	
+	var exploded = 0,
+		corpse = NTC_FindUnit(NTC_UNIT_MONSTER);
+		
+	if (corpse) {
+		do {
+			if (GetDistance(corpse, target) <= 10 && NTA_IsValidCorpse(corpse))	{
+				//Print("Exploding " + corpse.classid + " " + corpse.name);
+				
+				if (NTC_CastSkill(NTConfig_ExplodeCorpses, NTC_HAND_RIGHT, corpse)) {
+					exploded++;
+				}
+				
+				if (exploded >= 2) {
+					return false;
+				}
+			}
+		} while (corpse.GetNext());
+	}
+	
+	return true;
+}
+
+function NTA_IsValidCorpse(unit, revive) {
+	if (arguments.length < 2) {
+		revive = false;
+	}
+	
+	var badList = [462, 571];
+	
+	if (revive && unit.spectype & 0x0A || badList.indexOf(unit.classid) !== -1) {
+		return false;
+	}
+	
+	if ((unit.hp === 0 || unit.mode === 0 || unit.mode === 12) && GetDistance(me, unit) <= 25 && CheckCollision(me, unit, 4) && 
+		!unit.GetState(1) && // freeze
+		!unit.GetState(96) && // revive
+		!unit.GetState(99) && // redeemed
+		!unit.GetState(104) && // nodraw
+		!unit.GetState(107) && // shatter
+		!unit.GetState(118) && // noselect
+		GetBaseStat("monstats2.txt", unit.classid, revive ? 97 : 95)) { // non selectable and non revivable monsters
+		return true;
+	}
+	
+	return false;
+}
+
+function NTA_GetMinionCount(type) { // 0 - skeleton, 1 - mage, 2 - revive
+	var minion, 
+		num = 0;
+		
+	switch (type) {
+		case 0:
+			minion = NTC_FindUnit(NTC_UNIT_MONSTER, 363);
+			break;
+		case 1:
+			minion = NTC_FindUnit(NTC_UNIT_MONSTER, 364);
+			break;
+		case 2:
+			minion = NTC_FindUnit(NTC_UNIT_MONSTER);
+			break;
+	}
+	
+	if (minion) {
+		do {
+			if (NTC_CheckOwner(minion) && minion.hp > 0) {
+				if (type === 2) {
+					if (minion.GetState(96)) {
+						num += 1;
+					}
+				} else {
+					num += 1;
+				}
+			}
+		} while (minion.GetNext());
+	}
+	
+	return num;
+}

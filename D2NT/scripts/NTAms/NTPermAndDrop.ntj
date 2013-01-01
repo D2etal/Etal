@@ -1,0 +1,111 @@
+Include('libs/common/NTCommon.ntl');
+NTC_IncludeLibs();
+var _skipPerming = false;
+var _endTime = null;
+
+function NTMain() {
+	_endTime = GetTickCount() + 1000 * 60 * 5 + 1000 * 15; // 5:15 until we start
+	Delay(5000);
+	Include('NTBot/char_configs/NTConfig.ntl');
+	NTC_IncludeConfig("NTBot/char_configs");
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+	NT_File("AMS/MuleStatus/" + me.account + "_mulegame.txt", 1, me.gamename);
+	
+	Say("/f m Got myself into a perm and drop game!");
+	
+	// clear invo of unwanted items
+	NTConfig_IdentAtCain = false;
+	// NTConfig_Cubing = false;
+	NTConfig_Gamble = false;
+	NTTMGR_TownManager();
+	// end of acien's add
+	
+	while (!_skipPerming && GetTickCount() < _endTime) {
+		SetStatusText('Perming Game ' + parseInt((_endTime - GetTickCount())/1000)
+				+ ' seconds');
+		Delay(1000);
+	}
+	if(!_skipPerming) { SetStatusText (' Game Permed'); }
+	else if(_skipPerming) { SetStatusText('Game perming skipped'); }
+	
+	NTTM_CheckAct(1);
+	NTTM_TownMove('stash');
+	NTT_DoInteract(NTC_FindUnit(NTC_UNIT_OBJECT, NTC_UNIT_STASH, 40));
+	var _items = me.GetItems();
+	for(var i = 0 ; i < _items.length ; i++) {
+		// 549 = Cube, 543 = Keys
+		        if(_items[i].mode == 0 && NTSI_CheckItem(_items[i], false)[0] in [1, -1] &&
+                !NTSI_IsIgnoredItemInt(_items[i].classid) && _items[i].classid != 549 && _items[i].classid != 543 &&
+                !NTRW_CheckItem(_items[i], false) && !NTCU_CheckItem(_items[i]) && !cubeGem(_items[i].classid)) {
+					if (_items[i].itemloc == 0 && NTConfig_Columns[_items[i].y][_items[i].x] != 0) {
+						NTT_DropItem(_items[i]);
+						}
+				else if (_items[i].itemloc == 4) NTT_DropItem(_items[i]);
+				}
+			}
+	me.Cancel(1);
+	Organize();
+	stashShit();
+	NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "Mule");
+	NTC_Delay(500);
+	NT_File("AMS/MuleStatus/" + me.account + "_mulingstatus.txt", 1, "true");
+	NTC_Delay(750);
+	ExitGame();
+}
+
+function cubeGem(classid)
+{
+	gemId = [557, 558, 559, 560, 562, 563, 564, 565, 567, 568, 569, 570, 572, 573, 574, 575, 577, 578, 579, 580,
+		582, 583, 584, 585];
+		for(var i = 0; i < gemId.length; i++) {
+			if(classid === gemId[i]) {
+				return true;
+			}
+		}
+	return false;
+}
+
+function Organize()
+{
+	var _item;
+	var keepIds = new Array();
+	var _items = me.GetItems();
+	
+	if(!_items)
+		return false;	
+		
+	NTU_MoveToStash();
+	
+	for(var i = 0 ; i < _items.length ; i++) {		
+		if(_items[i].itemloc == 0  && !NTSI_IsIgnoredItemInt(_items[i].classid) && _items[i].classid != 543 && NTConfig_Columns[_items[i].y][_items[i].x] > 0 || _items[i].itemloc == 4 && _items[i].classid != 549 && _items[i].mode != 1) {
+			keepIds.push(_items[i].classid);
+			NTT_DropItem(_items[i]);		
+		}
+	}
+	me.Cancel(1);
+	NTC_Delay(1500);
+	
+	if(keepIds.length > 0) {
+		for(var j = 0; j < keepIds.length; j++) {
+			_item = NTC_FindUnit(NTC_UNIT_ITEM, keepIds[j]);
+			if(_item) {
+				NTSI_PickUpItemInt(_item);
+			} 
+		}
+	}
+}
+
+function stashShit()
+{
+	var _stash;
+	
+	NTTM_TownMove("stash");
+
+	_stash = NTC_FindUnit(NTC_UNIT_OBJECT, NTC_UNIT_STASH, 5);
+	
+	if(NTT_DoInteract(_stash)) {
+		NTT_ManageStash();
+	}
+	me.Cancel(1);
+}

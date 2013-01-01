@@ -1,0 +1,77 @@
+var Trav_PreMessage = "";
+
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+	
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+	
+	NTA_Initialize(); // 10
+	
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}	
+	if(me.areaid != 75){
+		if(!NTTM_TownMove("waypoint")){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+			return;
+		}	
+		if(!NTM_TakeWaypoint(75)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+			return;
+		}
+	}
+	NTTMGR_TownManager();
+	NTTM_TownMove("portalspot");
+		
+	while(!NT_TravLeechMessageHandler()){
+		Delay(500);
+	}
+	Delay(15000);//let's leader clear a little better	
+	for(var i = 0 ; i < 100 && me.areaid == 75 ; i++){	
+		NTM_UsePortal("BluePortal", 83, NTConfig_Leader);
+		Delay(500);
+	}
+	if(NTConfig_LeechPrecast)
+		NTP_DoPrecast(true);
+	while(NTC_CheckPlayer(NTConfig_Leader)){
+		if(_leaderareaid != 83)
+				break;
+		if(NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe) || me.hp <= parseInt((me.hpmax*NTConfig_TPChicken)/100)){ 
+			if(!NTTMGR_VisitTown())
+				return 0;
+		}
+		Delay(500);
+	}
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function NTKBL_CheckPlayer(leader){
+	var _player = GetPlayerUnit();	
+	while(_player.GetNext()){
+		if(_player.name == leader){
+			NTConfig_Leaderareaid = _player.areaid;
+			return true;
+		}
+	}
+	return false;
+}
+
+function NT_TravLeechMessageHandler(){
+	var _msg = NT_File("logs/messagecomands/"+me.charname+"-trav.txt", 0);
+	if (_msg && _msg != Trav_PreMessage){ 
+		Trav_PreMessage = _msg;
+		if((_msg.substring(_msg.indexOf("/") + 1) == "takettp")){
+			//Print(COLOR_2 + "retrieved take tp message travincal");			
+			return true;
+		}
+	}
+	return false;
+}
+
+

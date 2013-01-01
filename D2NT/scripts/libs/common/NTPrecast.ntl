@@ -1,0 +1,297 @@
+var _minion;
+var _NTP_HaveCTA = -1;
+
+function NTP_DoPrecastCTA(refresh, castbo)
+{
+	if(arguments.length < 2)
+		castbo = true;
+
+	if(me.classid == NTC_CHAR_CLASS_BARBARIAN || NTC_InTown())
+		return false;
+
+	if(refresh || !me.GetState(32) || !me.GetState(51))
+	{
+		if(NTP_BOSwitch())
+		{
+			if(castbo)
+			{
+				NTC_CastSkill(155, NTC_HAND_RIGHT); // Battle Command
+				NTC_CastSkill(149, NTC_HAND_RIGHT); // Battle Orders
+			}
+			
+			NTC_SwapWeapons();
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function NTP_CastBC(refresh)
+{
+	if(me.classid == NTC_CHAR_CLASS_BARBARIAN || NTC_InTown())
+		return false;
+
+	if(refresh || !me.GetState(51))
+	{
+		if(NTP_BOSwitch())
+		{
+			NTC_CastSkill(155, NTC_HAND_RIGHT); // Battle Command
+
+			NTC_SwapWeapons();
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function NTP_DoEnchant()
+{
+	var _haveenchant = NTC_GetSkillLevel(52);
+	var _unit = NTC_FindUnit(NTC_UNIT_MERC);
+
+	if (_haveenchant && _unit ) 
+	{
+		do
+		{
+			if(NTC_CheckOwner(_unit) && _unit.hp > 0)
+			{
+				if (GetDistance(me, _unit) < 25)
+				{
+					NTC_CastSkill(52, NTC_HAND_RIGHT, _unit);
+				}
+			}
+		} while (_unit.GetNext());
+	}
+}
+
+function NTP_DoPrecast(refresh, castbo)
+{
+	var _unit = me.GetMerc();
+	
+	if(arguments.length < 2)
+		castbo = true;
+
+	switch(me.classid)
+	{
+	case NTC_CHAR_CLASS_AMAZON:
+		NTP_CastBC(refresh);
+
+		if(refresh || !NTP_GetMinion(357))
+			NTC_CastSkill(32, NTC_HAND_RIGHT); // Valkyrie
+
+		NTP_DoPrecastCTA(refresh, castbo);
+		break;
+
+	case NTC_CHAR_CLASS_SORCERESS:
+		NTP_DoPrecastCTA(refresh, castbo);
+
+		if(refresh || !me.GetState(38))
+			NTC_CastSkill(57, NTC_HAND_RIGHT); // Thunder Storm
+			
+		if(NTConfig_SwitchCastSorc)
+			NTC_SwapWeapons();
+			
+		if(refresh || me.GetState(30) == 0)
+			NTC_CastSkill(58, NTC_HAND_RIGHT); // Energy Shield
+			
+		if(refresh || (!me.GetState(10) && !me.GetState(88) && !me.GetState(20)))
+		{
+			if(!NTC_CastSkill(50, NTC_HAND_RIGHT)) // Shiver Armor
+				if(!NTC_CastSkill(60, NTC_HAND_RIGHT)) // Chilling Armor
+					NTC_CastSkill(40, NTC_HAND_RIGHT); // Frozen Armor
+		}
+		
+		if(NTConfig_SwitchCastSorc)
+			NTC_SwapWeapons();
+			
+		if((_unit != null && refresh) || (_unit != null && !_unit.GetState(16)))
+		  NTP_DoEnchant();  // Enchant Merc
+
+		break;
+
+	case NTC_CHAR_CLASS_NECROMANCER:
+		NTP_CastBC(refresh);
+		
+		if(refresh || !(NTP_GetMinion(289) || NTP_GetMinion(290) || NTP_GetMinion(291) || NTP_GetMinion(292)))
+		{
+			switch(NTConfig_Golem)
+			{
+			case 0:
+			case "None":
+			case "Iron":
+				break;
+			case 1:
+			case "Clay":
+				NTC_CastSkill(75, NTC_HAND_RIGHT); //Clay
+				break;
+			case 2:
+			case "Blood":
+				NTC_CastSkill(85, NTC_HAND_RIGHT); //Blood
+				break;
+			case 3:
+			case "Fire":
+				NTC_CastSkill(94, NTC_HAND_RIGHT); //Fire
+				break;
+			default:
+				Print(COLOR_1 + "Invalid Golem id. Check character configuration.")
+				break;
+			}
+		}
+		
+		NTP_DoPrecastCTA(refresh, castbo);
+
+		if(refresh || !me.GetState(14))
+			NTC_CastSkill(68, NTC_HAND_RIGHT); // Bone Armor
+		break;
+
+	case NTC_CHAR_CLASS_PALADIN:
+		NTP_DoPrecastCTA(refresh, castbo);
+		if(refresh || !me.GetState(101))
+			NTC_CastSkill(117, NTC_HAND_RIGHT); // Holy Shield
+		break;
+
+	case NTC_CHAR_CLASS_BARBARIAN:
+		if(refresh || !me.GetState(51) || !me.GetState(32) || !me.GetState(26))
+		{
+			if(BarbSwitch)
+				NTC_SwapWeapons();
+				
+			if(castbo)
+			{
+				NTC_CastSkill(155, NTC_HAND_RIGHT); // Battle Command
+				NTC_CastSkill(149, NTC_HAND_RIGHT); // Battle Orders
+			}
+			
+			NTC_CastSkill(138, NTC_HAND_RIGHT); // Shout
+				
+			if(BarbSwitch)
+				NTC_SwapWeapons();
+		}
+		
+		break;
+
+	case NTC_CHAR_CLASS_DRUID:
+		NTP_CastBC(refresh);
+
+		if(refresh || !NTP_GetMinion(428))
+			NTC_CastSkill(247, NTC_HAND_RIGHT); // Summon Grizzly
+
+		if(refresh || !NTP_GetMinion(426))
+			NTC_CastSkill(231, NTC_HAND_RIGHT); // Carrion Vine
+
+		if(refresh || !me.GetState(149))
+			NTC_CastSkill(226, NTC_HAND_RIGHT); // Oak Sage
+
+		if(refresh && NTConfig_CastRaven)
+		{
+			for (i = 0; i < 5; i++)
+			{
+				NTC_CastSkill(221, NTC_HAND_RIGHT); // raven
+				Delay(100);
+			}
+		}
+
+		NTP_DoPrecastCTA(refresh, castbo);
+
+		if(refresh || !me.GetState(151))
+			NTC_CastSkill(235, NTC_HAND_RIGHT); // Cyclone Armor
+
+		if(refresh || !me.GetState(144))
+			NTC_CastSkill(250, NTC_HAND_RIGHT); // Hurricane
+
+		break;
+
+	case NTC_CHAR_CLASS_ASSASSIN:
+		NTP_CastBC(refresh);
+	
+		if(refresh || !(NTP_GetMinion(417) || NTP_GetMinion(418)))
+		{
+			switch(NTConfig_UseShadow)
+			{
+			case 0:
+			case "None":
+				break;
+			case 1:
+			case "Warrior":
+				NTC_CastSkill(268, NTC_HAND_RIGHT); // Shadow Warrior
+				break;
+			case 2:
+			case "Master":
+				NTC_CastSkill(279, NTC_HAND_RIGHT); // Shadow Master
+				break;
+			}
+		}
+
+		NTP_DoPrecastCTA(refresh, castbo);
+
+		if((refresh || !me.GetState(157)) && NTConfig_UseBOS)
+			NTC_CastSkill(258, NTC_HAND_RIGHT); // Burst of Speed
+			
+		if((refresh || !me.GetStat(181)) && NTConfig_UseFade)
+			NTC_CastSkill(267, NTC_HAND_RIGHT); // Fade
+
+		if((refresh || me.GetState(158) == 0) && NTConfig_UseBladeShield)
+			NTC_CastSkill(277, NTC_HAND_RIGHT); // Blade Shield
+
+		if((refresh || !me.GetState(153)) && NTConfig_UseCloakOfShadows)
+			NTC_CastSkill(264, NTC_HAND_RIGHT); // Cloak of Shadows
+		if(NTConfig_Venom && (refresh ||!me.GetStat(101))){ // venom
+			//Print(COLOR_2 + "casting venom");
+			NTC_CastSkill(278, NTC_HAND_RIGHT);
+		}
+		break;
+	}
+}
+
+function NTP_BOSwitch()
+{
+	if(_NTP_HaveCTA < 0)
+	{
+		var _weapon;
+
+		_NTP_HaveCTA = 0;
+
+		_weapon = me.GetItems();
+
+		if(_weapon)
+		{
+			for(var i = 0 ; i < _weapon.length ; i++)
+			{
+				if(_weapon[i].mode == 1 && (_weapon[i].itemflag&0x4000000) && _weapon[i].itemprefix == 0x5027)
+				{
+					if(_weapon[i].itemloc == 4 || _weapon[i].itemloc == 5)
+						_NTP_HaveCTA = 1;
+					else
+						_NTP_HaveCTA = 2;
+
+					break;
+				}
+			}
+		}
+	}
+
+	if(_NTP_HaveCTA > 0)
+		return NTC_SwapWeapons(_NTP_HaveCTA-1);
+
+	return false;
+}
+
+function NTP_GetMinion(classID)
+{
+	_minion = NTC_FindUnit(NTC_UNIT_MONSTER, classID);
+	
+	if(!_minion)
+		return false;
+		
+	do
+	{
+		if(NTC_CheckOwner(_minion) && _minion.hp > 0)
+			return true;
+	}while(_minion.GetNext());
+	
+	return false;
+}

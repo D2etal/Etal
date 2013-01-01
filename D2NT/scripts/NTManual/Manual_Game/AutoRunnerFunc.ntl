@@ -1,0 +1,718 @@
+NTConfig_PickitOn = true;
+NTConfig_CheckStuff = true;
+var NTConfig_SayCommands = false;
+var NTConfig_Master = me.charname;
+Include("NTManual/ManualGame/AutoRunnerBoss.ntj");
+
+function NTMain()
+{
+	var warncount;
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	RegisterEvent(EVENT_GAMEMSG, chat);
+	RegisterEvent(EVENT_KEYDOWN, NT_KeyEvents);
+
+	//SetUIState(0x0A, true);
+
+while(1) {
+	warncount++;
+		if(NTConfig_PickitOn)  // run pickit while playing
+			NTSI_PickItems();
+		if(NTConfig_CheckStuff && warncount%3 == 0) // checks mp, hp, tp's, and merc
+			NTT_CheckNeedTown(3, 3);
+		Delay(1e3);
+	}
+}
+
+function NT_KeyEvents(keycode)
+{
+	switch(keycode)
+	{
+		case 55: 	// 7(KeyPad)
+		{
+		NTA_ClearPosition(35); // clears position
+		break;
+		}
+		case 57: 	// 9 (KeyPad)
+		{
+		grabXp(); // grab xp shrine
+		break;
+		}
+		case 68:  // D key
+		{
+		NTM_MakeTP(); // makes a tp
+		break;
+		}
+	}
+}
+
+function NTAT_AutoForward()
+{
+	Print(COLOR_2 + "Moving to next area!");
+	while(me.areaid == 0) { Delay(500); }
+	switch(me.areaid)
+	{
+		case 1: moveToNext(2); break;
+		case 2: moveToNext(3); break;
+		case 3: moveToNext(4); break;
+		case 4: moveToNext(10); break;
+		case 5: moveToNext(6); break;
+		case 6: moveToNext(7); break;
+		case 7: moveToNext(26); break;
+		case 8: moveToNext(2); break;
+		case 9: moveToNext(13); break;
+		case 10: moveToNext(5); break;
+		case 11: moveToNext(15); break;
+		case 12: moveToNext(16); break;
+		case 18: moveToNext(17); break;
+		case 19: moveToNext(17); break;
+		case 20: moveToNext(21); break;
+		case 21: moveToNext(22); break;
+		case 22: moveToNext(23); break;
+		case 23: moveToNext(24); break;
+		case 24: moveToNext(25); break;
+		case 26: moveToNext(27); break;
+		case 27: moveToNext(28); break;
+		case 28: moveToNext(29); break;
+		case 29: moveToNext(30); break;
+		case 30: moveToNext(31); break;
+		case 31: moveToNext(32); break;
+		case 32: moveToNext(33); break;
+		case 33: moveToNext(34); break;
+		case 34: moveToNext(35); break;
+		case 35: moveToNext(36); break;
+		case 36: moveToNext(37); break;
+		case 37: moveToNext(40); break;
+		case 40: moveToNext(41);  break;
+		case 41: moveToNext(42); break;
+		case 42: moveToNext(43); break;
+		case 43: moveToNext(44); break;
+		case 44: moveToNext(45); break;
+		case 45: moveToNext(58); break;
+		case 46: durysTomb(); break;
+		case 47: moveToNext(48); break;
+		case 48: moveToNext(49); break;
+		case 49: moveToNext(40); break;
+		case 50: moveToNext(51); break;
+		case 51: moveToNext(52); break;
+		case 52: moveToNext(53); break;
+		case 53: moveToNext(54); break;
+		case 54: moveToNext(74); break;
+		case 55: moveToNext(59); break;
+		case 56: moveToNext(57); break;
+		case 57: moveToNext(60); break;
+		case 58: moveToNext(61); break;
+		case 61: NTAT_ViperToHarem(); break;
+		case 62: moveToNext(63); break;
+		case 63: moveToNext(64); break;
+		case 73: moveToNext(75); break;
+		case 74: moveToNext(46);  break;
+		case 75: moveToNext(76); break;
+		case 76: moveToNext(77); break;
+		case 77: moveToNext(78); break;
+		case 78: moveToNext(79); break;
+		case 79: moveToNext(80); break;
+		case 80: moveToNext(81); break;
+		case 81: moveToNext(82); break;
+		case 82: moveToNext(83); break;
+		case 83: moveToNext(100); break;
+		case 86: moveToNext(87); break;
+		case 87: moveToNext(90); break;
+		case 88: moveToNext(89); break;
+		case 89: moveToNext(91); break;
+		case 92: moveToNext(93); break;
+		case 100: moveToNext(101); break;
+		case 101: moveToNext(102); break;
+		case 102: moveToNext(103); break;
+		case 103: moveToNext(104); break;
+		case 104: moveToNext(105); break;
+		case 105: moveToNext(106); break;
+		case 106: moveToNext(107); break;
+		case 107: moveToNext(108);  break;
+		case 108: moveToNext(109); break;
+		case 109: moveToNext(110); break;
+		case 110: moveToNext(111); break;
+		case 111: moveToNext(112); break;
+		case 112: moveToNext(113); break;
+		case 113: moveToNext(115); break;
+		case 115: moveToNext(117); break;
+		case 117: moveToNext(118); break;
+		case 118: moveToNext(120); break;
+		case 120: moveToNext(128); break;
+		case 121: moveToNext(122); break;
+		case 122: moveToNext(123); break;
+		case 123: moveToNext(124); break;
+		case 128: moveToNext(129); break;
+		case 129: moveToNext(130); break;
+		case 130: moveToNext(131); break;
+		case 131: moveToNext(132); break;
+		default: Print(COLOR_2 + "Nowhere to go from here!"); break;
+	}
+}
+
+function NTAT_AutoBackward(){
+
+	while(me.areaid == 0) { Delay(500); }
+	switch(me.areaid)
+	{
+		case 2: moveToLast(1); break;
+		case 3: moveToLast(2); break;
+		case 4: moveToLast(3); break;
+		case 5: moveToLast(10); break;
+		case 6: moveToLast(5); break;
+		case 7: moveToLast(6); break;
+		case 8: moveToLast(2); break;
+		case 9: moveToLast(3); break;
+		case 10: moveToLast(4); break;
+		case 11: moveToLast(6); break;
+		case 12: moveToLast(7); break;
+		case 13: moveToLast(9); break;
+		case 14: moveToLast(10); break;
+		case 15: moveToLast(11); break;
+		case 16: moveToLast(12); break;
+		case 17: moveToLast(3); break;
+		case 18: moveToLast(17); break;
+		case 19: moveToLast(17); break;
+		case 20: moveToLast(6); break;
+		case 21: moveToLast(20); break;
+		case 22: moveToLast(21); break;
+		case 23: moveToLast(22); break;
+		case 24: moveToLast(23); break;
+		case 25: moveToLast(24); break;
+		case 26: moveToLast(7); break;
+		case 27: moveToLast(26); break;
+		case 28: moveToLast(27); break;
+		case 29: moveToLast(28); break;
+		case 30: moveToLast(29); break;
+		case 31: moveToLast(30); break;
+		case 32: moveToLast(31); break;
+		case 33: moveToLast(32); break;
+		case 34: moveToLast(33); break;
+		case 35: moveToLast(34); break;
+		case 36: moveToLast(35); break;
+		case 37: moveToLast(36); break;
+		case 38: moveToLast(4); break;
+		case 39: moveToLast(1); break;
+		case 41: moveToLast(40); break;
+		case 42: moveToLast(41); break;
+		case 43: moveToLast(42); break;
+		case 44: moveToLast(43); break;
+		case 45: moveToLast(44); break;
+		case 46: moveToLast(74); break;
+		case 47: moveToLast(40); break;
+		case 48: moveToLast(36); break;
+		case 49: moveToLast(36); break;
+		case 50: moveToLast(40); break;
+		case 51: moveToLast(50); break;
+		case 52: moveToLast(51); break;
+		case 53: moveToLast(52); break;
+		case 54: moveToLast(53); break;
+		case 55: moveToLast(41); break;
+		case 56: moveToLast(42); break;
+		case 57: moveToLast(56); break;
+		case 58: moveToLast(45); break;
+		case 59: moveToLast(55); break;
+		case 60: moveToLast(57); break;
+		case 61: moveToLast(58); break;
+		case 62: moveToLast(43); break;
+		case 63: moveToLast(62); break;
+		case 64: moveToLast(63); break;
+		case 65: moveToLast(44); break;
+		case 66: moveToLast(46); break;
+		case 67: moveToLast(46); break;
+		case 68: moveToLast(46); break;
+		case 69: moveToLast(46); break;
+		case 70: moveToLast(46); break;
+		case 71: moveToLast(46); break;
+		case 72: moveToLast(46); break;
+		case 73: Print(COLOR_2 + "Can't go back from here!"); break;
+		case 74: moveToLast(54); break;
+		case 76: moveToLast(75); break;
+		case 77: moveToLast(76); break;
+		case 78: moveToLast(77); break;
+		case 79: moveToLast(78); break;
+		case 80: moveToLast(79); break;
+		case 81: moveToLast(80); break;
+		case 82: moveToLast(81); break;
+		case 83: moveToLast(82); break;
+		case 84: moveToLast(76); break;
+		case 85: moveToLast(76); break;
+		case 86: moveToLast(77); break;
+		case 87: moveToLast(86); break;
+		case 88: moveToLast(78); break;
+		case 89: moveToLast(88); break;
+		case 90: moveToLast(87); break;
+		case 91: moveToLast(89); break;
+		case 92: moveToLast(81); break;
+		case 93: moveToLast(92); break;
+		case 94: moveToLast(80); break;
+		case 95: moveToLast(80); break;
+		case 96: moveToLast(81); break;
+		case 97: moveToLast(81); break;
+		case 98: moveToLast(82); break;
+		case 99: moveToLast(82); break;
+		case 100: moveToLast(83); break;
+		case 101: moveToLast(100); break;
+		case 102: moveToLast(101); break;
+		case 104: moveToLast(103); break;
+		case 105: moveToLast(104); break;
+		case 106: moveToLast(105); break;
+		case 107: moveToLast(106); break;
+		case 108: moveToLast(107); break;
+		case 110: moveToLast(109); break;
+		case 111: moveToLast(110); break;
+		case 112: moveToLast(111); break;
+		case 113: moveToLast(112); break;
+		case 114: moveToLast(113); break;
+		case 115: moveToLast(113); break;
+		case 116: moveToLast(115); break;
+		case 117: moveToLast(115); break;
+		case 118: moveToLast(117); break;
+		case 119: moveToLast(118); break;
+		case 120: moveToLast(119); break;
+		case 121: moveToLast(109); break;
+		case 122: moveToLast(121); break;
+		case 123: moveToLast(122); break;
+		case 124: moveToLast(123); break;
+		case 128: moveToLast(120); break;
+		case 129: moveToLast(128); break;
+		case 130: moveToLast(129); break;
+		case 131: moveToLast(130); break;
+		case 132: Print(COLOR_2 + "Can't go back from here!"); break;
+		default: Print("In town! Nowhere to go from here!"); break;
+	}
+}
+
+function durysTomb()
+{
+	_tombs = GetRoom();
+
+		NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_TILE, _tombs.correcttomb-28);
+
+		_tileunit = NTC_FindUnit(NTC_UNIT_TILE, _tombs.correcttomb-28);
+
+		NTM_TakeStair(_tileunit.subareaid);
+		NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 152, -2, 2);
+		NTC_FindUnit(NTC_UNIT_OBJECT, 100, 10);
+		NTM_TakeUnit(NTC_UNIT_OBJECT, 100);
+}
+
+function NTAT_KurastDocks()
+{
+		NTTM_TownMove("exit");
+	while(me.areaid != 76) {
+		NTM_MoveTo(76, 5143, 4964);
+		}
+}
+
+function NTAT_PandemoniumFortress()
+{
+	NTTM_TownMove("exit");
+
+	NTM_MoveTo(104, 5170, 5090, 5);
+}
+
+function NTAT_Harrogath()
+{
+	NTTM_TownMove("exit");
+
+	_unit = NTC_FindUnit(NTC_UNIT_OBJECT, 449, 5);
+if(_unit){
+	while(_unit.mode < 1){
+		NTM_MoveTo(_unit.areaid, _unit.x+4, _unit.y);
+			if(GetDistance(me, _unit) > 3)
+					NTM_MoveTo(_unit.areaid, _unit.x+2, _unit.y);
+		NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _unit);
+				NTC_Delay(2000);
+				}
+			NTM_MoveTo(110, 4986, 5087, 5);
+			}
+		else
+		NTM_MoveTo(110, 4986, 5087, 5);
+}
+
+function NTAT_ViperToHarem()
+{
+	NTTM_CheckAct(2);
+	NTTM_TownMoveXY(5061, 5144);
+	_unit = NTM_GetStairInt(50);
+	NTM_MoveTo(_unit.areaid, _unit.x+4, _unit.y);
+			if(GetDistance(me, _unit) > 3)
+				NTM_MoveTo(_unit.areaid, _unit.x+2, _unit.y);
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _unit);
+}
+
+function moveTo(areaid, x, y)
+{
+
+	var i, n;
+	var _teleport;
+    var _path = undefined;
+
+	if(NTC_InTown() || NTC_GetSkillLevel(54) < 1) { _teleport = false; }
+	else { _teleport = true; }
+
+    if (_teleport && GetDistance(me.x, me.y, x, y) < 30) {// houstin add
+        return NTM_TeleportTo(x, y);
+	}
+
+	_path = GetPath(areaid, me.x, me.y, x, y, _teleport);
+
+	if(!_path) { return (NTC_InTown() && (NTM_WalkTo(x, y) || NTTM_TownMoveXY(x, y))); }
+
+	for(i = 0 ; i < _path.length ; i++) {
+		for(n = 0 ; n < 2 ; n++) {
+			if(_teleport) {
+				if(NTM_TeleportTo(_path[i][0]+Random(-n, n), _path[i][1]+Random(-n, n))) { break; }
+			}
+			else {
+				if(NTM_WalkTo(_path[i][0], _path[i][1])) { break; }
+			}
+		}
+		if(me.areaid == areaid)
+			break;
+	}
+}
+
+function grabXp()
+{
+	var ShrineIds = [2, 81, 83, 85, 86, 93, 96, 97, 109, 116, 120, 123, 124, 133, 134, 135,
+					136, 150, 151, 172, 173, 184, 190, 191, 197, 199, 200, 201, 226, 231,
+					232, 260, 275, 276, 277, 278, 279, 282, 299, 300, 303, 325, 361, 414,
+					415, 421, 422, 423, 427, 428, 464, 465, 472, 479, 483, 484, 488, 491,
+					492, 495, 497, 499, 503, 509, 512, 520, 521, 522];
+	var ShrineLocs = [];
+	var unit = GetPresetUnits(me.areaid);
+	if(unit){
+		for (var j = 0; j < unit.length; j++){
+			for (var c = 0; c < ShrineIds.length; c++){
+				if (ShrineIds[c] == unit[j].id){
+					ShrineLocs.push([unit[j].roomx*5+unit[j].x + 3,unit[j].roomy*5+unit[j].y])
+				}
+			}
+		}
+	}
+	while(ShrineLocs.length > 0){
+		ShrineLocs.sort(SortRoomInt);
+		var _room = ShrineLocs.shift();
+		NTM_MoveTo(me.areaid, _room[0], _room[1]);
+		var shrine = NTC_FindUnit(NTC_UNIT_OBJECT, "shrine");
+		if(shrine){
+			do{
+				if(shrine.shrinetype == 15 && shrine.mode == 0){
+					Print(COLOR_4 + "Got xp shrine here!");
+						if(GetDistance(me, shrine) > 2) {
+							NTM_MoveTo(shrine.areaid, shrine.x+1, shrine.y);
+								NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, shrine);
+								break;
+							}
+						}
+				} while(shrine.GetNext());
+			}
+			if(me.GetState(137))
+				break;
+		}
+	if(!me.GetState(137))
+		Print(COLOR_2 + "No xp shrines to be found!");
+	}
+
+function moveToNext(areaid)
+{
+	var _how = whereAmI(areaid);
+
+	if(_how == undefined) {
+		Print(COLOR_2 + "Dont know how to move to next area!");
+	}
+
+	switch(_how) {
+		case 0:
+			Print(COLOR_9 + "How is 0");
+			switch(areaid) {
+				case 2:
+					NTTM_TownMove("exit");
+					NTTM_OutOfAct1();
+					break;
+				case 41:
+					NTTM_OutOfTown2();
+					break;
+				case 76:
+					NTAT_KurastDocks();
+					break;
+				case 104:
+					NTAT_PandemoniumFortress();
+					break;
+				case 110:
+					NTAT_Harrogath();
+					break;
+			}
+			break;
+		case 1:
+			Print(COLOR_9 + "How is 1");
+			switch(areaid){
+				case 40:
+					NTTM_CheckAct(2);
+					break;
+				case 75:
+					NTTM_CheckAct(3);
+					break;
+				case 103:
+					NTTM_CheckAct(4);
+					break;
+				case 109:
+					NTTM_CheckAct(5);
+					break;
+			}
+			break;
+		case 2:
+			Print(COLOR_9 + "How is 2");
+			NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_MONSTER, 737, 10, 10);
+			NTM_UsePortal("Portal", 38);
+			break;
+		case 3:
+			Print(COLOR_9 + "How is 3");
+			_unit = GetUnit(NTC_UNIT_OBJECT, 60);
+			if(_unit) {
+				NTTM_TownMove("stash");
+				NTM_UsePortal("Portal", 39)
+			}
+			break;
+		case 4:
+			Print(COLOR_9 + "How is 4");
+			NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 357);
+			var _journal = NTC_FindUnit(NTC_UNIT_OBJECT, 357);
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _journal);
+			NTC_CancelOut(10);
+			NTM_TakeUnit(NTC_UNIT_OBJECT, 60);
+			break;
+		case 5:
+			Print(COLOR_9 + "How is 5");
+			NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 152, -2, 2);
+			NTC_FindUnit(NTC_UNIT_OBJECT, 100, 10);
+			NTM_TakeUnit(NTC_UNIT_OBJECT, 100);
+			break;
+		case 6:
+			Print(COLOR_9 + "How is 6");
+			NTM_KoMoveToPresetUnit(54, NTC_UNIT_OBJECT, 298, 4, 4);
+			NTM_TakeUnit(NTC_UNIT_OBJECT, 298);
+			break;
+		case 7:
+			Print(COLOR_9 + "How is 7");
+			if(me.areaid == 102) {
+				NTM_MoveTo(me.areaid, 17590, 8068);
+					NTC_Delay(1000);
+				var _portal = GetUnit(NTC_UNIT_OBJECT, 342);
+				if(_portal){
+					while(_portal.mode != 2){
+						Delay(500);
+					}
+					NTM_TakeUnit(NTC_UNIT_OBJECT, 342);
+				}
+			}
+			while(me.areaid == 0){
+				Delay(500);
+			}
+			break;
+		case 8:
+			Print(COLOR_9 + "How is 8");
+			NTTM_TownMove("portal");
+			NTM_UsePortal("Portal", 121);
+			break;
+		case 9:
+			Print(COLOR_9 + "How is 9");
+			_portal = NTC_FindUnit(NTC_UNIT_OBJECT, 563, 1);
+			NTM_MoveTo(me.areaid, 15092, 5010);
+			NTM_UsePortal("Portal", 132, null, _portal);
+			break;
+		case 10:
+			Print(COLOR_9 + "How is 10");
+			NTM_KoMoveToStair(me.areaid, areaid);
+			NTM_TakeStair(areaid);
+			break;
+		case 11:
+			Print(COLOR_9 + "How is 11");
+			_unit = GetPresetUnits(areaid, NTC_UNIT_OBJECT);
+			if(_unit) {
+				for(var n = 0 ; n < _unit.length ; n++) {
+					if(_unit[n].areaid == areaid)
+						return moveTo(areaid, _unit[n].roomx*5, _unit[n].roomy*5);
+				}
+			}
+		break;
+	}
+}
+
+function whereAmI(areaid)
+{
+	Print("Checking where I am going!");
+	if(areaid == 2 || areaid == 41 || areaid == 76 || areaid == 104 || areaid == 110) { return 0; } // town
+	if(areaid == 40 || areaid == 75 || areaid == 109) { return 1; }// actend
+	else if(areaid == 38) { return 2; } // tristam
+	else if(areaid == 39) { return 3; } // cowportal
+	else if(areaid == 46) { return 4; } // arcaneportal
+	else if(areaid == 73) { return 5; } // duryportal
+	else if(areaid == 74) { return 6; } // palaceportal
+	else if(areaid == 103) { return 7; } // mephportal
+	else if(areaid == 121) { return 8; } // nihlportal
+	else if(areaid == 132) { return 9; } // baalportal
+	else if(areaid == 5 || areaid >= 8 && areaid <= 16 || areaid >= 18 && areaid <= 19 ||  areaid >= 21 && areaid <= 25 || areaid >= 29 && areaid <= 32 || areaid >= 34 && areaid <= 37 || areaid >= 47 && areaid <= 72 || areaid >= 84 && areaid <= 102 || areaid == 107 || areaid >= 113 && areaid <= 120 || areaid >= 122 && areaid <= 124 || areaid >= 128 && areaid <= 131) { return 10; } // stairs
+	else if(areaid >= 3 && areaid <= 4 || areaid >= 6 && areaid <= 7 || areaid == 17 || areaid == 20 || areaid >= 26 && areaid <= 28 || areaid == 33 || areaid >= 41 && areaid <= 45 || areaid >= 77 && areaid <= 83 || areaid >= 105 && areaid <= 106 || areaid == 108 || areaid >= 111 && areaid <= 112) { return 11; } // object
+}
+
+function rightTomb()
+{
+	_unit = GetUnit(NTC_UNIT_OBJECT, 152);
+	if(_unit) {
+		return true;
+	}
+	return false;
+}
+
+function moveToLast(areaid)
+{
+	var _how = whereWasI(areaid);
+	if(_how == undefined) {
+		Print(COLOR_2 + "Dont know how to move to previous area!");
+	}
+	switch(_how) {
+		case 0: // town
+			Print(COLOR_9 + "How is 0");
+			switch(areaid) {
+				case 1:
+					NTTM_CheckAct(1);
+					break;
+				case 40:
+					NTTM_CheckAct(2);
+					break;
+				case 75:
+					NTTM_CheckAct(3);
+					break;
+				case 103:
+					NTTM_CheckAct(4);
+					break;
+				case 109:
+					NTTM_CheckAct(5);
+					break;
+			}
+			break;
+		case 1: // tristam
+			Print(COLOR_9 + "How is 1");
+			NTM_KoMoveToPresetUnit(38, NTC_UNIT_OBJECT, "Portal");
+			NTM_UsePortal("Portal", 4);
+			break;
+		case 2: // cowportal
+			Print(COLOR_9 + "How is 2");
+			NTM_KoMoveToPresetUnit(39, NTC_UNIT_OBJECT, 60);
+			NTM_UsePortal("Portal", 1)
+			break;
+		case 3: // arcaneportal
+			Print(COLOR_9 + "How is 3");
+			_unit = GetUnit(NTC_UNIT_OBJECT, 60);
+			if(!_unit) { Print(COLOR_2 + "No portal to go back to arcane!"); NTTM_CheckAct(2); }
+			if(_unit) {
+				NTM_KoMoveToPresetUnit(46, NTC_UNIT_OBJECT, 60);
+				NTM_TakeUnit(NTC_UNIT_OBJECT, 60);
+			}
+			break;
+		case 4: // palaceportal
+			Print(COLOR_9 + "How is 4");
+			NTM_KoMoveToPresetUnit(74, NTC_UNIT_OBJECT, 298, 4, 4);
+			NTM_TakeUnit(NTC_UNIT_OBJECT, 298);
+			break;
+		case 5: // nihlportal
+			Print(COLOR_9 + "How is 5");
+			NTM_KoMoveToPresetUnit(121, NTC_UNIT_OBJECT, 60);
+			NTM_UsePortal("Portal", 109);
+			break;
+		case 6: // stairs
+			Print(COLOR_9 + "How is 6");
+			NTM_KoMoveToStair(me.areaid, areaid);
+			NTM_TakeStair(areaid);
+			break;
+		case 7: // object
+			Print(COLOR_9 + "How is 7");
+			_unit = GetPresetUnits(areaid, NTC_UNIT_OBJECT);
+			if(_unit) {
+				for(var n = 0 ; n < _unit.length ; n++) {
+					if(_unit[n].areaid == areaid)
+						return moveTo(areaid, _unit[n].roomx*5, _unit[n].roomy*5);
+				}
+			}
+			break;
+	}
+}
+
+function whereWasI(areaid)
+{
+	Print("Checking where I am!");
+	if(areaid == 1 || me.areaid == 41 && areaid == 40 || areaid == 75 || areaid == 103 || me.areaid != 121 && areaid == 109) { return 0; } // town
+	else if(me.areaid == 38 && areaid == 4) { return 1; } // tristam
+	else if(me.areaid == 39 && areaid == 1) { return 2; } // cowportal
+	else if(me.areaid == 46 && areaid == 74) { return 3; } // arcaneportal
+	else if(me.areaid == 74 && areaid == 54) { return 4; } // palaceportal
+	else if(me.areaid == 121 && areaid == 109) { return 5; } // nihlportal
+	else if(me.areaid == 5 || me.areaid >= 8 && me.areaid <= 16 || me.areaid >= 18 && me.areaid <= 19 ||  me.areaid >= 21 && me.areaid <= 25 || me.areaid >= 29 && me.areaid <= 32 || me.areaid >= 34 && me.areaid <= 37 || me.areaid >= 47 && me.areaid <= 72 || me.areaid >= 84 && me.areaid <= 102 || me.areaid == 107 || me.areaid >= 113 && me.areaid <= 120 || me.areaid >= 122 && me.areaid <= 124 || me.areaid >= 128 && me.areaid <= 131) { return 6; } // stairs
+	else if(me.areaid >= 3 && me.areaid <= 4 || me.areaid >= 6 && me.areaid <= 7 || me.areaid == 17 || me.areaid == 20 || me.areaid >= 26 && me.areaid <= 28 || me.areaid == 33 || me.areaid >= 42 && me.areaid <= 45 || me.areaid >= 77 && me.areaid <= 83 || me.areaid >= 105 && me.areaid <= 106 || me.areaid == 108 || me.areaid >= 111 && me.areaid <= 112) { return 7; } // object
+}
+
+function chat(msg, type)
+{
+	if(type == 0 && msg.indexOf(NTConfig_Master) != -1) {
+		switch(msg.toLowerCase().indexOf(case) != -1) {
+			case msg.toLowerCase().indexOf(".andariel") != -1): 	Andariel(); break;
+			case msg.toLowerCase().indexOf(".countess") != -1): 	Countess(); break;
+			case msg.toLowerCase().indexOf(".cow") != -1): 			Cows(); break;
+			case msg.toLowerCase().indexOf(".summoner") != -1): 	Summoner(); break;
+			case msg.toLowerCase().indexOf(".duriel") != -1): 		Duriel(); break;
+			case msg.toLowerCase().indexOf(".tunnels") != -1): 		Tunnels(); break;
+			case msg.toLowerCase().indexOf(".darkelder") != -1): 	DarkElder(); break;
+			case msg.toLowerCase().indexOf(".beetleburst") != -1): 	Beetle(); break;
+			case msg.toLowerCase().indexOf(".tombs") != -1): 		Tombs(); break;
+			case msg.toLowerCase().indexOf(".boneash") != -1): 		BoneAsh(); break;
+			case msg.toLowerCase().indexOf(".tristram") != -1): 	Tristram(); break;
+			case msg.toLowerCase().indexOf(".stormtree") != -1): 	StormTree(); break;
+			case msg.toLowerCase().indexOf(".travincal") != -1): 	Travincal(); break;
+			case msg.toLowerCase().indexOf(".mephisto") != -1): 	Mephisto(); break;
+			case msg.toLowerCase().indexOf(".izual") != -1): 		Izual(); break;
+			case msg.toLowerCase().indexOf(".forge") != -1): 		Forge(); break;
+			case msg.toLowerCase().indexOf(".diablo") != -1): 		Diablo(); break;
+			case msg.toLowerCase().indexOf(".pindleskin") != -1): 	Pindleskin(); break;
+			case msg.toLowerCase().indexOf(".eldritch") != -1): 	Eldritch(); break;
+			case msg.toLowerCase().indexOf(".threshsocket") != -1): ThreshSocket(); break;
+			case msg.toLowerCase().indexOf(".worldstone") != -1): 	WorldStone(); break;
+			case msg.toLowerCase().indexOf(".baal") != -1): 		Baal(); break;
+			case msg.toLowerCase().indexOf(".grabwps") != -1): 		GrabWps(); break;
+			case msg.toLowerCase().indexOf(".givewps") != -1): 		GiveWps(); break;
+			default: break;
+		}
+		NTTM_CheckAct();
+		return;
+	}
+}
+
+function NTVT_MoveToClosestPreSetUnit(Dest)
+{
+	var allUnits = [];
+	var presetUnit = GetPresetUnits(Dest);
+	if(!presetUnit) {
+		return false;
+	}
+	if(presetUnit) {
+		for (var i = 0; i < presetUnit.length; i++) {
+			allUnits.push([presetUnit[i].roomx*5+presetUnit[i].x, presetUnit[i].roomy*5+presetUnit[i].y])
+		}
+	}
+	allUnits.sort(SortCoords);
+	return NTM_MoveTo(Dest, allUnits[0][0], allUnits[0][1]);
+}
+
+function SortCoords(a, b)
+{
+	return (GetDistance(me.x, me.y, a[0], a[1]) - GetDistance(me.x, me.y, b[0], b[1]));
+}

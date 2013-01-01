@@ -1,0 +1,317 @@
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+	Say("/f m in_new_game " + me.gamename);
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(107)) {
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);
+
+	if(!NTM_MoveTo(108, 7797, 5560)) {
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+		return;
+	}
+
+	if(!NT_OpenSealsInt()) {
+		NTC_SendMsgToScript("NTBotGame.ntj", "NT_OpenSealsInt()");
+		return;
+	}
+	NTM_MoveTo(108, 7750, 5267); //testing
+	NTM_MakeTP();
+	Say("come diablo");
+	NTP_DoPrecast(true);
+
+	if(!NTM_MoveTo(me.areaid, 7792, 5292)) {
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+		return;
+	}
+
+	NTC_FindUnit(NTC_UNIT_MONSTER, 243, 100);
+
+	if(!NTA_KillMonster(243)) {
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+		return;
+	}
+	Say("diablo dead");
+	NTSI_PickItems();
+
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+// Internal function
+function NT_OpenSealsInt()
+{
+	var i, _unit;
+	var _result;
+
+	_unit = GetPresetUnits(me.areaid, NTC_UNIT_OBJECT);
+
+	if(!_unit)
+		return false;
+
+	_result = false;
+
+	for(i = 0 ; i < _unit.length ; i++) {
+		if(_unit[i].id == 396) {
+			if(_unit[i].roomy*5 + _unit[i].y == 5275)
+				_result = NT_OpenVizierSealInt(1);
+			else
+				_result = NT_OpenVizierSealInt(2);
+			break;
+		}
+	}
+	if(!_result)
+		return false;
+	NTP_DoPrecast(false);
+	_result = false;
+	for(i = 0 ; i < _unit.length ; i++) {
+		if(_unit[i].id == 394) {
+			if(_unit[i].roomx*5 + _unit[i].x == 7773)
+				_result = NT_OpenDeSeisSealInt(1);
+			else
+				_result = NT_OpenDeSeisSealInt(2);
+			break;
+		}
+	}
+
+	if(!_result)
+		return false;
+
+	NTP_DoPrecast(false);
+
+	_result = false;
+
+	for(i = 0 ; i < _unit.length ; i++) {
+		if(_unit[i].id == 392) {
+			if(_unit[i].roomx*5 + _unit[i].x == 7893)
+				_result = NT_OpenVenomSealInt(1);
+			else
+				_result = NT_OpenVenomSealInt(2);
+			break;
+		}
+	}
+	return _result;
+}
+
+function NT_OpenVizierSealInt(type)
+{
+	var i, n;
+
+	if(type == 1)
+		var _attackpos = [7694, 5309, 7709, 5311, 7718, 5290, 7717, 5274, 7699, 5292, 7707, 5272];
+	else
+		var _attackpos = [7704, 5312, 7718, 5307, 7717, 5287, 7716, 5275, 7698, 5286];
+
+	var _monstername = GetLocaleString(2851);
+
+	for(i = 0 ; i < _attackpos.length ; i += 2) {
+		NTM_MoveTo(me.areaid, _attackpos[i], _attackpos[i+1]);
+		NTA_ClearPosition(25, true, 2);
+		NTA_ClearPosition(25, true, 2);
+	}
+
+	NTM_MoveTo(me.areaid, _attackpos[_attackpos.length - 1], _attackpos[_attackpos.length]);
+	NTM_MakeTP();
+	NTA_ClearPosition(40, true, 2);
+	NTM_MoveTo(me.areaid, _attackpos[_attackpos.length - 1], _attackpos[_attackpos.length]);
+	NTA_ClearPosition(40, true, 2);
+	Say("come");
+	NTP_DoPrecast(true);
+
+	for(i = 0 ; i < 3 ; i++) {
+		if(type == 1) {
+			NT_OpenSealInt(395, 7654, 5310);
+			NT_OpenSealInt(396, 7659, 5277);
+
+			NTM_MoveTo(me.areaid, 7665, 5277);
+		}
+		else {
+			NT_OpenSealInt(395, 7650, 5276);
+			NT_OpenSealInt(396, 7651, 5310);
+		}
+		for(n = 0 ; n < 10 ; n++) {
+			NTC_Delay(200);
+			if(NTA_KillMonster(_monstername)) {
+				NTA_ClearPosition();
+				Say("back");
+				NTSI_PickItems();
+				while(!NT_IsPlayerOut())
+					NTC_Delay(250);
+				return NTM_MoveTo(me.areaid, 7750, 5280);
+			}
+		}
+	}
+	return false;
+}
+
+function NT_OpenDeSeisSealInt(type)
+{
+	var i, n;
+	if(type == 1)
+		var _attackpos = [7814, 5230, 7794, 5233, 7774, 5231, 7775, 5211, 7774, 5195, 7794, 5193, 7811, 5193, 7818, 5230];
+	else
+		var _attackpos = [7781, 5191, 7793, 5191, 7776, 5191, 7776, 5174, 7776, 5152, 7796, 5155, 7808, 5154, 7816, 5186];
+
+	var _monstername = GetLocaleString(2852);
+
+	for(i = 0 ; i < _attackpos.length ; i += 2) {
+		NTM_MoveTo(me.areaid, _attackpos[i], _attackpos[i+1]);
+		NTA_ClearPosition(25, true, 2);
+		NTA_ClearPosition(25, true, 2);
+	}
+
+	NTM_MoveTo(me.areaid, _attackpos[_attackpos.length - 1], _attackpos[_attackpos.length]);
+	NTM_MakeTP();
+	NTA_ClearPosition(40, true, 2);
+	NTM_MoveTo(me.areaid, _attackpos[_attackpos.length - 1], _attackpos[_attackpos.length]);
+	NTA_ClearPosition(40, true, 2);
+	Say("come");
+	NTP_DoPrecast(true);
+
+	for(i = 0 ; i < 3 ; i++) {
+		if(type == 1) {
+			NT_OpenSealInt(394, 7769, 5158);
+			NTM_MoveTo(me.areaid, 7771, 5196);
+		}
+		else {
+			NT_OpenSealInt(394, 7810, 5156);
+			NTM_MoveTo(me.areaid, 7770, 5169);
+		}
+		for(n = 0 ; n < 10 ; n++) {
+			NTC_Delay(200);
+			if(NTA_KillMonster(_monstername)) {
+				NTA_ClearPosition(30);
+				Say("back");
+				NTSI_PickItems();
+				while(!NT_IsPlayerOut())
+					NTC_Delay(250);
+				return NTM_MoveTo(me.areaid, 7800, 5255);
+			}
+		}
+	}
+	return false;
+}
+
+function NT_OpenVenomSealInt(type)
+{
+	var i, n;
+	if(type == 1)
+		var _attackpos = [7892, 5307, 7891, 5293, 7909, 5292, 7921, 5289, 7885, 5320];
+	else
+		var _attackpos = [7870, 5290, 7870, 5303, 7871, 5314, 7880, 5301];
+
+	var _monstername = GetLocaleString(2853);
+
+	for(i = 0 ; i < _attackpos.length ; i += 2) {
+		NTM_MoveTo(me.areaid, _attackpos[i], _attackpos[i+1]);
+		NTA_ClearPosition(25, true, 2);
+		NTA_ClearPosition(25, true, 2);
+	}
+
+	NTM_MoveTo(me.areaid, _attackpos[_attackpos.length - 1], _attackpos[_attackpos.length]);
+	NTM_MakeTP();
+	NTA_ClearPosition(40, true, 2);
+	NTM_MoveTo(me.areaid, _attackpos[_attackpos.length - 1], _attackpos[_attackpos.length]);
+	NTA_ClearPosition(40, true, 2);
+	Say("come");
+	NTP_DoPrecast(true);
+
+	for(i = 0 ; i < 3 ; i++) {
+		if(type == 1) {
+			NT_OpenSealInt(392, 7895, 5318);
+			NTM_MoveTo(me.areaid, 7892, 5298);
+		}
+		else
+		{
+			NT_OpenSealInt(392, 7916, 5310);
+			NTM_MoveTo(me.areaid, 7937, 5305);
+		}
+		for(n = 0 ; n < 10 ; n++) {
+			NTC_Delay(200);
+			if(NTA_KillMonster(_monstername)) {
+				NTA_ClearPosition(30);
+				if(NTC_PutSkill(124, NTC_HAND_RIGHT))
+					NTC_PingDelay(1000);
+				Say("back");
+				NTSI_PickItems();
+				while(!NT_IsPlayerOut())
+					NTC_Delay(250);
+				if(type == 1)
+					NT_OpenSealInt(393, 7915, 5280);
+				else
+					NT_OpenSealInt(393, 7905, 5277);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function NT_OpenSealInt(classid, x, y)
+{
+	var _seal;
+
+	NTM_MoveTo(me.areaid, x, y);
+
+	NTA_ClearPosition(25, true, 2);
+
+	_seal = NTC_FindUnit(NTC_UNIT_OBJECT, classid, 5);
+
+	if(!_seal)
+		return false;
+
+	if(_seal.mode > 0)
+		return true;
+
+	for(var i = 0 ; i < 4 ; i++) {
+		if((i % 2) == 0) {
+			if(GetDistance(me, _seal) > 2)
+				NTM_MoveTo(_seal.areaid, _seal.x+1, _seal.y);
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _seal);
+		}
+		NTC_Delay(500);
+		if(_seal.mode > 0)
+			return true;
+	}
+	return false;
+}
+
+function NT_IsPlayerOut(area) { //function by Thursty
+	var _player;
+	var _myPartyId;
+
+	_player = GetPlayerUnit();
+	_myPartyId = _player.partyid;
+
+	if(arguments.length < 1)
+		_area = me.areaid;
+	else
+		_area = area;
+	do {
+		if(_player.areaid == _area && _myPartyId == _player.partyid)
+			return false;
+		NTC_Delay(100);
+	} while(_player.GetNext());
+	return true;
+}

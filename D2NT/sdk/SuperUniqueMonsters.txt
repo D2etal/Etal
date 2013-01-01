@@ -1,0 +1,67 @@
+-1 - Not super-unique
+734 - Bishibosh
+735 - Bonebreak
+736 - Coldcrow
+737 - Rakanishu
+738 - Treehead WoodFist
+739 - Griswold
+740 - The Countess
+741 - Pitspawn Fouldog
+742 - Flamespike the Crawler
+743 - Boneash
+744 - Radament
+745 - Bloodwitch the Wild
+746 - Fangskin
+747 - Beetleburst
+748 - Leatherarm
+749 - Coldworm the Burrower
+750 - Fire Eye
+751 - Dark Elder
+752 - The Summoner
+753 - Ancient Kaa the Soulless
+754 - The Smith
+755 - Web Mage the Burning
+756 - Witch Doctor Endugu
+757 - Stormtree
+758 - Sarina the Battlemaid
+759 - Icehawk Riftwing
+760 - Ismail Vilehand
+761 - Geleb Flamefinger
+762 - Bremm Sparkfist
+763 - Toorc Icefist
+764 - Wyand Voidfinger
+765 - Maffer Dragonhand
+766 - Winged Death
+767 - The Tormentor
+768 - Taintbreeder
+769 - Riftwrath the Cannibal
+770 - Infector of Souls
+771 - Lord De Seis
+772 - Grand Vizier of Chaos
+773 - The Cow King
+774 - Corpsefire
+775 - The Feature Creep
+776 - Shenk the Overseer
+777 - Talic
+778 - Madawc
+779 - Korlic
+780 - Axe Dweller
+781 - Bonesaw Breaker
+782 - Dac Farren
+783 - Megaflow Rectifer
+784 - Eyeback Unleashed
+785 - Threash Socket
+786 - Pindleskin
+787 - Snapchip Shatter
+788 - Anodized Elite
+789 - Vinvear Molech
+790 - Sharp Tooth Sayer
+791 - Magma Torquer
+792 - Blaze Ripper
+793 - Frozenstein
+794 - Nihlathak
+795 - Colenzo the Annihilator
+796 - Achmel the Cursed
+797 - Bartuc the Bloody
+798 - Ventar the Unholy
+799 - Lister the Tormentor

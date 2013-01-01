@@ -1,0 +1,539 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                        //
+//                      ShopBot Script For D2NT 2.1                                                       //
+//                                                Edit BY Lamobchan    2010/1/20                          //
+//                                                Change For D2NT 3.1  2010/4/27						  //
+//					detaliled instructions can be found here: 											  //
+//					http://edgeofnowhere.cc/viewtopic.php?t=456532	                                      //
+//                                                                                                        //
+//							link to what npc can drop which item calculator								  //
+//							http://calculators.newd2event.net/shopping/			                          //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ??????????,?????,????????????!
+// if u don't know the javascript codes, do not edit this!
+//                                                lambochan
+
+// ???????...
+var shop_ignoreList = "aqv,cqv,key,tbk,ibk,tsc,isc,yps,vps,wms,hp1,hp2,hp3,hp4,hp5,mp1,mp2,mp3,mp4,mp5";
+
+// kill????????
+var killUndear = false;
+
+// anya?????????
+var anyaTPX = 10068;
+var anyaTPY = 13308;
+
+// ???????(????????)
+var errorMode = -1;
+var sameErrorCount = 0;
+
+function NTMain()
+{
+	// ???
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+	NTA_Initialize();
+	NTTMGR_TownManager();
+
+	NTC_Delay( 2000 );
+	NT_Shoping_OverHead( "Now begin shoping..." );
+	// shoping
+	NT_Shoping();
+	// over.
+	NT_Shoping_Msg( "SCRIPT_END" );
+}
+
+function NT_Shoping(){
+
+	var npcName = new Array( "akara",   "charsi", "gheed",   /* act1 */
+	"drognan", "fara",   "elzix",   /* act2 */
+	"ormus",   "hratli", "asheara", /* act3 */
+	"jamella", "halbu" );           /* act4 */
+	// "anya",    "larzuk", "malah" ); /* act5 */
+	if( !is_D2C ){ // d2x, need add act5 npc name
+		npcName.push( "anya" );
+		npcName.push( "larzuk" );
+		npcName.push( "malah" );
+	}	
+	var npcID = [NTC_NPC_ID_AKARA,     NTC_NPC_ID_CHARSI, NTC_NPC_ID_GHEED,
+	NTC_NPC_ID_DROGNAN,   NTC_NPC_ID_FARA,   NTC_NPC_ID_ELZIX,
+	NTC_NPC_ID_ORMUS,     NTC_NPC_ID_HRATLI, NTC_NPC_ID_ASHEARA,
+	NTC_NPC_ID_JAMELLA,   NTC_NPC_ID_HALBU,
+	NTC_NPC_ID_ANYA_TOWN, NTC_NPC_ID_LARZUK, NTC_NPC_ID_MALAH];
+	var j;
+	var num;
+	var npc;
+	var npcCount;
+	var shopItems;
+	var shopRush = 0;
+	var buyItems = new Array();
+	var showItems = new Array();
+	var resultArray = new Array();
+	if( shop_npcNumber.length <= 0 ){
+		NT_Shoping_Msg( "have not npc list for shoping, plz check it!" );
+		return;
+	}
+	for( ; ; ){
+		num = 0;
+		npcCount = shop_npcNumber.length;
+		do{
+			if( shopRush++ > 30 ){
+				RunGC();
+				shopRush = 0;
+			}
+			if( NTTMGR_CheckScrolls( 1 ) < 4 )
+			NTTMGR_TownManager();
+			if( !NT_Shoping_CheckACT( shop_npcNumber[num] ) ){
+				NT_Shoping_Msg( "NT_Shoping_CheckACT()", 1 );
+				break;
+			}
+			if( !NTTM_TownMove( npcName[shop_npcNumber[num] - 1] ) ){
+				NT_Shoping_Msg( "NTTM_TownMove()", 2 );
+				break;
+			}
+			npc = NTC_FindUnit( NTC_UNIT_NPC, npcID[shop_npcNumber[num] - 1], 2 );
+			if( npc ){
+				if( !NTT_DoInteract( npc ) ){
+					NT_Shoping_Msg( "NTT_DoInteract()", 3 );
+					break;
+				}	
+				if( !NTT_DoTrade( npc ) ){
+					NT_Shoping_CancelMenu();
+					NT_Shoping_Msg( "!NTT_DoTrade()", 4 );
+					break;
+				}
+				shopItems = npc.GetItems();
+				if( shopItems ){
+					for( j = 0; j < shopItems.length; ++j ){
+						if( shop_ignoreList.indexOf( shopItems[j] ) == -1 ){
+							resultArray = NTIPCheckItem( shopItems[j] );
+							if( resultArray[0] == 1 ){
+								buyItems.push( shopItems[j] );
+								var mark = new markItems( shopItems[j].quality, shopItems[j].name, shopItems[j].itemdesc );
+								showItems.push( mark );
+							}
+						}
+					}
+				} // end if(shopItems)
+				if( buyItems.length > 0 ){
+					for( j = 0; j < buyItems.length; ++j ){
+						if( buyItems[j].GetItemCost( 0, npcID[shop_npcNumber[num] - 1] ) > NTC_MyGold() ){
+							NT_Shoping_CancelMenu();
+							NT_Shoping_Loop( "have not money buy an item now." );
+						}
+						if( NTT_CheckSpace( buyItems[j].xsize, buyItems[j].ysize ) ){
+							if( !NTT_ShopItem( buyItems[j], npc, 2 ) ){
+								NT_Shoping_CancelMenu();
+								NT_Shoping_Loop( "have an item can not buy it." );
+							}
+						} // end if(NTT_Ch
+						else {
+							NT_Shoping_CancelMenu();
+							NTTMGR_VisitStash();
+							if( !NTT_CheckSpace( buyItems[j].xsize, buyItems[j].ysize ) ){
+								NT_Shoping_Loop( "have not space save items, and have an item can not buy it." );
+							}
+							if( !NTTM_TownMove( npcName[shop_npcNumber[num] - 1] ) ){
+								NT_Shoping_Loop( "have an item can not buy it." );
+							}
+							if( !NTT_DoInteract( npc ) ){
+								NT_Shoping_Loop( "have an item can not buy it." );
+							}
+							if( !NTT_DoTrade( npc ) ){
+								NT_Shoping_CancelMenu();
+								NT_Shoping_Loop( "have an item can not buy it." );
+							}
+							if( !NTT_ShopItem( buyItems[j], npc, 2 ) ){
+								NT_Shoping_CancelMenu();
+								NT_Shoping_Loop( "have an item can not buy it." );
+							}
+						} // end else
+						NTC_SendLogToOOG( NTC_LOG_ITEM, "Buy " + NTC_ItemQualityToMGRColor[showItems[j].quality] + "[" + showItems[j].name + "] " + ";"  + showItems[j].itemdesc + 
+						" [" + npcName[shop_npcNumber[num] - 1].charAt( 0 ).toUpperCase() + 
+						npcName[shop_npcNumber[num] - 1].substring( 1 ) + "]" );
+					} // end for( j
+					buyItems.length = 0;
+					showItems.length = 0;
+				}
+				// ????
+				NT_Shoping_CancelMenu();
+			} // end if(npc)
+			// ??
+			if( !NT_Shoping_InOutTown(shop_npcNumber[num], num ) ){
+				NT_Shoping_Msg( "NT_Shoping_InOutTown()", 5 );
+				break;
+			}
+			// next npc
+			num++;
+		} while( --npcCount );
+	}
+}
+
+function NT_Shoping_InOutTown(num, count){
+	if( shop_npcNumber.length > 1 ){                    // shop??
+		var outTown = NT_Shoping_GoNextNpc(num, count); // ?????????????npc????act??..
+		if( !outTown )                                  // ???
+		return true;
+	}
+	if( num == 12 && !anyaGoWp ){ // anya go red tp
+		if( !NTTM_TownMove( "portal" ) ){
+			NT_Shoping_Msg( "NTTM_TownMove()", 6 );
+			return false;
+		}
+		if( !NT_Shoping_UsePortal( "Portal", 121 ) ){
+			NT_Shoping_Msg( "NT_Shoping_UsePortal()", 7 );
+			return false;
+		}	
+		// kill???
+		if( autoClear ){
+			killUndear = true;
+			NTP_DoPrecast();
+			// ?“????”?TP????????......
+			if( NTC_GetSkillLevel( 124 ) && NTC_GetSkillLevel( 54 ) ){
+				if( !NTM_MoveTo( me.areaid, 10069, 13293 ) )
+				return false;
+				NTC_PutSkill( 124, NTC_HAND_RIGHT );
+				NTC_PingDelay( 2000 );
+				
+				if( !NTM_MoveTo( me.areaid, me.x - 15, me.y - 15 ) )
+				return false;
+			} // end if( NTC_Ch	
+			if( NT_Shoping_CheckUndear( 20 ) ){
+				if( NTA_ClearPosition( 20 ) )
+				NTSI_PickItems();
+				if( NTC_GetSkillLevel( 124 ) && NT_Shoping_CheckCorpses( 8 ) ){
+					NTC_PutSkill( 124, NTC_HAND_RIGHT );
+					NTC_PingDelay( 2000 );
+				}
+				NTC_PutSkill( 115, NTC_HAND_RIGHT );
+			}
+			if( !NTM_MoveTo( me.areaid, anyaTPX, anyaTPY ) )
+			return false;
+			autoClear = false;
+		}
+		// ???????????
+		if( killUndear && NT_Shoping_CheckUndear( 20 ) ){
+			if( NTA_ClearPosition( 20 ) )
+			NTSI_PickItems();
+			if( NTC_GetSkillLevel( 124 ) && NT_Shoping_CheckCorpses( 8 ) ){
+				NTC_PutSkill( 124, NTC_HAND_RIGHT );
+				NTC_PingDelay( 2000 );
+			}
+			if( !NTM_MoveTo( me.areaid, anyaTPX, anyaTPY ) )
+			return false;
+			NTC_PutSkill( 115, NTC_HAND_RIGHT );
+		}
+		// ???act5 town
+		if( !NT_Shoping_UsePortal( "Portal", 109 ) ){
+			NT_Shoping_Msg( "NT_Shoping_UsePortal()", 8 );
+			return NT_Shoping_CheckACT();
+		}
+	} else {
+		var ok = false;
+		if( !NTTM_TownMove( "waypoint" ) ){
+			NT_Shoping_Msg( "NTTM_TownMove()", 9 );
+			return false;
+		}
+		switch( me.act ){
+			case 1 :
+				if( !NT_Shoping_TakeWaypoint( 35 ) )
+				return false;
+				ok = NT_Shoping_TakeWaypoint( 1 );
+				break;
+			case 2 :
+				if( !NT_Shoping_TakeWaypoint( 48 ) ){
+					return false;
+				}
+				ok = NT_Shoping_TakeWaypoint( 40 );
+				break;
+			case 3 :
+				if( !NT_Shoping_TakeWaypoint( 101 ) )
+				return false;
+				ok = NT_Shoping_TakeWaypoint( 75 );
+				break;       
+			case 4 :
+				if( !NT_Shoping_TakeWaypoint( 107 ) )
+				return false;
+				ok = NT_Shoping_TakeWaypoint( 103 );
+				break;
+			case 5 :
+				if( !NT_Shoping_TakeWaypoint( 129 ) )
+				return false;
+				ok = NT_Shoping_TakeWaypoint( 109 );
+				break;
+		}
+		if( !ok ){ // give a chance do it again..
+			return NT_Shoping_CheckACT();
+		}
+	}
+	return true;
+}
+
+function NT_Shoping_CheckMonster( target ){
+	return ( target.hp > 0 && target.mode != 0 && target.mode != 12 && GetDistance( me, target ) != -1 );
+}
+
+function NT_Shoping_CheckCorpses( range ){
+	var undear = NTC_FindUnit( NTC_UNIT_MONSTER, 438, 2 );
+	if( undear ){
+		do{
+			if( !NT_Shoping_CheckMonster( undear ) && GetDistance( me, undear ) < range )
+			return true;
+		} while( undear.GetNext() );
+	}
+	return false;
+}
+
+function NT_Shoping_CheckUndear( range ){
+	var undear = NTC_FindUnit( NTC_UNIT_MONSTER, 438, 2 );
+	if( undear ){
+		do{
+			if( GetDistance( me, undear ) < range )
+			return true;
+		} while( undear.GetNext() );
+	}
+	return false;
+}
+
+function NT_Shoping_Loop( str ){
+	var hi = "NTShopbot.ntj : " + str;
+	NTC_SendLogToOOG( hi );
+	var tempX = me.x;
+	var tempY = me.y;
+	for( ; ; ){
+		for( var i = 0; i < 20; ++i ){
+			NT_Shoping_OverHead( str );
+			
+			var xx = Random( -3, 3 );
+			var yy = Random( -3, 3 );
+			
+			NTC_DoClick( NTC_CLICK_LDOWN, NTC_SHIFT_NONE, xx, yy );
+			NTC_Delay(500);
+			
+			NTC_Delay( 3000 );
+			
+			NTC_DoClick( NTC_CLICK_LDOWN, NTC_SHIFT_NONE, tempX, tempY );
+			NTC_Delay(500);
+		}
+	}
+}
+
+function NT_Shoping_Msg( str, em ){
+	errorGoQuitGame ? NTC_SendMsgToScript( "NTBotGame.ntj", str ) : 
+	( NT_Shoping_CheckError( em ) ? NTC_SendMsgToScript( "NTBotGame.ntj", str ) : 
+	NTC_SendLogToOOG( NTC_LOG_COMMON, COLOR_1 + str ) );
+}
+
+function NT_Shoping_CheckError( em ){
+	if( errorMode == em ){
+		sameErrorCount++;
+		if( sameErrorCount >= 5 )
+		return true;
+	} else {
+		errorMode = em;
+		sameErrorCount = 0;
+	}
+	if( em == 3 ){ // maybe mouse lock
+		// don't know how to fix now....
+	}
+	return false;
+}
+
+function NT_Shoping_CheckACT(npcNum){
+	var townid = [1,40,75,103,109];
+	if( !NTC_InTown() ){
+		if( !NT_Shoping_MakeTP( townid[me.act-1] ) )
+		return false;
+	}
+	if( arguments.length < 1 )
+	return true;
+	var act = NT_Shoping_CheckNPC( npcNum );
+	if( act == 0 )
+	return false;
+	if( act != me.act ){
+		if( !NTTM_TownMove( "waypoint" ) )
+		return false;
+		if( !NT_Shoping_TakeWaypoint( townid[act-1] ) )
+		return false;
+	}
+	return true;
+}
+
+function NT_Shoping_GoNextNpc(npcNum, count){
+	var cur = NT_Shoping_CheckNPC(npcNum);
+	var next = NT_Shoping_CheckNPC(shop_npcNumber[count+1]);
+	return ( next == cur ? false : true ); // ???????
+}
+
+function NT_Shoping_CheckNPC( npcNum ){
+	if( is_D2C && npcNum > 11 )
+	return 0;
+	switch( npcNum ){
+		case 1 :
+		case 2 :
+		case 3 :
+			return 1;
+		case 4 :
+		case 5 :
+		case 6 :
+			return 2;
+		case 7 :
+		case 8 :
+		case 9 :
+			return 3;
+		case 10:
+		case 11:
+			return 4;
+		case 12:
+		case 13:
+		case 14:
+			return 5;
+	}
+	return 0;
+}
+
+function NT_Shoping_OverHead( str ){
+	Say( "!" + str );
+	NTC_Delay( 200 );
+}
+
+// ?????????
+function NT_Shoping_CancelMenu(){
+	var i;
+	while (GetUIState(0x01) ||
+	  GetUIState(0x08) ||
+	  GetUIState(0x0C) ||
+	  GetUIState(0x17) ||
+	  GetUIState(0x19) ||
+	  GetUIState(0x1A) ||
+	  GetUIState(0x24)){
+		for( i = 0; i < 40; ++i ){
+			if( ( i % 20 ) == 0 )
+			me.Cancel(1);
+			NTC_Delay( 200 );
+			if( !GetUIState(0x01) &&
+					!GetUIState(0x08) &&
+					!GetUIState(0x0C) &&
+					!GetUIState(0x17) &&
+					!GetUIState(0x19) &&
+					!GetUIState(0x1A) &&
+					!GetUIState(0x24)){
+				NTC_PingDelay(500);
+				break;
+			}
+		}
+	}
+	NTC_PingDelay( 500 );
+}
+
+function markItems( quality, name, itemdesc ){
+	this.quality = quality;
+	this.name = name;
+	this.itemdesc = itemdesc;
+}
+
+function NT_Shoping_TakeWaypoint( areaid ){
+	var _unit;
+	if( me.areaid == areaid )
+	return true;
+	_unit = NTM_GetWaypointInt();
+	if( !_unit )
+	return false;
+	if( NTC_InTown() )
+	me.Cancel( 1 );
+	for( var i = 0 ; i < 20 ; ++i ){
+		if( ( i % 10 ) == 0 ){
+			NTC_DoClick( NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _unit );
+		}
+		NTC_Delay(200);
+		if( GetUIState( 0x14 ) ){
+			if( me.TakeWaypoint( areaid ) ){
+				NTC_PingDelay( NTConfig_AreaDelay );
+				return true;
+			}
+			break;
+		}
+	}
+	return false;
+}
+
+function NT_Shoping_UsePortal( how, dest, ownername, portal ){
+	if( me.areaid == dest )
+	return true;
+	if( NTC_InTown() )
+	me.Cancel( 1 );
+	if( NT_Shoping_ChangeAreaInt( how, dest, ownername, portal ) ){
+		NTC_PingDelay( NTConfig_AreaDelay );
+		return true;
+	}
+	return false;
+}
+
+function NT_Shoping_ChangeAreaInt( how, dest, ownername, myportal ){
+	var _portal;
+	var _playerportal = false;
+	var _prearea;
+	if( how == "BluePortal" ){
+		if( !ownername )
+		ownername = me.name;
+		_playerportal = true;
+	}
+	if( arguments.length > 3 && myportal )
+	_portal = myportal;
+	else {
+		_portal = NTM_FindCorrectPortalInt( _playerportal, ownername );
+		if( _portal < 0 )
+		_portal = NTM_FindPortalAreaInt( dest );
+		if( _portal == -1 )
+		return false;
+	}
+	if( !_portal )
+	return false;
+	_prearea = me.areaid;
+	for( var i = 0 ; i < 20 ; ++i ){
+		if( ( i % 5 ) == 0 ){
+			//            if( i == 10 )
+			//                NTM_MoveTo( _prearea, me.x + 6, me.y + 6 );
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+		}
+		NTC_Delay(200);
+		if( me.areaid != _prearea )
+		break;
+	}
+	while( me.areaid == 0 )
+	NTC_Delay(200);
+	return ( me.areaid == dest );
+}
+
+function NT_Shoping_MakeTP(dest){
+	var _usetp = true;
+	var _portal;
+	var _portalname;
+	if( NTC_InTown() )
+	return true;
+	if( arguments.length < 1 )
+	_usetp = false;
+	if( !NTC_CastSkill( 220, NTC_HAND_RIGHT ) )
+	return false;
+	NTC_PingDelay( 500 );
+	_portalname = GetLocaleString( 3226 );
+	for( var i = 0 ; i <= 2 ; ++i ){
+		_portal = NTC_FindUnit( NTC_UNIT_OBJECT, _portalname );
+		if( _portal ){
+			do{
+				if( _portal.mode == 2 && NTC_CheckOwner( _portal ) ){
+					if( _usetp )
+					return NT_Shoping_UsePortal( "BluePortal", dest, me.name, _portal );
+
+					return true;
+				}
+			} while( _portal.GetNext() );
+		}
+		if( i < 2 )
+		NTC_Delay(500);
+	}
+	return false;
+}

@@ -1,0 +1,659 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+// added a line that sends whisper game name for leechers when in game revised by stairbuilder on 1-2-11 //
+// added fix for white screen of death credit to korean modders revised by stairbuilder on 2-17-11       //
+// added fix for creation button sticking revised by stairbuilder on 2-17-11 							 //
+// added sending game name and pw to txt file for leecher text file joining 9-25-11     				 //
+//////////// for use with NTLeechStarter2.ntj 	///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// added a while loop and manager print if a bad cd key is used or bad account or password stair 9-25-11
+// added print game to txt file for leechers using txt file joining
+// added game count over 99 mod 12-1-12
+// not doing all this ^^^ for an ego trip, just so I know what I have added to this one, lmao
+
+
+
+///////////////////////////////////////////////////
+//        characters in your game setting: 		 //		
+///////////////////////////////////////////////////
+var characterdiff        =  "99"; 	//use this to keep those pesky spam bots out of the f'ing game
+									//note you must manually hit the check box the first time for this to work
+var maxNumberOfPlayersss = "8";		//use this to set the maximum number of players allowed in your game
+
+///////////////////////////////////////
+//        Channel Settings: 		 //		/ /These controll what if any channel you join
+///////////////////////////////////////
+var joinChatAfterGame			= false;			 // join chat after leaving a game
+var joinRandomChannel			= false;		 // if this is true, will join a random channel, otherwise it will use the channel below..
+var joinChannelInChat			= "set a channel";		 // Channel you want your bot to join, leave blank to not join a private channel
+
+///////////////////////////////////////
+//        Message Settings: 		 //		// These controll what your bot sais to the leechers will also send a log incommand to a channel bot
+///////////////////////////////////////
+var chatMessageOnJoin			= "set a login command here";	// Chat Message to say Login command for channel bot will only be sent once
+var chatMessageAfterGame1		= "configure me";	// Optional chat message Line #1 to say after each game on Channel
+var chatMessageAfterGame2		= "in your ntbot.ntj file";		// Optional chat message Line #2 to say after each game on Channel
+var chatMessageAfterGame3		= "in the scripts folder";		// Optional chat message Line #3 to say after each game on Channel
+var chatMessageAfterGame4		= "these lines can be blank if you dont need them all";		// Optional chat message Line #4 to say after each game on Channel
+var chatMessageAfterGame5		= "dont forget to set your channel as well";	// Optional chat message Line #5 to say after each game on Channel
+
+///////////////////////////////////////		// These will let you send a message with a game name password and time to your leechers
+//      Game Message Settings:       //		// var saygamename must be true for any of these to work
+///////////////////////////////////////		// You cant NOT have a - in you game name it will bug it out
+var saygamename 			= false;						// Must be true for any of the game message settings to work
+var nextgamemessage			= "next game should be";	// This will come befor your next game name eg "New game is"
+var saypassword 			= true;						// This will togle if the bot says your game pw
+var saytime 				= true;						// This will togle if the bot says how much time till creation
+var timemessage 			= "in about";				// This will come after your pw and befor the time eg. "in about" xx seconds say time MUST be true for this to be used
+
+//////////////////////////////////////
+//       Minimum Game Length:       //
+//////////////////////////////////////
+
+var gameMinLength		= 180000;	// time in milliseconds, minimum game length, 180 seconds default (1 game/3 minutes)
+
+////////////////////////////////////////
+//        Connection Settings:        //
+////////////////////////////////////////
+
+var unableToConnectRetry	= 15;		// time in minutes to retry connecting on connection fail (real value is +/- 1 min)
+var realmDownRetry		= 900;		// time in minutes to retry connecting on a realm down (default is 300 minutes)
+var disconnectedRetry		= 5;		// time in minutes to retry on a disconnection (usually ip ban related)
+var cdkeyInUseRetry		= 5;		// time in minutes to retry on a cdkey in use error message (set to 0 to stop)
+var connectingToBnetTimeout	= 20000;	// time in milliseconds to wait for a login to time out and click cancel and retry
+var characterScreenTimeout	= 10000;	// time in milliseconds to wait for character screen to appear
+var pleaseWaitTimeout		= 10000;	// time in milliseconds to wait for a please wait popup
+var createGameThreshold		= 10000;		// time in milliseconds to wait between making games
+var createGameThresholdRandom	= 1000;		// time in milliseconds to randomly add +/- to the game create time
+var createGameTimeout		= 44000;	// time in milliseconds to register a failed to create game
+var waitInLineTimeout		= 60000;	// time in milliseconds to wait in lines for a create game (60 second default)
+var characterSelectDelay	= 1000;		// time in milliseconds to wait before selecting a character on the char screen
+var loginDelay			= 1000;		// time in milliseconds to wait before submitting login information
+var clickDelay			= 500;		// wait X milliseconds before next action after a click event
+var textDelay			= 500;		// wait X milliseconds before next action after inserting text into a textbox
+var clickDelayRandom		= 500;		// random amount of time to add to a click
+var textDelayRandom		= 500;		// random amount of time to add to a text set
+var gameDoesNotExistDelayMin	= 600000;	// how long to wait when a Game Does Not Exist occurs - minimum - default 10 minutes
+var gameDoesNotExistDelayMax	= 900000;	// how long to wait when a Game Does Not Exist occurs - maximum - default 15 minutes
+var gameDoesNotExistTimeout	= 30000;	// how long to wait for the dialog to disappear (default 30 seconds, don't change this)
+var waitBeforeEnterChatMin	= 1000;		// min how long to wait before entering chat
+var waitBeforeEnterChatMax	= 2000;		// max how long to wait before entering chat
+var waitInChatBeforeActionsMin	= 2000;		// min how long to wait before joining channel
+var waitInChatBeforeActionsMax	= 3000;		// max how long to wait before joining channel
+var waitBeforeNextLineChatMin	= 500;		// Minimum ammount of time to add after each text line	
+var waitBeforeNextLineChatMax	= 1500;		// Maximum ammount of time to add after each text line
+
+// DONT EDIT ANYTHING BELOW THIS
+
+// D2NT Manager Command
+const D2NT_MGR_LOADING = 1;
+const D2NT_MGR_READY = 2;
+const D2NT_MGR_LOGIN = 3;
+const D2NT_MGR_CREATE_GAME = 4;
+const D2NT_MGR_INGAME = 5;
+const D2NT_MGR_RESTART = 6;
+const D2NT_MGR_CHICKEN = 7;
+const D2NT_MGR_PRINT_STATUS = 8;
+const D2NT_MGR_PRINT_LOG = 9;
+var alreadyLoggedIn = false; // will only send the login command once leave as unless you want to login everytime you join a channel
+var lastGameMade = GetTickCount();
+var lastGameStatus = 0;
+var nextGameMake = 0;
+var inGameAt = 0;
+var chatActionsDone = false;
+var lastGameFailed = false;
+var tempDelay = Random(waitBeforeNextLineChatMin, waitBeforeNextLineChatMax);
+var gameInfo = "";
+var bugignor = true;
+Include("libs/controlInfo.ntl");
+Include("libs/common/NTColorConverter.ntl");
+
+var controlData = new controlInfo();
+
+function NTMain()
+{
+	Delay(1000);
+
+	var _ingame = false;
+
+	controlData.clickDelay = clickDelay;
+	controlData.textDelay = textDelay;
+	controlData.clickDelayRandom = clickDelayRandom;
+	controlData.textDelayRandom = textDelayRandom;
+	while(1)
+	{
+		if(me.ingame)
+		{
+			if(!inGameAt)
+				inGameAt = GetTickCount();
+
+			if(!_ingame)
+			{
+				RunGC(); // run garbage collector between each game
+
+				if(Load("NTBot/NTBotGame.ntj"))
+				{
+					_ingame = true;
+					NT_File("logs/messagecomands/"+me.charname+"-nextgame.txt", 1, me.gamename + "/" + me.gamepassword); // for leader to print game/pw to txt	 	
+
+					if(me.playtype > 0)
+						sendEventToOOG(D2NT_MGR_INGAME, "In Game[IP:" + me.gameserverip.split(".")[3] + "]", 0);
+						
+					else
+						sendEventToOOG(D2NT_MGR_INGAME, "In Game", 0);
+						Say("/f m in_new_game " + me.gamename);  // this is for leechers to join only after leader is in game
+					lastGameStatus = 2; // in game successful
+				}
+			}
+
+			Delay(1000);
+		}
+		else
+		{
+			
+			if(_ingame)
+			{
+				My_ExitGame_Check(); // out of korean modded d2nt fixes white screen of death
+
+				_ingame = false;
+
+				sendEventToOOG(D2NT_MGR_READY, "", 0);
+			}
+
+			locationAction(controlData.getLocation());
+
+			Delay(500);
+		}
+	}
+}
+
+function locationAction(location)
+{
+	switch(location.id)
+	{
+	case 3: // Lobby Chat
+		if(!chatActionsDone)
+		{
+			chatActionsDone = true;
+			Delay(Random(waitInChatBeforeActionsMin, waitInChatBeforeActionsMax));
+
+			if(joinRandomChannel || joinChannelInChat != "")
+			{
+				Say("/join " + (joinRandomChannel ? getRandomString(Random(3,10)) : joinChannelInChat));
+				Delay(1000);
+					if(!alreadyLoggedIn){
+   					alreadyLoggedIn = true;
+					if (chatMessageOnJoin.length > 0){
+						Say(chatMessageOnJoin);
+					}
+					}
+				Delay(500);
+				chatActionsDone = true;
+			}
+		}
+	case 1:	// Lobby
+		if(location.id == 1 && joinChatAfterGame)
+		{
+			Delay(Random(waitBeforeEnterChatMin, waitBeforeEnterChatMax));
+			controlData.click(controlData.controls.lobby.button.enterChat);
+			break;
+		}
+		//LogPrintSimple(me.account + "MyAccountTest.txt", me.account + " / " + me.charname) // this is to check for 2nd account login
+
+		if(GetTickCount() > nextGameMake)
+		{
+			lastGameFailed = false;
+
+			switch(lastGameStatus)
+			{
+			case 0:	
+				password = (me.gamepassword);
+				game = (getGameName(me.gamename));
+				counter = (getGameCounter(me.gamename, false));
+				time = (parseInt((nextGameMake - GetTickCount() - tempDelay)/1000+3.0));
+				if (saygamename){{
+					gameInfo += nextgamemessage + " " + game + counter;
+				}
+					if (saypassword){
+					gameInfo += "//" + password
+					}
+						if (saytime){
+						gameInfo += " " + timemessage + " " + time + " seconds"
+						}
+				}
+				if(joinChatAfterGame){
+					if(chatMessageAfterGame1.length > 0){
+						Say(chatMessageAfterGame1);
+						if(chatMessageAfterGame1.length > 0){
+							Delay(tempDelay);
+						}
+					}
+					if(chatMessageAfterGame2.length > 0){
+						Say(chatMessageAfterGame2);
+							if(chatMessageAfterGame2.length > 0){
+								Delay(tempDelay);
+							}
+					}
+					if(chatMessageAfterGame3.length > 0){
+						Say(chatMessageAfterGame3);
+						if(chatMessageAfterGame3.length > 0){
+							Delay(tempDelay);
+						}
+					}
+					if(chatMessageAfterGame4.length > 0){
+						Say(chatMessageAfterGame4);
+						if(chatMessageAfterGame4.length > 0){
+							Delay(tempDelay);
+						}
+					}
+					if(chatMessageAfterGame5.length > 0){
+						Say(chatMessageAfterGame5);
+						if(chatMessageAfterGame5.length > 0){
+							Delay(tempDelay);
+						}
+					}
+					if(saygamename) {
+						if(bugignor){
+							bugignor = false;
+							gameInfo = "";
+						}
+					else{
+						Say(gameInfo)
+						Delay(tempDelay)
+						gameInfo = "";
+					}
+					}
+				}
+				_control = controlData.get(controlData.controls.lobby.button.create); // fixes creation stuck button bug out of unmodded d2nt
+				if(_control && _control.pressed)
+				{
+					controlData.click(controlData.controls.lobby.button.join);
+					Delay(500);
+				}
+
+				controlData.click(controlData.controls.lobby.button.create);
+				_control = controlData.get(controlData.controls.lobby.create.button.useCharacterDifference);
+				if(_control && !_control.pressed)
+				{
+					controlData.click(controlData.controls.lobby.create.button.useCharacterDifference);//checks the use character diff box...does this every time so no go
+				}
+				controlData.setText(controlData.controls.lobby.create.editBox.characterDifference,(characterdiff)); //level restriction
+				controlData.setText(controlData.controls.lobby.create.editBox.maxNumberOfPlayers, (maxNumberOfPlayersss)); //max players
+				nextGameMake = GetTickCount() + createGameTimeout; // set our timeout
+				sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+				break;
+			case 1: // game failed, rollover to reset timer
+				inGameAt = GetTickCount(); // reset inGameAt, to wait how long we should have waited..
+				lastGameFailed = true;
+			case 2:
+				outputGameLength();
+				lastGameStatus = 0;
+				setNextGameMake();
+				sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+				break;
+			}
+		}
+		else
+			timeoutDelay(nextGameMake-GetTickCount(), location, true);
+		break;
+
+	case 2: // Waiting In Line
+		if(GetTickCount()-lastGameMade > waitInLineTimeout)
+			controlData.click(controlData.controls.lobby.inLine.button.cancel);
+		break;
+
+	case 4: // Create Game
+		sendEventToOOG(D2NT_MGR_CREATE_GAME, location.name, 0);
+
+		locationTimeout(5000, location);
+
+		lastGameMade = GetTickCount();
+		lastGameStatus = 1; // pending creation
+		break;
+
+	case 5: // Join Game
+		break;
+
+	case 6: // Ladder
+		break;
+
+	case 7: // Channel List
+		break;
+
+	case 8: // Main Menu
+		if(controlData.getCurrentRealmIndex() == me.gatewayid)
+		{
+			outputGameLength();
+			controlData.click(controlData.gameTypes[me.playtype]);
+		}
+		else
+			controlData.click(controlData.controls.mainMenu.button.gateway);
+		break;
+
+	case 9: // Login
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+		Delay(loginDelay);
+
+		controlData.setText(controlData.controls.login.editBox.accountName, me.account);
+
+		sendEventToOOG(D2NT_MGR_LOGIN, location.name, 0);
+
+		locationTimeout(5000, location);
+		break;
+
+	case 10: // Login Error (this is a fatal error, so stop)
+        sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "Bad Account or PW Entered.......Idling", 0);
+		while(1) { Delay(500); }        		
+		sendEventToOOG(D2NT_MGR_RESTART, location.name, 10);
+		Delay(3500);
+		break;
+
+	case 11: // Unable To Connect
+		timeoutDelay(unableToConnectRetry*60*1000, location)
+		controlData.click(controlData.controls.login.unableToConnect.button.ok);
+		break;
+
+	case 12: // Character Select
+		var _time, _control;
+
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+
+		for(_time = 0 ; _time < characterScreenTimeout ; _time += 500)
+		{
+			_control = controlData.get(controlData.controls.characterSelect.textBox.characterInfo[me.charloc]);
+			if(_control && _control.GetText() != undefined)
+				break;
+
+			Delay(500);
+		}
+
+		if(_time < characterScreenTimeout)
+		{
+			Delay(characterSelectDelay);
+
+			controlData.click(controlData.controls.characterSelect.textBox.characters[me.charloc], 0, 0, 1);
+			controlData.click(controlData.controls.characterSelect.textBox.characterInfo[me.charloc], 0, 0, 1);
+
+			// reset last game made, so it doesnt make a game immediately
+			inGameAt = 0;
+			setNextGameMake();
+		}
+		else
+		{
+			controlData.click(controlData.controls.characterSelect.button.exit);
+			timeoutDelay(realmDownRetry*60*1000, location);
+		}
+		break;
+
+	case 13: // Realm Down - Character Select screen
+		controlData.click(controlData.controls.characterSelect.button.exit);
+		timeoutDelay(realmDownRetry*60*1000, location);
+		break;
+
+	case 14: // Character Select - Disconnected
+		timeoutDelay(disconnectedRetry*60*1000, location);
+		controlData.click(controlData.controls.characterSelect.disconnected.button.ok);
+		break;
+
+	case 15: // New Character
+		break;	
+
+	case 16: // Character Select - Please Wait popup
+		if(!locationTimeout(pleaseWaitTimeout, location))
+			controlData.click(controlData.controls.characterSelect.pleaseWait.button.cancel);
+		break;
+
+	case 17: // Lobby - Lost Connection - just click okay, since we're toast anyway
+		controlData.click(controlData.controls.lobby.lostConnection.button.ok);
+		break;
+
+	case 18: // D2 Splash
+		controlData.click(controlData.controls.d2Splash.textBox.copyright);
+		break;
+
+	case 19: // Login - Cdkey In Use
+		timeoutDelay(cdkeyInUseRetry*60*1000, location);
+		controlData.click(controlData.controls.login.cdkeyInUse.button.ok);
+		break;
+
+	case 20: // Single Player - Select Difficulty
+		controlData.click(controlData.singlePlayerDifficulties[me.diff]);
+		break;
+
+	case 21: // Main Menu - Connecting
+		if(!locationTimeout(connectingToBnetTimeout, location))
+			controlData.click(controlData.controls.mainMenu.connecting.button.cancel);
+		break;
+
+	case 22: // Login - Invalid Cdkey (classic or xpac)
+        sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "Bad CD Key...........Idling", 0);
+		while(1) { Delay(500); }		
+		sendEventToOOG(D2NT_MGR_RESTART, location.name, 3600);
+		Delay(3500);
+		break;	
+
+	case 23: // Character Select - Connecting
+		if(!locationTimeout(characterScreenTimeout, location))
+			controlData.click(controlData.controls.characterSelect.button.exit);
+		break;
+
+	case 24: // Server Down - not much to do but wait..
+		break;
+
+	case 25: // Lobby - Please Wait
+		if(!locationTimeout(pleaseWaitTimeout, location))
+			controlData.click(controlData.controls.lobby.pleaseWait.button.cancel);
+		break;
+
+	case 26: // Lobby - Game Name Exists
+		sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "Game already exists", 0);
+
+		inGameAt = 0;
+		lastGameStatus = 0;
+		setNextGameMake();
+
+		locationTimeout(15000, location);
+		break;
+
+	case 27: // Gateway Select
+		controlData.clickRealmEntry(me.gatewayid);
+		controlData.click(controlData.controls.gateway.button.ok);
+		break;
+
+	case 28: // Lobby - Game Does Not Exist
+		inGameAt = Random(gameDoesNotExistDelayMin, gameDoesNotExistDelayMax);
+		//Delay(inGameAt);
+		lastGameStatus = 0;
+		setNextGameMake();
+
+		locationTimeout(gameDoesNotExistTimeout, location);
+		break;
+	}
+}
+
+function sendEventToOOG(locationId, statusString, pendingTime)
+{
+	return SendCopyData("D2NT Manager", null, (locationId<<16)|pendingTime, statusString);
+}
+
+function setNextGameMake()
+{
+	lastGameMade = GetTickCount();
+	nextGameMake = lastGameMade + createGameThreshold + Random(0-createGameThresholdRandom, createGameThresholdRandom) + inGameAt;
+	inGameAt = 0;
+	chatActionsDone = false;
+}
+
+function outputGameLength()
+{
+	if(inGameAt)
+	{
+		duration = GetTickCount() - inGameAt;
+
+		inGameAt = (duration < gameMinLength ? gameMinLength - duration : 0);
+	}
+}
+
+function locationTimeout(time, location)
+{
+	endtime = GetTickCount() + time;
+
+	while(controlData.getLocation().id == location.id && endtime > GetTickCount())
+	{
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name + " (" + parseInt((endtime-GetTickCount())/1000) + "s)", 0);
+		Delay(500);
+	}
+
+	return (controlData.getLocation().id != location.id);
+}
+
+function timeoutDelay(time, location)
+{
+	endtime = GetTickCount() + time;
+
+	while(endtime > GetTickCount())
+	{
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name + " (" + parseInt((endtime-GetTickCount())/1000) + "s)", 0);
+		Delay(1000);
+	}
+}
+
+function getRandomString(_length)
+{
+	_retString = "";
+	_charSet = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+	while(_length--)
+	{
+		_retString += _charSet.charAt(Random(0, _charSet.length-1));
+		Delay(1);
+	}
+
+	return _retString;
+}
+function getGameName(lastGameString)
+{
+   if(!lastGameString)
+      return "";
+   else
+      return (lastGameString.split("-")[0] + "-");
+}
+
+function getGameCounter(lastGameString, simple)
+{
+   var myCount;
+   if(!lastGameString)
+      return "-1";
+   else
+   {
+      switch(lastGameString.split("-")[1])
+      {
+         case "08":
+            myCount = 9;
+            break;
+         case "09":
+            myCount = 10;
+            break;
+		case "99":
+			myCount = 00;
+			break;
+         default:
+            myCount = parseInt(lastGameString.split("-")[1]) + 1;
+            break;
+      }
+      if(!simple)
+      {
+         if(myCount <= 9)
+            return ('0' + myCount);
+      }
+      return myCount;
+   }
+}
+
+function My_ExitGame_Check()
+{
+    for (var i = 0; i < 40; i++)
+    {
+        if (controlData.getLocation().id != undefined)
+            break;
+
+        if (i > 38)
+        {
+            LogPrintSimple(me.account + " StarterTest.txt", "White Screen of Death: Restarting")
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "White Screen of Death: Restarting", 0);
+            sendEventToOOG(D2NT_MGR_RESTART, "", 5);
+            My_Delay(); // make sure and add this also
+        }
+
+        Delay(500);
+    }
+}
+
+function My_Delay(retry)
+{
+    if (arguments.length < 1)
+        retry = 20;
+
+    while (retry-- > 0)
+        Delay(1000);
+}
+
+function LogPrintSimple(filepath, mesg){ 
+
+	var _filepath = filepath;
+	var _mesg = mesg;
+	
+	var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
+	var logfile = FileOpen(_filepath, 2); // opens file 
+	if(!logfile)
+		var logfile = FileOpen(_filepath, 1); // if file not there then creates it
+
+	logfile.WriteLine(date + " " + _mesg );
+	logfile.Close();
+}
+
+// modes 0 = read only, 1 = overwrite the file, 2 = add to file
+function NT_File(path, mode, msg, delay) { //big thanks to all the koreans out there
+    var _msg  = "";
+    var _line = "";
+    var _fileHandle;
+    var _isFileCheck = false;
+
+    if (arguments.length < 3) { msg   = ""; }
+    if (arguments.length < 4) { delay = (mode > 0) ? 5 : 2; }
+
+    while (delay--) {
+        if (mode == 2 && !_isFileCheck) {
+            _fileHandle = FileOpen(path, 0);
+            if (!_fileHandle)
+                _fileHandle = FileOpen(path, 1);
+
+            if (_fileHandle)
+                _fileHandle.Close();
+
+            _isFileCheck = true;
+        }
+
+        _fileHandle = FileOpen(path, mode);
+        if (_fileHandle)
+            break;
+
+        if (delay)
+            Delay(200);
+    }
+
+    if (_fileHandle) {
+        if (mode == 0) {
+            while (!_fileHandle.eof) {
+                _line = _fileHandle.ReadLine();
+                if (_line || !_fileHandle.eof)
+                    _msg += _line + msg;
+            }
+        }
+        else if (msg)
+            _fileHandle.WriteLine(msg);
+
+        _fileHandle.Close();
+    }
+
+    return _msg;
+}

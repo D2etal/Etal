@@ -1,0 +1,234 @@
+var _NTLW_timerLastDrink = new Array(5);
+
+function NTMain(){
+	Include("libs/common/NTCommon.ntl");
+	Include("libs/common/NTCubing.ntl");
+	Include("libs/common/NTUtilities.ntl");
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	var _count = 0;
+	var _LifeMax, _ManaMax;
+	var _merc;
+	var _player, _mypartyid;
+	var _time;
+	var _threshold;
+	var _ping = 0;
+
+	NT_LoadConfig();
+
+
+	_LifeMax = me.hpmax;
+	_ManaMax = me.mpmax;
+
+	if(NTConfig_LifeChicken > 0) {
+		me.chickenhp = parseInt((_LifeMax*NTConfig_LifeChicken)/100);
+	} else {
+		me.chickenhp = 0;}
+
+	if(NTConfig_ManaChicken > 0) {
+		me.chickenmp = parseInt((_ManaMax*NTConfig_ManaChicken)/100);
+	} else {
+		me.chickenmp = 0;}
+
+	for(var i = 0 ; i < 5 ; i++)
+		_NTLW_timerLastDrink[i] = 0;
+
+	while(1){
+		if(!NTC_InTown()){
+			if(_LifeMax != me.hpmax){
+				_LifeMax = me.hpmax;
+
+				if(NTConfig_LifeChicken > 0) {
+					me.chickenhp = parseInt((_LifeMax*NTConfig_LifeChicken)/100);
+				} else {
+					me.chickenhp = 0;}
+			}
+			if(_ManaMax != me.mpmax){
+				_ManaMax = me.mpmax;
+
+				if(NTConfig_ManaChicken > 0) {
+					me.chickenmp = parseInt((_ManaMax*NTConfig_ManaChicken)/100);
+				} else {
+					me.chickenmp = 0;}
+			}
+
+			// ** start etal chicken code
+			if (me.hp < parseInt(me.hpmax * NTConfig_EtalLifeChicken,10) / 100) {
+				NTU_ChickenLog("EtalLifeChicken");
+				CloseD2();
+				break;
+			}
+			if (me.mp < parseInt(me.mpmax * NTConfig_EtalManaChicken,10) / 100) {
+				NTU_ChickenLog("EtalManaChicken");
+				CloseD2();
+				break;
+			}
+			// ** end etal chicken code
+
+			if(parseInt(me.mp*100/_ManaMax) < NTConfig_ManaRejuvThresh) {
+				NTLW_DrinkPotInt(2);
+			}
+			if(parseInt(me.hp*100/_LifeMax) < NTConfig_LifeRejuvThresh) {
+				NTLW_DrinkPotInt(2);
+			}
+
+			else{
+				if(parseInt(me.hp*100/_LifeMax) < NTConfig_LifeThresh) {
+					NTLW_DrinkPotInt(0);
+				}
+				if(parseInt(me.mp*100/_ManaMax) < NTConfig_ManaThresh) {
+					NTLW_DrinkPotInt(1);
+				}
+			}
+
+			_merc = NTC_GetMerc();
+
+			if(_merc){
+				if(parseInt(_merc.hp*100/_merc.hpmax) < NTConfig_MercChicken){
+					var _area;
+					_area = GetArea();
+
+					if(_area)
+						SendCopyData("D2NT Manager", null, 7<<16, COLOR_1 + "2Game is terminated by chicken (" + _area.name + ")");
+
+					else
+						SendCopyData("D2NT Manager", null, 7<<16, COLOR_1 + "2Game is terminated by chicken (unknown area)");
+
+					ExitGame();
+					NTU_ChickenLog("MercChicken");
+					break;
+				}
+
+				if(parseInt(_merc.hp*100/_merc.hpmax) < NTConfig_MercRejuvThresh) {
+					NTLW_DrinkPotInt(4);
+				}
+					else if(parseInt(_merc.hp*100/_merc.hpmax) < NTConfig_MercLifeThresh) {
+					NTLW_DrinkPotInt(3);
+				}
+			}
+		}
+
+		if(_count++ > 10){
+			if(NTConfig_PublicMode){
+				_player = GetPlayerUnit();
+
+				if(_player){
+					_mypartyid = _player.partyid;
+
+					while(_player.GetNext()){
+						if(me.quitonhostile){
+							if(GetPlayerFlag(me.gid, _player.gid, 9)){
+								NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "Hostile players detected.");
+								NTC_Delay(250);
+								ExitGame();
+							}
+						}
+						if(_player.partyid == 65535 || _player.partyid != _mypartyid){
+							if(_player.partyflag == 2){
+								me.ClickParty(_player, 2);
+								break;
+							}
+							if(_player.partyid == 65535){
+								if(_player.partyflag == 4)
+									continue;
+								me.ClickParty(_player, 2);
+							}
+						}
+					}
+				}
+			}
+
+			if(NTConfig_PartyOnlyLeader){
+				_player = GetPlayerUnit();
+
+				if(_player){
+					_mypartyid = _player.partyid;
+					while(_player.GetNext()){
+						if(me.quitonhostile){
+							if(GetPlayerFlag(me.gid, _player.gid, 9)){
+								NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "Hostile players detected.");
+								NTC_Delay(250);
+								ExitGame();
+							}
+						}
+						if(_player.name == NTConfig_Leader && _player.partyflag == 2
+						&& (_player.partyid == 65535 || _player.partyid != _mypartyid)){
+
+						me.ClickParty(_player, 2);
+						break;
+						}
+					}
+				}
+			}
+			_count = 0;
+		}
+
+		if(NTConfig_QuitOnPing && NTConfig_PingInterval)
+		{
+			if(me.ping >= NTConfig_QuitOnPing)
+			{
+				_ping++;
+
+				if(_ping % 5 == 0)
+					Print(COLOR_3 + "High ping:" + COLOR_4 + me.ping);
+
+				if(_ping >= NTConfig_PingInterval*5)
+				{
+					NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_3 + "High ping. Exiting game.");
+					NTC_Delay(250);
+					ExitGame();
+					break;
+				}
+			} else
+				_ping = 0;
+		}
+		NTC_Delay(200);
+	}
+}
+
+// Internal function
+function NTLW_DrinkPotInt(type){
+	var _pottype;
+	var _result;
+	var _tNow = new Date();
+
+	if(type == 2 || type == 4){
+		if(_NTLW_timerLastDrink[type] && (_tNow-_NTLW_timerLastDrink[type] < 1000))
+			return false;
+	}
+	else{
+		if(_NTLW_timerLastDrink[type] && (_tNow-_NTLW_timerLastDrink[type] < 3000))
+			return false;
+	}
+
+	if(me.mode == 0 || me.mode == 17)
+		return false;
+
+	switch(type){
+		case 0:
+		case 3:
+			_pottype = "hp";
+			break;
+		case 1:
+			_pottype = "mp";
+			break;
+		default:
+			_pottype = "rv";
+			break;
+	}
+
+	for(var i = 0 ; i < 4 ; i++){
+		if(NTConfig_BeltColType[i] == _pottype){
+			if(type < 3)
+				_result = me.UseBelt(i);
+			else
+				_result = me.UseBelt(i, true);
+			if(_result){
+				_NTLW_timerLastDrink[type] = new Date();
+
+				return true;
+			}
+		}
+	}
+	return false;
+}

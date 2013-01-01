@@ -1,0 +1,529 @@
+function NTA_DetectAttackPattern() {
+	return NTA_BarbarianAttackPatternInt();
+}
+
+function NTA_Attack(target, firstorder) {
+	return NTA_BarbarianAttackInt(target, firstorder);
+}
+
+function NTA_BarbarianAttackPatternInt() {
+	var _maxindex, _maxskill;
+	var _avgskilllevel = new Array();
+
+	_avgskilllevel[0] = me.GetSkill(151, false);
+
+	_maxindex = -1;
+	_maxskill = 0;
+
+	for (var i = 0; i < _avgskilllevel.length; i++) {
+		if (_avgskilllevel[i] > _maxskill) {
+			_maxindex = i;
+			_maxskill = _avgskilllevel[i];
+		}
+	}
+
+	switch (_maxindex) {
+	case 0:
+		// Whirlwind
+		NTConfig_AttackSkill[1] = 151;
+		NTConfig_AttackSkill[3] = 151;
+		NTConfig_AttackSkill[5] = 152;
+		break;
+	}
+
+	return (NTConfig_AttackSkill[1] && NTConfig_AttackSkill[3]);
+}
+
+function NTA_BarbarianAttackInt(target, firstorder) {
+	var _primaryindex;
+	var _attackSkill;
+
+	if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (me.hp <= parseInt(me.hpmax * NTConfig_TPChicken,10) / 100)) {
+		if (!NTTMGR_VisitTown()) { return 0; }
+	}
+	_merc = NTC_GetMerc();
+	if(_merc){
+		if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (_merc.hp <= parseInt(_merc.hpmax * NTConfig_MercTPChicken,10) / 100)) {
+			if (!NTTMGR_VisitTown()) { return 0; }
+		}
+	}
+
+	if (firstorder && NTConfig_AttackSkill[0] > -1 && NTA_GetResistance(target, _NTA_SkillDamage[0]) < 100) {
+		if (GetDistance(me, target) > _NTA_SkillRange[0] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[0], 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		if (!NTC_CastSkill(NTConfig_AttackSkill[0], _NTA_SkillHand[0], target)) return 2;
+
+		return 3;
+	}
+
+	_primaryindex = (target.spectype & 0x0A) ? 1 : 3;
+	_attackIndex = NTA_GetAttackType(target, _primaryindex, 100, 100, 100);
+
+	if (NTConfig_AttackSkill[_attackIndex] > -1) {
+		if (_NTA_SkillRange[_attackIndex] < 4 && !CheckCollision(target.areaid, target.x, target.y, 1)) return 1;
+
+		if (!NTA_BarbarianCastSkillInt(_attackIndex, target)) return 2;
+
+		return 3;
+	}
+
+/*
+	if(NTA_GetResistance(target, _NTA_SkillDamage[_primaryindex]) < 100)
+	{
+		if((_NTA_SkillRange[_primaryindex] < 4 || NTConfig_AttackSkill[_primaryindex] == 151) && !CheckCollision(target.areaid, target.x, target.y, 1))
+			return 1;
+
+		if(!NTA_BarbarianCastSkillInt(_primaryindex, target))
+			return 2;
+
+		return 3;
+	}
+
+	if(NTConfig_AttackSkill[5] > -1 && NTA_GetResistance(target, _NTA_SkillDamage[5]) < 100)
+	{
+		if((_NTA_SkillRange[5] < 4 || NTConfig_AttackSkill[5] == 151) && !CheckCollision(target.areaid, target.x, target.y, 1))
+			return 1;
+
+		if(!NTA_BarbarianCastSkillInt(5, target))
+			return 2;
+
+		return 3;
+	}
+	*/
+	return 1;
+}
+
+function NTA_BarbarianCastSkillInt(index, target) {
+	if ((target.name == "Mephisto" || target.name == "Andariel" || target.name == "Duriel" || target.name == "Diablo" || target.name == "Baal") && NTConfig_AttackSkill[9] > -1) {
+		index = 9;
+	}
+	if (NTConfig_AttackSkill[index] == 151) {
+		var _castx, _casty;
+
+		if (GetDistance(me, target) > _NTA_SkillRange[index] || !CheckCollision(me, target, 5)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 5);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		_castx = target.x > me.x ? target.x + 3 : target.x - 3;
+		_casty = target.y > me.y ? target.y + 3 : target.y - 3;
+
+		return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], _castx, _casty);
+	}
+
+	if (GetDistance(me, target) > _NTA_SkillRange[index] || !CheckCollision(me, target, 4)) {
+		var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 4);
+
+		if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+	}
+
+	return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], target);
+}
+
+function NTA_FindItem(range) {
+	var _corpse;
+	var _orgx;
+	var _orgy;
+	var _startTick;
+	var _reposition = false;
+
+	if (me.classid != NTC_CHAR_CLASS_BARBARIAN || NTC_GetSkillLevel(142) < 1) return false;
+
+	if (arguments.length < 1 || !range) range = 25;
+
+	_corpse = NTC_FindUnit(NTC_UNIT_MONSTER);
+	_orgx = me.x;
+	_orgy = me.y;
+
+	NTC_PingDelay(100);
+	NTC_SwapWeapons(2);
+
+	if (_corpse) {
+		do {
+			if (GetDistance(_orgx, _orgy, _corpse.x, _corpse.y) <= range && NTA_CheckLootStatus(_corpse) && NTA_IsLootable(_corpse.classid)) {
+				if (GetDistance(me.x, me.y, _corpse.x, _corpse.y) >= 8) {
+					if (!NTM_MoveTo(me.areaid, _corpse.x, _corpse.y, 3, false, false)) continue;
+				}
+				_startTick = GetTickCount();
+				_reposition = false;
+				while (NTA_CheckLootStatus(_corpse) && !_corpse.IsAttackable()) {
+					NTC_CastSkill(142, NTC_HAND_RIGHT, _corpse);
+					NTC_PingDelay(50);
+
+					if (GetTickCount() >= _startTick + 1000 && !_reposition) // repositioning after 1sec
+					{
+						_reposition = true;
+						if (!NTM_MoveTo(me.areaid, _corpse.x, _corpse.y, 3, false, false)) break;
+					}
+					if (GetTickCount() >= _startTick + 2500) // skipping monster after 2.5sec
+					{
+						if (me.mp < 10) {
+							Print("Lack of" + COLOR_3 + "Mana" + COLOR_0 + "!");
+							if (NTConfig_BuyPotsIfLackOfMana) {
+								if (NTTMGR_VisitTown()) NTC_SwapWeapons(2);
+							}
+							break;
+						}
+						var _filehandle = FileOpen("FailedtoLoot.txt", 2);
+						var _dateString = new Date().toLocaleFormat("%a %m/%d/%y %H:%M:%S");
+						if (_filehandle) {
+							var _states = "States:: ";
+							for (var i = 0; i < 144; i++) {
+								if (_corpse.GetState(i)) _states += "State(" + i + "): " + _corpse.GetState(i) + "<--> ";
+							}
+							_filehandle.WriteLine("[" + _dateString + "] Could not loot: " + _corpse.name + " [" + _corpse.classid + "] (Location: " + me.areaid + ") " + _states);
+							_filehandle.Close();
+						}
+						Print(COLOR_11 + "Could not loot: " + _corpse.name + " [" + _corpse.classid + "] <Mode: " + _corpse.mode + "> (Location: " + me.areaid + ")");
+						break;
+					}
+
+				}
+/*if(GetTickCount() < _startTick + 2000)
+                    NTC_SendMsgToScript("NTBotGame.ntj", "SET_LOOTED_NULL");*/
+			}
+		} while (_corpse.GetNext());
+
+		NTC_SwapWeapons(0);
+		NTC_PingDelay(100);
+
+		NTSI_PickItems();
+
+		return true;
+	}
+	return false;
+}
+
+function NTA_CheckLootStatus(monsterunit) {
+	if (!monsterunit.GetState(107) // Shattered 
+	&& !monsterunit.GetState(104) // Corpse Explosion
+	&& !monsterunit.GetState(118) // Already Looted/Unlootable
+	&& (monsterunit.hp <= 0 || monsterunit.mode == 0 || monsterunit.mode == 12)) // Dead
+	return true;
+	else return false;
+}
+
+function NTA_IsLootable(classid) {
+	switch (classid) {
+	case 151:
+		// An evil force
+	case 156:
+		// Andariel
+	case 180:
+		// Sand Maggot Young
+	case 181:
+		// Rock Worm Young
+	case 182:
+		// Devourer Young
+	case 183:
+		// Giant Lamprey Young
+	case 184:
+		// World Killer Young
+	case 190:
+		// Sand Maggot Egg
+	case 191:
+		// Rock Worm Egg
+	case 192:
+		// Devourer Egg
+	case 193:
+		// Giant Lamprey Egg
+	case 194:
+		// World Killer Egg
+	case 206:
+		// Fould Crow Nest
+	case 207:
+		// Blood Hawk Nest
+	case 208:
+		// Black Vulture Nest
+	case 209:
+		// Cloud Stalker Nest
+	case 221:
+		// Duriel
+	case 227:
+		// Maggot
+	case 228:
+		// Mummy Generator
+	case 234:
+		// Flying Scimitar
+	case 242:
+		// Mephisto
+	case 243:
+		// Diablo
+	case 250:
+		// Summoner
+	case 258:
+		// Water Watcher Limb
+	case 259:
+		// River Stalker Limb
+	case 260:
+		// Sygain Watcher Limb        
+	case 261:
+		// Water Watcher Head 
+	case 262:
+		// River Stalker Head
+	case 263:
+		// Sygain Watcher Head
+	case 267:
+		// Blood Raven
+	case 269:
+		// An evil force
+	case 270:
+		// Rogue Scout (== Merc)
+	case 273:
+		// Gargoyle Trap
+	case 289:
+		// Clay Golem
+	case 290:
+		// Blood Golem
+	case 291:
+		// Iron Golem
+	case 292:
+		// Fire Golem
+	case 301:
+		// Flesh Beast
+	case 302:
+		// Stygian Dog
+	case 303:
+		// Grotesque Wyrm
+	case 318:
+		// An Evil Force
+	case 326:
+		// A Trap
+	case 327:
+		// A Trap
+	case 328:
+		// A Trap
+	case 329:
+		// A Trap
+	case 330:
+		// A Trap
+	case 334:
+		// Sucker Nest
+	case 335:
+		// Fleeder Nest
+	case 336:
+		// Blood Hook Nest
+	case 337:
+		// Blood Wing Nest
+	case 338:
+		// Act 2 guard (== Merc)
+	case 348:
+		// Turret
+	case 349:
+		// Turret
+	case 350:
+		// Turret
+	case 351:
+		// Hydra
+	case 352:
+		// Hydra
+	case 353:
+		// Hydra
+	case 354:
+		// A Trap
+	case 356:
+		// Dopplezon
+	case 357:
+		// Valkyrie
+	case 359:
+		// Iron Wolf (== Merc)
+	case 366:
+		// Compelling Orb
+	case 369:
+		// A Trap
+	case 371:
+		// Lightning Spire
+	case 372:
+		// Fire Tower
+	case 403:
+		// Traped Soul
+	case 404:
+		// Traped Soul
+	case 406:
+		// Izual
+	case 410:
+		// Wake Of Destruction
+	case 411:
+		// Charged Bolt Sentry
+	case 412:
+		// Lightning Sentry
+	case 413:
+		// Blade Creeper
+	case 414:
+		// Invisible Pet
+	case 415:
+		// Inferno Sentry
+	case 416:
+		// Death Sentry
+	case 417:
+		// Shadow Warrior
+	case 418:
+		// Shadow Master
+	case 419:
+		// Druid Hawk
+	case 420:
+		// Druid Spirit Wolf
+	case 421:
+		// Druid Fenris
+	case 422:
+		// Spirit of Barbs
+	case 423:
+		// Heart Of Wolverine
+	case 424:
+		// Oak Sage
+	case 425:
+		// Druid Plague Poppy
+	case 426:
+		// Druid Cycle of Life
+	case 427:
+		// Vine Creature
+	case 428:
+		// Druid Bear
+	case 429:
+		// Eagle
+	case 430:
+		// Wolf
+	case 431:
+		// Bear
+	case 432:
+		// Barricaded Door
+	case 433:
+		// Barricaded Door
+	case 434:
+		// Prison Door
+	case 435:
+		// Barricaded Door
+	case 461:
+		// Fanatic Minion
+	case 462:
+		// Beserk Slayer
+	case 463:
+		// Consumed Fire Boar
+	case 464:
+		// Consumed Ice Boar
+	case 465:
+		// Frenzied Hell Spawn
+	case 466:
+		// Frenzied Hell Spawn
+	case 467:
+		// Insane Hell Spawn
+	case 468:
+		// Insane Ice Spawn
+	case 497:
+		// Catapult
+	case 498:
+		// Catapult
+	case 499:
+		// Catapult
+	case 500:
+		// Catapult
+	case 501:
+		// Frozen Horror 1
+	case 502:
+		// Frozen Horror 2
+	case 503:
+		// Frozen Horror 3
+	case 504:
+		// Frozen Horror 4
+	case 505:
+		// Frozen Horror 5
+	case 516:
+		// Catapult
+	case 517:
+		// Catapult
+	case 518:
+		// Catapult
+	case 519:
+		// Catapult
+	case 522:
+		// Barbarian Fighter
+	case 523:
+		// Barbarian Fighter
+	case 524:
+		// Barricade Wall Right
+	case 525:
+		// Barricade Wall Left
+	case 526:
+		// Nihlatak
+	case 528:
+		// Evil Hut
+	case 535:
+		// Barbarian Fighter
+	case 536:
+		// Barbarian Fighter
+	case 537:
+		// Ancient Statue 1
+	case 538:
+		// Ancient Statue 2
+	case 539:
+		// Ancient Statue 3
+	case 540:
+		// Ancient Barbarian 1
+	case 541:
+		// Ancient Barbarian 2
+	case 542:
+		// Ancient Barbarian 3
+	case 543:
+		// Baal Throne
+	case 544:
+		// Baal Crab
+	case 545:
+		// Baal Taunt
+	case 551:
+		// Pain Worm
+	case 552:
+		// Pain Worm
+	case 553:
+		// Pain Worm
+	case 554:
+		// Pain Worm
+	case 555:
+		// Pain Worm
+	case 556:
+		// Bunny
+	case 559:
+		// Baal Crab to Stairs
+	case 560:
+		// Hireling
+	case 561:
+		// Hireling
+	case 562:
+		// Baal Tentacle
+	case 563:
+		// Baal Tentacle
+	case 564:
+		// Baal Tentacle
+	case 565:
+		// Baal Tentacle
+	case 566:
+		// Baal Tentacle
+	case 567:
+		// Injured Barbarian
+	case 568:
+		// Injured Barbarian
+	case 569:
+		// Injured Barbarian
+	case 570:
+		// Baal Crab Clone
+	case 571:
+		// Baals Minions
+	case 572:
+		// Baals Minionse        
+	case 573:
+		// Baals Minions
+	case 574:
+		// Worldstone Effect
+	case 662:
+		// Flayer Shaman
+		return false;
+		break;
+	default:
+		return true;
+		break;
+	}
+}

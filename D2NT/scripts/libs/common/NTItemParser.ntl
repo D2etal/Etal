@@ -1,0 +1,511 @@
+// no colors to convert
+/*
+
+[Item-parser Syntax Information]
+
+1. [Keyword] separates into three groups
+   - [Property Keywords] : [Type], [Name], [Class], [Quality], [Flag], [Level], [Prefix], [Suffix]
+   - [Stat Keywords] : [Number or Alias]
+   - [Quantity Keywords] : [MaxQuantity]
+
+2. [Keyword] must be surrounded by '[' and ']'
+
+3. [Property Keywords] must be placed first
+
+4. Valid in the Stat section is the keyword description where [description] = "any part of item description" <- must be contained inside quotes
+     e.g. [type] == armor && [quality] == magic # [description] == "required level: 25"
+
+5. Insert '#' symbol between [Property Keywords] and [Stat Keywords]
+
+6. Insert '#' symbol between [Stat Keywords] and [Quantity Keywords]
+
+7. Use '+', '-', '*', '/', '(', ')', '&&', '||', '>', '>=', '<', '<=', '==', '!=' symbols for comparison
+
+8. Use '//' symbol for comment
+
+*/
+
+Include("libs/common/NTItemAlias.ntl");
+
+var _NTIP_CheckList = new Array();
+
+function NTIPOpenFile(filepath)
+{
+    var _nipfile;
+    var _line, _originalLine;
+	var _lineNumber = 0;
+
+    _nipfile = FileOpen(filepath, 0);
+
+    if(!_nipfile)
+        return false;
+
+    while(!_nipfile.eof)
+    {
+		_lineNumber++;
+
+		_originalLine = _nipfile.ReadLine();
+        _line = NTIPParseLineInt(_originalLine);
+
+        if(_line) {
+			_line.push(filepath);
+			_line.push(_lineNumber);
+            _NTIP_CheckList.push(_line);
+		}
+    }
+
+    _nipfile.Close();
+
+    return true;
+}
+
+function NTIPCheckItem(item)
+{
+    var _identified = item.itemflag & 0x10;
+	var resultArray = new Array();
+	resultArray[0] = 0;
+	
+    for(i = 0 ; i < _NTIP_CheckList.length ; i++)
+    {
+		resultArray[1] = _NTIP_CheckList[i][3];
+		resultArray[2] = _NTIP_CheckList[i][4];
+	
+        if(_NTIP_CheckList[i][0].length > 0)
+        {
+            if(eval(_NTIP_CheckList[i][0]))
+            {
+                if(_NTIP_CheckList[i][1].length > 0)
+                {
+                    if(eval(_NTIP_CheckList[i][1])) {return (NTIP_CheckQuantity(item,i,resultArray));}
+                    else if(!_identified && resultArray[0] == 0) {resultArray[0] = -1; return resultArray;}
+                }
+                else {return (NTIP_CheckQuantity(item,i,resultArray));}
+            }
+        }
+        else if(_NTIP_CheckList[i][1].length > 0)
+        {
+            if(eval(_NTIP_CheckList[i][1])) {return (NTIP_CheckQuantity(item,i,resultArray));}
+            else if(!_identified && resultArray[0] == 0) {resultArray[0] = -1; return resultArray;}
+        }
+    }
+    return resultArray;
+}
+
+function NTIP_CheckQuantity(item,i,resultArray)
+{
+	resultArray[0] = 0;
+    if(_NTIP_CheckList[i][2] && _NTIP_CheckList[i][2]["MaxQuantity"] && !isNaN(_NTIP_CheckList[i][2]["MaxQuantity"]))
+    {
+		var phrase0 = _NTIP_CheckList[i][0];
+		var phrase1 = _NTIP_CheckList[i][1];
+		if (_NTIP_CheckList[i][0].length <= 0) {phrase0=null;}
+		if (_NTIP_CheckList[i][1].length <= 0) {phrase1=null;}
+		
+		if(NTIP_CheckQuantityOwned(phrase0, phrase1, false) < _NTIP_CheckList[i][2]["MaxQuantity"])
+		{
+			//Print("I need more of these "+NTC_ItemQualityToMGRColor[item.quality] + item.itemdesc.split("\n")[0].substring(3));
+			resultArray[0] = 1;
+		} else {
+			//Print("I already have enough of these "+NTC_ItemQualityToMGRColor[item.quality] + item.itemdesc.split("\n")[0].substring(3)+" in my stash!");
+			resultArray[0] = 0;
+		}
+    } else {resultArray[0] = 1;}
+    return resultArray;	
+}
+				
+// Internal function
+function NTIP_CheckQuantityOwned(item_type, item_stats, check_inventory_too)
+{
+    var _nb = 0;
+    var _items = me.GetItems();
+    if (!_items)
+    {
+        Print("I can't find my items!");
+        return 0;
+    }
+    for(var i = 0 ; i < _items.length ; i++)
+    {
+        if(_items[i].mode == 0 && _items[i].itemloc == 4)
+        {
+            var item = _items[i];
+            if((item_type != null && item_type.length > 0 && eval(item_type)) || item_type == null)
+                if((item_stats != null && item_stats.length > 0 && eval(item_stats)) || item_stats == null)
+                    _nb++;
+        }
+        else if(check_inventory_too && _items[i].mode == 0 && _items[i].itemloc == 0)
+        {
+            var item = _items[i];
+            if((item_type != null && item_type.length > 0 && eval(item_type)) || item_type == null)
+                if((item_stats != null && item_stats.length > 0 && eval(item_stats)) || item_stats == null)
+                    if(NTConfig_Columns[_items[i].y][_items[i].x] > 0) // we check only space that is supposed to be free
+                        _nb++;
+        }
+    }
+    //Print("I have "+_nb+" of these.");
+    return _nb;
+}
+
+function NTIPParseLineInt(input)
+{
+    var i;
+    var _start, _end;
+    var _section, _keyword;
+    var _result;
+
+    _end = input.indexOf("//");
+    if(_end != -1)
+        input = input.substring(0, _end);
+
+	input = input.replace(/\s+|;/g, "").toLowerCase();
+    
+	if(input.length < 5)
+        return null;
+	
+	// frickaline's syntax checker, uncomment to parse NIPs every run
+	if (runtimeParse && !NTIPCheckNipSyntax(input)) {return null;}
+	
+    _result = input.split("#");
+
+    if(_result[0] && _result[0].length > 4)
+    {
+        _section = _result[0].split("[");
+
+        _result[0] = _section[0];
+
+        for(i = 1 ; i < _section.length ; i++)
+        {
+            _end = _section[i].indexOf("]") + 1;
+
+            switch(_section[i][0])
+            {
+            case 't':
+                _result[0] += "item.itemtype";
+                break;
+            case 'n':
+                _result[0] += "item.classid";
+                break;
+            case 'c':
+                _result[0] += "item.itemclass";
+                break;
+            case 'q':
+                _result[0] += "item.quality";
+                break;
+            case 'f':
+                if(_section[i][_end] == '!')
+                    _result[0] += "!(item.itemflag&";
+                else
+                    _result[0] += "(item.itemflag&";
+
+                _end += 2;
+                break;
+            case 'l':
+                _result[0] += "item.itemlevel";
+                break;
+            case 'p':
+                _result[0] += "item.itemprefix";
+                break;
+            case 's':
+                _result[0] += "item.itemsuffix";
+                break;
+            default:
+                Print("Unknown Keyword : " + input);
+                break;
+            }
+
+            for(_start = _end ; _end < _section[i].length ; _end++)
+            {
+                if(!NTIPIsSyntaxInt(_section[i][_end]))
+                    break;
+            }
+
+            _result[0] += _section[i].substring(_start, _end);
+
+            for(_start = _end ; _end < _section[i].length ; _end++)
+            {
+                if(NTIPIsSyntaxInt(_section[i][_end]))
+                    break;
+            }
+
+            _keyword = _section[i].substring(_start, _end);
+
+            if(isNaN(_keyword))
+            {
+                switch(_section[i][0])
+                {
+                case 't':
+                    _result[0] += _NTIPAliasType[_keyword];
+                    break;
+                case 'n':
+                    _result[0] += _NTIPAliasClassID[_keyword];
+                    break;
+                case 'c':
+                    _result[0] += _NTIPAliasClass[_keyword];
+                    break;
+                case 'q':
+                    _result[0] += _NTIPAliasQuality[_keyword];
+                    break;
+                case 'f':
+                    _result[0] += _NTIPAliasFlag[_keyword] + ")";
+                    break;
+                }
+            }
+            else
+            {
+                if(_section[i][0] == 'f')
+                    _result[0] += _keyword + ")";
+                else
+                    _result[0] += _keyword;
+            }
+
+            _result[0] += _section[i].substring(_end);
+        }
+    }
+    else
+        _result[0] = "";
+
+    if(_result[1] && _result[1].length > 4)
+    {
+        _section = _result[1].split("[");
+
+        _result[1] = _section[0];
+
+        for(i = 1 ; i < _section.length ; i++)
+        {
+            _end = _section[i].indexOf("]");
+
+            _keyword = _section[i].substring(0, _end);
+
+			if(_keyword.toLowerCase() == "description")
+			{
+				_string = _section[i].split("\"")[1];
+				_result[1] += "item.itemloc == 0 &&";
+				_result[1] += "item.itemdesc.replace(/ |;|\t/g, \"\").toLowerCase().indexOf(\"" + _string + "\") > -1";
+				_result[1] += _section[i].split("\"")[2];
+			}
+			else
+			{			
+			
+            if(isNaN(_keyword))
+                _result[1] += "item.GetStat(" + _NTIPAliasStat[_keyword] + ")";
+            else
+                _result[1] += "item.GetStat(" + _keyword + ")";
+
+            _result[1] += _section[i].substring(_end+1);
+			}
+        }
+    }
+    else
+        _result[1] = "";
+
+    if(_result[2] && _result[2].replace(/^\s+|\s+$/, "").length > 0)
+    {
+        _section = _result[2].split("[");
+        _result[2] = new Array();
+
+        for(i = 1 ; i < _section.length ; i++)
+        {
+            _end = _section[i].indexOf("]");
+
+            _keyword = _section[i].substring(0, _end);
+
+            if(_keyword.toLowerCase().replace(/^\s+|\s+$/, "") == "maxquantity")
+            {
+                _end = _section[i].split("==")[1].replace(/^\s+|\s+$/, "").indexOf("//");
+                if(_end == -1)
+                    _end = _section[i].split("==")[1].replace(/^\s+|\s+$/, "").length;
+                var _quantity = parseInt(_section[i].split("==")[1].replace(/^\s+|\s+$/, "").substring(0, _end));
+                _result[2]["MaxQuantity"] = _quantity;
+            }
+            else
+            {
+                Print("Error in your NIP file : unknown 3rd part keyword.");
+            }
+        }
+    } else
+		_result[2] = "";
+
+    return _result;
+}
+
+function NTIPIsSyntaxInt(ch)
+{
+    return (ch == '!' || ch == '%' || ch == '&' || (ch >= '(' && ch <= '+') || ch == '-' || ch == '/' || (ch >= ':' && ch <= '?') || ch == '|');
+} 
+
+function NTIPCheckNipSyntax(line,f)
+{
+	var end, regexp, i, j, k, openp, closep, phrase, keyword, partialEq, leftEq, rightEq, keys, regexp2;
+	var subphrase = new Array;
+
+	// if the line is too short, it must be broken
+	if (line && line.length <5) {
+		NTIPCheckNipSyntaxDisplay(line,f,"Line is too short to contain a valid entry");
+		return false;
+	}
+
+	// split the line into property, stat and quantity phrases
+	regexp = /#/;
+	phrase = line.split(regexp);
+	if (phrase[3]) {
+		NTIPCheckNipSyntaxDisplay(line,f,"Too many phrases in the line");
+		return false;
+	}
+
+	for (i = 0; i<=2; i++) {
+		// make sure a phrase exists before we parse anything
+		if (phrase[i]) {
+			// if the phrase exists but is too short to be anything, bail out
+			if (phrase[i].length <5) {
+				NTIPCheckNipSyntaxDisplay(line,f,"Phrase "+i+" is too short to contain a valid entry");
+				return false;
+			}
+
+			// strip out matching sets of regular parens
+			regexp = /.*\(.+\).*/;
+			while (phrase[i].match(regexp)) {
+				openp = phrase[i].indexOf("(");
+				phrase[i] = phrase[i].substring(0,openp) + phrase[i].substring(openp+1,phrase[i].length);
+				closep = phrase[i].indexOf(")");
+				phrase[i] = phrase[i].substring(0,closep) + phrase[i].substring(closep+1,phrase[i].length);
+			}
+
+			// if any parens remain they are mismatched
+			regexp = /^.*[\(\)].*$/;
+			if (phrase[i].match(regexp)) {
+				NTIPCheckNipSyntaxDisplay(line,f,"Mismatched parens");
+				return false;
+			}
+			
+			// check for trailing && and ||
+			regexp = /(\&\&|\|\|)$/;
+			if (phrase[i].match(regexp)) {
+				NTIPCheckNipSyntaxDisplay(line,f,"Trailing conjunction at end of phrase");
+				return false;
+			}
+
+			// check for leading && and ||
+			regexp = /^(\&\&|\|\|)/;
+			if (phrase[i].match(regexp)) {
+				NTIPCheckNipSyntaxDisplay(line,f,"Leading conjunction at end of phrase");
+				return false;
+			}
+			
+			// split into subphrases based on && and ||
+			regexp = /\&\&|\|\|/;
+			subphrase[i] = phrase[i].split(regexp);
+
+			for (j = 0; subphrase[i][j]; j++) {
+				// split equations into left and right sides while removing the comparitive
+				regexp = /\=\=|!=|<=|>=|<|>/;
+				partialEq = subphrase[i][j].split(regexp);
+				leftEq = "";
+				rightEq = "";
+				
+				if (partialEq[0] && partialEq[0].length>0) {leftEq = partialEq[0];} else {
+					NTIPCheckNipSyntaxDisplay(line,f,"Invalid Equation");
+					return false;
+				}
+				if (partialEq[1] && partialEq[1].length>0) {rightEq = partialEq[1];} else {
+					NTIPCheckNipSyntaxDisplay(line,f,"Invalid Equation");
+					return false;
+				}
+		  
+				// if any comparitives remain they are mismatched
+				regexp = /[=<>]+/;
+				if ((leftEq.match(regexp)) || (rightEq.match(regexp))) {
+					NTIPCheckNipSyntaxDisplay(line,f,"Invalid Comparitive");
+					return false;
+				}
+		  
+				// there can only be a left and right side to any equation
+				if (partialEq[2]) {
+					NTIPCheckNipSyntaxDisplay(line,f,"Malformed equation");
+					return false;
+				}
+
+				// unless enclosed in ""
+				// allow word characters (letters and digits), apostrophes and decimals separated but valid arithmatic operators on the right
+				regexp = /^[\w\.\-\']+([\+,\-,\*,\/][\w|\.\-\']+)*$/;
+				regexp2 = /^\"(.)*\"$/;
+				if (!rightEq.match(regexp) && !rightEq.match(regexp2)) {
+					NTIPCheckNipSyntaxDisplay(line,f,"right side equation syntax error");
+					return false;
+				}
+
+
+				// on the left split based on arithmatic operator		  
+				regexp = /[\+\-\*\/\%]+/;
+				keys = leftEq.split(regexp);
+				for (k = 0; keys[k]; k++) {
+					// on the left allow numbers with decimals and keywords only
+					regexp = /^[\d\.]+$/;
+					regexp2 = /^\[[a-z0-9]+\]$/;
+					if (!keys[k].match(regexp) && !keys[k].match(regexp2)) {
+						NTIPCheckNipSyntaxDisplay(line,f,"invalid left side equation entry");
+						return false;
+					}
+		    
+					// if the entry was a keyword and not a number, validate the keyword against the list
+					if (keys[k].match(regexp2)) {
+						keyword = keys[k].substring(1,keys[k].length-1);
+						if (!NTIPcheckKeyword(keyword,i)) {
+							NTIPCheckNipSyntaxDisplay(line,f,"invalid keyword *"+keyword+"* in segment "+i);
+							return false;
+						}
+					}
+				}
+			}
+			// check for &&&&, ||||, ||&&, &&||
+			if (j < subphrase[i].length) {
+				NTIPCheckNipSyntaxDisplay(line,f,"Invalid Conjunction");
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+function NTIPcheckKeyword(keyword,i)
+{
+	var k, j;
+	var failedKeyword = "";
+	var isMember = false;	
+	var keywordList = new Array;
+	var numeric = false;
+	var defined = false;
+
+	keywordList[0] = new Array("name","quality","flag","type","level","prefix","suffix","class");
+	keywordList[1] = new Array("description");
+	keywordList[2] = new Array("maxquantity");
+
+	for (k=0; k < keywordList[i].length; k++)
+	{
+	  if (keyword==keywordList[i][k]) {isMember=true;}
+	}
+
+	// check stat keywords
+	if (i==1) {
+		// bypass the check if they are already numeric
+		if (keyword.match(/^\d+$/)) {numeric=true;}
+		if (_NTIPAliasStat[keyword] || _NTIPAliasStat[keyword]==0) {defined = true;}
+		if (defined || numeric) {isMember=true;}
+	}
+
+	return(isMember);
+}
+
+function NTIPCheckNipSyntaxDisplay(line,f,err)
+{
+	var screenDisplay = false;
+	if (!f) screenDisplay=true;
+
+	if (screenDisplay) 
+	{
+		Print (COLOR_3 +"NIP Error detected: Use the numpad '+' key to run the NIP check utility.");
+	} else
+	{
+		f.WriteLine("NIP Error: "+err);
+		f.WriteLine("    "+line);
+		f.WriteLine("");
+	}
+}

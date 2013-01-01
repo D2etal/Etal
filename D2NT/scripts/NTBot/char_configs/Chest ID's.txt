@@ -1,0 +1,153 @@
+credit for this list goes to hash_pipe.  
+
+id #-------item name
+
+ 1---------- casket #5
+ 3---------- casket #6
+ 4---------- Urn #1
+ 5---------- large chest Right
+ 6---------- large chest Left
+ 7---------- barrel 7
+ 8---------- tower tome
+ 9---------- Urn #2
+ 11---------- exploding barrel
+ 46---------- Crate
+ 50---------- CasketR
+ 51---------- CasketL
+ 52---------- urn #3
+ 53---------- Casket
+ 54---------- Rogue corpse 1
+ 55---------- Rogue corpse 2
+ 56---------- rolling rogue corpse
+ 57---------- rogue on a stick 1
+ 58---------- rogue on a stick 2
+ 79---------- casket #3
+ 80---------- obelisk
+ 81---------- forest altar
+ 87---------- tombchest 1, largechestL
+ 88---------- tombchest 2 largechestR
+ 89---------- mummy coffinL, tomb
+ 92---------- tomb door right
+ 94---------- Urn #4
+ 95---------- Urn #5
+ 104---------- Armor Stand 1R
+ 105---------- Armor Stand 2L
+ 106---------- Weapon Rack 1R
+ 107---------- Weapon Rack 2L
+ 126---------- skullpile inner hell
+ 127---------- ihobject5 inner hell
+ 139---------- chestrlarge act 1
+ 140---------- chestrtallskinney act 1
+ 141---------- chestrmed act 1
+ 142---------- jug1 act 2, desert
+ 143---------- jug2 act 2, desert
+ 144---------- Lchest1 act 1
+ 146---------- dchest2R act 2, desert, tomb, chestrmed
+ 147---------- dchestr act 2, desert, tomb, chest r large
+ 148---------- dchestL act 2, desert, tomb chest l large
+ 154---------- guard corpse
+ 155---------- rock act 1 wilderness
+ 158---------- corpse
+ 159---------- rockb act 1 wilderness
+ 169---------- log
+ 171---------- corpseb
+ 174---------- rockc act 1 wilderness
+ 175---------- rockd act 1 wilderness
+ 176---------- chestLmed
+ 177---------- chestLlarge
+ 178---------- guard on a stick, desert, tomb, harom
+ 179---------- bookshelf1
+ 180---------- bookshelf2
+ 181---------- jungle chest act 3
+ 182---------- tombcoffin
+ 183---------- chestLmed, jungle
+ 198---------- chestLtallskinney, general chest r?
+ 208---------- basket 1
+ 209---------- basket 2
+ 223---------- cacoon
+ 224---------- cacoon 2
+ 240---------- gchest1L general
+ 241---------- gchest2R general
+ 242---------- gchest3R general
+ 243---------- glchest3L general
+ 244---------- ratnest sewers
+ 246---------- ratnest sewers
+ 247---------- bed act 1
+ 248---------- bed act 1
+ 266---------- goo pile for sand maggot lair
+ 268---------- wirt's body
+ 274---------- tiny pixel shaped thingie
+ 284---------- anubis coffin, act2, tomb
+ 329---------- mafistochestlargeLeft
+ 330---------- mafistochestlargeright
+ 331---------- mafistochestmedleft
+ 332---------- mafistochestmedright
+ 333---------- spiderlairchestlargeLeft
+ 334---------- spiderlairchesttallLeft
+ 335---------- spiderlairchestmedright
+ 336---------- spiderlairchesttallright
+ 339---------- trophy 
+ 354---------- horadric cube chest
+ 355---------- horadric scroll chest
+ 356---------- staff of kings chest
+ 360---------- RockPile dungeon
+ 362---------- baske dungeon
+ 365---------- casket for Act 3 dungeon
+ 371---------- LargeChestR
+ 372---------- innerhellbonepile
+ 380---------- Burning guy for outer hell
+ 381---------- Burning guy for outer hell
+ 383---------- guy stuck in hell
+ 384---------- guy stuck in hell
+ 387---------- arcanesanctuarybigchestLeft
+ 388---------- arcanesanctuarycasket
+ 389---------- arcanesanctuarybigchestRight
+ 390---------- arcanesanctuarychestsmallLeft
+ 391---------- arcanesanctuarychestsmallRight
+ 397---------- sparklychest
+ 405---------- khalim chest
+ 406---------- khalim chest
+ 407---------- khalim chest
+ 413---------- chestR
+ 416---------- hiddenstash
+ 418---------- barrel wilderness
+ 419---------- barrel wilderness
+ 420---------- woodchestL
+ 424---------- burialchestL
+ 425---------- burialchestR
+ 430---------- ChestL
+ 431---------- woodchestR
+ 432---------- ChestSL
+ 433---------- ChestSR
+ 443---------- jar1
+ 444---------- jar2
+ 445---------- jar3
+ 446---------- swingingheads
+ 447---------- pole
+ 448---------- animated skulland rockpile
+ 450---------- pileofskullsandrocks
+ 454---------- explodingchest
+ 455---------- specialchest
+ 456---------- deathpole
+ 457---------- Ldeathpole
+ 463---------- hidden stash icecave
+ 464---------- healthshrine icecave
+ 466---------- evilurn icecave
+ 467---------- icecavejar1
+ 468---------- icecavejar2
+ 469---------- icecavejar3
+ 470---------- icecavejar4
+ 471---------- icecavejar4
+ 501---------- woodchestL snowy
+ 502---------- woodchestR snowy
+ 504---------- woodchest2L snowy
+ 505---------- woodchest2R snowy
+ 540---------- deadperson
+ 545---------- deadperson2
+ 548---------- eweaponrackR
+ 549---------- eweaponrackL
+ 550---------- earmorstandR
+ 551---------- earmorstandL
+ 553---------- funeralpire
+ 556---------- deadperson2
+

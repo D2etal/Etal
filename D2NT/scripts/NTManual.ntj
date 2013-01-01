@@ -1,0 +1,42 @@
+const D2NT_MGR_LOADING = 1;
+const D2NT_MGR_READY = 2;
+const D2NT_MGR_LOGIN = 3;
+const D2NT_MGR_CREATE_GAME = 4;
+const D2NT_MGR_INGAME = 5;
+const D2NT_MGR_RESTART = 6;
+const D2NT_MGR_CHICKEN = 7;
+const D2NT_MGR_PRINT_STATUS = 8;
+const D2NT_MGR_PRINT_LOG = 9;
+Include("libs/controlInfo.ntl");
+Include("libs/common/NTColorConverter.ntl");
+var controlData = new controlInfo();
+
+function NTMain()
+{
+	Delay(500);
+	var _ingame = false;
+	sendEventToOOG(D2NT_MGR_READY, "", 0);
+	
+	while(1){
+		if(me.ingame){
+			if(!_ingame){
+				RunGC();
+				if(Load("NTManual/NTManualGame.ntj"))
+					_ingame = true;
+					if(me.gameserverip) { sendEventToOOG(D2NT_MGR_INGAME, "IP:" + me.gameserverip.split(".")[3], 0); }
+					else { sendEventToOOG(D2NT_MGR_INGAME, "Single Player", 0); }
+			}Delay(500);
+		}
+		else{
+			if(_ingame) { 
+				_ingame = false;
+				sendEventToOOG(D2NT_MGR_READY, "", 0);
+			}
+			//locationAction(controlData.getLocation());
+			Delay(500);
+		}
+	}
+}
+
+function sendEventToOOG(locationId, statusString, pendingTime)
+{ return SendCopyData("D2NT Manager", null, (locationId<<16)|pendingTime, statusString); }

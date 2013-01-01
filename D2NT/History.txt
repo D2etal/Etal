@@ -1,0 +1,172 @@
+ D2NT for Diablo II 1.13c
+=========================
+
+D2NT.dll : Core + SpiderMonkey 1.8 RC1 + NSPR 4.8.4
+D2NT Manager.exe : D2NT OOG Manager
+D2NT ManagerKOR.dll : Korean MUI
+D2NT ManagerLOC.dll : English MUI
+
+
+[Installation]
+1. Copy D2NT files to any folder (DO NOT COPY to Diablo II folder or Diablo II's sub-folder)
+2. Run D2NT Manager.exe
+
+
+[D2NT Core]
+
+3.1 - Now, Say() function supports unicode string
+      Fixed item.itemdesc in case of merc's item
+      Fixed crash bug when calling SetStatusText() function with long string
+       * Max length is 39
+
+3.0 - Added unit.GetOptimalAttackPos(area_id, target_x, target_y, search_range, collision_mask) function
+      Added unit.gid type to GetUnit(unittype, [classid,name,gid]) function
+      Added control.pressed
+      Added item.itemflag, item.itemprefix, item.itemsuffix
+       * In case, item type is magic or runeword
+      Improved item.itemdesc
+      Changed unit.spectype value
+       * 0x01 : All
+       * 0x02 : Super Unique
+       * 0x04 : Champion
+       * 0x08 : Boss
+       * 0x10 : Minion
+      Changed unit.gid type to double
+      Removed item.GetFlag() function
+      Removed item.runeword
+
+2.1 - Added me.GetSkillStatus(skillid) function
+       * 0 : available skill, 6 : aura skill, 8 : unavailable skill (casting delay or etc)
+      Added unit.GetRoom() function
+       * get unit's current room
+      Added chicken/hostile log
+      Fixed unit.GetStat(92) (Item's level requirement)
+
+2.0.1 - Fixed me.TakeWaypoint() function (D2 original)
+        Fixed me.ClickItem() function (for Store-item)
+         * Now you can make Shopbot script
+
+2.0 - Rewrote me.TakeWaypoint() function
+      Improved GetBaseStat() function's performance
+      Fixed unit.GetStat(31)
+       * GetStat(31) : Total defense
+       * GetStat(31, 0) : Plus defense
+
+1.9.1 - If unittype is object, unit.GetParent() will return parent's name
+        Fixed crash bug in fullscreen
+
+1.9 - Added unit.subareaid
+      Added presetunit.areaid and presetunit.subareaid
+      Added sdk\quests.txt
+      Improved GetPath() and GetPresetUnits() function's stability
+      Now Include() function's rootpath is "scripts" folder
+
+1.8.5 - Fixed me.ClickItem() function (for SubmitItem())
+        Fixed Say() function in game
+
+1.8.4 - Added SubmitItem() function (Imbue, Orifice, Add Sockets)
+         * Item must be on cursor
+        Fixed crash bug when calling GetPath() function
+        Fixed Say() function in channel
+        Improved GetBaseStat() function's performance
+        Updated sdk\uiflag.txt information
+
+1.8.3 - Supported ANSI/UTF-8/Unicode script
+        Show correct Tal Rasha's tomb on automap
+        Fixed wrong stash position in me.ClickItem() function (D2 original)
+        Fixed unit.itemloc in case of equipped item
+
+1.8.2 - Fixed crazy esc key
+
+1.8.1 - Added me.revealautomap, me.showenemyonautomap, me.showmissileonautomap variables;
+        Fixed crash bug when using maphack
+        Fixed bug that displayed invalid unit on automap
+        Fixed ClickMap() function
+        Removed RevealAutoMap() function
+        Removed ShowUnitOnAutomap() function
+
+1.8 - Added RevealAutoMap() function
+      Added SetStatusText() function
+      Added ShowUnitOnAutomap() function
+      Added unit.IsAttackable() function
+      Added EVENT_GAMEMSG event
+      Changed Cancel() function (0 : Cancel current menu, 1 : Cancel all menu)
+      Rewrote ClickMap(), Say(), Transmute() functions
+      Rewrote me.ClickItem(), me.ClickMercItem(), me.Repair(), me.SwapWeapons() functions
+      Removed me.ShopItem() function. use me.ClickItem()
+      Removed JS32.dll. D2NT.dll included SpiderMonkey 1.8 RC1 and NSPR 4.8
+
+1.7.2 - Added me.maxgametime (default value is 0 and 0 is infinite)
+
+1.7.1 - Added me.charloc
+        Fixed multi-client when using one D2 copy
+
+1.7 - Added unit.shrinetype (see sdk/shrines.txt)
+      Improved ClickMap() function
+      Removed SetStatusText() function
+      Removed me.windowtitle
+      Hook no longer D2's functions
+
+1.6 - Improved GetPath() function (applied A* algorithm)
+      Fixed crash bug when game is terminated by user
+      Fixed unit.itemdesc
+
+1.5 - Updated SpiderMonkey 1.8
+      Added unit.itemdesc
+      Fixed bug that can't access unicode folder and file
+      Changed unit.ilvl to unit.itemlevel
+
+1.4 - Added GetBaseStat() function
+      Fixed unit.GetNext() function
+      Fixed me.quitonhostile
+      Changed parameter of me.TakeWaypoint() function
+
+1.3 - Added unit.itemclass (0 : normal, 1 : exceptional, 2 : elite)
+      Fixed me.UseBelt() function completely
+      Fixed bug that get wrong character's key file
+
+1.2 - Fixed unit.GetMerc() function
+      Fixed me.UseBelt() function
+      Improved IPC
+
+1.1 - Fixed NSPR error under Windows XP
+
+1.0 - Initial release
+
+
+[D2NT Manager]
+
+3.1 - Supported [Minimized D2] option
+      Fixed restart bug when displaying system menu
+
+3.0 - Improved item log tooltip
+       * Even if imagine what, is going to see more than it
+      Changed [Entry Point] control
+
+2.0 - Added item log
+
+1.9 - Added Up/Down button for List control
+
+1.8 - Hide D2NT.dll in D2 process
+
+1.7 - Removed IsHungAppWindow() function when checking D2 Window
+
+1.6 - Rebuild all source code (Changed from MFC to Win32)
+      Added [Entry Point] option in Profile
+       * You can change starter script. ex) NTBot.ntj(Bot script), NTMap.ntj(Maphack script)
+       * If you want to use Loader only, empty a option
+
+1.5 - Removed 30 mins time limit (In fact it was protection for in-game bug)
+      Improved IPC
+
+1.4 - Use no longer D2Loader.exe (Now use D2's Game.exe)
+      Added play type (single player / closed battle.net)
+
+1.3 - Fixed bug that can't close error window sometimes
+
+1.2 - Increased loader options buffer (64 -> 96)
+
+1.1 - Added Chickens information
+      Improved IPC
+
+1.0 - Initial release

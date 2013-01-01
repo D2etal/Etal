@@ -1,0 +1,600 @@
+var NTVT_IsTownWpId = [1, 40, 75, 103, 109];
+var NTVT_IsAreaWithWp = [1, 3, 4, 5, 6, 27, 29, 32, 35, 40, 48, 42, 57, 43, 44, 52, 74, 46, 77, 78, 79, 
+						80, 81, 83, 101, 103, 106, 107, 109, 111, 112, 113, 115, 123, 117, 118, 129];
+
+function NTVT_VoyageToArea(areaID) { // 5
+		
+	// doing this so we can change areaID to use with the existing code to take the wp we decide on
+	var destinationAreaID = areaID; 
+	// sets checkArea initially to the wp that is the final goal
+	var checkArea = areaID; 
+	// this var is to keep track of what area we are checking to get a starting point
+	var checkNextPrev; 
+		
+	// now we start processing to find a place to start
+	while(1) {
+		if(debugVoyageTo) { Print(COLOR_9 + "while looping in loop 1"); }
+		// checking for a wp we have for a starting point
+		checkNextPrev = NTVT_GetPreviousWp(checkArea); 
+		// basically error handling in case something is not working correctly...eg lag, etc
+		if(checkNextPrev == 9999) {
+			return false; 
+		}
+		// check to see if have the current checkNextPrev is in the wpsDontHave array
+		if(wpsDontHave.indexOf(checkNextPrev) != -1) { 
+			// we don't have it so we want to check if it is a town wp because that would mean we are not in that act yet
+			if(NTVT_IsTownWpId.indexOf(checkNextPrev) != -1) {
+				NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "Couldn't take wp not in that act");
+				Print(COLOR_1 + "You haven't completed the quests to be in that act");
+				Print(COLOR_1 + "Aborting this script");
+				return false;
+			} else {
+				if(debugVoyageTo) { Print(COLOR_9 + "Don't have wp " + checkNextPrev + " checking next previous"); }
+				// it isn't a town wp and we don't have it so set check area the present checkNextPrevious and see if we have the next one back
+				checkArea = checkNextPrev; 
+			}
+		} else { 
+			// at this point we have a starting point so let's get out of the loop, take the wp and start pathing and grabbing wps
+			areaID = checkNextPrev; // here we need to set areaID to whatever our starting point it
+			// take the closest(previous) wp we could find
+			if(checkNextPrev != me.areaid) {
+				if(debugVoyageTo) { Print(COLOR_9 + "taking the wp that is closest " + areaID); }
+				var thisWp = NTM_GetWaypointInt();
+				NTM_GetCloserInt(thisWp);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, thisWp);
+				if(me.TakeWaypoint(checkNextPrev)) {
+					NTC_PingDelay(NTConfig_AreaDelay);
+					if(!NTC_InTown()) {
+						NTP_DoPrecast();
+					}
+				} else {
+					return false;
+				}
+			}
+			break;
+		}
+		Delay(100);
+	}
+	// after we figure out a starting point from the code above start pathing through areas until we get where we want to be
+	//while(me.areaid != destinationAreaID) { 
+	while(1) { 
+		if(debugVoyageTo) { Print(COLOR_9 + "while looping in loop 2"); }
+		// if not in town check if we need to precast
+		if(!NTC_InTown) {
+			NTP_DoPrecast(); 
+		}
+		// now we are at the start point start moving through areas, grabbing wps, until we get to where we want to be
+		switch(NTVT_VoyageToAreaInt(destinationAreaID)) {
+			// we are screwed failed on an area exit abort main script
+			case 0: 
+				if(debugVoyageTo) { Print(COLOR_9 + "Returning 0 (false) fail abort bot script"); }
+				return false; 
+			// we made it to destination so return all the way back to main function
+			case 1: 
+				if(debugVoyageTo) { Print(COLOR_9 + "Returning 1 (true) Made it to destination continue script"); }
+				NTVT_GrabWayPoint(me.areaid);
+				return true;
+			// return and will continue to path to next lvl.
+			case 2: 
+				if(debugVoyageTo) { Print(COLOR_9 + "Returning 2 (continue pathing)"); }
+				break;  
+		}
+		Delay(250);
+	}
+}
+
+function NTVT_VoyageToAreaInt(destArea) {
+	// if we are at the destination then we need to grab wp and return true to the main
+	if(!NTC_InTown) {
+		NTP_DoPrecast(); 
+	}
+	if(debugVoyageTo) { Print(COLOR_9 + "In NTVT_VoyageToAreaInt()"); }
+	if(me.areaid == destArea) { 
+		NTVT_GrabWayPoint(me.areaid);
+		return 1;
+	}
+	// check if we are in an area with a wp
+	if(NTVT_IsAreaWithWp.indexOf(me.areaid) != -1) { 
+		if(debugVoyageTo) { Print(COLOR_9 + "In area with wp " + me.areaid); }
+		// if we are in an area with a wp check if we have it
+		if(wpsDontHave.indexOf(me.areaid) != -1) { 
+			if(debugVoyageTo) { Print(COLOR_9 + "grabbing wp " + me.areaid); }
+			// if we are in area with wp and don't have it grab it
+			NTVT_GrabWayPoint(me.areaid); 
+		}
+		else if(debugVoyageTo) {
+			Print(wpsDontHave);
+			Print(wpsDontHave.indexOf(me.areaid) != -1);
+			Print(NTVT_AreaIdToWpId[me.areaid]);
+			//while(1) Delay(500);
+		}
+	}									
+	// if we fail to path to the next lvl then we have a major fail return to main and end script
+	if(!NTVT_AreaExitNextLevel(destArea)) { 
+	//if(!NTVT_AreaExitNextLevel[me.areaid]) { 
+		return 0; 
+	// we are not at distination we need to continue on...not sure if I want to return just to have this function called again or not
+	} else { 
+		/*
+		// check if we are in an area with a wp
+		if(NTVT_IsAreaWithWp.indexOf(me.areaid) != -1) { 
+			// if we are in an area with a wp check if we have it
+			if(wpsDontHave.indexOf(NTVT_AreaIdToWpId[me.areaid]) != -1) { 
+				// if we are in area with wp and don't have it grab it
+				NTVT_GrabWayPoint(me.areaid); 
+			} 								
+		}									
+		*/
+		// return and will continue to path to next lvl
+		return 2; 
+	}
+}
+
+function NTVT_AreaExitNextLevel(destArea) {
+	if(!NTC_InTown) {
+		NTP_DoPrecast(); 
+	}
+	switch(me.areaid) {	
+		
+		// act 1
+		case 1: 
+			if(NTVT_ExitRogueEncampment()) { return true; }			// ROGUE_ENCAMPMENT(1) to BLOOD_MOOR(2) [special]
+			break;
+		case 2: 
+			if(NTVT_MoveToClosestPreSetUnit(3)) { return true; } 		// BLOOD_MOOR(2) to COLD_PLAINS(3) [presetunit]
+			break;
+		case 3: 
+			if(NTVT_MoveToClosestPreSetUnit(4)) { return true; } 		// COLD_PLAINS(3) to STONY_FIELD(4) [presetunit]
+			break;
+		case 4: 
+			if(NTVT_MoveToTakeStairs(4, 10)) { return true; } 		// STONY_FIELD(4) to UNDERGROUND_PASSAGE_LEVEL_1(10) [stairs]
+			break;
+		case 10: 
+			if(NTVT_MoveToTakeStairs(10, 5)) { return true; }		// UNDERGROUND_PASSAGE_LEVEL_1(10)  to DARK_WOOD(5) [stairs]
+			break;
+		case 5: 
+			if(NTVT_MoveToClosestPreSetUnit(6)) { return true; } 		// DARK_WOOD(5) to BLACK_MARSH(6) [presetunit]
+			break;
+		case 6:
+			if(NTVT_MoveToClosestPreSetUnit(7)) { return true; } 		// BLACK_MARSH(6) to TAMOE_HIGHLAND(7) [presetunit]
+			break;
+		case 7: 
+			if(NTVT_MoveToClosestPreSetUnit(26)) { return true; }   	// TAMOE_HIGHLAND(7) to MONASTERY_GATE(26) [presetunit]
+			break;
+		case 26: 	
+			if(NTVT_MoveToClosestPreSetUnit(27)) { return true; }		// MONASTERY_GATE(26)  to OUTER_CLOISTER(27) [presetunit]
+			break;
+		case 27: 
+			if(NTVT_MoveToClosestPreSetUnit(28)) { return true; }	// OUTER_CLOISTER(27) to BARRACKS(28) [presetunit]
+			break;
+		case 28:
+			if(NTVT_MoveToTakeStairs(28, 29)) { return true; } 		// BARRACKS(28) to JAIL_LEVEL_1(29) [stairs]
+			break;
+		case 29: 
+			if(NTVT_MoveToTakeStairs(29, 30)) { return true; } 		// JAIL_LEVEL_1(29) to JAIL_LEVEL_2(30) [stairs]
+			break;
+		case 30: 
+			if(NTVT_MoveToTakeStairs(30, 31)) { return true; } 		// JAIL_LEVEL_2(30) to JAIL_LEVEL_3(31) [stairs]
+			break;
+		case 31: 
+			if(NTVT_MoveToTakeStairs(31, 32)) { return true; } 		// JAIL_LEVEL_3(31) to INNER_CLOISTER(32) [stairs]
+			break;
+		case 32: 
+			if(NTVT_MoveToClosestPreSetUnit(33)) { return true; }	// INNER_CLOISTER(32) to CATHEDRAL(33) [presetunit]
+			break;
+		case 33: 
+			if(NTVT_MoveToTakeStairs(33, 34)) { return true; } 		// CATHEDRAL(33) to CATACOMBS_LEVEL_1(34) [stairs]
+			break;
+		case 34: 
+			if(NTVT_MoveToTakeStairs(34, 35)) { return true; } 		// CATACOMBS_LEVEL_1(34) to CATACOMBS_LEVEL_2(35) [stairs]
+			break;
+		
+		// act 2
+		case 40: 
+			if(destArea == 48) {
+				if(NTVT_ToSewers()) { return true; }			// LUT_GHOLEIN(40) to SEWERS_LEVEL_1(47) [special]
+			}
+			else if(destArea == 52 || destArea == 74 || destArea == 46) { // 52, 74, 46
+				if(NTVT_ToHarems()) { return true; }		// LUT_GHOLEIN(40) to HAREM_LEVEL_1(50) [special]
+			} else {
+				if(NTTM_OutOfTown2()) { return true; }	// LUT_GHOLEIN(40) to ROCKY_WASTE(41) [special]
+			}
+			break;
+		case 47:
+			if(NTVT_MoveToTakeStairs(47, 48)) { return true; }	// SEWERS_LEVEL_1(47) to SEWERS_LEVEL_2(48) [stairs]
+			break;
+		case 50: 
+			if(NTVT_MoveToTakeStairs(50, 51)) { return true; } 	// HAREM_LEVEL_1(50) to HAREM_LEVEL_2(51) [stairs]
+			break;
+		case 51: 
+			if(NTVT_MoveToTakeStairs(51, 52)) { return true; } 	// HAREM_LEVEL_2(51) to PALACE_CELLAR_LEVEL_1(52)[stairs]
+			break;
+		case 52: 
+			if(NTVT_MoveToTakeStairs(52, 53)) { return true; } 	// PALACE_CELLAR_LEVEL_1(52) to PALACE_CELLAR_LEVEL_2(53) [stairs]
+			break;
+		case 53: 
+			if(NTVT_MoveToTakeStairs(53, 54)) { return true; } 	// PALACE_CELLAR_LEVEL_2(53) to PALACE_CELLAR_LEVEL_3(54) [stairs]
+			break;
+		case 54: 
+			if(NTVT_ToArcane()) { return true; } 			// PALACE_CELLAR_LEVEL_3(53) to ARCANE_SANCTUARY(74) [special]
+			break;
+		case 74: 
+			if(NTVT_ToCanyonOfTheMagi()) { return true; } 			// ARCANE_SANCTUARY(74) to CANYON_OF_THE_MAGI(46) [special]
+			break;
+		case 41: 
+			if(NTVT_MoveToClosestPreSetUnit(42)) { return true; }		// ROCKY_WASTE(41) to DRY_HILLS(42) [presetunit]
+			break;
+		case 42: 
+			if(destArea == 57) {
+				if(NTVT_MoveToTakeStairs(53, 56)) { return true; }	// DRY_HILLS(42) to HALLS_OF_THE_DEAD_LEVEL_1(56) [stairs]
+			} else {
+				if(NTVT_MoveToClosestPreSetUnit(43)) { return true; }		//DRY_HILLS(42) to FAR_OASIS(43) [presetunit]
+			}
+			break;
+		case 56: 
+			if(NTVT_MoveToTakeStairs(53, 54)) { return true; } 	// HALLS_OF_THE_DEAD_LEVEL_1(56) to HALLS_OF_THE_DEAD_LEVEL_2(57) [stairs]
+			break;
+		case 43: 
+			if(NTVT_MoveToClosestPreSetUnit(44)) { return true; }	 	// FAR_OASIS(43) to LOST_CITY(44) [presetunit]
+			break;
+		//case 44: // LOST_CITY(44) NOT NEEDED ???
+		
+		//act 3
+		case 75:
+			if(!NTTM_TownMove("exit")) { return false; }
+			if(NTVT_MoveToClosestPreSetUnit(76)) { return true; }	 // KURAST_DOCKTOWN(75) to SPIDER_FOREST(76) [presetunit]
+			break;
+		case 76:
+			if(NTVT_MoveToClosestPreSetUnit(77)) { return true; }	 // SPIDER_FOREST(76) to GREAT_MARSH(77) [presetunit]
+			break;
+		case 77:
+			if(NTVT_MoveToClosestPreSetUnit(78)) { return true; }	 // GREAT_MARSH(77) to FLAYER_JUNGLE(78) [presetunit]
+			break;
+		case 78:
+			if(NTVT_MoveToClosestPreSetUnit(79)) { return true; }	 // FLAYER_JUNGLE(78) to LOWER_KURAST(79) [presetunit]
+			break;
+		case 79:
+			if(NTVT_MoveToClosestPreSetUnit(80)) { return true; }	 // LOWER_KURAST(79) to KURAST_BAZAAR(80) [presetunit]
+			break;
+		case 80:
+			if(NTVT_MoveToClosestPreSetUnit(81)) { return true; }	 // KURAST_BAZAAR(80) to UPPER_KURAST(81) [presetunit]
+			break;
+		case 81:
+			if(NTVT_MoveToClosestPreSetUnit(82)) { return true; }	 // UPPER_KURAST(81) to KURAST_CAUSEWAY(82) [presetunit]
+			break;
+		case 82:
+			if(NTVT_MoveToClosestPreSetUnit(83)) { return true; }	 // KURAST_CAUSEWAY(82) to TRAVINCAL(83) [preset unit]
+			break;
+		case 83: 
+			if(NTVT_MoveToTakeStairs(83, 100)) { return true; } 	// TRAVINCAL(83) to DURANCE_OF_HATE_LEVEL_1(100) [stairs]
+			break;
+		case 100: 
+			if(NTVT_MoveToTakeStairs(100, 101)) { return true; } 	// DURANCE_OF_HATE_LEVEL_1(100) to DURANCE_OF_HATE_LEVEL_2(101) [stairs]
+			break;
+		
+		// act 4
+		case 103:
+			if(!NTTM_TownMove("exit")) { return false; }
+			if(NTVT_MoveToClosestPreSetUnit(104)) { return true; }	 // THE_PANDEMONIUM_FORTRESS(103) to OUTER_STEPPES)(104) [preset unit]
+			break;
+		case 104:
+			if(NTVT_MoveToClosestPreSetUnit(105)) { return true; }	 // OUTER_STEPPES)(104) to PLAINS_OF_DESPAIR(105) [preset unit]
+			break;
+		case 105:
+			if(NTVT_MoveToClosestPreSetUnit(106)) { return true; }	 // PLAINS_OF_DESPAIR(105) to CITY_OF_THE_DAMNED(106) [preset unit]
+			break;
+		case 106: 
+			if(NTVT_MoveToTakeStairs(106, 107)) { return true; } 		// CITY_OF_THE_DAMNED(106) to RIVER_OF_FLAME(107) [stairs]
+			break;
+		
+		// act 5
+		case 109:
+			if(NTVT_ExitHarrogath()) { return true; }// HARROGATH(109) to BLOODY_FOOTHILLS(110) [special]
+			break;
+		case 110:
+			if(NTVT_MoveToClosestPreSetUnit(111)) { return true; }	 // BLOODY_FOOTHILLS(110) to FRIGID_HIGHLANDS(111) [preset unit]
+			break;
+		case 111:
+			if(NTVT_MoveToClosestPreSetUnit(112)) { return true; }	 // FRIGID_HIGHLANDS(111) to ARREAT_PLATEAU(112) [preset unit]
+			break;
+		case 112:
+			if(NTVT_MoveToTakeStairs(112, 113)) { return true; }	 // ARREAT_PLATEAU(112) to CRYSTALIZED_CAVERN_LEVEL_1(113) [stairs]
+			break;
+		case 113:
+			if(NTVT_MoveToTakeStairs(113, 115)) { return true; }	 // CRYSTALIZED_CAVERN_LEVEL_1(113) to GlacialTrail(115) [stairs]
+			break;
+		case 115:
+			if(NTVT_MoveToTakeStairs(115, 117)) { return true; }	// GlacialTrail(115) to FrozenTundra(117) [stairs]
+			break;
+		case 117:
+			if(NTVT_MoveToTakeStairs(117, 118)) { return true; }	// FrozenTundra(117) to AncientsWay(118)[stairs]
+			break;
+		case 118:
+			if(NTVT_MoveToTakeStairs(118, 120)) { return true; }	// AncientsWay(118) to ArreatSummit(120)[stairs]
+			break;
+		case 120:
+			if(NTVT_MoveToTakeStairs(120, 128)) { return true; }	// ArreatSummit(120) to WorldstoneKeepLevel1(128) [stairs]
+			break;
+		case 128:
+			if(NTVT_MoveToTakeStairs(128, 129)) { return true; }	// WorldstoneKeepLevel1(128) to WorldstoneKeepLevel2(129)[stairs]
+			break;
+	}
+	if(debugVoyageTo) { Print(COLOR_9 + "Returning false from NTVT_AreaExitNextLevel() "); }
+	return false;
+}
+
+function NTVT_ExitRogueEncampment() { // 1
+	if(!NTTM_TownMove("exit")){
+		return false;
+	}
+	if(!NTTM_OutOfAct1()) {
+		return false; 
+	} 
+	NTP_DoPrecast();
+	return true;
+}
+
+function NTVT_ToSewers(){
+	if(!NTTM_Act2SewerTrapDoor()){
+		return false;
+	}
+	return true;
+}
+
+function NTVT_ToHarems() { // this will move to nttm file
+	while(me.areaid == 40){ 
+		_unit = NTM_GetStairInt(50);
+		if(!_unit)
+			return false;
+		if(_unit) {
+			Print(_unit.name);
+			NTM_MoveTo(_unit.areaid, _unit.x+4, _unit.y);
+			if(GetDistance(me, _unit) > 3)
+				NTM_MoveTo(_unit.areaid, _unit.x+2, _unit.y);
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _unit);
+			NTC_PingDelay(1000);
+		}
+	}
+	if(me.areaid == 50) {
+		return true;
+	}
+	return false;
+}
+
+function NTVT_ToArcane() {
+	if(!NTM_KoMoveToPresetUnit(54, NTC_UNIT_OBJECT, 298, 4, 4)){
+		return false;
+	}
+	if(!NTM_TakeUnit(NTC_UNIT_OBJECT, 298)){
+		return false;
+	}
+	return true;
+}
+
+function NTVT_ExitHarrogath() {
+	NTTM_TownMove("exit");
+	_unit = NTC_FindUnit(NTC_UNIT_OBJECT, 449, 5); // this should be changed to NTV_ActivateQuestChest(id, TK)
+	if(!_unit){
+		return false; 
+	}
+	if(_unit){ // this could probably be changed to NTV_ActivateQuestChest(id, TK)
+		while(_unit.mode < 1){ 
+			if(_unit){
+				NTM_MoveTo(_unit.areaid, _unit.x+4, _unit.y);
+				if(GetDistance(me, _unit) > 3)
+					NTM_MoveTo(_unit.areaid, _unit.x+2, _unit.y);
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _unit);
+				Delay(1000);
+			}
+		}
+	}
+	if(!NTM_MoveTo(110, 4986, 5087, 5)){
+		return NTV_Error(isgrabber);
+	}
+	NTP_DoPrecast();
+	return me.areaid == 110;
+}
+
+function NTVT_ToCanyonOfTheMagi() {
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 357, 2, 2)){
+		return false;
+	}
+	var _journal = NTC_FindUnit(NTC_UNIT_OBJECT, 357); // this needs to change to NTV_ActivateQuestChest(id, TK)
+	if(!NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _journal)){
+		return false;
+	}
+	NTC_CancelOut(10);
+	if(!NTM_TakeUnit(NTC_UNIT_OBJECT, 60)){
+		return false;
+	}
+	return me.areaid == 46;
+}
+
+function NTVT_MoveToClosestPreSetUnit(Dest) { 
+	
+	var allUnits = [];
+	var presetUnit = GetPresetUnits(Dest);
+	
+	if(!presetUnit) {
+		Print(COLOR_1 + "can't find any preset units in " + GetArea(Dest).name);
+		//Print(COLOR_1 + "can't find any preset units in " + NTVT_AreaToName[Dest]);
+		return false;
+	}
+	if(presetUnit) {
+		for (var i = 0; i < presetUnit.length; i++) {
+			// put all preset units x, y coords into an array
+			allUnits.push([presetUnit[i].roomx*5+presetUnit[i].x, presetUnit[i].roomy*5+presetUnit[i].y])					
+		}
+	}
+	// take all the coords and compare them putting the shortest from toon in position [0]
+	allUnits.sort(SortCoords);
+	// use the return moveto so if we fail to path it returns false so we can register a failed takewp and end script
+	return NTM_MoveTo(Dest, allUnits[0][0], allUnits[0][1]);
+}
+
+function SortCoords(a, b) {
+	// because the .sort() method doesn't process numbers correctly this function is needed to compare all the numbers to see which is greater
+	return (GetDistance(me.x, me.y, a[0], a[1]) - GetDistance(me.x, me.y, b[0], b[1]));
+}
+
+function NTVT_GrabWayPoint(_areaid) {  // interesting might be possible to use if(!NTVT_GrabWayPoint()) then call a function that moves to next level
+	var _isTelekinesis = NTC_GetSkillLevel(43);
+	_open = true;
+	var _unit;
+	var _wp;
+	switch(_areaid) {
+		case 3: _wp = 119; break;
+		case 4: _wp = 119; break;
+		case 5: _wp = 119; break;
+		case 6: _wp = 119; break;
+		case 27: _wp = 119; break;
+		case 29: _wp = 157; break;
+		case 32: _wp = 119; break;
+		case 35: _wp = 157; break;
+		case 42: _wp = 156; break;
+		case 43: _wp = 156; break;
+		case 44: _wp = 156; break;
+		case 46: _wp = 402; break;
+		case 48: _wp = 323; break;
+		case 52: _wp = 288; break;
+		case 57: _wp = 156; break;
+		case 74: _wp = 402; break;
+		case 76: _wp = 237; break;
+		case 77: _wp = 237; break;
+		case 78: _wp = 237; break;
+		case 79: _wp = 237; break;
+		case 80: _wp = 237; break;
+		case 81: _wp = 237; break;
+		case 83: _wp = 237; break;
+		case 101: _wp = 324; break;
+		case 106: _wp = 238; break;
+		case 107: _wp = 238; break;
+		case 111: _wp = 496; break;
+		case 112: _wp = 496; break;
+		case 113: _wp = 511; break;
+		case 115: _wp = 511; break;
+		case 117: _wp = 496; break;
+		case 118: _wp = 511; break;
+		case 123: _wp = 496; break;
+		case 129: _wp = 494; break;
+	}
+	NTM_KoMoveToPresetUnit(_areaid, NTC_UNIT_OBJECT, _wp, 1, 1)
+	//NTM_MoveToPresetUnit(_areaid, NTC_UNIT_OBJECT, _wp, 1, 1);
+	_unit = NTC_FindUnit(NTC_UNIT_OBJECT, _wp); // this also could probably use NTV_ActivateQuestChest(id, TK)
+	if(_unit){
+		if(GetDistance(me, _unit) > 2)
+			NTM_MoveTo(_unit.areaid, _unit.x+1, _unit.y);
+		NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _unit);
+		NTC_PingDelay(1000);
+		me.Cancel(1);
+		NTP_DoPrecast(); 
+		return true;
+	}
+	return false;
+}
+
+function NTVT_MoveToTakeStairs(StartArea, NextArea) {
+	if(!NTM_KoMoveToStair(StartArea, NextArea)) {
+		return false;
+	}
+	if(!NTM_TakeStair(NextArea)) {
+		return false;
+	}
+	return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// this is a simple info storage that returns the wp id from area id
+////
+var NTVT_AreaIdToWpId = [];
+NTVT_AreaIdToWpId[1] = 0;
+NTVT_AreaIdToWpId[3] = 1;
+NTVT_AreaIdToWpId[4] = 2;
+NTVT_AreaIdToWpId[5] = 3;
+NTVT_AreaIdToWpId[6] = 4;
+NTVT_AreaIdToWpId[27] = 5;
+NTVT_AreaIdToWpId[29] = 6;
+NTVT_AreaIdToWpId[32] = 7;
+NTVT_AreaIdToWpId[35] = 8;
+NTVT_AreaIdToWpId[40] = 9;
+NTVT_AreaIdToWpId[48] = 10;
+NTVT_AreaIdToWpId[42] = 11;
+NTVT_AreaIdToWpId[57] = 12;
+NTVT_AreaIdToWpId[43] = 13;
+NTVT_AreaIdToWpId[44] = 14;
+NTVT_AreaIdToWpId[52] = 15;
+NTVT_AreaIdToWpId[74] = 16;
+NTVT_AreaIdToWpId[46] = 17;
+NTVT_AreaIdToWpId[75] = 18;
+NTVT_AreaIdToWpId[76] = 19;
+NTVT_AreaIdToWpId[77] = 20;
+NTVT_AreaIdToWpId[78] = 21;
+NTVT_AreaIdToWpId[79] = 22;
+NTVT_AreaIdToWpId[80] = 23;
+NTVT_AreaIdToWpId[81] = 24;
+NTVT_AreaIdToWpId[83] = 25;
+NTVT_AreaIdToWpId[101] = 26;
+NTVT_AreaIdToWpId[103] = 27;
+NTVT_AreaIdToWpId[106] = 28;
+NTVT_AreaIdToWpId[107] = 29;
+NTVT_AreaIdToWpId[109] = 30;
+NTVT_AreaIdToWpId[111] = 31;
+NTVT_AreaIdToWpId[112] = 32;
+NTVT_AreaIdToWpId[113] = 33;
+NTVT_AreaIdToWpId[115] = 34;
+NTVT_AreaIdToWpId[123] = 35;
+NTVT_AreaIdToWpId[117] = 36;
+NTVT_AreaIdToWpId[118] = 37;
+NTVT_AreaIdToWpId[129] = 38;
+
+function NTVT_GetPreviousWp(wpArea) {
+	switch(wpArea) {
+		// act 1
+		case 1: return 1; // town
+		case 3: return 1;
+		case 4: return 3;
+		case 5: return 4;
+		case 6: return 5;
+		case 27: return 6;
+		case 29: return 27;
+		case 32: return 29;
+		case 35: return 32;
+		// act 2
+		case 40: return 40; // town
+		case 48: return 40;
+		case 42: return 48;
+		case 57: return 42;
+		case 43: return 57;
+		case 44: return 43;
+		case 52: return 40;
+		case 74: return 52;
+		case 46: return 74;
+		// act 3
+		case 75: return 75; // town
+		case 76: return 75;
+		case 77: return 76;
+		case 78: return 77;
+		case 79: return 78;
+		case 80: return 79;
+		case 81: return 80;
+		case 83: return 81;
+		case 101: return 83;
+		// act 4
+		case 103: return 103; // town
+		case 106: return 103;
+		case 107: return 106;
+		// act 5
+		case 109: return 109; // town
+		case 111: return 109;
+		case 112: return 111;
+		case 113: return 112;
+		case 115: return 113;
+		case 123: return 115;
+		case 117: return 123;
+		case 118: return 117;
+		case 129: return 118;
+	
+		default: return 9999; // this will be a we're screwed return that ultimetly ends script
+		
+	}
+}

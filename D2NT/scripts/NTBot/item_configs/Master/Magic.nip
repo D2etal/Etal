@@ -1,0 +1,108 @@
+//MAGIC JEWELS
+[Type] == Jewel && [Quality] == Magic # [MAXDamage] >= 28 || ([MAXDamage] >= 13 && ([IAS] == 15 || [MaxHP] >= 15 || [Strength] >= 8 || [Dexterity] >= 8 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 8))
+[Type] == Jewel && [Quality] == Magic # [MAXDamage] == 20
+[Type] == Jewel && [Quality] == Magic # ([MINDamage] >= 18 || [MINDamage] == 8) && [ItemReqPercent] == -15
+[Type] == Jewel && [Quality] == Magic # [EnhancedDamage] >= 30 && ([IAS] == 15 || [MaxHP] >= 15 || [Strength] >= 8 || [Dexterity] >= 8 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 8)
+[Type] == Jewel && [Quality] == Magic # [ToHit] >= 75 && ([IAS] == 15 || [MaxHP] >= 15 || [Strength] >= 8 || [Dexterity] >= 8 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 8)
+[Type] == Jewel && [Quality] == Magic # [MaxMana] >= 15 && ([IAS] == 15 || [MaxHP] >= 20 || [Strength] >= 9 || [Dexterity] >= 9 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 10)
+[Type] == Jewel && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 48 && ([IAS] == 15 || [MaxHP] >= 15 || [Strength] >= 8 || [Dexterity] >= 8 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 8)
+[Type] == Jewel && [Quality] == Magic # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] == 60
+[Type] == Jewel && [Quality] == Magic # ([ColdResist] >= 25 || [FireResist] >= 25 || [LightResist] >= 25 || [PoisonResist] == 30) && ([IAS] == 15 || [MaxHP] >= 15 || [Strength] >= 8 || [Dexterity] >= 8 || [FHR] == 7 || [ItemReqPercent] == -15 || [MINDamage] >= 8)
+
+//MAGIC RINGS
+//[Type] == Ring && [Quality] == Magic # [ItemMagicBonus] >= 40
+//[Type] == Ring && [Quality] == Magic # [FCR] >= 10 && [Mana] >= 120
+
+//MAGIC MF AMULET
+//[Type] == Amulet && [Quality] == Magic # [ItemMagicBonus] >= 50
+
+//MAGIC +2 CLASS AMULET
+//[Type] == Amulet && [Quality] == Magic # [ItemAddClassSkills] == 2 && [MaxHP] >= 100
+
+//MAGIC +3 TREE AMULET
+//[Type] == Amulet && [Quality] == Magic # ([ColdSkillTab] == 3 || [FireSkillTab] == 3 || [LightningSkillTab] == 3 || [ElementalSkillTab] == 3 || [PoisonAndBoneSkillTab] == 3 || [PaliCombatSkillTab] == 3 || [TrapsSkillTab] == 3) && [FCR] == 10
+[Type] == Amulet && [Quality] == Magic # ([ColdSkillTab] == 3 || [FireSkillTab] == 3 || [LightningSkillTab] == 3 || [ElementalSkillTab] == 3 || [PoisonAndBoneSkillTab] == 3 || [PaliCombatSkillTab] == 3 || [TrapsSkillTab] == 3) && [MaxHP] == 90
+[Type] == Amulet && [Quality] == Magic # (([DruidSummoningSkillTab] == 3) || ([NecromancerSummoningSkillTab] == 3) || ([WarcriesSkillTab] == 3)) && [MaxHP] >= 100
+[Type] == Amulet && [Quality] == Magic # [WarcriesSkillTab] == 3 && [ItemGoldBonus] >= 75
+
+//MAGIC +2 CLASS SPECIFIC CIRCLETS
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # [AmazonSkills] == 2 && [FRW] >= 20
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # [ItemAddClassSkills] == 2 && [FCR] == 20
+
+//MAGIC +3 TREE SPECIFIC CIRCLETS
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # ([ColdSkillTab] == 3 || [FireSkillTab] == 3 || [LightningSkillTab] == 3 || [ElementalSkillTab] == 3 || [PoisonAndBoneSkillTab] == 3 || [PaliCombatSkillTab] == 3 || [TrapsSkillTab] == 3) && [FCR] == 20
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # ([ColdSkillTab] == 3 || [FireSkillTab] == 3 || [LightningSkillTab] == 3 || [ElementalSkillTab] == 3 || [PoisonAndBoneSkillTab] == 3 || [PaliCombatSkillTab] == 3 || [TrapsSkillTab] == 3) && [MaxHP] == 90
+
+//MAGIC JEWELERS CIRCLETS
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # [Sockets] == 3 && ([FCR] == 20 || [FRW] == 30 || [MaxHP] >= 60 || [Dexterity] >= 20)
+
+//MAGIC PELT
+[Type] == Pelt && [Quality] == Magic # (([DruidSkills]+[SkillTornado] >= 5) || ([ElementalSkillTab]+[SkillTornado] >= 6)) && ([SkillCycloneArmor] >= 1 || [SkillOakSage] >= 1 || [SkillPoisonCreeper] >= 1)
+[Type] == Pelt && [Quality] == Magic # (([DruidSkills]+[SkillTornado] >= 5) || ([ElementalSkillTab]+[SkillTornado] >= 5)) && [MaxHP] >= 20
+[Type] == Pelt && [Quality] == Magic # (([DruidSkills]+[SkillSummonGrizzly] >= 5) || ([DruidSummoningSkillTab]+[SkillSummonGrizzly] >= 5)) && [MaxHP] >= 20
+[Type] == Pelt && [Quality] == Magic # (([DruidSkills]+[SkillFireClaws] >= 5) || ([ShapeShiftingSkillTab]+[SkillFireClaws] >= 5)) && [MaxHP] >= 20
+[Type] == Pelt && [Quality] == Magic # (([DruidSkills]+[SkillFury] >= 5) || ([ShapeShiftingSkillTab]+[SkillFury] >= 5)) && [MaxHP] >= 20
+
+//MAGIC BATTLE ORDER HELMS
+[Type] == PrimalHelm && [Quality] == Magic # [SkillBattleOrders]+[WarcriesSkillTab] == 6
+[Type] == PrimalHelm && [Quality] == Magic # [SkillBattleOrders]+[WarcriesSkillTab] >= 5 && [MaxHP] >= 80
+[Type] == PrimalHelm && [Quality] == Magic # [SkillBattleOrders]+[BarbarianSkills] >= 5 && [MaxHP] >= 50
+
+//MAGIC SHIELDS
+[Type] == Shield && [Quality] == Magic && [Flag] != Ethereal # [Sockets] >= 3 && ([ItemReqPercent] >= 20 || [FHR] >= 17 || [FBR] == 30 || [MaxHP] >= 40)
+[Type] == Shield && [Quality] == Magic && [Flag] != Ethereal # [Sockets] >= 4 && ([ItemReqPercent] >= 20 || [FHR] >= 17 || [FBR] == 30 || [MaxHP] >= 40)
+[Type] == AuricShields && [Quality] == Magic && [Flag] != Ethereal # [Sockets] >= 4 && ([ItemReqPercent] >= 20 || [FHR] >= 17 || [FBR] == 30 || [MaxHP] >= 40)
+
+//MAGIC/RARE NECRO SHIELDS
+[Type] == VoodooHeads && [Quality] == Rare # [NecromancerSkills] == 2 && [Sockets] == 2 && ([SkillBoneSpear] >= 2 || [SkillBoneSpirit] >= 3 || [SkillPoisonNova] >= 3)
+[Type] == VoodooHeads && [Quality] == Rare # [PoisonAndBoneSkillTab] >= 3 && [Sockets] == 2 && ([SkillBoneSpear] >= 2 || [SkillBoneSpirit] >= 2 || [SkillPoisonNova] >= 2)
+[Type] == VoodooHeads && [Quality] == Rare # [PoisonAndBoneSkillTab] >= 2 && [Sockets] == 2 && ([SkillBoneSpear] == 3 || [SkillBoneSpirit] == 3 || [SkillPoisonNova] == 3)
+[Type] == VoodooHeads && ([Quality] == Rare || [Quality] == Magic) # [NecromancerSkills] == 2 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30)) && ([SkillBoneSpear] >= 2 || [SkillBoneSpirit] >= 3 || [SkillPoisonNova] >= 3)
+[Type] == VoodooHeads && ([Quality] == Rare || [Quality] == Magic) # [NecromancerSkills] == 2 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && ([SkillBoneSpear] >= 3 || [SkillBoneSpirit] >= 3 || [SkillPoisonNova] >= 3)
+[Type] == VoodooHeads && ([Quality] == Rare || [Quality] == Magic) # [NecromancerSkills] == 2 && (([ToBlock] == 20 && [FBR] == 30) || [FHR] == 17) && ([SkillBoneSpear] >= 3 || [SkillBoneSpirit] >= 3 || [SkillPoisonNova] >= 3)
+[Type] == VoodooHeads && ([Quality] == Rare || [Quality] == Magic) # [PoisonAndBoneSkillTab] >= 3 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >=30)) && ([SkillBoneSpear] >= 2 || [SkillBoneSpirit] >= 2 || [SkillPoisonNova] >= 2)
+[Type] == VoodooHeads && ([Quality] == Rare || [Quality] == Magic) # [PoisonAndBoneSkillTab] >= 3 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && ([SkillBoneSpear] >= 2 || [SkillBoneSpirit] >= 2 || [SkillPoisonNova] >= 2)
+[Type] == VoodooHeads && ([Quality] == Rare || [Quality] == Magic) # [PoisonAndBoneSkillTab] >= 3 && (([ToBlock] == 20 && [FBR] == 30) || [FHR] == 17) && ([SkillBoneSpear] >= 2 || [SkillBoneSpirit] >= 2 || [SkillPoisonNova] >= 2)
+[Type] == VoodooHeads && ([Quality] == Rare || [Quality] == Magic) # [PoisonAndBoneSkillTab] >= 2 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >=30)) && ([SkillBoneSpear] == 3 || [SkillBoneSpirit] == 3 || [SkillPoisonNova] == 3)
+[Type] == VoodooHeads && ([Quality] == Rare || [Quality] == Magic) # [PoisonAndBoneSkillTab] >= 2 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && ([SkillBoneSpear] == 3 || [SkillBoneSpirit] == 3 || [SkillPoisonNova] == 3)
+[Type] == VoodooHeads && ([Quality] == Rare || [Quality] == Magic) # [PoisonAndBoneSkillTab] >= 2 && (([ToBlock] == 20 && [FBR] == 30) || [FHR] == 17) && ([SkillBoneSpear] == 3 || [SkillBoneSpirit] == 3 || [SkillPoisonNova] == 3)
+
+//MAGIC SOCKET/LIFE ARMOR
+//[Type] == Armor && [Quality] == Magic # [Sockets] == 3 && [MaxHP] >= 75
+//[Type] == Armor && [Quality] == Magic # [Sockets] == 4 && [MaxHP] >= 75
+
+//MAGIC SOCKET/FHR ARMOR
+//[Type] == Armor && [Quality] == Magic # [Sockets] == 3 && [FHR] >= 17
+//[Type] == Armor && [Quality] == Magic # [Sockets] == 4 && [FHR] >= 24
+
+//MAGIC SKILL/IAS GLOVES
+//[Type] == Gloves && [Quality] == Magic && [Flag] != Ethereal # [IAS] >= 20 && [JavelinAndSpearSkillTab] == 3
+//[Type] == Gloves && [Quality] == Magic && [Flag] != Ethereal # [IAS] >= 20 && [BowAndCrossbowSkillTab] == 3
+//[Type] == Gloves && [Quality] == Magic && [Flag] != Ethereal # [IAS] >= 20 && [PassiveAndMagicSkillTab] == 3
+//[Type] == Gloves && [Quality] == Magic && [Flag] != Ethereal # [IAS] >= 20 && [MartialArtsSkillTab] == 3
+
+//MAGIC SORCERESS ORBS
+[Type] == Orb && [Quality] == Magic # (([LightningSkillTab]+[SkillLightning] >= 5) || ([LightningSkillTab]+[SkillChainLightning] >= 5)) && [SkillLightningMastery] >= 1 && [FCR] >= 20
+[Type] == Orb && [Quality] == Magic # [LightningSkillTab]+[SkillEnergyShield] >= 6 && ([SkillChillingArmor] >= 1 || [SkillShiverArmor] >= 1 || [SkillThunderstorm] >= 1)
+[Type] == Orb && [Quality] == Magic # (([FireSkillTab]+[SkillFireball] >= 5) || ([FireSkillTab]+[SkillFirebolt] >= 5) || ([FireSkillTab]+[SkillMeteor] >= 5)) && [SkillFireMastery] >= 1 && [FCR] >= 20
+[Type] == Orb && [Quality] == Magic # (([ColdSkillTab]+[SkillBlizzard] >= 5) || ([ColdSkillTab]+[SkillFrozenOrb] >= 5)) && [SkillColdMastery] >= 2 && [FCR] >=20
+
+//MAGIC/RARE +5/+6 LS CLAWS
+[Type] == AssassinClaw && ([Quality] == Rare || [Quality] == Magic) # [AssassinSkills]+[SkillLightningSentry] >= 5
+[Type] == AssassinClaw && ([Quality] == Rare || [Quality] == Magic) # [TrapsSkillTab]+[SkillLightningSentry] >= 5
+[Type] == HandToHand && ([Quality] == Rare || [Quality] == Magic) # [AssassinSkills]+[SkillLightningSentry] >= 5
+[Type] == HandToHand && ([Quality] == Rare || [Quality] == Magic) # [TrapsSkillTab]+[SkillLightningSentry] >= 5
+
+//MAGIC/RARE +5/+6 JAV SKILLS 30+ [IAS] JAVELINS
+([Name] == MaidenJavelin || [Name] == CeremonialJavelin || [Name] == MatriarchalJavelin) && ([Quality] == Rare || [Quality] == Magic) # [IAS] >= 30 && [AmazonSkills]+[JavelinAndSpearSkillTab] >= 4
+([Name] == MaidenJavelin || [Name] == CeremonialJavelin || [Name] == MatriarchalJavelin) && ([Quality] == Rare || [Quality] == Magic) # [IAS] >= 30 && [JavelinAndSpearSkillTab] >= 4
+
+//MAGIC WARCRY WEAPONS
+([Type] == Knife || [Type] == Sword) && [Quality] == Magic # [WarcriesSkillTab] == 3 && [Strength] >= 1
+
+//MAGIC SCEPTORS
+//[Type] == Scepter && [Quality] == Magic # (([PaladinSkills]+[SkillBlessedHammer] >= 4) || ([PaladinSkills]+[SkillConcentration] >= 4) || ([PaladinSkills]+[SkillFistOfTheHeavens] >= 4)) && [FCR] >= 20
+//[Type] == Scepter && [Quality] == Magic # (([PaliCombatSkillTab]+[SkillBlessedHammer] >= 4) || ([PaliCombatSkillTab]+[SkillConcentration] >= 4) || ([PaliCombatSkillTab]+[SkillFistOfTheHeavens] >= 4)) && [FCR] >= 20
+
+//MAGIC MISC WEAPONS
+//[Name] == PhaseBlade && [Quality] == Magic # [Sockets] == 4 && [IAS] >= 40

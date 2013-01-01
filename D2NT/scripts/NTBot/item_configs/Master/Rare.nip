@@ -1,0 +1,270 @@
+//RARE JEWELS
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [Dexterity]+[Strength] >= 12 && [ColdResist] >= 20
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [Dexterity]+[Strength] >= 12 && [FireResist] >= 20
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [Dexterity]+[Strength] >= 12 && [LightResist] >= 20
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [Dexterity]+[Strength] >= 16
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [Dexterity]+[Strength] >= 12 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 28
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && ([Dexterity] >= 6 || [Strength] >= 6) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 28
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [ColdResist] >= 20 && [FireResist]+[LightResist]+[PoisonResist] >= 24
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [FireResist] >= 20 && [ColdResist]+[LightResist]+[PoisonResist] >= 24
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [LightResist] >= 20 && [ColdResist]+[FireResist]+[PoisonResist] >= 24
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [PoisonResist] >= 20 && [ColdResist]+[FireResist]+[LightResist] >= 24
+[Type] == Jewel && [Quality] == Rare # [FHR] >= 7 && [MaxHP] >= 15
+[Type] == Jewel && [Quality] == Rare # [EnhancedDamage] >= 25 && [Dexterity] >= 7
+[Type] == Jewel && [Quality] == Rare # [EnhancedDamage] >= 25 && [Strength] >= 7
+[Type] == Jewel && [Quality] == Rare # [EnhancedDamage] >= 25 && [ToHit] >= 50 && ([Dexterity] >= 6 || [Strength] >= 6)
+[Type] == Jewel && [Quality] == Rare # [EnhancedDamage] >= 28 && [FHR] >= 7
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [EnhancedDamage] >= 25
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 28
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && ([ColdResist] >= 25 || [FireResist] >= 25 || [LightResist] >= 25)
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [MAXDamage] >= 10
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [MINDamage] >= 9
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [Dexterity]+[Strength] >= 16
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && ([Dexterity] >= 8 || [Strength] >= 8)
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && [FHR] >= 7 && ([ColdResist] >= 15 || [FireResist] >= 15 || [LightResist] >= 15)
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && ([Dexterity] >= 5 || [Strength] >= 5) && ([ColdResist] >= 10 || [FireResist] >= 10 || [LightResist] >= 10)
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && ([Dexterity] >= 6 || [Strength] >= 6) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 28
+[Type] == Jewel && [Quality] == Rare # [ItemReqPercent] == -15 && ([Dexterity] >= 6 || [Strength] >= 6) && [ToHit] >= 50
+[Type] == Jewel && [Quality] == Rare # [Dexterity] >= 7 && [Strength] >= 7
+[Type] == Jewel && [Quality] == Rare # ([Dexterity] >= 8 || [Strength] >= 8) && ([ColdResist] >= 10 || [FireResist] >= 10 || [LightResist] >= 10)
+[Type] == Jewel && [Quality] == Rare # [Dexterity] >= 5 && [Strength] >= 5 && ([ColdResist] >= 10 || [FireResist] >= 10 || [LightResist] >= 10)
+//[Name] == Jewel && ([Quality] == Rare || [Quality] == Magic) # [PoisonMinDam] >= 20
+
+//RARE RINGS
+[Type] == Ring && [Quality] == Rare # [ItemMagicBonus] >= 25
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && ([Dexterity] >= 10 || [Strength] >= 15) && [MaxHP] >= 15
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && ([Dexterity] >= 13 || [Strength] >= 17) && [HPRegen] >= 7
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && ([Dexterity] >= 13 || [Strength] >= 17) && ([ColdResist] >= 15 || [FireResist] >= 15 || [LightResist] >= 15)
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && ([Dexterity] >= 13 || [Strength] >= 17) && (([ColdResist]+[FireResist] >= 15) || ([ColdResist]+[LightResist] >= 15) || ([FireResist]+[LightResist] >= 15))
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && ([Dexterity] >= 13 || [Strength] >= 17) && [Mana] >= 50
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && [Strength]+[Dexterity] >= 20
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && [MaxHP] >= 25 && [HPRegen] >= 7
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && [MaxHP] >= 35 && ([ColdResist] >= 15 || [FireResist] >= 15 || [LightResist] >= 15)
+[Type] == Ring && [Quality] == Rare # [FCR] >= 10 && [MaxHP] >= 25 && (([ColdResist]+[FireResist] >= 20) || ([ColdResist]+[LightResist] >= 20) || ([FireResist]+[LightResist] >= 20))
+[Type] == Ring && [Quality] == Rare # [Dexterity]+[Strength] >= 30 && (([ColdResist]+[FireResist] >= 15) || ([ColdResist]+[LightResist] >= 15) || ([FireResist]+[LightResist] >= 15))
+[Type] == Ring && [Quality] == Rare # [Dexterity]+[Strength] >= 30 && ([ColdResist] >= 15 || [FireResist] >= 15 || [LightResist] >= 15)
+[Type] == Ring && [Quality] == Rare # [Dexterity]+[Strength] >= 30 && [MaxHP] >= 15
+[Type] == Ring && [Quality] == Rare # [Dexterity]+[Strength] >= 30 && [Mana] >= 50
+[Type] == Ring && [Quality] == Rare # [Strength]+[Dexterity] >= 30 && [ManaLeech]+[LifeLeech] >= 6
+[Type] == Ring && [Quality] == Rare # ([Dexterity] >= 15 || [Strength] >= 20) && [MaxHP] >= 35
+[Type] == Ring && [Quality] == Rare # ([Dexterity] >= 15 || [Strength] >= 20) && [HPRegen] >= 7
+[Type] == Ring && [Quality] == Rare # ([Dexterity] >= 15 || [Strength] >= 17) && [ManaLeech]+[LifeLeech] >= 10
+[Type] == Ring && [Quality] == Rare # [ManaLeech]+[LifeLeech] >= 10 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Ring && [Quality] == Rare # [ManaLeech]+[LifeLeech] >= 10 && [MaxHP] >= 35
+
+//RARE MF AMULET
+[Type] == Amulet && [Quality] == Rare # [ItemMagicBonus] >= 35
+
+//RARE +2 CLASS AMULET
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [Dexterity]+[Strength] >= 20 && [MaxHP] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [Dexterity]+[Strength] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [Dexterity]+[Strength] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && [MaxHP] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && [Dexterity]+[Strength] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 15
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && [MaxHP] >= 25 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && [MaxHP] >= 25 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && [MaxHP] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 10 && [ItemMagicBonus] >= 25
+
+//RARE +2 TREE AMULET
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [Dexterity]+[Strength] >= 20 && [MaxHP] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [Dexterity]+[Strength] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [Dexterity]+[Strength] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && [MaxHP] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && ([Dexterity] >= 20 || [Strength] >= 20) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && [Dexterity]+[Strength] >= 20
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 15
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && [MaxHP] >= 25 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && [MaxHP] >= 25 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 5 && [MaxHP] >= 40
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && [ItemGoldBonus] >= 75
+[Type] == Amulet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 10 && [ItemMagicBonus] >= 25
+
+//RARE +2 CLASS SKILL CIRCLET
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && [MaxHP] >= 40
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 20
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && [MaxHP] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FCR] == 20 && [MaxHP] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] == 20 && [MaxHP] >= 40
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 20
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && [MaxHP] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddClassSkills] == 2 && [FRW] >= 20 && [MaxHP] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+
+//RARE +2 TREE SKILLS CIRCLET
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && [MaxHP] >= 40
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 20
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && [MaxHP] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30))
+[Type] == Circlet && [Quality] == Rare # [ItemAddSkillTab] == 2 && [FCR] == 20 && [MaxHP] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 32
+
+//RARE VISIONARY CIRCLET
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [Sockets] == 2 && ([FCR] == 20 || [FRW] >= 20)
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([PaladinSkills] == 2 || [PaliCombatSkillTab] == 2 || [BarbarianSkills] == 2) && ([Sockets] == 2 || [FCR] == 20 || [FRW] >= 20)
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 20 && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30)) && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [MaxHP] >= 20 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30)) && [Sockets] == 2
+[Type] == Circlet && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [MaxHP] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [Sockets] == 2
+
+//RARE VISIONARY BARB HELM
+[Type] == PrimalHelm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [FHR] >= 10 && [MaxHP] >= 20 && [Sockets] == 2
+[Type] == PrimalHelm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [FHR] >= 10 && (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30)) && [Sockets] == 2
+[Type] == PrimalHelm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [FHR] >= 10 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [Sockets] == 2
+
+//RARE VISIONARY HELM
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([PaladinSkills] == 2 || [PaliCombatSkillTab] == 2 || [BarbarianSkills] == 2)
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [MaxHP] >= 40 && [Sockets] == 2
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && [MaxHP] >= 20 && [Sockets] == 2
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && ([ColdResist]+[FireResist] >= 30 || [ColdResist]+[LightResist] >= 30 || [FireResist]+[LightResist] >= 30) && [Sockets] == 2
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && ([Dexterity] >= 10 || [Strength] >= 10) && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [Sockets] == 2
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [MaxHP] >= 20 && ([ColdResist]+[FireResist] >= 30 || [ColdResist]+[LightResist] >= 30 || [FireResist]+[LightResist] >= 30) && [Sockets] == 2
+[Type] == Helm && [Quality] == Rare # [ItemToHitPercentPerLevel] > 1 && [MaxHP] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40 && [Sockets] == 2
+
+//RARE BATTLE ORDER HELM
+[Type] == PrimalHelm && [Quality] == Rare # [SkillBattleOrders] == 3 && [WarcriesSkillTab] >= 2 && [MaxHP] >= 20 && [FHR] >= 10 && [Sockets] == 2
+[Type] == PrimalHelm && [Quality] == Rare # [SkillBattleOrders] == 3 && [BarbarianSkills] == 2 && ([Sockets] == 2 || [FHR] >= 10 || [MaxHP] >= 30)
+
+//RARE PELT
+[Type] == Pelt && [Quality] == Rare # [DruidSkills]+[SkillTornado] >= 5 && ([Sockets] == 2 || [MaxHP] >= 20 || [FHR] >= 10)
+[Type] == Pelt && [Quality] == Rare # [ElementalSkillTab]+[SkillTornado] >= 5 && ([Sockets] == 2 || [MaxHP] >= 20 || [FHR] >= 10)
+[Type] == Pelt && [Quality] == Rare # [DruidSkills] == 2 && [SkillSummonGrizzly] == 3 && (([FHR] >= 10 && [MaxHP] >= 20) || ([FHR] >= 10 && [Sockets] == 2) || ([Sockets] == 2 && [MaxHP] >= 20))
+[Type] == Pelt && [Quality] == Rare # [DruidSkills] == 2 && [SkillFireClaws] == 3 && (([FHR] >= 10 && [MaxHP] >= 20) || ([FHR] >= 10 && [Sockets] == 2) || ([Sockets] == 2 && [MaxHP] >= 20))
+[Type] == Pelt && [Quality] == Rare # [DruidSkills] == 2 && [SkillFury] == 3 && (([FHR] >= 10 && [MaxHP] >= 20) || ([FHR] >= 10 && [Sockets] == 2) || ([Sockets] == 2 && [MaxHP] >= 20))
+
+//RARE ARMOR
+[Type] == Armor && [Quality] == Rare # [Sockets] == 2 && [FHR] >= 17 && [Strength] >= 15 && ([MaxHP] >= 35 || ([ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40))
+[Type] == Armor && [Quality] == Rare # [Sockets] == 2 && [FHR] >= 17 && [Strength] >= 15 && ([MaxHP] >= 35 || (([ColdResist]+[FireResist] >= 30) || ([ColdResist]+[LightResist] >= 30) || ([FireResist]+[LightResist] >= 30)))
+[Type] == Armor && [Quality] == Rare && [Flag] == Ethereal # [Sockets] == 2 && [FHR] >= 17 && [ItemReplenishDurability] >= 1 && ([MaxHP] >= 35 || ([ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 40))
+[Type] == Armor && [Quality] == Rare && [Flag] == Ethereal # [EnhancedDefense] >= 150 && [Sockets] == 2 && [ItemReplenishDurability] >=1
+
+//RARE SHIELDS
+[Type] == Shield && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 17 && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30
+[Type] == AuricShields && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 17 && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30
+[Type] == AuricShields && [Quality] == Rare && [Flag] != Ethereal # ([PaladinSkills] == 2 || [PaliCombatSkillTab] == 2) && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30
+[Type] == Shield && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 17 && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30 && [ItemReplenishDurability] >= 1
+[Type] == AuricShields && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 17 && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30 && [ItemReplenishDurability] >= 1
+[Type] == AuricShields && [Quality] == Rare && [Flag] == Ethereal # ([PaladinSkills] == 2 || [PaliCombatSkillTab] == 2) && [Sockets] == 2 && [ToBlock] == 20 && [FBR] == 30 && [ItemReplenishDurability] >= 1
+
+//RARE GLOVES
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [Dexterity]+[Strength] >= 20 && [ColdResist]+[FireResist]+[LightResist] >= 45
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # ([Dexterity] >= 15 || [Strength] >= 15) && (([ColdResist] >= 15 && [FireResist] >= 15 && [LightResist] >= 15) || ([ColdResist]+[FireResist] >= 35) || ([ColdResist]+[LightResist] >= 35) || ([FireResist]+[LightResist] >= 35))
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && (([ColdResist]+[FireResist] >= 20) || ([ColdResist]+[LightResist] >= 20) || ([FireResist]+[LightResist] >= 20))
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && [ColdResist]+[FireResist]+[LightResist] >= 21
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && ([BowAndCrossbowSkillTab] == 2 || [PassiveAndMagicSkillTab] == 2 || [JavelinAndSpearSkillTab] == 2)
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && (([ColdResist]+[FireResist] >= 16) || ([ColdResist]+[LightResist] >= 16) || ([FireResist]+[LightResist] >= 16))
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && [ColdResist]+[FireResist]+[LightResist] >= 18
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && ([BowAndCrossbowSkillTab] == 2 || [PassiveAndMagicSkillTab] == 2 || [JavelinAndSpearSkillTab] == 2)
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [Dexterity]+[Strength] >= 20 && [ColdResist]+[FireResist]+[LightResist] >= 30 && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] != Ethereal # ([Dexterity] >= 15 || [Strength] >= 15) && (([ColdResist] >= 15 && [FireResist] >= 15 && [LightResist] >= 15) || ([ColdResist]+[FireResist] >= 35) || ([ColdResist]+[LightResist] >= 35) || ([FireResist]+[LightResist] >= 35)) && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && (([ColdResist]+[FireResist] >= 20) || ([ColdResist]+[LightResist] >= 20) || ([FireResist]+[LightResist] >= 20)) && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && [ColdResist]+[FireResist]+[LightResist] >= 21 && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && ([Dexterity] >= 10 || [Strength] >= 13) && ([BowAndCrossbowSkillTab] == 2 || [PassiveAndMagicSkillTab] == 2 || [JavelinAndSpearSkillTab] == 2) && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && (([ColdResist]+[FireResist] >= 16) || ([ColdResist]+[LightResist] >= 16) || ([FireResist]+[LightResist] >= 16)) && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && [ColdResist]+[FireResist]+[LightResist] >= 18 && [ItemReplenishDurability] >= 1
+[Type] == Gloves && [Quality] == Rare && [Flag] == Ethereal # [IAS] == 20 && [Dexterity]+[Strength] >= 15 && ([BowAndCrossbowSkillTab] == 2 || [PassiveAndMagicSkillTab] == 2 || [JavelinAndSpearSkillTab] == 2) && [ItemReplenishDurability] >= 1
+
+//RARE BOOTS
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 10 && (([ColdResist]+[FireResist] >= 70) || ([ColdResist]+[LightResist] >= 70) || ([FireResist]+[LightResist] >= 70))
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 10 && (([ColdResist]+[FireResist]+[LightResist] >= 75) || ([ColdResist]+[FireResist]+[PoisonResist] >= 90) || ([ColdResist]+[LightResist]+[PoisonResist] >= 90) || ([FireResist]+[LightResist]+[PoisonResist] >= 90))
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FRW] >= 30 && (([ColdResist]+[FireResist] >= 70) || ([ColdResist]+[LightResist] >= 70) || ([FireResist]+[LightResist] >= 70))
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FRW] >= 30 && (([ColdResist]+[FireResist]+[LightResist] >= 75) || ([ColdResist]+[FireResist]+[PoisonResist] >= 90) || ([ColdResist]+[LightResist]+[PoisonResist] >= 90) || ([FireResist]+[LightResist]+[PoisonResist] >= 90))
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 10 && [FRW] >= 10 && (([ColdResist]+[FireResist] >= 60) || ([ColdResist]+[LightResist] >= 60) || ([FireResist]+[LightResist] >= 60))
+[Type] == Boots && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 10 && [FRW] >= 10 && (([ColdResist]+[FireResist]+[LightResist] >= 60) || ([ColdResist]+[FireResist]+[PoisonResist] >= 75) || ([ColdResist]+[LightResist]+[PoisonResist] >= 75) || ([FireResist]+[LightResist]+[PoisonResist] >= 75))
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 10 && (([ColdResist]+[FireResist] >= 70) || ([ColdResist]+[LightResist] >= 70) || ([FireResist]+[LightResist] >= 70)) && [ItemReplenishDurability] >= 1
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 10 && (([ColdResist]+[FireResist]+[LightResist] >= 75) || ([ColdResist]+[FireResist]+[PoisonResist] >= 90) || ([ColdResist]+[LightResist]+[PoisonResist] >= 90) || ([FireResist]+[LightResist]+[PoisonResist] >= 90)) && [ItemReplenishDurability] >= 1
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FRW] >= 30 && (([ColdResist]+[FireResist] >= 70) || ([ColdResist]+[LightResist] >= 70) || ([FireResist]+[LightResist] >= 70)) && [ItemReplenishDurability] >= 1
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FRW] >= 30 && (([ColdResist]+[FireResist]+[LightResist] >= 75) || ([ColdResist]+[FireResist]+[PoisonResist] >= 90) || ([ColdResist]+[LightResist]+[PoisonResist] >= 90) || ([FireResist]+[LightResist]+[PoisonResist] >= 90)) && [ItemReplenishDurability] >= 1
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 10 && [FRW] >= 10 && (([ColdResist]+[FireResist] >= 60) || ([ColdResist]+[LightResist] >= 60) || ([FireResist]+[LightResist] >= 60)) && [ItemReplenishDurability] >= 1
+[Type] == Boots && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 10 && [FRW] >= 10 && (([ColdResist]+[FireResist]+[LightResist] >= 60) || ([ColdResist]+[FireResist]+[PoisonResist] >= 75) || ([ColdResist]+[LightResist]+[PoisonResist] >= 75) || ([FireResist]+[LightResist]+[PoisonResist] >= 75)) && [ItemReplenishDurability] >= 1
+
+//RARE BELTS
+[Type] == Belt && [Quality] == Rare && [Flag] != Ethereal # (([FHR] == 24 && [Strength] >= 20 && [MaxHP] >= 40) || ([FHR] >= 17 && [Strength] >= 25 && [MaxHP] >= 50))
+[Type] == Belt && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 17 && [Strength] >= 20 && [MaxHP] >= 30 && ([ColdResist] >= 20 || [FireResist] >= 20 || [LightResist] >= 20)
+[Type] == Belt && [Quality] == Rare && [Flag] != Ethereal # [FHR] >= 17 && [Strength] >= 20 && [MaxHP] >= 30 && (([ColdResist]+[FireResist] >= 20) || ([ColdResist]+[LightResist] >= 20) || ([FireResist]+[LightResist] >= 20))
+[Type] == Belt && [Quality] == Rare && [Flag] == Ethereal # (([FHR] == 24 && [Strength] >= 20 && [MaxHP] >= 40) || ([FHR] >= 17 && [Strength] >= 25 && [MaxHP] >= 50)) && [ItemReplenishDurability] >= 1
+[Type] == Belt && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 17 && [Strength] >= 20 && [MaxHP] >= 30 && ([ColdResist] >= 20 || [FireResist] >= 20 || [LightResist] >= 20) && [ItemReplenishDurability] >= 1
+[Type] == Belt && [Quality] == Rare && [Flag] == Ethereal # [FHR] >= 17 && [Strength] >= 20 && [MaxHP] >= 30 && (([ColdResist]+[FireResist] >= 20) || ([ColdResist]+[LightResist] >= 20) || ([FireResist]+[LightResist] >= 20)) && [ItemReplenishDurability] >= 1
+
+//RARE AXE
+[Type] == Axe && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == Axe && [Quality] == Rare && [Flag] != Ethereal # [IAS] >= 20 && (([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 300))
+
+//RARE SWORD
+[Type] == Sword && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == Sword && [Quality] == Rare && [Flag] != Ethereal # [IAS] >= 20 && (([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 300))
+
+//RARE MACE
+[Type] == Mace && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == Mace && [Quality] == Rare && [Flag] != Ethereal # [IAS] >= 20 && (([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 300))
+
+//RARE HAMMER
+[Type] == Hammer && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == Hammer && [Quality] == Rare && [Flag] != Ethereal # [IAS] >= 20 && (([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 300))
+
+//RARE SCEPTER
+[Type] == Scepter && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == Scepter && [Quality] == Rare && [Flag] != Ethereal # [IAS] >= 20 && (([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 300))
+
+//RARE POLEARM
+[Type] == Polearm && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+//[Type] == Polearm && [Quality] == Rare && [Flag] != Ethereal # [IAS] >= 20 && (([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 300))
+
+//RARE KNIFE
+[Type] == Knife && [Quality] == Rare && [Flag] == Ethereal # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == Knife && [Quality] == Rare && [Flag] != Ethereal # [IAS] >= 20 && (([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 300) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 300))
+
+//RARE BOW
+[Type] == Bow && [Quality] == Rare # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([Sockets] == 2 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == AmazonBow && [Quality] == Rare # [IAS] >= 20 && ([EnhancedDamage] >= 350 || ([Sockets] == 2 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250))
+
+//RARE JAVELIN
+[Type] == Javelin && [Quality] == Rare && [Flag] == Ethereal # ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250)) && [ItemReplenishQuantity] >= 1
+[Type] == AmazonJavelin && [Quality] == Rare && [Flag] == Ethereal # ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250)) && [ItemReplenishQuantity] >= 1
+
+//RARE THROWING WEAPONS
+[Type] == ThrownWeapon && [Quality] == Rare && [Flag] == Ethereal # ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250)) && [ItemReplenishQuantity] >= 1
+//[Type] == ThrowingKnife && [Quality] == Rare && [Flag] == Ethereal # ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250)) && [ItemReplenishQuantity] >= 1
+//[Type] == ThrowingAxe && [Quality] == Rare && [Flag] == Ethereal # ([EnhancedDamage] >= 350 || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemMaxDamagePerLevel] >= 1 && [EnhancedDamage] >= 250)) && [ItemReplenishQuantity] >= 1
+
+//RARE CLAWS
+[Type] == AssassinClaw && [Quality] == Rare # [IAS] >= 20 && (([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == AssassinClaw && [Quality] == Rare && [Flag] == Ethereal # [EnhancedDamage] >= 250 && [ItemReplenishDurability] >= 1
+[Type] == HandToHand && [Quality] == Rare # [IAS] >= 20 && (([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250))
+[Type] == HandToHand && [Quality] == Rare && [Flag] == Ethereal # [EnhancedDamage] >= 250 && [ItemReplenishDurability] >= 1
+//[Name] == RunicTalons && [Quality] == Rare # [IAS] >= 20 && (([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250))
+//[Name] == RunicTalons && [Quality] == Rare && [Flag] == Ethereal # [EnhancedDamage] >= 250 && [ItemReplenishDurability] >= 1
+//[Name] == FeralClaws && [Quality] == Rare # [IAS] >= 20 && (([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250))
+//[Name] == FeralClaws && [Quality] == Rare && [Flag] == Ethereal # [EnhancedDamage] >= 250 && [ItemReplenishDurability] >= 1
+//[Name] == WristSword && [Quality] == Rare # [IAS] >= 20 && (([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250))
+//[Name] == WristSword && [Quality] == Rare && [Flag] == Ethereal # [EnhancedDamage] >= 250 && [ItemReplenishDurability] >= 1
+//[Name] == BattleCestus && [Quality] == Rare # [IAS] >= 20 && (([ItemToHitPerLevel] >= 1 && [EnhancedDamage] >= 250) || ([ItemToHitPercentPerLevel] >= 1 && [EnhancedDamage] >= 250))
+//[Name] == BattleCestus && [Quality] == Rare && [Flag] == Ethereal # [EnhancedDamage] >= 250 && [ItemReplenishDurability] >= 1
+
+//RARE SORCERESS ORBS
+[Type] == Orb && [Quality] == Rare # (([SorceressSkills]+[SkillLightning] >= 5) || ([SorceressSkills]+[SkillChainLightning] >= 5)) && [SkillLightningMastery] >= 1 && [FCR] >= 20
+[Type] == Orb && [Quality] == Rare # (([SorceressSkills]+[SkillFireball] >= 5) || ([SorceressSkills]+[SkillFirebolt] >= 5) || ([SorceressSkills]+[SkillEnchant] >= 5)) && [SkillFireMastery] >= 1 && [FCR] >= 20
+[Type] == Orb && [Quality] == Rare # (([SorceressSkills]+[SkillFireball] >= 5 && [SkillMeteor] >= 1) || ([SorceressSkills]+[SkillFireball] >= 5 && [SkillFirebolt] >= 1)) && [FCR] >= 20
+[Type] == Orb && [Quality] == Rare # (([SorceressSkills]+[SkillBlizzard] >= 5) || ([SorceressSkills]+[SkillFrozenOrb] >= 5)) && [SkillColdMastery] >= 1 && [FCR] >=20 && [Sockets] >= 2
+[Type] == Orb && [Quality] == Rare # (([LightningSkillTab]+[SkillLightning] >= 5) || ([LightningSkillTab]+[SkillChainLightning] >= 5)) && [SkillLightningMastery] >= 1 && [FCR] >= 20
+[Type] == Orb && [Quality] == Rare # (([FireSkillTab]+[SkillFireball] >= 5) || ([FireSkillTab]+[SkillFirebolt] >= 5) || ([FireSkillTab]+[SkillMeteor] >= 5)) && [SkillFireMastery] >= 1 && [FCR] >= 20
+[Type] == Orb && [Quality] == Rare # [FireSkillTab]+[SkillEnchant] >= 6
+[Type] == Orb && [Quality] == Rare # (([ColdSkillTab]+[SkillBlizzard] >= 5) || ([ColdSkillTab]+[SkillFrozenOrb] >= 5)) && [SkillColdMastery] >= 2 && [FCR] >=20 && [Sockets] >= 2
+
+//RARE NECRO WANDS
+[Type] == Wand && ([Quality] == Rare || [Quality] == Magic) # [FCR] == 20 && ([PoisonAndBoneSkillTab] >= 2 || [NecromancerSkills] == 2) && (([SkillBoneSpirit] == 3 && [SkillBoneSpear] == 3) || ([SkillPoisonNova] == 3))

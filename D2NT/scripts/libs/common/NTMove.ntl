@@ -1,0 +1,1207 @@
+var debugVoyageTo = false;
+var debugMove = false;
+function NTM_MoveTo(areaid, x, y, retry, clearpath, canswitch)
+{
+	//NT_LoadConfig();
+	//NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	var i, n;
+	var _teleport;
+    var _path = undefined; // houstin add
+	var _retry = 0;
+	var _attacked = false;
+
+	if(x == me.x && y == me.y) { return true; }
+
+	if(arguments.length < 4) { retry = 3; }
+
+	if(arguments.length < 5) { clearpath = false; }
+
+	if(arguments.length < 6) { canswitch = true; }
+	
+	// ubi21 Enigma reset start
+	////////////////////////////		
+	if(NTConfig_ResetEnigma && NTC_GetSkillLevel(54) < 1) {
+		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "Teleport Bug Found!");
+		Print(COLOR_1 + "Teleport Bug Found!");
+		NTT_ResetEnigma();		
+	}
+	// ubi21 Enigma reset end
+	////////////////////////////
+	
+	if(NTC_InTown() || NTC_GetSkillLevel(54) < 1) { _teleport = false; }
+	else { _teleport = true; }
+
+    if (_teleport && GetDistance(me.x, me.y, x, y) < 30) {// houstin add
+        return NTM_TeleportTo(x, y);
+	}
+	
+	_path = GetPath(areaid, me.x, me.y, x, y, _teleport);
+
+	if(!_path) { return (NTC_InTown() && (NTM_WalkTo(x, y) || NTTM_TownMoveXY(x, y))); }
+	
+	if(NTConfig_SwitchTele && _path.length > 2 && canswitch && _teleport){
+		if(NTC_SwapWeapons(1)){
+			if(debugMove){ 
+				switchedtoTele = me.weaponstab == 1;
+				Print(COLOR_2 + "Swapped to tele " + switchedtoTele);
+			}
+		}
+	}
+	//NTTMGR_CheckSafe(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe);
+
+	for(i = 0 ; i < _path.length ; i++)
+	{
+		for(n = 0 ; n < 2 ; n++)
+		{
+			if(_teleport)
+			{
+				if(NTM_TeleportTo(_path[i][0]+Random(-n, n), _path[i][1]+Random(-n, n))) { break; }
+			}
+			else
+			{
+				if(NTM_WalkTo(_path[i][0], _path[i][1])) { break; }
+			}
+		}
+		
+		if(!NTC_InTown()) { 
+			if((NTConfig_CheckSelfSafe.indexOf("01") != -1) && NTT_NeedPots()) {
+					Print("I need some more potions!");
+					return NTTMGR_VisitTown();		
+			}
+		}
+		
+		if(n < 2)
+		{
+			if(clearpath)
+			{
+				if(!NTA_ClearPosition('20', true, '2')) { return false; }
+				NTP_DoPrecast(false);
+				NTM_MoveTo(me.areaid, _path[i][0], _path[i][1], 1);
+			}
+		}
+		else if(_retry < retry)
+		{
+			_path = GetPath(areaid, me.x, me.y, x, y, _teleport);
+
+			if(!_path) { return false; }
+
+			i = -1;
+			_retry++;
+			_attacked = false;
+		}
+		else if((!_attacked) && (!NTConfig_SwitchTele))
+		{
+			NTA_ClearPosition(10, true);
+			//NTSI_PickItems();
+			_attacked = true;
+			_retry = 0;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	if(NTConfig_SwitchTele && canswitch){
+		if(NTC_SwapWeapons(0)){
+			if(debugMove) {
+				switchedToAttack = me.weaponstab == 0;
+				Print(COLOR_1 + "Swapped to attack " + switchedToAttack);
+			}
+		}
+	}
+	
+	return true;
+}
+
+function NTM_MoveToPresetUnit(areaid, unittype, classid, offsetx, offsety, clearpath)
+{
+	var i, n;
+	var _unit;
+
+	if(arguments.length < 4)
+	{
+		offsetx = 0;
+		offsety = 0;
+	}
+
+	if(arguments.length < 6)
+		clearpath = false;
+
+	for(i = 0 ; i <= 2 ; i++)
+	{
+		_unit = GetPresetUnits(areaid, unittype);
+
+		if(_unit)
+		{
+			for(n = 0 ; n < _unit.length ; n++)
+			{
+				if(_unit[n].id == classid)
+					return NTM_MoveTo(areaid, _unit[n].roomx*5+_unit[n].x+offsetx, _unit[n].roomy*5+_unit[n].y+offsety, 3, clearpath);
+			}
+		}
+
+		if(i < 2)
+			NTC_Delay(500);
+	}
+
+	return false;
+}
+
+function NTM_MoveToStair(areaid, subareaid, offsetx, offsety, clearpath)
+{
+	var i, n;
+	var _unit;
+
+	if(arguments.length < 3)
+	{
+		offsetx = 0;
+		offsety = 0;
+	}
+
+	if(arguments.length < 5)
+		clearpath = false;
+
+	for(i = 0 ; i <= 2 ; i++)
+	{
+		_unit = GetPresetUnits(areaid, NTC_UNIT_TILE);
+
+		if(_unit)
+		{
+			for(n = 0 ; n < _unit.length ; n++)
+			{
+				if(_unit[n].subareaid == subareaid) { return NTM_MoveTo(areaid, _unit[n].roomx*5+_unit[n].x+offsetx, _unit[n].roomy*5+_unit[n].y+offsety, 3, clearpath); }
+			}
+		}
+
+		if(i < 2)
+			NTC_Delay(500);
+	}
+
+	return false;
+}
+
+function NTM_TeleportTo(x, y)
+{
+	NTC_CastSkill(54, NTC_HAND_RIGHT, x, y);
+	
+	if(NTConfig_TeleGrab == 1){
+		NTConfig_TeleGrab++;
+		NTSI_PickItems();
+		NTConfig_TeleGrab--;
+	}
+
+	MyCS_CatchShrine();
+	
+	for(var i = 0 ; i < 15 ; i++)
+	{
+		if(Math.abs(me.x-x) < 4 && Math.abs(me.y-y) < 4){
+			return true;
+		}
+
+		NTC_Delay(NTC_DELAY_FRAME);
+	}
+	return false;
+}
+
+function NTM_WalkTo(x, y) { // kolton's updated walkto
+	var i, distance, nTimer,
+		nFail = 0,
+		attemptCount = 0;
+
+	if (me.runwalk === 0) {
+		me.runwalk = 1;
+	}
+	
+	MoveLoop : while (GetDistance(me.x, me.y, x, y) > 3 && me.mode !== 17) {
+		if (me.classid == 3) {
+			NTC_PutSkill(115, NTC_HAND_RIGHT);
+		}
+		
+		ClickMap(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, x, y);
+		NTC_Delay(40);
+		ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+		
+		attemptCount += 1;
+		nTimer = GetTickCount();
+		
+		while (me.mode !== 2 && me.mode !== 3 && me.mode !== 6) {
+			if (me.mode === 17) {
+				break MoveLoop;
+			}
+			
+			if ((GetTickCount() - nTimer) > 500) {
+				nFail++;
+				
+				if (nFail === 2) {
+					return false;
+				}
+				
+				ClickMap(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, me.x + Random(-3, 3), me.y + Random(-3, 3));
+				NTC_Delay(40);
+				ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+				
+				continue MoveLoop;
+			}
+			
+			NTC_Delay(40);
+		}
+		
+		while (me.mode !== 1 && me.mode !== 5 && me.mode !== 17) {
+			NTC_Delay(40);
+		}
+		
+		if (attemptCount >= 3) {
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+function NTM_TakeUnit(unittype, classid)
+{
+	var _unit;
+	var _prearea;
+
+	_unit = NTC_FindUnit(unittype, classid, 5);
+
+	if(!_unit)
+		return false;
+
+	_prearea = me.areaid;
+
+	for(var i = 0 ; i < 20 ; i++)
+	{
+		if((i % 5) == 0)
+		{
+			if(i == 10)
+				NTM_MoveTo(_prearea, me.x+6, me.y+6);
+
+				if(NTM_GetCloserInt(_unit)){// added to fix wlaking to portal bug
+					//Print(COLOR_1 + " it's working");
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _unit);
+				}
+		}
+
+		NTC_Delay(200);
+
+		if(me.areaid != _prearea)
+			break;
+	}
+
+	while(me.areaid == 0)
+		NTC_Delay(200);
+
+	if(me.areaid == _prearea)
+		return false;
+
+	NTC_PingDelay(NTConfig_AreaDelay);
+
+   	return true;
+}
+
+function NTM_TakeStair(areaid)
+{
+	var _unit;
+	var _prearea;
+
+	_unit = NTM_GetStairInt(areaid);
+
+	if(!_unit)
+		return false;
+
+	_prearea = me.areaid;
+
+	for(var i = 0 ; i < 20 ; i++)
+	{
+		if((i % 5) == 0)
+		{
+			if(i == 10)
+				NTM_MoveTo(_prearea, me.x+6, me.y+6);
+
+			if(NTM_GetCloserInt(_unit))
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _unit);
+		}
+
+		NTC_Delay(200);
+
+		if(me.areaid != _prearea)
+			break;
+	}
+
+	while(me.areaid == 0)
+		NTC_Delay(200);
+
+	if(me.areaid == _prearea)
+		return false;
+
+	NTC_PingDelay(NTConfig_AreaDelay);
+
+   	return true;
+}
+
+function NTM_TakeWaypoint(areaId, delay) {
+
+	var i, j;
+	var _unit;
+	var _isTelekinesis;
+
+	if (me.areaid == areaId)
+		return true;
+
+	if (arguments.length < 2)
+		delay = 35;
+
+	if (NTC_InTown())
+		me.Cancel(1);
+
+	_unit = NTM_GetWaypointInt();
+	if (!_unit)
+		return false;
+
+	_isTelekinesis = me.classid === 1 && NTConfig_Telekinesis && NTC_InTown() && NTC_GetSkillLevel(43);
+	
+	for (i = 0; i < 3; i++) {
+		if(debugVoyageTo) { Print(COLOR_9 + "Inside the main takewp for loop"); }
+		if (_isTelekinesis) {
+			_isTelekinesis = GetDistance(me, _unit) > 4 && GetDistance(me, _unit) < 20;
+			if (i > 0 && _isTelekinesis)
+				NTM_MoveCloseInt(_unit, Math.round(GetDistance(me, _unit) / 2), false);
+		}
+
+		if (_isTelekinesis || NTM_GetCloserInt(_unit)) {
+
+			for (j = 0; j < delay; j++) {
+				if ((j % 10) == 0) {
+					if (i > 0) {
+						me.Cancel(0);
+					}
+					_isTelekinesis ? NTC_CastSkill(43, NTC_HAND_RIGHT, _unit) : NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _unit);
+				}
+
+				Delay(200);
+
+				if (GetUIState(0x14)) {
+					//NTC_CancelMenus();
+					//GetUIState(0x14);
+					// build wp we don't have array here
+					NTM_CheckWps();
+					// compare the wp we want to take to the wps we don't have
+					if(debugVoyageTo) { Print(COLOR_9 + "destination area id = " + areaId); }
+					if(NTConfig_VoyageToMissingWps && wpsDontHave.indexOf(areaId) != -1) {
+						NTC_CancelMenus();
+						if(debugVoyageTo) { Print(COLOR_9 + "VoyageTo called"); }
+						// load the arrays and functions here so we don't have to carry all that crap unless we are going to use it
+						Include("libs/common/NTVoyageTo.ntl");
+						Delay(500);
+						Print("You don't have the " + GetArea(areaId).name + " wp");
+						//Print("You don't have the " + NTVT_AreaToName[areaId] + " wp");
+						Print("Let's go get it!!");
+						// if we don't have ws2 wp and haven't done ancients we can't get wp so tell the user
+						if(areaId == 129 && !me.GetQuest(39, 0)) {
+							Print("Can't get ws2 wp because you have not complete ancients quest");
+							NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "You need to kill your ancients");
+							return false;
+						}
+						// now we process everything and try and get to the destination area
+						if(NTVT_VoyageToArea(areaId)) {
+							return true;
+						// if the above fails return false to end script
+						} else {
+							return false;
+						}
+					}
+					// we have the wp so business as usual
+					else if (me.TakeWaypoint(areaId)) { 
+						NTC_PingDelay(NTConfig_AreaDelay);
+						return true;
+					}
+
+					break;
+				}
+			}
+		}
+
+		if (i == 1) {
+			NTC_RemoveLag(_unit, 1000);
+		}
+		else if (i == 2) {
+			NTC_RemoveLag(_unit, 1000, 10);
+		}
+	}
+	
+	return false;
+}
+
+function NTM_UsePortal(how, dest, ownername, portal)
+{
+	if(me.areaid == dest)
+		return true;
+
+	if(NTC_InTown())
+		me.Cancel(1);
+
+	if(NTM_ChangeAreaInt(how, dest, ownername, portal))
+	{
+		NTC_PingDelay(NTConfig_AreaDelay);
+		return true;
+	}
+
+	return false;
+}
+
+function NTM_MakeTP(dest)
+{
+	var _usetp = true;
+	var _portal;
+	var _portalname;
+
+	if(NTC_InTown())
+		return true;
+
+	if(arguments.length < 1)
+		_usetp = false;
+
+	if(!NTC_CastSkill(220, NTC_HAND_RIGHT))
+		return false;
+
+	NTC_PingDelay(500);
+
+	_portalname = GetLocaleString(3226);
+
+	for(var i = 0 ; i <= 2 ; i++)
+	{
+		_portal = NTC_FindUnit(NTC_UNIT_OBJECT, _portalname);
+
+		if(_portal)
+		{
+			do
+			{
+				if(_portal.mode == 2 && NTC_CheckOwner(_portal))
+				{
+					if(_usetp)
+						return NTM_UsePortal("BluePortal", dest, me.name, _portal);
+
+					return true;
+				}
+			} while(_portal.GetNext());
+		}
+
+		if(i < 2)
+			NTC_Delay(500);
+	}
+
+	return false;
+}
+
+// Internal function
+function NTM_GetStairInt(areaid)
+{
+	var _tile;
+
+	for(var i = 0 ; i <= 2 ; i++)
+	{
+		_tile = NTC_FindUnit(NTC_UNIT_TILE);
+
+		if(_tile)
+		{
+			do
+			{
+				if(!areaid || _tile.subareaid == areaid)
+					return _tile;
+			} while(_tile.GetNext());
+		}
+
+		if(i < 2)
+			NTC_Delay(500);
+	}
+
+	return null;
+}
+
+function NTM_GetWaypointInt()
+{
+	var _waypoint;
+	var _classid;
+
+	for(var i = 0 ; i <= 2 ; i++)
+	{
+		_waypoint = NTC_FindUnit(NTC_UNIT_OBJECT);
+
+		if(_waypoint)
+		{
+			do
+			{
+				_classid = _waypoint.classid;
+
+				if(_classid == 119 || _classid == 145 || _classid == 156 || _classid == 157
+					|| _classid == 237 || _classid == 238 || _classid == 288 || _classid == 323
+					|| _classid == 324 || _classid == 398 || _classid == 402 || _classid == 429
+					|| _classid == 494 || _classid == 496 || _classid == 511 || _classid == 539)
+					return _waypoint;
+			} while(_waypoint.GetNext());
+		}
+
+		if(i < 2)
+			NTC_Delay(500);
+	}
+
+	return null;
+}
+
+function NTM_ChangeAreaInt(how, dest, ownername, myportal)
+{
+	var _portal;
+	var _playerportal = false;
+	var _prearea;
+
+	if(how == "BluePortal")
+	{
+		if(!ownername)
+			ownername = me.name;
+
+		_playerportal = true;
+	}
+
+	if(arguments.length > 3 && myportal)
+		_portal = myportal;
+	else
+	{
+		_portal = NTM_FindCorrectPortalInt(_playerportal, dest, ownername);
+
+		if(_portal < 0)
+			_portal = NTM_FindPortalAreaInt(dest);
+
+		if(_portal == -1)
+			return false;
+	}
+
+	if(!_portal)
+		return false;
+
+	_prearea = me.areaid;
+
+	for(var i = 0 ; i < 80 ; i++)
+	{
+		if((i % 10) == 0)
+		{
+			if (me.classid === 1 && NTConfig_Telekinesis && NTC_InTown() && NTC_GetSkillLevel(43) && GetDistance(me, _portal) > 5 && GetDistance(me, _portal) < 23)
+			{
+				if (i > 10)
+					NTM_MoveCloseInt(_portal, Math.round(GetDistance(me, _portal) / 2), false);
+
+				NTC_CastSkill(43, NTC_HAND_RIGHT, _portal);
+			}
+			else{
+				if(NTC_GetSkillLevel(54) < 1){
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+				}
+				else if(NTM_GetCloserIntS(_portal)){// added to fix walking to portal bug
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+				}
+			}
+		}
+
+		NTC_Delay(100);
+
+		if(me.areaid != _prearea)
+		{
+			while(me.areaid == 0)
+				NTC_Delay(200);
+		
+			if(me.areaid != _prearea)
+			{
+				NTC_PingDelay(NTConfig_AreaDelay);
+				return true;
+			}
+		
+			break;
+		}
+	}
+
+	return (me.areaid != _prearea);
+}
+
+function NTM_FindCorrectPortalInt(blueportal, dest, ownername)
+{
+	var _portal;
+	var _portalname;
+
+	_portalname = GetLocaleString(3226);
+
+	if(blueportal)
+	{
+		for(var i = 0 ; i <= 2 ; i++)
+		{
+			_portal = NTC_FindUnit(NTC_UNIT_OBJECT, _portalname);
+
+			if(_portal)
+			{
+				do
+				{
+					if(_portal.mode == 2 && NTC_CheckOwner(_portal, ownername) && GetDistance(me, _portal) <= 30 && (_portal.subareaid == dest || _portal.subareaid == dest + 768))
+						return _portal;
+				} while(_portal.GetNext());
+			}
+
+			if(i < 2)
+				NTC_Delay(500);
+		}
+
+		return -2;
+	}
+	else
+	{
+		for(var i = 0 ; i <= 2 ; i++)
+		{
+			_portal = NTC_FindUnit(NTC_UNIT_OBJECT, _portalname);
+
+			if(_portal)
+			{
+				do
+				{
+					if(_portal.mode == 2 && !_portal.GetParent())
+						return _portal;
+				} while(_portal.GetNext());
+			}
+
+			if(i < 2)
+				NTC_Delay(500);
+		}
+	}
+
+	return -3;
+}
+
+function NTM_FindPortalAreaInt(dest)
+{
+	var _portal;
+	var _portalname;
+
+	_portalname = GetLocaleString(3226);
+
+	for(var i = 0 ; i <= 2 ; i++)
+	{
+		_portal = NTC_FindUnit(NTC_UNIT_OBJECT, _portalname);
+
+		if(_portal)
+		{
+			do
+			{
+				if(_portal.mode == 2 && (_portal.subareaid == dest || _portal.subareaid == dest+768))
+				{
+					if(_portal.GetParent())
+					{
+						if(NTC_CheckOwner(_portal) || NTC_InMyParty(_portal.GetParent()))
+							return _portal;
+					}
+					else
+						return _portal;
+				}
+			} while(_portal.GetNext());
+		}
+
+		if(i < 2)
+			NTC_Delay(500);
+	}
+
+	return -1;
+}
+
+function NTM_GetCloserInt(unit)
+{
+	if(GetDistance(me, unit) > 2)
+		return NTM_MoveTo(unit.areaid, unit.x, unit.y);
+
+	return true;
+}
+
+function NTM_GetCloserIntS(unit){ 
+	//Print(COLOR_1 + " we are here");
+	if(GetDistance(me, unit) > 3)
+		return NTM_MoveTo(unit.areaid, unit.x+1, unit.y);
+	return true;
+}
+
+function NTM_MoveCloseInt(target, maxrange)
+{
+	var _result = true;
+	var _dist   = GetDistance(me, target);
+
+	if (_dist > maxrange)
+	{
+		var _destx, _desty;
+
+		_destx = me.x + Math.round((_dist - maxrange) * (target.x - me.x) / _dist);
+		_desty = me.y + Math.round((_dist - maxrange) * (target.y - me.y) / _dist);
+
+		_result = NTM_MoveTo(target.areaid, _destx, _desty, 1);
+	}
+
+	return _result;
+}
+
+// vector class
+function vector()
+{
+	if(arguments.length == 2)
+	{
+		this.x = arguments[0];
+		this.y = arguments[1];
+	}
+	else if(arguments.length == 1)
+	{
+		this.x = arguments[0].x;
+		this.y = arguments[0].y;
+	}
+	else
+	{
+		this.x = 0;
+		this.y = 0;
+	}
+	
+	this.rotate = vector_rotate;
+	this.normalize = vector_normalize;
+	this.length = vector_length;
+	this.setlength = vector_setlength;
+	this.toString = vector_toString;
+	this.set = vector_set;
+	this.angle = vector_angle;
+}
+
+function vector_rotate(degree)
+{
+	if(!degree)
+		return true;
+
+	l = this.length();
+	if(!l)
+		return false;
+
+	this.normalize();
+
+	rad = degree * (Math.PI/180);
+
+	nx = this.x * Math.cos(rad) - this.y * Math.sin(rad);
+	ny = this.x * Math.sin(rad) + this.y * Math.cos(rad);
+
+	this.x = nx;
+	this.y = ny;
+
+	this.normalize();
+	if(l != 1)
+		this.setlength(l);
+
+	return true;
+}
+
+function vector_angle(v)
+{
+	rad_degree = 180 / Math.PI;
+
+	return Math.acos((this.x*v.x) + (this.y*v.y)) * rad_degree;
+}
+
+function vector_length()
+{
+	return Math.sqrt((this.x*this.x) + (this.y*this.y));
+}
+
+function vector_setlength(length)
+{
+	this.normalize();
+	this.x *= length;
+	this.y *= length;
+}
+
+function vector_normalize()
+{
+	l = this.length();
+	if(!l)
+		return false;
+
+	this.x /= l;
+	this.y /= l;
+
+	return true;
+}
+
+function vector_toString()
+{
+	str = "(";
+	str += Math.round(this.x*1000)/1000;
+	str += " , ";
+	str += Math.round(this.y*1000)/1000;
+	str += ") : ";
+	str += Math.round(this.length()*1000)/1000;
+
+	return str;
+}
+
+function vector_set(tx, ty)
+{
+	if(arguments.length == 1)
+	{
+		this.x = tx.x;
+		this.y = tx.y;
+	}
+	else if(arguments.length == 2)
+	{
+		this.x = tx;
+		this.y = ty;
+	}
+}
+
+// coord class
+function coord()
+{
+	this.data = null;
+
+	if(arguments.length == 3)
+	{
+		this.x = arguments[0];
+		this.y = arguments[1];
+		this.data = arguments[2];
+	}
+	else if(arguments.length == 2)
+	{
+		this.x = arguments[0];
+		this.y = arguments[1];
+	}
+	else if(arguments.length == 1)
+	{
+		this.x = arguments[0].x;
+		this.y = arguments[0].y;
+	}
+	else
+	{
+		this.x = 0;
+		this.y = 0;
+	}
+
+	this.dist = coord_dist;
+	this.dist2 = coord_dist2;
+	this.dir = coord_dir;
+	this.move = coord_move;
+	this.set = coord_set;
+	this.toString = coord_toString;
+}
+
+function coord_set(tx, ty, d)
+{
+	if(arguments.length == 1)
+	{
+		this.x = tx.x;
+		this.y = tx.y;
+
+		if(tx.data)
+			this.data = tx.data;
+		else
+			this.data = null;
+	}
+	else if(arguments.length == 2)
+	{
+		this.x = tx;
+		this.y = ty;
+		this.data = null;
+	}
+	else if(arguments.length == 3)
+	{
+		this.x = tx;
+		this.y = ty;
+		this.data = d;
+	}
+}
+
+function coord_dist(tx, ty)
+{
+	if(arguments.length == 1)
+	{
+		vx = this.x - tx.x;
+		vy = this.y - tx.y;
+
+		return Math.round(Math.sqrt((vx*vx) + (vy*vy)));	
+	}
+	else if(arguments.length == 2)
+	{
+		vx = this.x - tx;
+		vy = this.y - ty;
+
+		return Math.round(Math.sqrt((vx*vx) + (vy*vy)));
+	}
+}
+
+function coord_dist2(tx, ty)
+{
+	if(arguments.length == 1)
+	{
+		vx = this.x - tx.x;
+		vy = this.y - tx.y;
+
+		return Math.floor((vx*vx) + (vy*vy));
+	}
+	else if(arguments.length == 2)
+	{
+		vx = this.x - tx;
+		vy = this.y - ty;
+
+		return Math.floor((vx*vx) + (vy*vy));
+	}
+}
+
+function coord_dir(tx, ty)
+{
+	if(arguments.length == 1)
+	{
+		v = new vector(tx.x-this.x, tx.y-this.y);
+		v.normalize();
+
+		return v;
+	}
+	else if(arguments.length == 2)
+	{
+		v = new vector(tx-this.x, ty-this.y);
+		v.normalize();
+
+		return v;
+	}
+}
+
+function coord_move(vec, d)
+{
+	if(d)
+	{
+		this.x += Math.round(vec.x*d);
+		this.y += Math.round(vec.y*d);
+
+		return true;
+	}
+	else if(vec.length())
+	{
+		this.x += Math.round(vec.x);
+		this.y += Math.round(vec.y);
+
+		return true;
+	}
+
+	return false;
+}
+
+function coord_toString()
+{
+	return "( " + this.x + " , " + this.y + " ) " + this.data;
+}
+
+function NTM_UseTelekinesisPortal()
+{
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226));
+
+	if (_portal)
+	{
+		do
+		{
+			if (_portal.name == GetLocaleString(3226) && NTC_CheckOwner(_portal) && GetDistance(me, _portal) < 23)
+				return true;
+		} while (_portal.GetNext());
+	}
+
+	return false;
+}
+
+function NTM_UseTelekinesisWaypoint()
+{
+	var _waypoint = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(22526));
+
+	if (_waypoint)
+	{
+		if(me.act == 1 || me.act == 4)
+		{
+			if (GetDistance(me, _waypoint) < 17)
+				return true;
+		}
+		else
+		{
+			if (GetDistance(me, _waypoint) < 20)
+				return true;
+		}
+	}
+
+	return false;
+}
+
+function NTM_UseTelekinesisStash()
+{
+	var _stash = NTC_FindUnit(NTC_UNIT_OBJECT, NTC_UNIT_STASH);
+
+	if (_stash)
+	{
+		if (GetDistance(me, _stash) < 23)
+			return true;
+	}
+
+	return false;
+}
+
+function NTM_MoveToObject(areaid, unittype, low, high, offsetx, offsety, clearpath)
+{
+	var _unit;
+
+	if(arguments.length < 4)
+		high = low;
+
+	if(arguments.length < 5)
+	{
+		offsetx = 0;
+		offsety = 0;
+	}
+
+	if(arguments.length < 7)
+		clearpath = false;
+
+	_unit = GetPresetUnits(areaid, unittype);
+
+	if(!_unit)
+		return false;
+
+	for(var i = 0 ; i < _unit.length ; i++)
+	{
+		if(_unit[i].id >= low && _unit[i].id <= high)
+			return NTM_MoveTo(areaid, _unit[i].roomx*5+_unit[i].x+offsetx, _unit[i].roomy*5+_unit[i].y+offsety, 3, clearpath);
+	}
+
+	return false;
+}
+
+// credit to korean's for this.  When your stuck korean mods ftw.  Just changed it a bit
+function NTM_KoMoveToPresetUnit(areaId, unitType, classId, offsetX, offsetY, clearpath) {
+
+    var i, j;
+    var _oldUnits, _newUnits;
+
+    if (arguments.length < 4) { offsetX = 0; offsetY = 0; }
+	if (arguments.length < 6) { clearpath = false }                               
+    for (i = 0; i < 3; i++)
+    {
+        _oldUnits = GetPresetUnits(areaId, unitType);
+        if (_oldUnits)
+        {
+            for (j = 0; j < _oldUnits.length; j++)
+            {
+                if (_oldUnits[j].id == classId)
+                {
+                    if (NTM_MoveTo(areaId, _oldUnits[j].roomx * 5 + _oldUnits[j].x + offsetX, _oldUnits[j].roomy * 5 + _oldUnits[j].y + offsetY, 3, clearpath))
+                        return true;
+                    else
+                    {
+                        switch (me.areaid)
+                        {
+						case 28:
+                        case 29:
+                        case 30:
+                        case 31:
+                        case 51:
+                        case 52:
+                        case 53:
+                        case 54:
+                            var _moveXy = [[30, 0], [0, 30], [-30, 0], [0, -30]];
+
+                            for (i = 0; i < 4; i++)
+                            {
+                                while (true)
+                                {
+                                    if (!NTM_TeleportTo(me.x + _moveXy[i][0], me.y + _moveXy[i][1]))
+                                        break;
+                                    if (NTM_MoveTo(areaId, _oldUnits[j].roomx * 5 + _oldUnits[j].x + offsetX, _oldUnits[j].roomy * 5 + _oldUnits[j].y + offsetY, 0, clearpath))
+                                        return true;
+                                }
+                            }
+                            break;
+                        }
+
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if (i < 2)
+            Delay(500);
+    }
+
+    return false;
+}
+
+// credit to korean's for this.  When your stuck korean mods ftw.  Just changed it a bit
+function NTM_KoMoveToStair(areaId, subAreaId, offsetX, offsetY, clearpath) {
+
+    var i, j;
+    var _oldUnits, _newUnits;
+
+    if (arguments.length < 3) { offsetX = 0; offsetY = 0; }
+	if (arguments.length < 5) { clearpath = false }
+                                
+    for (i = 0; i < 3; i++)
+    {
+        _oldUnits = GetPresetUnits(areaId, NTC_UNIT_TILE);
+        if (_oldUnits)
+        {
+            for (j = 0; j < _oldUnits.length; j++)
+            {
+                if (_oldUnits[j].subareaid == subAreaId)
+                {
+                    if (NTM_MoveTo(areaId, _oldUnits[j].roomx * 5 + _oldUnits[j].x + offsetX, _oldUnits[j].roomy * 5 + _oldUnits[j].y + offsetY, 3, clearpath))
+                        return true;
+                    else
+                    {
+                        switch (me.areaid)
+                        {
+						case 28:
+                        case 29:
+                        case 30:
+                        case 31:
+                        case 51:
+                        case 52:
+                        case 53:
+                        case 54:
+                            var _moveXy = [[30, 0], [0, 30], [-30, 0], [0, -30]];
+
+                            for (i = 0; i < 4; i++)
+                            {
+                                while (true)
+                                {
+                                    if (!NTM_TeleportTo(me.x + _moveXy[i][0], me.y + _moveXy[i][1]))
+                                        break;
+                                    if (NTM_MoveTo(areaId, _oldUnits[j].roomx * 5 + _oldUnits[j].x + offsetX, _oldUnits[j].roomy * 5 + _oldUnits[j].y + offsetY, 0, clearpath))
+                                        return true;
+                                }
+                            }
+                            break;
+                        }
+
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if (i < 2)
+            Delay(500);
+    }
+
+    return false;
+}
+
+var wpsDontHave = [];
+function NTM_CheckWps() { 
+	for(var i = 0; i < 39; i++) {
+		if(!GetWaypoint(i)) {
+			if(debugVoyageTo) { Print(COLOR_1 + "We don't have wp # " + NTC_WPIdToAreaId[i]); }
+			wpsDontHave.push(NTC_WPIdToAreaId[i]);
+		}
+		else if(GetWaypoint(i) && debugVoyageTo) {
+			Print(COLOR_2 + "We have wp # " + NTC_WPIdToAreaId[i]);
+		}
+	}
+	return;
+}

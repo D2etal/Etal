@@ -1,0 +1,27 @@
+// ##### Keys ##########################
+[Name] == KeyOfTerror
+[Name] == KeyOfHate
+[Name] == KeyOfDestruction
+
+// ##### Organs ########################
+[Name] == mephisto'sbrain
+[Name] == baal'seye
+[Name] == diablo'shorn
+
+// ##### Essences ######################
+//[Name] == TwistedEssenceOfSuffering
+//[Name] == ChargedEssenceOfHatred
+//[Name] == BurningEssenceOfTerror
+//[Name] == FesteringEssenceOfDestruction
+[Name] == TokenOfAbsolution
+
+// ##### Torch ######################
+//[Name] == LargeCharm && [Quality] == unique
+											   
+[Name] == LargeCharm && [Quality] == unique # [itemaddAssassinSkills] >= 1 && [Strength] >= 10 && [FireResist] >= 10 
+[Name] == LargeCharm && [Quality] == unique # [itemaddDruidSkills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+[Name] == LargeCharm && [Quality] == unique # [itemaddSorceressSkills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+[Name] == LargeCharm && [Quality] == unique # [itemaddPaladinSkills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+[Name] == LargeCharm && [Quality] == unique # [itemaddamazonskills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+[Name] == LargeCharm && [Quality] == unique # [itemaddnecromancerskills] >= 1 && [Strength] >= 10 && [FireResist] >= 10
+[Name] == LargeCharm && [Quality] == unique # [itemaddbarbarianskills] >= 1 && [Strength] >= 10 && [FireResist] >= 10

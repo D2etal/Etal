@@ -1,0 +1,221 @@
+//UNIQUE GLOVES
+[Name] == HeavyGloves && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20																			//BLOOD FIST
+[Name] == ChainGloves && [Quality] == Unique && [Flag] != Ethereal # [ItemMagicBonus] >= 40 && [EnhancedDefense] >= 30													//CHANCE GUARDS
+[Name] == LightGauntlets && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 30																			//MAGEFIST
+//[Name] == Gauntlets && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20																				//FROSTBURN
+[Name] == VampireboneGloves && [Quality] == Unique && [Flag] != Ethereal # [Strength] == 15 && [LifeLeech] >= 10 && [ItemHealAfterKill] >= 1							//DRACUL'S GRASP
+//[Name] == Vambraces && [Quality] == Unique && [Flag] != Ethereal # [LifeLeech] >= 7 && [ManaLeech] >= 7 && [EnhancedDefense] >= 120										//SOUL DRAINER
+//[Name] == OgreGauntlets && [Quality] == Unique && [Flag] != Ethereal # (([EnhancedDamage] >= 60 && [Strength] >= 15) || ([EnhancedDamage] >= 30 && [Strength] >= 20))	//STEELREND
+
+//UNIQUE BELTS\\
+//[Name] == HeavyBelt && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 60 && [ItemGoldBonus] >= 80 																				//GOLD WRAP
+[Name] == DemonhideSash && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 160 && [LifeLeech] >= 8 && [DamageResist] >= 15 && [MagicDamageReduction] >= 15							//STRING OF EARS
+//[Name] == SharkskinBelt && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 150																										//RAZORTAIL
+//[Name] == BattleBelt && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 165																										//SNOWCLASH
+[Name] == WarBelt && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 200																											//THUNDERGOD'S VIGOR
+//[Name] == SpiderwebSash && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 115																										//ARACHNID MESH
+//[Name] == Vampirefang Belt && [Quality] == Unique && [Flag] != Ethereal # [LifeLeech] >= 7 && [Defense] >= 63																						//NOSFERATU'S COIL
+[Name] == MithrilCoil && [Quality] == Unique && [Flag] != Ethereal # ([Vitality] >= 1 && [DamageResist] >= 15 && [HPRegen] >= 1) || ([Vitality] >= 40 && [DamageResist] >= 14 && [HPRegen] >= 12)	//VERDUNGO'S HEARTY CORD
+
+//UNIQUE BOOTS
+[Name] == Boots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20																//HOTSPUR
+[Name] == DemonhideBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 150 && [ItemGoldBonus] >= 70							//INFERNOSTRIDE
+[Name] == SharkskinBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 100 && [MaxHP] >= 65									//WATERWALK
+[Name] == BattleBoots && [Quality] == Unique && [Flag] != Ethereal # [ItemMagicBonus] >= 48															//WAR TRAVELER
+[Name] == WarBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 195															//GORE RIDER
+[Name] == ScarabshellBoots && [Quality] == Unique && [Flag] != Ethereal # [Strength] >= 15 && [Vitality] >= 15 && [PoisonResist] >= 1				//SANDSTORM TREK
+//[Name] == ScarabshellBoots && [Quality] == Unique && [Flag] == Ethereal # [Strength] >= 15 && [Vitality] >= 10 && [PoisonResist] >= 1				//Ethereal SANDSTORM TREK
+[Name] == BoneweaveBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 100 && [SkillSkeletonMastery] >= 2 && [Strength] >= 20	//MARROWWALK
+//[Name] == MyrmidonGreaves && [Quality] == Unique && [Flag] != Ethereal # [ShadowDisciplinesSkillTab] >= 1 && [Dexterity] >= 25						//SHADOW DANCER
+
+//UNIQUE HELMS
+[Name] == SkullCap && [Quality] == Unique && [Flag] == Ethereal # [ItemMagicBonus] == 50																									//Ethereal TARNHELM
+[Name] == Sallet && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 160 && [ColdResist] >= 40 && [FireResist] >= 50 && [LightResist] >= 40									//ROCK STOPPER
+[Name] == Sallet && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 160 && [ColdResist] >= 40 && [FireResist] >= 50 && [LightResist] >= 40									//Ethereal ROCK STOPPER
+[Name] == Casque && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 200 && [ItemMagicBonus] >= 50																			//STEALSKULL
+[Name] == Casque && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 200 && [ItemMagicBonus] >= 50																			//Ethereal STEALSKULL
+[Name] == GrandCrown && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] == 200 && [ItemGoldBonus] >= 100 && [LifeLeech] >= 12													//CROWN OF THEIVES
+[Name] == GrandCrown && [Quality] == Unique && [Flag] == Ethereal # [ItemGoldBonus] >= 100 && [LifeLeech] >= 10																				//Ethereal CROWN OF THIEVES
+[Name] == GrimHelm && [Quality] == Unique && [Flag] != Ethereal # [LifeLeech] >= 6 && [ManaLeech] >= 6 && [DamageResist] >= 20 && [MagicDamageReduction] >= 1								//VAMPIRE GAZE
+//[Name] == GrimHelm && [Quality] == Unique && [Flag] == Ethereal # [LifeLeech] >= 6 && [ManaLeech] >= 6 && [DamageResist] >= 20 && [MagicDamageReduction] >= 1								//Ethereal VAMPIRE GAZE
+[Name] == Shako && [Quality] == Unique && [Flag] != Ethereal # [Defense] >= 100																												//HARLEQUIN CREST
+[Name] == SpiredHelm && [Quality] == Unique && [Flag] != Ethereal # [Dexterity] >= 1 && [PassiveColdMastery] >= 15 && [ItemAbsorbCold] >= 1													//NIGHTWING'S VEIL
+[Name] == Demonhead && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 100 && [Strength] >= 30 && [LifeLeech] >= 10														//ANDARIEL'S VISAGE
+//[Name] == Demonhead && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 100 && [Strength] >= 25 && [LifeLeech] >= 8														//Ethereal ANDARIEL's VISAGE
+[Name] == BoneVisage && [Quality] == Unique # [Sockets] >= 2 && [Strength] >= 35 && [PlusDefense] >= 1																						//GIANT SKULL
+[Name] == Tiara && [Quality] == Unique # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 280 && [PlusDefense] >= 1																//KIRA'S GUARDIAN
+//[Name] == Diadem && [Quality] == Unique && [Flag] != Ethereal # (([PassiveLtngMastery] >= 10 && [PassiveLtngPierce] >= 20) || ([PassiveLtngMastery] >= 15 && [PassiveLtngPierce] >= 15))	//GRIFFON'S EYE
+//[Name] == Corona && [Quality] == Unique # [Sockets] >= 2 && [DamageResist] >= 13 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 80											//CROWN OF AGES
+
+//UNIQUE ARMOR
+[Name] == SerpentskinArmor && [Quality] == Unique && [Flag] != Ethereal # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] == 140 && [MagicDamageReduction] == 13				//SKIN OF THE VIPERMAGI
+[Name] == Cuirass && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 200																							//Ethereal DURIEL'S SHELL
+//[Name] == MeshArmor && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 210																							//Ethereal SHAFTSTOP
+[Name] == RussetArmor && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 200																						//Ethereal SKULLDER'S IRE
+[Name] == TemplarCoat && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 200																						//GUARDIAN ANGEL
+[Name] == TemplarCoat && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 200																						//Ethereal GUARDIAN ANGEL
+//[Name] == SharktoothArmor && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 215																					//Ethereal TOOTHROW
+[Name] == DuskShroud && [Quality] == Unique && [Flag] != Ethereal # [PassiveFireMastery] >= 15 && (([SkillFirebolt] >= 3) || ([SkillFireball] >= 3) || ([SkillMeteor] >= 3))		//ORMUS' ROBES
+[Name] == DuskShroud && [Quality] == Unique && [Flag] != Ethereal # [PassiveLtngMastery] >= 15 && (([SkillChainLightning] >= 3) || ([SkillLightning] >= 3) || ([SkillNova] >= 3))	//ORMUS' ROBES
+[Name] == DuskShroud && [Quality] == Unique && [Flag] != Ethereal # [PassiveColdMastery] >= 15 && (([SkillBlizzard] >= 3) || ([SkillGlacialSpike] >= 3) || ([SkillIceBlast] >= 3))	//ORMUS' ROBES
+[Name] == WireFleece && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 150 && [NormalDamageReduction] >= 20 && [MagicDamageReduction] >= 20						//THE GLADIATOR'S BANE
+[Name] == BalrogSkin && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 150 && [ItemAllSkills] >= 2 && [NormalDamageReduction] >= 15								//ARKAINE'S VALOR
+[Name] == KrakenShell && [Quality] == Unique # [EnhancedDefense] >= 170 && [PlusDefense] >= 100 && [DamageResist] >= 25 && [Strength] >= 48											//LEVIATHAN
+//[Name] == ShadowPlate && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 190 && [ManaRecovery] >= 10 && [ColdResist] >= 40 && [NormalDamageReduction] >= 14		//STEEL CARAPACE
+//[Name] == SacredArmor && [Quality] == Unique # [EnhancedDefense] >= 170 && [OffensiveAurasSkillTab] >= 2 && [ArmorClassVSMissile] >= 250 && [Strength] >= 15 && [Vitality] >= 15	//TEMPLAR'S MIGHT
+//[Name] == SacredArmor && [Quality] == Unique # [EnhancedDefense] >= 120 && [Strength] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 80							//TYREAL'S MIGHT
+
+//UNIQUE SHIELDS
+[Name] == RoundShield && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 220																									//MOSER'S BLESSED CIRCLE
+[Name] == BarbedShield && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 120																									//LANCE GUARD
+[Name] == Pavise && [Quality] == Unique && [Flag] != Ethereal # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 120 && [NormalDamageReduction] >=16 && [MagicDamageReduction] >= 18	//GERKE'S SANCTUARY
+[Name] == GrimShield && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 130																									//Ethereal LIDLESS WALL
+[Name] == Luna && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 200																											//BLACKOAK SHIELD
+[Name] == Monarch && [Quality] == Unique && [Flag] != Identified # [Defense] == 148																												//STORMSHIELD
+[Name] == TrollNest && [Quality] == Unique && [Flag] != Ethereal # [Sockets] >= 3 && [PlusDefense] >= 420 && [ArmorClassVSMissile] >= 350 && [FireResist] >= 30 && [PoisonResist] >= 40			//HEAD HUNTER'S GLORY
+[Name] == Ward && [Quality] == Unique && [Flag] != Ethereal # [FireResist] >= 40 && [ToBlock] >= 30 && [ItemAbsorbCold] >= 11																	//SPIRIT WARD
+
+//UNIQUE DAGGERS
+[Name] == BoneKnife && [Quality] == Unique	//WIZARD SPIKE
+
+//UNIQUE SWORDS
+[Name] == Tulwar && [Quality] == Unique # [Dexterity] >= 15 && [EnhancedDamage] >= 120					//BLADE OF ALI BABA
+[Name] == ChampionSword && [Quality] == Unique # [EnhancedDamage] >= 250 && [LifeLeech] >= 7			//DOOMBRINGER
+[Name] == ColossusBlade && [Quality] == Unique # [EnhancedDamage] >= 250								//THE GRANDFATHER
+[Name] == PhaseBlade && [Quality] == Unique # [EnhancedDamage] >= 230 && [Strength] == 10 && [IAS] == 30	//AZUREWRATH
+
+//UNIQUE AXES
+[Name] == Tomahawk && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 200									//RAZOR'S EDGE
+[Name] == EttinAxe && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 265 && [Sockets] == 5					//RUNE MASTER
+[Name] == EttinAxe && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 220 && [Sockets] == 5					//Ethereal RUNE MASTER
+[Name] == BerserkerAxe && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 270 && [ItemHealAfterKill] >= 6	//DEATH CLEAVER
+//[Name] == BerserkerAxe && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 230 && [ItemHealAfterKill] >= 6	//Ethereal DEATH CLEAVER
+
+//UNIQUE BOWS
+[Name] == ShortSiegeBow && [Quality] == Unique # [EnhancedDamage] >= 170							//WITCHWILD STRING
+[Name] == WardBow && [Quality] == Unique # [EnhancedDamage] >= 150 && [PlusSkillGuidedArrow] >= 5	//WIDOWMAKER
+[Name] == HydraBow && [Quality] == Unique # [ManaLeech] >= 8										//WINDFORCE
+
+//UNIQUE MACES
+//[Name] == MartelDeFer && [Quality] == Unique # [EnhancedDamage] >= 150																				//THE GAVEL OF PAIN
+[Name] == TyrantClub && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 200 && [LifeLeech] >= 10 && [FireResist] >= 20				//DEMON LIMB
+[Name] == Scourge && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 270 && [ItemAbsorbLight] >= 3 && [IAS] >= 30					//STORMLASH
+[Name] == Scourge && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 240 && [ItemAbsorbLight] >= 3 && [IAS] >= 30					//Ethereal STORMLASH
+[Name] == LegendaryMallet && [Quality] == Unique # [EnhancedDamage] >= 130 && [LightResist] >= 75													//SHAEFER'S HAMMER
+[Name] == LegendaryMallet && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 320 && [ItemCrushingBlow] >= 40 && [Strength] >= 20	//STONE CRUSHER
+[Name] == ThunderMaul && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 300 && [FCR] >= 10											//EARTH SHIFTER
+[Name] == ThunderMaul && [Quality] == Unique # [EnhancedDamage] >= 240 && [Strength] >= 25															//THE CRANIUM BASHER
+
+//UNIQUE POLEARMS
+[Name] == OgreAxe && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 320																									//Ethereal BONEHEW
+[Name] == Thresher && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 240 && [LifeLeech] >= 11																				//Ethereal THE REAPER'S TOLL
+[Name] == CrypticAxe && [Quality] == Unique && [Flag] != Ethereal # [Sockets] == 3 && [EnhancedDamage] >= 280 && [FireResist] >= 30 && [ItemHealAfterKill] >= 10 && [ItemMagicBonus] >= 50	//TOMB REAVER
+//[Name] == CrypticAxe && [Quality] == Unique && [Flag] == Ethereal # [Sockets] == 3 && [EnhancedDamage] >= 200 && [FireResist] >= 30 && [ItemHealAfterKill] >= 10 && [ItemMagicBonus] >= 50	//Ethereal TOMB REAVER
+[Name] == GiantThresher && [Quality] == Unique # [EnhancedDamage] >= 250																													//STORMSPIRE
+
+//UNIQUE SCEPTERS
+[Name] == MightyScepter && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 290 && [Sockets] >= 2 && [PaladinSkills] >= 3								//HEAVEN'S LIGHT
+//[Name] == Caduceus && [Quality] == Unique # [EnhancedDamage] >= 240 && [PaliCombatSkillTab] >= 4 && [NormalDamageReduction] >= 4 && [ItemToHitPercent] >= 150			//ASTREON'S IRON WARD
+
+//UNIQUE SPEARS 
+[Name] == Yari && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 200			//Ethereal HONE SUNDAN
+[Name] == WarPike && [Quality] == Unique # [EnhancedDamage] >= 260 && [EnhancedDefense] >= 80	//STEEL PILLAR
+
+//UNIQUE STAVES
+[Name] == Quarterstaff && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 290	//RIBCRACKER
+[Name] == Quarterstaff && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 290	//Ethereal RIBCRACKER
+//[Name] == ElderStaff && [Quality] == Unique && [Flag] != Ethereal # [ItemAllSkills] == 4		//ONDAL'S WISDOM
+//[Name] == ElderStaff && [Quality] == Unique && [Flag] == Ethereal # [ItemAllSkills] == 4		//Ethereal ONDAL'S WISDOM
+
+//UNIQUE THROWING WEAPONS
+//[Name] == WingedKnife && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 250	//WARSHRIKE
+//[Name] == WingedAxe && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 210	//LACERATOR
+
+//UNIQUE JAVELINS
+[Name] == BalrogSpear && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 210 && [LifeLeech] >= 12	//DEMON ARCH
+[Name] == GhostGlaive && [Quality] == Unique # [EnhancedDamage] >= 190 && [LifeLeech] >= 13							//WRAITH FLIGHT
+[Name] == WingedHarpoon && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 230 && [LifeLeech] >= 15	//GARGOYLE'S BITE
+
+//UNIQUE WANDS 
+[Name] == BurntWand && [Quality] == Unique && [Flag] == Ethereal																														//Ethereal SUICIDE BRANCH
+[Name] == TombWand && [Quality] == Unique && [Flag] == Ethereal																															//Ethereal ARM OF KING LEORIC
+[Name] == LichWand && [Quality] == Unique && [Flag] == Ethereal # [SkillBoneSpirit] >= 2 && [SkillBoneSpear] >= 3 && [SkillBoneWall] >= 3 && [SkillBoneArmor] >= 5 && [SkillTeeth] >= 5	//BONESHADE
+//[Name] == UnearthedWand && [Quality] == Unique # [PoisonAndBoneSkillTab] >= 2 && [PassivePoisPierce] >= 40																				//DEATH'S WEB
+
+//UNIQUE AMAZON
+//[Name] == CeremonialJavelin && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 200 && [LifeLeech] >= 8					//TITAN'S REVENGE
+[Name] == CeremonialJavelin && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 150 && [LifeLeech] >= 5					//Ethereal TITAN'S REVENGE
+[Name] == MatriarchalJavelin && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 195 && [JavelinAndSpearSkillTab] >= 4	//THUNDERSTROKE
+[Name] == MatriarchalJavelin && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 200 && [JavelinAndSpearSkillTab] >= 4	//Ethereal THUNDERSTROKE
+
+//UNIQUE ASSASSIN 
+[Name] == GreaterTalons && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 200 && [LifeLeech] >= 9																												//BARTUC'S CUT-THROAT
+[Name] == GreaterTalons && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 200 && [LifeLeech] >= 9																												//Ethereal BARTUC'S CUT-THROAT
+[Name] == WristSword && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDamage] >= 240 && [MartialArtsSkillTab] >= 2 && [ShadowDisciplinesSkillTab] >= 2 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 200	//JADE TALON
+
+//UNIQUE BARBARIAN 
+[Name] == SlayerGuard && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 190 && [LifeLeech] >= 3																											//ARREAT'S FACE
+//[Name] == SlayerGuard && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 190 && [LifeLeech] >= 3																											//Ethereal ARREAT'S FACE
+[Name] == FuryVisor && [Quality] == Unique && [Flag] != Ethereal # [WarcriesSkillTab] >= 3 && [PlusSkillLycanthropy] >= 6 && [PlusSkillWerewolf] >= 6 && [Strength]+[Dexterity]+[Vitality] >= 45							//WOLFHOWL
+//[Name] == FuryVisor && [Quality] == Unique && [Flag] != Ethereal # [WarcriesSkillTab] >= 3 && [SkillFeralRage] >= 6 && [PlusSkillLycanthropy] >= 6 && [PlusSkillWerewolf] >= 6 && [Strength]+[Dexterity]+[Vitality] >= 45	//WOLFHOWL
+[Name] == DestroyerHelm && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 150 && [WarcriesSkillTab] >= 3 && [MasteriesSkillTab] >= 3 && [BarbCombatSkillTab] >= 3 && [LifeLeech] >= 6						//DEMONHORN'S EDGE
+[Name] == ConquerorCrown && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 155 && [SkillBattleCommand] >= 2 && [SkillBattleOrders] >= 2 && [HPRegen] >= 23												//HALABERD'S REIGN
+
+//UNIQUE DRUID
+[Name] == TotemicMask && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 200																					//JALAL'S MANE
+[Name] == BloodSpirit && [Quality] == Unique && [Flag] != Ethereal # [LifeLeech] >= 7 && [ShapeShiftingSkillTab] >= 4 && [SkillFeralRage] >= 2 && [ItemToHitPercent] >= 60		//CEREBUS' BITE
+[Name] == SkySpirit && [Quality] == Unique && [Flag] != Ethereal # [Energy] >= 20 && [PassiveFirePierce] >= 20 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 100 //RAVENLORE
+[Name] == EarthSpirit && [Quality] == Unique && [Flag] != Ethereal # [DruidSkills] >= 2 && [FireResist] >= 30 && [ItemAbsorbLight] >= 14 && [ItemAbsorbColdPercent] >= 25		//SPIRIT KEEPER
+
+//UNIQUE NECROMANCER 
+[Name] == HierophantTrophy && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 195																	//HOMUNCULUS
+[Name] == SuccubusSkull && [Quality] == Unique && [Flag] != Ethereal # [NecromancerSkills] >= 3 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 120	//BONEFLAME
+[Name] == BloodlordSkull && [Quality] == Unique && [Flag] != Ethereal # (([PoisonAndBoneSkillTab] >= 3) || ([NecromancerSummoningSkillTab] >= 3))					//DARKFORCE SPAWN
+
+//UNIQUE PALADIN
+[Name] == SacredRondache && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 180 && [EnhancedDamage] >= 40 && [PaladinSkills] >= 2 && [ItemToHitPercent] >= 40 && [MagicDamageReduction] >= 5	//ALMA NEGRA
+[Name] == GildedShield && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 175																													//HERALD OF ZAKARUM
+//[Name] == GildedShield && [Quality] == Unique && [Flag] == Ethereal																																				//Ethereal HERALD OF ZAKARUM
+
+//UNIQUE SORCERESS
+//[Name] == SwirlingCrystal && [Quality] == Unique && [Flag] == Ethereal																										//Ethereal THE OCULUS
+//[Name] == EldritchOrb && [Quality] == Unique # [SorceressSkills] >= 3 && [Energy] >= 20 && ([PassiveFireMastery] >= 20 || [PassiveLtngMastery] >= 20)						//ESCHUTA'S TEMPER
+[Name] == EldritchOrb && [Quality] == Unique # [SorceressSkills] >= 3 && (([Energy] >= 25 && [PassiveFireMastery] >= 20) || ([Energy] >= 25 && [PassiveLtngMastery] >= 20))	//ESCHUTA'S TEMPER
+//[Name] == DimensionalShard && [Quality] == Unique # [PassiveColdMastery] >= 20																								//DEATH'S FATHOM
+
+//UNIQUE AMULETS
+//[Type] == Amulet && [Quality] == Unique # [Strength] >= 12 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 100						//SARACEN'S CHANCE
+//[Type] == Amulet && [Quality] == Unique # [Dexterity] >= 25																						//THE CAT'S EYE
+//[Type] == Amulet && [Quality] == Unique # [LifeLeech] >= 6 && [ManaLeech] >= 15																	//CRESCENT MOON
+//[Type] == Amulet && [Quality] == Unique # [PoisonResist] >= 75																					//ATMA'S SCARAB
+//[Type] == Amulet && [Quality] == Unique # [HPRegen] >= 10																						//THE RISING SUN
+//[Type] == Amulet && [Quality] == Unique # [LightResist] >= 35																					//HIGHLORD'S WRATH
+[Type] == Amulet && [Quality] == Unique # [ItemAllSkills] == 2 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 80					//MARA'S KALEIDOSCOPE
+[Type] == Amulet && [Quality] == Unique # [DefensiveAurasSkillTab] == 2 && [AttackVSMonType] >= 225 && [DamageVSMonType] >= 45					//SERAPH'S HYMN
+//[Type] == Amulet && [Quality] == Unique # [DefensiveAurasSkillTab] == 2																			//SERAPH'S HYMN
+[Type] == Amulet && [Quality] == Unique # [ToHit] >= 400 && [Defense] >= 300 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 140	//METALGRID
+
+//UNIQUE JEWELS
+[Name] == Jewel && [Quality] == Unique # (([PassiveColdMastery] >= 5 && [PassiveColdPierce] >= 5) || ([PassiveFireMastery] >= 5 && [PassiveFirePierce] >= 5) || ([PassiveLtngMastery] >= 5 && [PassiveLtngPierce] >= 5) || ([PassivePoisMastery] >= 5 && [PassivePoisPierce] >= 5))	//RAINBOW FACETS
+
+//UNIQUE RINGS
+//[Type] == Ring && [Quality] == Unique # [ItemMagicBonus] == 30 && [ToHit] >= 1					//NAGELRING
+//[Type] == Ring && [Quality] == Unique # [HPRegen] >= 8 && [ManaLeech] >= 7						//MANALD HEAL
+[Type] == Ring && [Quality] == Unique # [ItemMaxManaPercent] >= 25								//STONE OF JORDAN
+//[Type] == Ring && [Quality] == Unique # [MaxHP] >= 40 && [MagicDamageReduction] == 15			//DWARF STAR
+[Type] == Ring && [Quality] == Unique # [Dexterity] >= 20 && [ToHit] >= 150						//RAVEN FROST
+[Type] == Ring && [Quality] == Unique # [LifeLeech] >= 3 && [ItemAllSkills] == 1				//BUL-KATHOS' WEDDING BAND
+[Type] == Ring && [Quality] == Unique # [LifeLeech] >= 9 && [ArmorClassVSMissile] >= 160		//CARRION WIND
+[Type] == Ring && [Quality] == Unique # [PoisonResist] >= 30 && [NormalDamageReduction] >= 11	//NATURE'S PEACE
+[Type] == Ring && [Quality] == Unique # [ItemAbsorbLightPercent] >= 10							//WISP PROTECTOR
+
+//UNIQUE CHARMS
+[Name] == GrandCharm && [Quality] == Unique # (([ItemMagicBonus] >= 40 && [ItemGoldBonus] >= 160) || ([ItemGoldBonus] >= 160 && [ItemReducedPrices] >= 15))	//GHEED'S FORTUNE
+//[Name] == LargeCharm && [Quality] == Unique # [ItemAddAmazonSkills] == 3 && [Strength] >= 10 && [FireResist] >= 10											//HELLFIRE TORCH - AMAZON
+//[Name] == LargeCharm && [Quality] == Unique # [ItemAddAssassinSkills] == 3 && [Strength] >= 10 && [FireResist] >= 10										//HELLFIRE TORCH - ASSASSIN
+//[Name] == LargeCharm && [Quality] == Unique # [ItemAddBarbarianSkills] == 3 && [Strength] >= 10 && [FireResist] >= 10										//HELLFIRE TORCH - BARBARIAN
+//[Name] == LargeCharm && [Quality] == Unique # [ItemAddDruidSkills] == 3 && [Strength] >= 10 && [FireResist] >= 10											//HELLFIRE TORCH - DRUID
+//[Name] == LargeCharm && [Quality] == Unique # [ItemAddNecromancerSkills] == 3 && [Strength] >= 10 && [FireResist] >= 10										//HELLFIRE TORCH - NECROMANCER
+//[Name] == LargeCharm && [Quality] == Unique # [ItemAddSorceressSkills] == 3 && [Strength] >= 10 && [FireResist] >= 10										//HELLFIRE TORCH - SORCERESS
+//[Name] == LargeCharm && [Quality] == Unique # [ItemAddPaladinSkills] == 3 && [Strength] >= 10 && [FireResist] >= 10											//HELLFIRE TORCH - PALADIN
+//[Name] == SmallCharm && [Quality] == Unique # [ItemAllSkills] == 1 && [Strength] >= 10 && [FireResist] >= 10												//ANNIHILUS

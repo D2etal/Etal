@@ -1,0 +1,113 @@
+function NTA_DetectAttackPattern() {
+	return NTA_PaladinAttackPatternInt();
+}
+
+function NTA_Attack(target, firstorder) {
+	return NTA_PaladinAttackInt(target, firstorder);
+}
+
+function NTA_PaladinAttackPatternInt() {
+	var _maxindex, _maxskill;
+	var _avgskilllevel = new Array();
+
+	_avgskilllevel[0] = parseInt((me.GetSkill(112, false) + me.GetSkill(108, false) + me.GetSkill(115, false)) / 3);
+	_avgskilllevel[1] = parseInt((me.GetSkill(106, false) + me.GetSkill(96, false)) / 2);
+	_avgskilllevel[2] = parseInt((me.GetSkill(121, false) + me.GetSkill(101, false) + me.GetSkill(118, false)) / 3);
+
+	_maxindex = -1;
+	_maxskill = 0;
+
+	for (var i = 0; i < _avgskilllevel.length; i++) {
+		if (_avgskilllevel[i] > _maxskill) {
+			_maxindex = i;
+			_maxskill = _avgskilllevel[i];
+		}
+	}
+
+	switch (_maxindex) {
+	case 0:
+		// Blessed Hammer
+		NTConfig_AttackSkill[1] = 112;
+		NTConfig_AttackSkill[2] = 113;
+		NTConfig_AttackSkill[3] = 112;
+		NTConfig_AttackSkill[4] = 113;
+		break;
+	case 1:
+		// Zeal
+		NTConfig_AttackSkill[1] = 106;
+		NTConfig_AttackSkill[2] = 122;
+		NTConfig_AttackSkill[3] = 106;
+		NTConfig_AttackSkill[4] = 122;
+		break;
+	case 2:
+		// Fist of the Heavens
+		NTConfig_AttackSkill[1] = 121;
+		NTConfig_AttackSkill[2] = 123;
+		NTConfig_AttackSkill[3] = 121;
+		NTConfig_AttackSkill[4] = 123;
+		break;
+	}
+
+	return (NTConfig_AttackSkill[1] && NTConfig_AttackSkill[3]);
+}
+
+function NTA_PaladinAttackInt(target, firstorder) {
+	var _primaryindex;
+	var _attackSkill;
+
+	if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (me.hp <= parseInt(me.hpmax * NTConfig_TPChicken,10) / 100)) {
+		if (!NTTMGR_VisitTown()) { return 0; }
+	}
+	_merc = NTC_GetMerc();
+	if(_merc){
+		if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (_merc.hp <= parseInt(_merc.hpmax * NTConfig_MercTPChicken,10) / 100)) {
+			if (!NTTMGR_VisitTown()) { return 0; }
+		}
+	}
+
+	if (firstorder && NTConfig_AttackSkill[0] > -1 && NTA_GetResistance(target, _NTA_SkillDamage[0]) < 100) {
+		if (GetDistance(me, target) > _NTA_SkillRange[0] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[0], 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		if (!NTC_CastSkill(NTConfig_AttackSkill[0], _NTA_SkillHand[0], target)) return 2;
+
+		return 3;
+	}
+
+	_primaryindex = (target.spectype & 0x0A) ? 1 : 3;
+	if (NTConfig_OnlySmiteStationary && NTConfig_AttackSkill[1] == 97 && GetBaseStat("monstats2.txt", target.classid, 56) == 1) _primaryindex = 3;
+
+	_attackIndex = NTA_GetAttackType(target, _primaryindex, 100, 100, 100);
+
+	if (NTConfig_AttackSkill[_attackIndex] > -1) {
+		if (_NTA_SkillRange[_attackIndex] < 4 && !CheckCollision(target.areaid, target.x, target.y, 1)) return 1;
+
+		if (!NTA_PaladinCastSkillInt(_attackIndex, target)) return 2;
+
+		return 3;
+	}
+	return 1;
+}
+
+function NTA_PaladinCastSkillInt(index, target) {
+
+	if (NTConfig_AttackSkill[index] == 112) {
+		if (me.x - target.x < 1 || me.x - target.x > 2 || me.y - target.y < 1 || me.y - target.y > 2) {
+			if (CheckCollision(target.areaid, target.x + 2, target.y + 2, 1)) NTM_MoveTo(target.areaid, target.x + 2, target.y + 2, 0, false, false);
+			else if (me.x - target.x < -4 || me.x - target.x > 2 || me.y - target.y < 0 || me.y - target.y > 2) NTM_MoveTo(target.areaid, target.x - 4, target.y, 0, false, false);
+		}
+	} else {
+		if (GetDistance(me, target) > _NTA_SkillRange[index] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+	}
+
+	if (NTConfig_AttackSkill[index + 1] > -1) NTC_PutSkill(NTConfig_AttackSkill[index + 1], NTC_HAND_RIGHT);
+
+	return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], target);
+}

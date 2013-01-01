@@ -1,0 +1,521 @@
+function locationActionMule(location)
+{
+	switch(location.id)
+	{
+	case 3: // Lobby Chat
+		if(!onMule) {
+			switch(GrabMule) 
+				{
+				case "Main":
+					{
+						Delay(Random(waitInChatBeforeActionsMin, waitInChatBeforeActionsMax));
+						_control = controlData.get(controlData.controls.lobby.button.create); // fixes creation stuck button bug out of unmodded d2nt
+						if(_control && _control.pressed) {
+							controlData.click(controlData.controls.lobby.button.join);
+							Delay(500);
+						}
+								
+						controlData.click(controlData.controls.lobby.button.create);
+						if(MuleNotification) {
+							SendCopyData("D2NT Manager", null, 9<<16, "Creating Mule Game!");
+						}
+					break;
+					}
+				case "Account":
+				case "Mule":
+				case "New":
+					{
+						if(MuleNotification) {
+							SendCopyData("D2NT Manager", null, 9<<16, "Swapping to mule character!");
+						}
+						Delay(1000);
+						controlData.click(controlData.controls.lobby.button.quit);
+					break;
+					}
+				}
+			break;
+		}
+	case 1: // Lobby			
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+		GrabMule = NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 0);
+		switch(onMule)
+			{
+			case false: // on main
+				{
+				switch(GrabMule) 
+					{
+					case "Main":
+						{
+							Delay(Random(waitInChatBeforeActionsMin, waitInChatBeforeActionsMax));
+							_control = controlData.get(controlData.controls.lobby.button.create); // fixes creation stuck button bug out of unmodded d2nt
+							if(_control && _control.pressed) {
+								controlData.click(controlData.controls.lobby.button.join);
+								Delay(500);
+							}
+							
+							controlData.click(controlData.controls.lobby.button.create);
+							if(MuleNotification) {
+								SendCopyData("D2NT Manager", null, 9<<16, "Creating Mule Game!");
+							}
+						break;
+						}
+					case "Account":
+					case "Mule":
+					case "New":
+						{
+							if(MuleNotification) {
+								SendCopyData("D2NT Manager", null, 9<<16, "Swapping to mule character!");
+							}
+							Delay(1000);
+							controlData.click(controlData.controls.lobby.button.quit);
+						break;
+						}
+					}
+				break;
+				}
+			case true: // on mule
+				{
+				switch(GrabMule)
+					{
+					case "Mule":
+						{	
+							if(MuleNotification) {
+								SendCopyData("D2NT Manager", null, 9<<16, "Joining mule game!");
+							}
+							Delay(1000);
+							controlData.click(controlData.controls.lobby.button.join); 
+						break;
+						}
+					case "Main":
+						{
+							if(MuleNotification) {
+								SendCopyData("D2NT Manager", null, 9<<16, "Swapping to main character!");
+							}
+							Delay(1000);
+							controlData.click(controlData.controls.lobby.button.quit);
+							onMule = true;
+						break;
+						}
+					case "New":
+						{
+							if(MuleNotification) {
+								SendCopyData("D2NT Manager", null, 9<<16, "Swapping for a new character!");
+							}
+							Delay(1000);
+							controlData.click(controlData.controls.lobby.button.quit);
+							onMule = true;
+						break;
+						}
+					case "Account":
+						{
+							if(MuleNotification) {
+								SendCopyData("D2NT Manager", null, 9<<16, "Swapping for a new account!");
+							}
+							Delay(1000);
+							controlData.click(controlData.controls.lobby.button.quit);
+							onMule = true;
+						break;
+						}
+					}
+				break;
+				}
+			}
+		break;
+
+	case 2: // Waiting In Line
+        if(GetTickCount()-lastGameMade > waitInLineTimeout)
+            controlData.click(controlData.controls.lobby.inLine.button.cancel);
+        break;
+
+	case 4: // Create Game
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+		ingameScript = "NTAms/NTPermAndDrop.ntj";
+		controlData.setText( controlData.controls.lobby.create.editBox.gameName, myGame);
+		Delay (100);
+		controlData.setText( controlData.controls.lobby.create.editBox.password, MuleGamePassword);
+		Delay (100);
+		controlData.setText(controlData.controls.lobby.create.editBox.characterDifference,"99"); 
+		Delay (100);
+		controlData.setText(controlData.controls.lobby.create.editBox.maxNumberOfPlayers, "8"); 
+		Delay (100);
+		controlData.click(controlData.controls.lobby.create.button.normal);
+		Delay(100);
+		controlData.click(controlData.controls.lobby.create.button.createGame);
+		lastGameMade = GetTickCount();
+		lastGameStatus = 1; 
+		break;
+
+    case 5: // Join Game
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+		ingameScript = "NTAms/NTPickUp.ntj";
+		controlData.setText( controlData.controls.lobby.join.editBox.gameName, muleGame);
+		Delay (500);
+		controlData.setText( controlData.controls.lobby.join.editBox.password, MuleGamePassword);
+		Delay (500);
+		controlData.click(controlData.controls.lobby.join.button.joinGame);
+		RunGC(); 
+		locationTimeout(2000, location);
+		lastGameStatus = 1; // pending join
+		break;
+
+	case 6: // Ladder
+		break;
+
+	case 7: // Channel List
+		break;
+
+	case 8: // Main Menu
+		if(controlData.getCurrentRealmIndex() == me.gatewayid)
+		{
+			outputGameLength();
+			controlData.click(controlData.gameTypes[me.playtype]);
+		}
+		else
+			controlData.click(controlData.controls.mainMenu.button.gateway);
+		break;
+
+	case 9: // Login
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+		GrabMule = NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 0);
+		switch(GrabMule) 
+			{
+			case "Main":
+				{
+					sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+					Delay(loginDelay);
+
+					controlData.setText(controlData.controls.login.editBox.accountName, me.account);
+
+					sendEventToOOG(D2NT_MGR_LOGIN, location.name, 0);
+
+					locationTimeout(5000, location);
+					onMule = false;
+				break;
+				}
+			case "New":
+			case "Mule":
+				{
+					MuleAccount = NT_File("AMS/MuleStatus/" + me.account + "_muleaccount.txt", 0);
+					if(!MuleAccount) {
+						controlData.click(controlData.controls.login.button.createNewAccount);
+					}  else {	
+					controlData.setText(controlData.controls.login.editBox.accountName, MuleAccount);
+					Delay(100);
+					controlData.setText(controlData.controls.login.editBox.password, muleAccountPassword);
+					Delay(100);
+					controlData.click(controlData.controls.login.button.logIn)
+					onMule = true;
+					}
+				break;
+				}
+			case "Account": 
+				{
+					Delay(500);
+					controlData.click(controlData.controls.login.button.createNewAccount);
+					onMule = true;
+				break;
+				}
+			}
+		break;
+		
+	case 10: // Login Error (this is a fatal error, so stop)
+		sendEventToOOG(D2NT_MGR_RESTART, location.name, 10);
+		Delay(3500);
+		break;
+
+	case 11: // Unable To Connect
+		timeoutDelay(unableToConnectRetry*60*1000, location)
+		controlData.click(controlData.controls.login.unableToConnect.button.ok);
+		break;
+
+	case 12: // Character Select
+		var _time, _control;
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+		GrabMule = NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 0);
+		switch (onMule)
+			{
+			case true:
+				{
+				switch(GrabMule) 
+					{
+					case "Main":
+					case "Account":
+						{
+							Delay(1000);
+							controlData.click(controlData.controls.characterSelect.button.exit);
+							break;
+						}
+					case "Mule":
+						{
+							mulepos = NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 0);
+							_control = controlData.get(controlData.controls.characterSelect.textBox.characterInfo[mulepos]);
+							for(_time = 0 ; _time < characterScreenTimeout ; _time += 500)
+							{
+								_control = controlData.get(controlData.controls.characterSelect.textBox.characterInfo[mulepos]);
+								if(_control && _control.GetText() != undefined)
+									break;
+
+								Delay(500);
+							}
+
+							if(_time < characterScreenTimeout)
+							{
+								Delay(characterSelectDelay);
+								
+								controlData.click(controlData.controls.characterSelect.textBox.characters[mulepos], 0, 0, 1);
+								controlData.click(controlData.controls.characterSelect.textBox.characterInfo[mulepos], 0, 0, 1);
+								inGameAt = 0;
+							}
+							else {
+								controlData.click(controlData.controls.characterSelect.button.exit);
+								timeoutDelay(realmDownRetry*60*1000, location);
+							}
+							break;
+						}
+					case "New":
+						{
+							controlData.click(controlData.controls.characterSelect.button.createNew);
+							inGameAt = 0;
+						break;
+						} 
+					}
+				break;
+				}
+			case false:
+				{
+				switch(GrabMule)
+					{
+					case "Main":
+						{
+							for(_time = 0 ; _time < characterScreenTimeout ; _time += 500)
+							{
+								_control = controlData.get(controlData.controls.characterSelect.textBox.characterInfo[me.charloc]);
+								if(_control && _control.GetText() != undefined)
+									break;
+
+								Delay(500);
+							}
+
+							if(_time < characterScreenTimeout)
+							{
+								Delay(characterSelectDelay);
+
+								controlData.click(controlData.controls.characterSelect.textBox.characters[me.charloc], 0, 0, 1);
+								controlData.click(controlData.controls.characterSelect.textBox.characterInfo[me.charloc], 0, 0, 1);
+
+								// reset last game made, so it doesnt make a game immediately
+								inGameAt = 0;
+								setNextGameMake();
+							}
+							else {
+								controlData.click(controlData.controls.characterSelect.button.exit);
+								timeoutDelay(realmDownRetry*60*1000, location);
+							}
+						break;
+						}
+					case "Mule":
+						{
+							Delay(1000);
+							controlData.click(controlData.controls.characterSelect.button.exit);
+						break;
+						}
+					}
+				break;
+				}
+			}
+		break;
+
+	case 13: // Realm Down - Character Select screen
+		controlData.click(controlData.controls.characterSelect.button.exit);
+		timeoutDelay(realmDownRetry*60*1000, location);
+		break;
+
+	case 14: // Character Select - Disconnected
+		timeoutDelay(disconnectedRetry*60*1000, location);
+		controlData.click(controlData.controls.characterSelect.disconnected.button.ok);
+		break;
+
+	case 15: // New Character - unknown???
+		break;
+
+	case 16: // Character Select - Please Wait popup
+		if(!locationTimeout(pleaseWaitTimeout, location))
+			controlData.click(controlData.controls.characterSelect.pleaseWait.button.cancel);
+		break;
+
+	case 17: // Lobby - Lost Connection - just click okay, since we're toast anyway
+		controlData.click(controlData.controls.lobby.lostConnection.button.ok);
+		break;
+
+	case 18: // D2 Splash
+		controlData.click(controlData.controls.d2Splash.textBox.copyright);
+		break;
+
+	case 19: // Login - Cdkey In Use
+		timeoutDelay(cdkeyInUseRetry*60*1000, location);
+		controlData.click(controlData.controls.login.cdkeyInUse.button.ok);
+		break;
+
+	case 20: // Single Player - Select Difficulty
+		controlData.click(controlData.singlePlayerDifficulties[me.diff]);
+		break;
+
+	case 21: // Main Menu - Connecting
+		if(!locationTimeout(connectingToBnetTimeout, location))
+			controlData.click(controlData.controls.mainMenu.connecting.button.cancel);
+		break;
+
+	case 22: // Login - Invalid Cdkey (classic or xpac)
+		sendEventToOOG(D2NT_MGR_RESTART, location.name, 3600);
+		Delay(3500);
+		break;	
+
+	case 23: // Character Select - Connecting
+		if(!locationTimeout(characterScreenTimeout, location))
+			controlData.click(controlData.controls.characterSelect.button.exit);
+		break;
+
+	case 24: // Server Down - not much to do but wait..
+		break;
+
+	case 25: // Lobby - Please Wait
+		if(!locationTimeout(pleaseWaitTimeout, location))
+			controlData.click(controlData.controls.lobby.pleaseWait.button.cancel);
+		break;
+
+	case 26: // Lobby - Game Name Exists
+		sendEventToOOG(D2NT_MGR_PRINT_LOG, "Game already exists", 0);
+		inGameAt = 0;
+		lastGameStatus = 0;
+		break;
+
+	case 27: // Gateway Select
+		controlData.clickRealmEntry(me.gatewayid);
+		controlData.click(controlData.controls.gateway.button.ok);
+		break;
+
+	case 28: // Lobby - Game Does Not Exist
+		inGameAt = Random(gameDoesNotExistDelayMin, gameDoesNotExistDelayMax);
+		lastGameStatus = 0;
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name + " Game seems to have been closed");
+		NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "Main");
+		Delay(500);
+		NT_File("AMS/MuleStatus/" + me.account + "_mulingstatus.txt", 1, "false");
+		Delay(500);
+		locationTimeout(gameDoesNotExistTimeout, location);
+		break;
+
+	case 29: // New Character - hero class select
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+		if(MuleNotification) {
+			SendCopyData("D2NT Manager", null, 9<<16, "New mule has been made!");
+		}
+		NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "Mule");
+		Delay(500);
+		controlData.clickClass(CreateCharacterClass);
+		Delay(500);
+		controlData.setText(controlData.controls.characterCreate.editBox.charName, (CharPrefix + getRandomStringNames(NT_CheckNameLength(CharPrefix, 15), false))); 
+		if(Hardcore)
+		{	
+			_control = controlData.get(controlData.controls.characterCreate.button.hardcore);
+			if(_control && !_control.pressed) {
+			controlData.click(controlData.controls.characterCreate.button.hardcore);
+			}
+			Delay(1000);
+		} else {
+			_control = controlData.get(controlData.controls.characterCreate.button.hardcore);
+			if(_control && _control.pressed) {
+				controlData.click(controlData.controls.characterCreate.button.hardcore);
+			}
+			Delay(1000);
+		}
+		
+		if(Ladder)
+		{
+			_control = controlData.get(controlData.controls.characterCreate.button.ladderChar);
+			if(_control &&  !_control.pressed) {
+			controlData.click(controlData.controls.characterCreate.button.ladderChar);
+			}
+			Delay(1000);
+		} else {
+			_control = controlData.get(controlData.controls.characterCreate.button.ladderChar);
+			if(_control && _control.pressed) {
+				controlData.click(controlData.controls.characterCreate.button.ladderChar);
+			}
+			Delay(1000);
+		}
+		
+		if(Classic)
+		{
+			_control = controlData.get(controlData.controls.characterCreate.button.expansionChar);
+			if(_control && _control.pressed) {
+			controlData.click(controlData.controls.characterCreate.button.expansionChar);
+			}
+			Delay(500);
+		} else {
+			_control = controlData.get(controlData.controls.characterCreate.button.expansionChar);
+			if(_control && !_control.pressed) {
+				controlData.click(controlData.controls.characterCreate.button.expansionChar);
+			}
+			Delay(500);
+		}
+		
+		controlData.click(controlData.controls.characterCreate.button.ok);
+		Delay(500);
+		
+		if(Hardcore)
+		{	
+			controlData.click(controlData.controls.characterCreate.button.continueHardcore);
+		}
+		
+		Delay(500);
+		onMule = true;
+		break;
+
+	case 30: // New Character - Character already exists
+		controlData.click(controlData.controls.characterCreate.alreadyExists.button.ok);
+		Delay(500);
+		break;	
+
+	case 31: // Terms of Use
+		controlData.click(controlData.controls.termsOfUse.button.agree);
+		Delay(500);
+		break;
+		
+	case 32: // Create new Account
+		if(MuleNotification) {
+			SendCopyData("D2NT Manager", null, 9<<16, "New account has been made!");
+		}
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+		var _accountname = (AccountPrefix + getRandomStringNames(NT_CheckNameLength(AccountPrefix, 12), true)); 
+		NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "New");
+		Delay(500);
+		NT_File("AMS/MuleStatus/" + me.account + "_muleaccount.txt", 1, _accountname);
+		Delay(500);
+		NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 1, "0");
+		NT_LogMuleAccount(_accountname);
+		Delay(500);
+		controlData.setText(controlData.controls.newAccount.editBox.accountName, _accountname);
+		Delay(500); 
+		controlData.setText(controlData.controls.newAccount.editBox.password, muleAccountPassword);
+        Delay (500);
+		controlData.setText(controlData.controls.newAccount.editBox.confirmPassword, muleAccountPassword);		
+		Delay (500);
+		controlData.click(controlData.controls.newAccount.button.ok);
+		Delay(500);
+		onMule = true;
+		Delay(500);
+		locationTimeout(5000, location);
+		break;
+	
+	case 33: // register email
+		controlData.click(controlData.controls.email.button.dontRegister);
+		sendEventToOOG(D2NT_MGR_PRINT_LOG, "New account ready", 0);
+		break;
+		
+	case 34: // dont reg mail
+		controlData.click(controlData.controls.email.confirm.button.continue);
+		break;
+
+	}
+}

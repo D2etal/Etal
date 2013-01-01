@@ -1,0 +1,21 @@
+//NTConfig_Script.push("TLInventory.ntj"); //Add this line to your NT Config to run it
+//NTConfig_TLInventory_SkipEquipped   = false;         // true = just log stash and inventory
+NTConfig_TLInventory_Delimeter      = "-";            // output file delimiter - see function TTL_WriteIt()
+NTConfig_TLInventory_SortOrder      = "QUALITY|TYPE|CLASS|NAME";
+
+function NTMain()
+{
+    Include("libs/common/NTCommon.ntl");
+    NTC_IncludeLibs();
+
+    NTC_IncludeConfig("NTBot/char_configs");
+
+    NT_LoadConfig();
+
+    Print(COLOR_3 + "[Toothless Inventory] - Load");
+
+    if(!NTTM_CheckAct()) { NTC_SendMsgToScript("TLInventory.ntj", "NTTM_CheckAct()"); return; }
+
+    TLI_DoIt();
+    NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}

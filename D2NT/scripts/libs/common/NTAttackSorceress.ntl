@@ -1,0 +1,221 @@
+function NTA_DetectAttackPattern() {
+	return NTA_SorceressAttackPatternInt();
+}
+
+function NTA_Attack(target, firstorder) {
+	return NTA_SorceressAttackInt(target, firstorder);
+}
+
+function NTA_SorceressAttackPatternInt() {
+	var _maxindex, _maxskill;
+	var _avgskilllevel = new Array();
+
+	_avgskilllevel[0] = parseInt((me.GetSkill(59, false) + me.GetSkill(39, false) + me.GetSkill(45, false) + me.GetSkill(55, false)) / 4,10);
+	_avgskilllevel[1] = parseInt((me.GetSkill(53, false) + me.GetSkill(38, false) + me.GetSkill(48, false) + me.GetSkill(49, false)) / 4,10);
+	_avgskilllevel[2] = parseInt((me.GetSkill(47, false) + me.GetSkill(36, false) + me.GetSkill(56, false) + me.GetSkill(64, false)) / 4,10);
+	_avgskilllevel[3] = parseInt((me.GetSkill(47, false) + me.GetSkill(36, false) + me.GetSkill(56, false)) / 3,10);
+
+	_maxindex = -1;
+	_maxskill = 0;
+
+	for (var i = 0; i < _avgskilllevel.length; i++) {
+		if (_avgskilllevel[i] > _maxskill) {
+			_maxindex = i;
+			_maxskill = _avgskilllevel[i];
+		}
+	}
+
+	switch (_maxindex) {
+	case 0:
+		// Blizzard + Glacial Spike
+		NTConfig_AttackSkill[1] = 59;
+		NTConfig_AttackSkill[2] = 55;
+		NTConfig_AttackSkill[3] = 59;
+		NTConfig_AttackSkill[4] = 55;
+		break;
+	case 1:
+		// Chain Lightning + Lightning
+		NTConfig_AttackSkill[1] = 49;
+		NTConfig_AttackSkill[3] = 53;
+		break;
+	case 2:
+		// Fire Ball + Frozen Orb
+		NTConfig_AttackSkill[0] = 64;
+		NTConfig_AttackSkill[1] = 47;
+		NTConfig_AttackSkill[3] = 47;
+		NTConfig_AttackSkill[5] = 64;
+		NTConfig_AttackSkill[6] = 55;
+		break;
+	case 3:
+		// Fire Ball + Meteor
+		NTConfig_AttackSkill[1] = 56;
+		NTConfig_AttackSkill[2] = 47;
+		NTConfig_AttackSkill[3] = 56;
+		NTConfig_AttackSkill[4] = 47;
+		break;
+	}
+
+	return (NTConfig_AttackSkill[1] && NTConfig_AttackSkill[3]);
+}
+
+function NTA_SorceressAttackInt(target, firstorder) {
+	var _primaryindex;
+	var _attackSkill;
+
+	if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (me.hp <= parseInt(me.hpmax * NTConfig_TPChicken,10) / 100)) {
+		if (!NTTMGR_VisitTown()) { return 0; }
+	}
+	_merc = NTC_GetMerc();
+	if(_merc){
+		if ((NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe, true)) || (_merc.hp <= parseInt(_merc.hpmax * NTConfig_MercTPChicken,10) / 100)) {
+			if (!NTTMGR_VisitTown()) { return 0; }
+		}
+	}
+	
+	if (NTC_GetSkillLevel(58) && me.GetState(30) == 0) { // check for ES recast
+		NTC_CastSkill(58, NTC_HAND_RIGHT);
+	}
+
+	if (firstorder && NTConfig_AttackSkill[0] > -1 && NTA_GetResistance(target, _NTA_SkillDamage[0]) < 100 && me.GetSkillStatus(NTConfig_AttackSkill[0]) != 8) {
+		if (GetDistance(me, target) > _NTA_SkillRange[0] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[0], 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		if (!NTC_CastSkill(NTConfig_AttackSkill[0], _NTA_SkillHand[0], target)) return 2;
+
+		return 3;
+	}
+
+	var _caststatic = true;
+
+	if (NTConfig_StaticBossesOnly) _caststatic = NTConfig_StaticBossesSelect.indexOf(target.name) > -1;
+
+	if (_caststatic && NTConfig_CastStatic < 100 && parseInt(target.hp * 100 / target.hpmax) > NTConfig_CastStatic && NTA_GetResistance(target, NTA_DAMAGE_LIGHTNING) <= 80) {
+		var _staticlevel = NTC_GetSkillLevel(42);
+
+		if (_staticlevel > 0) {
+			var _staticrange;
+			var _castx, _casty;
+
+			_staticrange = Math.floor((5 + _staticlevel - 1) * 2 / 3);
+
+			if (GetDistance(me, target) > _staticrange || !CheckCollision(me, target, 6)) {
+				var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _staticrange, 6);
+
+				if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+			}
+
+			if (target.x < me.x) _castx = me.x - 1;
+			else if (target.x > me.x) _castx = me.x + 1;
+			else _castx = me.x;
+
+			if (target.y < me.y) _casty = me.y - 1;
+			else if (target.y > me.y) _casty = me.y + 1;
+			else _casty = me.y;
+
+			if (!CheckCollision(target.areaid, _castx, _casty, 1)) {
+				_castx = me.x;
+				_casty = me.y;
+			}
+
+			if (!NTC_CastSkill(42, NTC_HAND_RIGHT, _castx, _casty)) return 2;
+
+			return 3;
+		}
+	}
+
+	_primaryindex = (target.spectype & 0x0A) ? 1 : 3;
+
+	_attackSkill = NTA_GetAttackType(target, _primaryindex, 91, 81, 81);
+
+	if (NTConfig_AttackSkill[_attackSkill] > -1) {
+		if (!NTA_SorceressCastSkillInt(_attackSkill, target, _primaryindex)) return 2;
+
+		return 3;
+	}
+
+
+	if (NTA_GetResistance(target, _NTA_SkillDamage[_primaryindex]) < 100 || (_primaryindex == 1 && NTC_GetMerc())) {
+		if (!NTA_SorceressCastSkillInt(_primaryindex, target, _primaryindex)) return 2;
+
+		return 3;
+	}
+
+	return 1;
+}
+
+function NTA_SorceressCastSkillInt(index, target, primaryIndex) {
+	var secondarySkill = 0;
+	if (target.name == "Baal" && NTConfig_AttackSkill[10] > -1) {
+		index = 10;
+		if(NTConfig_AttackSkill[index] == 38) {
+			_NTA_SkillRange[index] = 2;
+		}
+	}
+        
+	if ((target.name == "Mephisto" || target.name == "Andariel" || target.name == "Duriel" || target.name == "Diablo") && NTConfig_AttackSkill[9] > -1) {
+		index = 9;
+		if(NTConfig_AttackSkill[index] == 38) {
+			_NTA_SkillRange[index] = 2;
+		}		
+	}
+	
+	//var secondarySkill = 0;
+	_haveCL = NTC_GetSkillLevel(53); // check to see if we even have CL
+	_havetele = NTC_GetSkillLevel(54);
+	if (DebugAttacksInGame) {
+		Print(COLOR_3 + " sorc attack count = " + _sorcattack);
+	}
+	if (DebugAttacksInGame && target.GetState(28) > 0) {
+		Print(COLOR_2 + "target convicted");
+		Print(COLOR_2 + "continue attack");
+	}
+	if (_sorcattack >= 20) _sorcattack = 0;
+	if (_havetele && NTConfig_DancingSorc) {
+		NTT_CheckMerc(); // revive merc 
+		if ((NTA_CheckMyHp() || ((target.GetState(28) <= 0) && NTA_CheckMercInfinity())) || (_sorcattack % NTConfig_AttackJump) == 0) {
+			if (DebugAttacksInGame && target.GetState(28) <= 0) {
+				Print(COLOR_11 + "target not convicted");
+				Print(COLOR_11 + "let's dance");
+			}
+			NTA_Bounce(target, index);
+		}
+	}
+	if (me.GetSkillStatus(NTConfig_AttackSkill[index]) != 8) {
+		if (GetDistance(me, target) > _NTA_SkillRange[index] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[index], 4);
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		if (NTConfig_ChainLightOnLightImmunes && NTA_GetResistance(target, NTA_DAMAGE_LIGHTNING) >= 95 && _haveCL > 0) {
+			if (DebugAttacksInGame) {
+				Print(COLOR_9 + " Target Light resist = " + NTA_GetResistance(target, NTA_DAMAGE_LIGHTNING));
+				Print(COLOR_9 + "Switching to CL");
+			} // need to add debug to config
+			return (NTC_CastSkill(53, NTC_HAND_LEFT, target))
+		}
+
+		return NTC_CastSkill(NTConfig_AttackSkill[index], _NTA_SkillHand[index], target);
+	}
+
+	secondarySkill = NTA_GetAttackType(target, primaryIndex + 1, 81, 81, 81);
+	if (NTConfig_AttackSkill[secondarySkill] > -1) {
+		if (GetDistance(me, target) > _NTA_SkillRange[secondarySkill] || !CheckCollision(me, target, 4)) {
+			var _pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, _NTA_SkillRange[secondarySkill], 4);
+
+			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
+		}
+
+		return NTC_CastSkill(NTConfig_AttackSkill[secondarySkill], _NTA_SkillHand[secondarySkill], target);
+	}
+
+	for (var i = 0; i < 25; i++) {
+		NTC_Delay(NTC_DELAY_FRAME);
+
+		if (me.GetSkillStatus(NTConfig_AttackSkill[index]) != 8) break;
+	}
+
+	return false;
+}

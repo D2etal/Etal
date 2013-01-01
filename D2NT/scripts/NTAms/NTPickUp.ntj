@@ -1,0 +1,284 @@
+// Written By nullard and revised by Diabolic
+
+Include('libs/common/NTCommon.ntl');
+Include('NTBot/char_configs/NTConfig.ntl');
+NTC_IncludeLibs();
+var _endTime = null;
+var justGrabIt = false;
+var mulepos = NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 0);
+var muleAccount = NT_File("AMS/MuleStatus/" + me.account + "_muleaccount.txt", 0);
+
+function NTMain()
+{
+	_endTime = GetTickCount() + 1000 * 60 * 3 + 1000 * 15;
+	
+	Say("mule position is " + mulepos);
+	
+	if(justGrabIt) 
+		_endTime = GetTickCount() + 1000 * 60 * 1;
+		
+	Delay(1000);
+	var _counter = 0;
+	while (_counter < 10) {
+		Delay(500);
+		_counter++;
+	}
+	NTConfig_NIPFilePath = ['PickupEverything.nip']; 
+	NTConfig_Columns[0] = [1,1,1,1,1,1,1,1,1,1];
+	NTConfig_Columns[1] = [1,1,1,1,1,1,1,1,1,1];
+	NTConfig_Columns[2] = [1,1,1,1,1,1,1,1,1,1];
+	NTConfig_Columns[3] = [1,1,1,1,1,1,1,1,1,1];
+	NTSI_LoadNIPFiles('NTBot/item_configs');
+
+	NTConfig_SnagRange = 30;
+	NTConfig_FreeSpace = 2;
+	NTTM_CheckAct(1);
+	
+	SetUIState(0x01,true);
+		var _items = me.GetItems();
+			for(var i = 0 ; i < _items.length ; i++) {
+				if(_items[i].mode == 0 && (_items[i].classid == 529 || _items[i].classid == 530)) {
+			NTT_DropItem(_items[i]);
+		}
+	}
+	SetUIState(0x01,false);
+	
+	for (var _ctr=0;_ctr<5; _ctr++) {
+		if (!_ItemsOnGround()) {
+			NTMU_TLMuleInventory();
+			while (GetTickCount() < _endTime) {
+				SetStatusText('Finished muling. Time until NG (' +
+						parseInt((_endTime - GetTickCount())/1000) + 's)');
+				Delay(1000);
+			}
+			NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "Main");
+				NTC_Delay(500);
+					NT_File("AMS/MuleStatus/" + me.account + "_mulingstatus.txt", 1, "false");
+				NTC_Delay(500);
+			NT_File("AMS/MuleStatus/" + me.account + "_mulegame.txt", 1);
+			CloseD2();
+		}
+		NTTM_TownMove('stash');
+		_stash = NTC_FindUnit(NTC_UNIT_OBJECT, NTC_UNIT_STASH);
+		if (!NTT_DoInteract(_stash)) NTT_DoInteract(_stash);
+		if (!NTT_ManageStash()) NTT_ManageStash();
+		Delay(1500);
+		me.Cancel(1);
+		if (!_GrabItems() && _ItemsOnGround() && !_GrabItems()) { 
+			NTMU_TLMuleInventory();
+			while (GetTickCount() < _endTime) {
+				SetStatusText('Waiting before next mule(' +
+						parseInt((_endTime - GetTickCount())/1000) + 's)');
+				Delay(1000);
+			}
+			if(!_GrabItems()) {
+			nextMulePos(mulepos);
+			NTC_Delay(500);
+			ExitGame();
+			}
+		}
+	}
+	NTMU_TLInventory();
+	while (GetTickCount() < _endTime) {
+		SetStatusText('Finished muling. Time until NG (' +
+				parseInt((_endTime - GetTickCount())/1000) + 's)');
+		Delay(1000);
+	}
+	NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "Main");
+		NTC_Delay(500);
+			NT_File("AMS/MuleStatus/" + me.account + "_mulingstatus.txt", 1, "false");
+		NTC_Delay(500);
+	NT_File("AMS/MuleStatus/" + me.account + "_mulegame.txt", 1);	
+	ExitGame();
+}
+
+function _GrabItems()
+{
+	var _item = NTC_FindUnit(NTC_UNIT_ITEM);
+	var _itemsChecked = [];
+	if(!_item) return false;
+	var _pickedOne = false;
+	do {
+		if(_item.mode == 3 || _item.mode == 5) {
+			if(NTSI_IsIgnoredItemInt(_item.classid) || _item.classid == 529 || _item.classid == 530)
+				continue;
+
+			if (NTSI_CheckItem(_item, false)[0]) {
+				_itemsChecked.push(new NTSI_ItemInt(_item, true));
+			}
+		}
+	} while(_item.GetNext());
+	var _checkedItem = null;
+	while (_itemsChecked.length) {
+		_checkedItem = _itemsChecked.pop();
+		_item = NTC_FindUnit(NTC_UNIT_ITEM, _checkedItem.GID);
+		if (NTT_CheckSpace(_item.xsize, _item.ysize)) {
+			if (NTSI_PickUpItemInt(_item)) _pickedOne = true;
+		}
+		else if (!NTT_CheckSpace(1, 1)) return _pickedOne;
+	}
+	return _pickedOne;
+}
+
+var _ItemsOnGround = function() {
+	var _item = NTC_FindUnit(NTC_UNIT_ITEM);
+	if (!_item) return false;
+	do {
+		if(_item.mode == 3 || _item.mode == 5) {
+			if(NTSI_IsIgnoredItemInt(_item.classid) || _item.classid == 529 || _item.classid == 530)
+				continue;
+				}
+			return true;
+	} while(_item.GetNext());
+	return false;
+};
+
+
+function NTMU_TLMuleInventory() {
+	NTConfig_TLInventory_SkipEquipped   = true;         // true = just log stash and inventory
+	NTConfig_TLInventory_Delimeter      = "-";            // output file delimiter - see function TTL_WriteIt()
+	NTConfig_TLInventory_SortOrder      = "QUALITY|TYPE|CLASS|NAME";
+	
+	Print(COLOR_3 + "[Toothless Inventory] - Load");
+   
+	TLI_MuledIt();
+	Print ("Finished");
+}
+
+function TLI_MuledIt(verbose) {
+	Print ("Attempting to log inventory ...");
+   
+   	if(arguments.length < 1)
+		var verbose = false;
+		
+	var items = me.GetItems();
+	items.sort(function(a, b){
+		var nameA=a.name.toLowerCase(), nameB=b.name.toLowerCase()
+		if (nameA < nameB) //sort string ascending
+			return -1
+		if (nameA > nameB)
+			return 1
+		return 0 //default return value (no sorting)
+	});
+	var logged = new Array();
+	if (items) {
+		for(var i = 0 ; i < items.length ; i++) {
+			item = items[i];
+			ignore = _NTT_IgnoredItems.join("-");
+			ignore += "-box";
+         
+			if(ignore.indexOf(item.code) == -1) {
+				if(!NTConfig_TLInventory_SkipEquipped)
+					logged.push(item);
+				else if (item.mode == 0)
+					logged.push(item);
+			}
+		}
+		if (logged.length) {
+			var fileName = "AMS/MuleLogs/" + muleAccount + "_" + me.name + ".txt";
+			_file = FileOpen(fileName, 1);
+			if (_file) {
+				for (var i = 0; i < logged.length; i++)
+					TLI_LogItem(_file, logged[i], verbose);
+				_file.Close();
+				Print (COLOR_2 + logged.length + " items written to - " + fileName + " -");
+			}
+			else
+				Print(COLOR_1 + "Unable to write file to - " + fileName);
+		}
+		else
+			Print(COLOR_1 + "No items on this character to log");
+	}
+	else
+		Print(COLOR_1 + "No items on this character to log");
+}
+
+function nextMulePos(pos)
+{
+	switch(pos)
+		{
+		case "0":
+			{
+			NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "New");
+			NTC_Delay(500);
+			NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 1, "1");
+			NTC_Delay(500);
+			break;
+			}
+		case "1":
+			{
+			NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "New");
+			NTC_Delay(500);
+			NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 1, "2");
+			NTC_Delay(500);
+			break;
+			}
+		case "2":
+			{
+			NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "New");
+			NTC_Delay(500);
+			NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 1, "3");
+			NTC_Delay(500);
+			break;
+			}
+		case "3":
+			{
+			NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "New");
+			NTC_Delay(500);
+			NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 1, "4");
+			NTC_Delay(500);
+			break;
+			}
+		case "4":
+			{
+			NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "New");
+			NTC_Delay(500);
+			NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 1, "5");
+			NTC_Delay(500);
+			break;
+			}
+		case "5":
+			{
+			NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "New");
+			NTC_Delay(500);
+			NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 1, "6");
+			NTC_Delay(500);
+			break;
+			}
+		case "6":
+			{
+			NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "New");
+			NTC_Delay(500);
+			NT_File("AMS/MuleStatus/" + me.account + "_locstatus.txt", 1, "7");
+			NTC_Delay(500);
+			break;
+			}
+		case "7":
+			{
+			NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "Account");
+			NTC_Delay(500);
+			break;
+			}
+		default:
+			{
+			while(1) {
+				Say("!Where is the mule!");
+				NTC_Delay(5000);
+				}
+			break;
+			}
+		}
+}
+
+function tryItemsAgain()
+{
+	var _item = NTC_FindUnit(NTC_UNIT_ITEM);
+	for(var i = 0; i < _item.length; i++) {
+		if(_item.mode == 3 || _item.mode == 5) {
+			if(!NTSI_IsIgnoredItemInt(_item.classid) && _item.classid != 529 && _item.classid != 530) {
+				NTSI_PickUpItemInt(_item);
+			}
+		}
+	}
+	return;
+}

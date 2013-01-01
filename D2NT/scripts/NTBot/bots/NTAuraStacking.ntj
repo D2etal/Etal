@@ -1,0 +1,44 @@
+function NTMain() {
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+	NT_LoadConfig();
+	NTA_Initialize();
+
+	Print(COLOR_1 + "WARNING THIS IS NOT SAFE FOR BOTTING");
+	Delay(5e2);
+	Print(COLOR_1 + "YOU WILL LOSE YOUR EQUIPMENT");
+
+	SetUIState(0x24, true);
+	SetUIState(0x01, true);
+
+	if(NTConfig_ArmorStack > 0){
+		Print("Stacking armor aura " + NTConfig_ArmorStack + " times!");
+		for (var i = 0; i < NTConfig_ArmorStack; i++) {
+			me.ClickMercItem(3); Delay(500)
+			me.ClickItem(3); Delay(500)
+			me.ClickMercItem(3); Delay(500)
+		}
+		me.ClickMercItem(4); Delay(500)
+		me.ClickMercItem(4);
+	}
+	if(NTConfig_HelmStack > 0){
+		Print("Stacking helm aura " + NTConfig_HelmStack + " times!");
+		for (var i = 0; i < NTConfig_HelmStack; i++) {
+			me.ClickMercItem(1); Delay(500)
+			me.ClickItem(1); Delay(500)
+			me.ClickMercItem(1); Delay(500)
+		}
+		me.ClickMercItem(4); Delay(500)
+		me.ClickMercItem(4);
+	}
+	if(NTConfig_WeaponStack > 0){
+		Print("Stacking weapon aura " + NTConfig_WeaponStack + " times!");
+		for (var i = 0; i < NTConfig_StackAmmount; i++) {
+			me.ClickMercItem(4); Delay(500)
+			me.ClickItem(4); Delay(500)
+			me.ClickMercItem(4); Delay(500)
+		}
+	}
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}

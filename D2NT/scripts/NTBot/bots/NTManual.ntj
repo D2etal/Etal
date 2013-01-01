@@ -1,0 +1,39 @@
+function NTMain()
+{
+	var warncount;
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+	
+	SetUIState(0x0A, true);
+	if(NTConfig_ShowEnemies)
+		me.showenemyonautomap = true; // set this as a config option
+	if(NTConfig_RevealMap)
+		me.revealautomap	 = true; // set this as a config option
+	
+	me.maxgametime = 0;
+	
+	while(1){
+		warncount++;
+		if(NTConfig_PickitOn)  // run pickit while playing
+			NTSI_PickItems();
+		if(NTConfig_CheckStuff && warncount%3 == 0) // checks mp, hp, tp's, and merc
+			NTT_CheckNeedTown(3, 3);
+		Delay(1e3);
+	}
+}
+
+function NT_CheckNeedTown(Hpshort, Mpshort){ 
+	if(NTT_CheckBeltHp(Hpshort))
+		Print(COLOR_1 + " you have used 3 healing potions you might want to town");
+	if(NTT_CheckBeltMp(Mpshort))
+		Print(COLOR_1 + " you have used 3 mana potions you might want to town");
+	if(NTConfig_UseMerc && NTT_CheckMerc())
+		Print(COLOR_1 + " your merc is dead you might want to revive him");
+	if(NTTMGR_CheckScrolls(1) < 4)
+		Print(COLOR_1 + " You have less than 4 tp scrolls don't forget to buy more");		
+	return;
+}

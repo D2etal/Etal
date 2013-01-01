@@ -1,0 +1,142 @@
+//Necro starter, used to quickly get some skeletons from the dead bodies in pindlegarden!
+//The part moving to and through the red portal humbly stolen from Etals Pindleskin script
+//summoningpart is written by Chairman
+
+function NTMain()
+{
+	
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct())
+	{
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	if(!NTM_TakeWaypoint(111)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+	//NTP_CastBC(true);
+	NTP_DoPrecast(true);
+	if(!NTM_TakeWaypoint(109)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+	
+	if(!NTTM_TownMove("portal"))
+	{
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_UsePortal("Portal", 121))
+	{
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_UsePortal()");
+		return;
+	}
+	if(NTConfig_SaferSummons) {
+		NTM_MoveTo(me.areaid, 10060, 13277);
+		NT_PindleGardenSummons();
+	} else {
+		//summonPos = [10041, 13266, 10076, 13271];
+		
+		summonPos = [10050, 13271, 10074, 13277];
+		for(var i = 0 ; i < 4; i+=2) {
+			NTM_MoveTo(me.areaid, summonPos[i], summonPos[i+1]);
+			NT_PindleGardenSummons();
+		}
+	}
+
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function NT_RaiseNecroArmy(Num, Type, Skill) { // Type: 363 = skellies, 364 = mages Skill: 70 = skellies, 80 = mages
+	if (Num <= 0) return false;
+
+	var _skeletoncount = 0;
+	var _skeleton = NTC_FindUnit(NTC_UNIT_MONSTER, Type);
+
+	if (_skeleton) {
+		do {
+			if (NTC_CheckOwner(_skeleton) && _skeleton.hp > 0) {
+				_skeletoncount++;
+			}
+		} while (_skeleton.GetNext());
+	}
+
+	if (_skeletoncount >= Num) return false;
+
+	var _corpse = NTC_FindUnit(NTC_UNIT_MONSTER);
+
+	if (_corpse) { // in case anyone wonders why I went with this one, it is faster by about 3 summons
+		do {
+			if (
+			_corpse != null && _corpse.mode == 12 && GetDistance(me, _corpse) < 25 &&
+
+			!(_corpse.GetState(96)) && //revive
+			!(_corpse.GetState(104)) && //nodraw
+			!(_corpse.GetState(107)) && //shatter
+			!(_corpse.GetState(118)) && //noselect
+			_corpse.classid != 289 && //clay golem
+			_corpse.classid != 290 && //blood golem
+			_corpse.classid != 291 && //iron golem
+			_corpse.classid != 292 && //fire golem
+			_corpse.classid != 363 && //necro skeleton
+			_corpse.classid != 364 //&& //necro mage
+			) {
+				if (NTC_CastSkill(Skill, NTC_HAND_RIGHT, _corpse)) { _skeletoncount++; }
+				if (_skeletoncount >= Num) { return false; }
+			}
+		} while (_corpse.GetNext());
+	}
+/*
+	if (_corpse) { // this one is slower
+		do {
+			if (NTA_IsValidCorpse(_corpse)) {
+				if (NTC_CastSkill(Skill, NTC_HAND_RIGHT, _corpse)) { _skeletoncount++; }
+				if (_skeletoncount >= Num) { return false; }
+				//Print(Num + " " + Type + " " + Skill);
+			}
+		} while (_corpse.GetNext());
+	}
+*/	
+	return true;
+}
+
+function NT_PindleGardenSummons() {  // Num, Type, Skill
+	
+	var summonType =[363, 364]; // Type
+	var summonAmount = [NTConfig_SkeletonArmy, NTConfig_MageArmy]; // Num
+	var summonSkill = [70, 80]; // Skill
+	
+	var summonfailcount = 0;
+	
+	for(var i = 0 ; i < summonType.length ; i++) {
+		do {
+			var _deadbody = NTC_FindUnit(NTC_UNIT_MONSTER);
+			if (_deadbody == "[object Unit]") { //This avoids a game crash when the bodies have awoken!
+				summonfailcount++;
+			}
+			else { 
+				NT_RaiseNecroArmy(summonAmount[i], summonType[i], summonSkill[i]); //Found a dead guy? summon a skeleton from him!
+			}
+		} while(NT_RaiseNecroArmy(summonAmount[i], summonType[i], summonSkill[i]) && summonfailcount < summonAmount[i]);
+		
+		summonfailcount = 0;
+	}
+	return;
+}

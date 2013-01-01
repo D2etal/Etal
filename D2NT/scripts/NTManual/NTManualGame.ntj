@@ -1,0 +1,445 @@
+var Rev = "0.801B";
+
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+
+	Include("NTManual/Manual_Game/Variables.ntl");
+	MG_LoadConfig();
+	CheckMap();
+
+	_checkPlayerTotal();
+	MG_InitializeStats();
+
+	if(NTConfig_HostileHandler)
+		Load("NTBot/tools/NTHostHandler.ntj");
+
+	RegisterEvent(EVENT_KEYDOWN, NT_KeyEvents);
+	RegisterEvent(EVENT_GAMEMSG, MG_GameMsgEvent);
+
+	SetStatusText("Manual Game " + COLOR_8 + Rev + COLOR_4 + " - " + Online);
+	Print(COLOR_4 + "NTManualGame " + COLOR_8 + Rev + COLOR_4 + " Loaded");
+	var _count = 0;
+
+	while(1)
+	{ Delay(Random(300,600));
+		ChickenStuff(); Refresh(); MG_AntiIdle();
+		if(_count++ > 10) {
+			if(MGConfig_AutoParty) { MG_PartyUp(); }
+			_count = 0;
+		}
+	}
+}
+
+function MG_PartyUp()
+{
+	_player = GetPlayerUnit();
+	if(!MGConfig_FriendsOnly){
+		if(_player) {
+			_mypartyid = _player.partyid;
+			while(_player.GetNext()) {
+				if(_player.partyid == 65535 || _player.partyid != _mypartyid) {
+					if(_player.partyflag == 2) {
+						me.ClickParty(_player, 2);
+						break;
+					}
+					if(_player.partyid == 65535) {
+						if(_player.partyflag == 4)
+							break;
+						me.ClickParty(_player, 2);
+						NTC_Delay(NTC_DELAY_FRAME);
+						if(_player.partyflag == 4 || (_player.partyid != 65535 && _player.partyid == _mypartyid))
+							break;
+					}
+				}
+			}
+		}
+	}
+	else{
+		for(var q = 0; q < MG_SafeList.length; q++){
+			if(_player && MG_SafeList.indexOf(_player.name)) {
+				_mypartyid = _player.partyid;
+				while(_player.GetNext()) {
+					if(_player.partyid == 65535 || _player.partyid != _mypartyid) {
+						if(_player.partyflag == 2) {
+							me.ClickParty(_player, 2);
+							break;
+						}
+						if(_player.partyid == 65535) {
+							if(_player.partyflag == 4)
+								break;
+							me.ClickParty(_player, 2);
+							NTC_Delay(NTC_DELAY_FRAME);
+							if(_player.partyflag == 4 || (_player.partyid != 65535 && _player.partyid == _mypartyid))
+								break;
+						}
+					}
+				}
+			}
+		}
+	} return;
+}
+
+function CheckMap()
+{
+	me.revealautomap = (MGConfig_ShowMap) ? true : false;
+	me.showenemyonautomap = (MGConfig_ShowEnemy) ? true : false;
+	me.showmissileonautomap = (MGConfig_ShowMissile) ? true : false;
+	me.quitonhostile = (MGConfig_RunFromHostile) ? true : false;
+}
+
+function NT_KeyEvents(keycode)
+{
+	switch(keycode) {
+		case Key_EnemyOnMap:
+			if(MGConfig_ShowEnemy) {
+				me.showenemyonautomap = false; MGConfig_ShowEnemy = false;
+				Print(COLOR_4 + "Enemy on Automap : " + COLOR_1 + "OFF");
+			}
+			else {
+				me.showenemyonautomap = true; MGConfig_ShowEnemy = true;
+				Print(COLOR_4 + "Enemy on Automap : " + COLOR_2 + "ON");
+			}
+			break;
+		case Key_MissileOnMap:
+			if(MGConfig_ShowMissile) {
+				me.showmissileonautomap = false; MGConfig_ShowMissile = false;
+				Print(COLOR_4 + "Missile on Automap : " + COLOR_1 + "OFF");
+			}
+			else {
+				me.showmissileonautomap = true; MGConfig_ShowMissile = true;
+				Print(COLOR_4 + "Missile on Automap : " + COLOR_2 + "ON");
+			}
+			break;
+		case Key_AutoParty:
+			if(MGConfig_AutoParty) {
+				MGConfig_AutoParty = false;
+				Print(COLOR_4 + "Auto Party : " + COLOR_1 + "OFF");
+			}
+			else {
+				MGConfig_AutoParty = true;
+				Print(COLOR_4 + "Auto Party : " + COLOR_2 + "ON");
+			}
+			break;
+		case Key_PrintRes:
+			StackedRes();
+			break;
+		case Key_PrintFCRPlus:
+			FCRPlusPrint();
+			break;
+		case Key_PrintAbsorbs:
+			SorbPrint();
+			break;
+		case Key_PrintBPs:
+			T_BPsPrint();
+			break;
+		case Key_PrintChicken:
+			ChickenValues();
+			break;
+		case Key_PrintStats:
+			NTU_CheckMyStats();
+			break;
+		case Key_HotKeyInfo:
+			Do_KeyHotList();
+			Print(COLOR_4 + "Hotkeys sent to manager Common Log!");
+			break;
+		case Key_ExitGame:
+			Print(COLOR_4 + "Calculating stats for game!");
+			MG_ComputeStats(false);
+			if(ChatREnabled) ClosingChatRLogs();
+			if(ItemSInfo) ItemSInfo = false;
+			ExitGame();
+			break;
+		case Key_StashCheck:
+			MG_CheckFreeStashSpace(StashChecking);
+			break;
+		case Key_InvCheck:
+			MG_CheckFreeInventorySpace(InvChecking);
+			break;
+		case Key_KeyCodeCheck:
+			if(CheckKeyNumber) {
+				CheckKeyNumber = false; Print(COLOR_4 + "Keycode Checker : " + COLOR_1 + "OFF");
+			}
+			else {
+				CheckKeyNumber = true; Print(COLOR_4 + "Keycode Checker : " + COLOR_2 + "ON");
+				Print(COLOR_1 + "If you hit a key that is set to do something, you will do that action!");
+			}
+			break;
+		case Key_LoadChatR:
+			if(ChatREnabled) {
+				ChatREnabled = false;
+				Print(COLOR_4 + "Chat Recorder : " + COLOR_1 + "OFF");
+				ClosingChatRLogs();
+			}
+			else {
+				ChatREnabled = true;
+				Print(COLOR_4 + "Chat Recorder : " + COLOR_2 + "ON");
+				OpeningChatRLogs();
+			}
+		case Key_DoPrecast:
+			NTP_DoPrecast(true);
+			break;
+		case Key_ItemInfos:
+			if(ItemSInfo) {
+				ItemSInfo = false;
+				Print(COLOR_4 + "Item Info: " + COLOR_1 + "OFF");
+				ClosingChatRLogs();
+			}
+			else {
+				ItemSInfo = true;
+				Print(COLOR_4 + "Item Info: " + COLOR_2 + "ON");
+				Print(COLOR_4 + "Type .help for info on commands");
+				OpeningChatRLogs();
+			}
+			break;
+		case Key_NextArea:
+			//NTAT_AutoForward();
+			break;
+		case Key_LastArea:
+			//NTAT_AutoBackward();
+			break;
+		case Key_GoToTown:
+			HeadingHome();
+			break;
+		case Key_GameStats:
+			MGConfig_EstRun = false;
+			MG_ComputeStats(false);
+			Print(COLOR_4 + "Current Game Stats sent to Manager!");
+			MGConfig_EstRun = true;
+			break;
+		case Key_AntiIdle:
+			if(MGAntiIdle) {
+				MGAntiIdle = false;
+				Print(COLOR_4 + "AntiIdle " + COLOR_1 + "OFF");
+				if(me.gameserverip) Say("Alright, I'm back!");
+			}
+			else {
+				MGAntiIdle = true;
+				Print(COLOR_4 + "AntiIdle " + COLOR_2 + "ON");
+				if(me.gameserverip) Say("Going AFK, may be a while!");
+			}
+			break;
+		case 17:
+			_area = GetArea();
+			Print(COLOR_8 + " X=" + me.x + ", Y=" + me.y);
+			Print(COLOR_8 + "  In AreaID " + me.areaid + " , " + _area.name);
+			break;
+		case 48:
+			NTU_TLInventory();
+			break;
+		default:
+			if(CheckKeyNumber)
+				Print(COLOR_2 + WhichHotKey(keycode) + " / " + keycode);
+			break;
+	}
+}
+
+function _classid(i)
+{
+	switch(i) {
+		case 0:	return "Amazon";
+		case 1: return "Sorceress";
+		case 2: return "Necromancer";
+		case 3: return "Paladin";
+		case 4: return "Barbarian";
+		case 5: return "Druid";
+		case 6: return "Assassin";
+	}
+}
+
+function Refresh()
+{
+	Resi = [(me.GetStat(39) + DiffMod), (me.GetStat(43) + DiffMod), (me.GetStat(41) + DiffMod), (me.GetStat(45) + DiffMod)];
+}
+
+function ChickenStuff()
+{
+	if(!InTown()) {
+		if(me.hp < parseInt(me.hpmax * MGConfig_LifeChicken,10) / 100) {
+			ColorForMang = COLOR_1;
+			PrintChicken("HPChicken");
+			CloseD2();
+		}
+		else if(me.mp < parseInt(me.mpmax * MGConfig_ManaChicken,10) / 100) {
+			ColorForMang = COLOR_3;
+			PrintChicken("MPChicken");
+			CloseD2();
+		}
+	}
+	else {
+		if(MGConfig_ChickenWarn) {
+			ChickenWarning();
+		}
+	}
+}
+
+function ChickenValues()
+{
+	HealthThresh = parseInt(me.hpmax * MGConfig_LifeChicken,10) / 100;
+	ManaThresh = parseInt(me.mpmax * MGConfig_ManaChicken,10) / 100;
+	if(MGConfig_LifeChicken > 0)
+		Print(COLOR_8 + "Health chicken at " + COLOR_1 + HealthThresh + " HP");
+	else
+		Print(COLOR_8 + "Health chicken not activated!");
+	if(MGConfig_ManaChicken > 0)
+		Print(COLOR_8 + "Mana chicken at " + COLOR_3 + ManaThesh + " MP");
+	else
+		Print(COLOR_8 + "Mana chicken not activated!");
+}
+
+function PrintChicken(type)
+{
+	var Area = GetArea();
+	var MangMsg = "";
+	var AreaName = "Candy Mansion";
+	var Mob;
+	var CloseMobs = new Array();
+	CloseMobs = NTU_GetNearbyMonsters(20);
+	if (Area) AreaName = Area.name;
+
+	MangMsg += ColorForMang + "Chicken (" + AreaName + ")" + ";";
+	MangMsg += COLOR_1 + "-------------" + COLOR_4 + Today + COLOR_1 + " - " + COLOR_4 + TheTime + COLOR_1 + "-------------";
+
+	HealthThresh = parseInt(me.hpmax * MGConfig_LifeChicken,10) / 100;
+	ManaThresh = parseInt(me.mpmax * MGConfig_ManaChicken,10) / 100;
+
+	if (type == "HPChicken") {
+		MangMsg += COLOR_1 + "\n " + "Health" + COLOR_4 + "(" + COLOR_1 + MGConfig_LifeChicken + COLOR_4 + "%/" + COLOR_1 + HealthThresh + " HP" + COLOR_4 + ")";
+		MangMsg += COLOR_3 + "\n Mana: (" + me.mp + ")"
+	}
+	if (type == "MPChicken") {
+		MangMsg += COLOR_3 + "\n " + "Mana " + COLOR_4 + "(" + COLOR_3 + MGConfig_ManaChicken + COLOR_4 + "%/" + COLOR_3 + ManaThresh + " MP" + COLOR_4 + ")";
+		MangMsg += COLOR_1 + "\n Life: (" + me.hp + ") "
+	}
+
+	if (me.hp <= 0) MangMsg += COLOR_8 + "\n ** Character Death **";
+	MangMsg += COLOR_8 + "\n Possible Murderers: ";
+
+	if(CloseMobs.length == 0) { MangMsg+= COLOR_9 + "\n  " + "You didn't heal before leaving town huh?" }
+	else if(CloseMobs.length > 0 && CloseMobs.length < 10) {
+		for (_index in CloseMobs) {
+			Mob = CloseMobs[_index];
+			MangMsg += COLOR_9 + "\n  " + Mob;
+		}
+	}
+	else { MangMsg += COLOR_9 + "\n  Too many to list."; }
+	MangMsg += COLOR_1 + "\n -------------------------------------------";
+
+	NTC_SendLogToOOG(NTC_LOG_COMMON, MangMsg);
+	return;
+}
+
+function InTown(MyChar)
+{
+	return (me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109);
+}
+var WarnedMeOnce = false;
+function ChickenWarning()
+{
+	if(!WarnedMeOnce){
+		if(me.hp < parseInt(me.hpmax * MGConfig_LifeChicken,10) / 100) {
+			Print(COLOR_1 + "HP" + COLOR_4 + " Chicken attained (" + COLOR_1 + MGConfig_LifeChicken + COLOR_4 + "). Be sure to heal before leaving town!");
+		}
+		else if(me.mp < parseInt(me.mpmax * MGConfig_ManaChicken,10) / 100) {
+			Print(COLOR_3 + "MP" + COLOR_4 + " Chicken attained (" + COLOR_3 + MGConfig_ManaChicken + COLOR_4 + "). Be sure to heal before leaving town!");
+		}
+	}
+	WarnedMeOnce = true;
+}
+
+function addSeparatorsNF(nStr, inD, outD, sep)
+{
+	nStr += '';
+	var dpos = nStr.indexOf(inD);
+	var nStrEnd = '';
+	if (dpos != -1) {
+		nStrEnd = outD + nStr.substring(dpos + 1, nStr.length);
+		nStr = nStr.substring(0, dpos);
+	}
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(nStr)) {
+		nStr = nStr.replace(rgx, '$1' + sep + '$2');
+	}
+	return nStr + nStrEnd;
+}
+
+var _TotalExp = [0, 0, 500, 1500, 3750, 7875, 14175, 22680, 32886, 44396, 57715, 72144, 90180, 112725, 140906, 176132, 220165, 275207, 344008, 430010, 537513, 671891, 839864, 1049830, 1312287, 1640359, 2050449, 2563061, 3203826, 3902260, 4663553, 5493363, 6397855, 7383752, 8458379, 9629723, 10906488, 12298162, 13815086, 15468534, 17270791, 19235252, 21376515, 23710491, 26254525, 29027522, 32050088, 35344686, 38935798, 42850109, 47116709, 51767302, 56836449, 62361819, 68384473, 74949165, 82104680, 89904191, 98405658, 107672256, 117772849, 128782495, 140783010, 153863570, 168121381, 183662396, 200602101, 219066380, 239192444, 261129853, 285041630, 311105466, 339515048, 370481492, 404234916, 441026148, 481128591, 524840254, 572485967, 624419793, 681027665, 742730244, 809986056, 883294891, 963201521, 1050299747, 1145236814, 1248718217, 1361512946, 1484459201, 1618470619, 1764543065, 1923762030, 2097310703, 2286478756, 2492671933, 2717422497, 2962400612, 3229426756, 3520485254, 0, 0];
+var _ExpToNextLvl = [0, 500, 1000, 2250, 4125, 6300, 8505, 10206, 11510, 13319, 14429, 18036, 22545, 28181, 35226, 44033, 55042, 68801, 86002, 107503, 134378, 167973, 209966, 262457, 328072, 410090, 512612, 640765, 698434, 761293, 829810, 904492, 985897, 1074627, 1171344, 1276765, 1391674, 1516924, 1653448, 1802257, 1964461, 2141263, 2333976, 2544034, 2772997, 3022566, 3294598, 3591112, 3914311, 4266600, 4650593, 5069147, 5525370, 6022654, 6564692, 7155515, 7799511, 8501467, 9266598, 10100593, 11009646, 12000515, 13080560, 14257811, 15541015, 16939705, 18464279, 20126064, 21937409, 23911777, 26063836, 28409582, 30966444, 33753424, 36791232, 40102443, 43711663, 47645713, 51933826, 56607872, 61702579, 67255812, 73308835, 79906630, 87098226, 94937067, 103481403, 112794729, 122946255, 134011418, 146072446, 159218965, 173548673, 189168053, 206193177, 224750564, 244978115, 267026144, 291058498, 0, 0];
+
+var _startLvl;
+var _startExp;
+var _startTime;
+
+function MG_InitializeStats() {
+    _startLvl = me.GetStat(12);
+    _startExp = me.GetStat(13);
+	_startGold = me.GetStat(14) + me.GetStat(15);
+    if (_startExp < 0 || _startLvl >= 86) { _startExp = (2147483648 + _startExp); }
+    if (_startExp < 2147483648 && _startLvl >= 97) { _startExp = (2147483648 + _startExp); }
+    _startTime = GetTickCount();
+}
+
+var CountingUp = 0;
+function MG_ComputeStats(chickenFlag) {
+	var _endGold = (me.GetStat(14) + me.GetStat(15));
+	var _endLvl = me.GetStat(12);
+    var _lvlsGained = _endLvl - _startLvl;
+    var _endExp = me.GetStat(13);
+    if (_endExp < 0 || _endLvl >= 86) { _endExp = (2147483648 + _endExp); }
+    if (_endExp < 2147483648 && _endLvl >= 97) { _endExp = (2147483648 + _endExp); }
+
+    var _endLvlExp = _TotalExp[_endLvl];
+    var _expGained = _endExp - _startExp;
+    var _endTime = GetTickCount();
+    if (_expGained <= 0) { _expGained = '0'; }
+
+    // Calculate percent of Exp obtained toward next level
+    // Remaining Exp / Exp needed to level
+    var _progressPercent = parseInt(1000 * (_endExp - _endLvlExp) / _ExpToNextLvl[_endLvl],10) / 10;
+	if(_progressPercent >= 0) { var _prop = _progressPercent + "%"; } else { var _prop = "0%"; };
+
+    // Estimate number of runs remaining until next level based on Exp gained
+    // Remaining Exp needed to level / Exp Gained
+	if(_expGained > 0) {
+		var _runsToLevel = (100 - _progressPercent) * _ExpToNextLvl[_endLvl] / (100 * _expGained);
+		if(_runsToLevel > 10) {_runsToLevel = parseInt(_runsToLevel,10); } else { _runsToLevel = parseInt(100 * _runsToLevel,10) / 100; };
+		LvLProgXP = "";
+		if(MGConfig_EstRun){ LvLProgXP += "\n Est. Runs Until Next Level: " + COLOR_2 + addSeparatorsNF(_runsToLevel, ",", ".", ","); }
+		LvLProgXP += COLOR_4 + "\n Current Level Progress: " + COLOR_2 + _prop;
+		LvLProgXP += COLOR_4 + "\n Experience Gained: " + COLOR_2 + addSeparatorsNF(_expGained, ",", ".", ",");
+	}
+	else {
+		LvLProgXP = "";
+	}
+
+	if(_endGold >= _startGold){
+		_GoldCount = (_endGold - _startGold);
+		GoldenInfo = "\n Gold Gained: " + COLOR_2 + _GoldCount;
+	}
+	else {
+		_GoldCount = (_startGold - _endGold);
+		GoldenInfo = "\n Gold Lost: " + COLOR_1 + _GoldCount;
+	}
+
+    var RunTime = parseInt(((_endTime - _startTime) / 60000),10) + "m " + (parseInt(((_endTime - _startTime) / 1000),10) - parseInt(((_endTime - _startTime) / 60000),10) * 60) + "s";
+
+	if(_lvlsGained > 0) DidGainLvl = "\n Levels Gained : " +  _lvlsGained;
+	else if(_lvlsGained < 1) DidGainLvl = "";
+
+	if(me.gameserverip) { CurChar = COLOR_4 + "Game Statistics [" + COLOR_3 + me.gamename + COLOR_4 + "]"; } else { CurChar = me.charname + " " + COLOR_4 + "Game Statistics"; }
+
+	if (!chickenFlag) {
+		XPMangMsg = COLOR_8 + CurChar + ";";
+		XPMangMsg += COLOR_1 + "--------------------------------------------------";
+		XPMangMsg += COLOR_4 + LvLProgXP;
+        XPMangMsg += COLOR_4 + "\n Character Level: " + COLOR_2 + _endLvl;
+		XPMangMsg += COLOR_1 + DidGainLvl;
+		XPMangMsg += COLOR_4 + "\n Elapsed time: " + COLOR_2 + RunTime;
+        XPMangMsg += COLOR_4 + "\n Game IP: " + COLOR_2 + Online;
+		XPMangMsg += COLOR_4 + GoldenInfo;
+		XPMangMsg += COLOR_1 + "\n --------------------------------------------------";
+		NTC_SendLogToOOG(NTC_LOG_COMMON, XPMangMsg);
+	}
+	return;
+}

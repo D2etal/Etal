@@ -1,0 +1,1632 @@
+Include("libs/common/NTColorConverter.ntl");
+// Public D2BS constants
+Include("NTBot/char_configs/NTConfig__Global.ntl");
+// Character Class
+const NTC_CHAR_CLASS_AMAZON = 0;
+const NTC_CHAR_CLASS_SORCERESS = 1;
+const NTC_CHAR_CLASS_NECROMANCER = 2;
+const NTC_CHAR_CLASS_PALADIN = 3;
+const NTC_CHAR_CLASS_BARBARIAN = 4;
+const NTC_CHAR_CLASS_DRUID = 5;
+const NTC_CHAR_CLASS_ASSASSIN = 6;
+
+// Act 1 NPCs
+const NTC_NPC_ID_AKARA = 148;
+const NTC_NPC_ID_WARRIV_ACT_1 = 155;
+const NTC_NPC_ID_CHARSI = 154;
+const NTC_NPC_ID_GHEED = 147;
+const NTC_NPC_ID_KASHYA = 150;
+const NTC_NPC_ID_CAIN_TRISTRAM = 146;
+const NTC_NPC_ID_CAIN_ACT_1 = 244;
+
+// Act 2 NPCs
+const NTC_NPC_ID_FARA = 178;
+const NTC_NPC_ID_LYSANDER = 202;
+const NTC_NPC_ID_GREIZ = 198;
+const NTC_NPC_ID_ELZIX = 199;
+const NTC_NPC_ID_MESHIF_ACT_2 = 210;
+const NTC_NPC_ID_DROGNAN = 177;
+const NTC_NPC_ID_ATMA = 176;
+const NTC_NPC_ID_WARRIV_ACT_2 = 175;
+const NTC_NPC_ID_CAIN_ACT_2 = 245;
+const NTC_NPC_ID_JERHYN = 201;
+const NTC_NPC_ID_TYRAEL_ACT_2 = 251;
+
+// Act 3 NPCs
+const NTC_NPC_ID_MESHIF_ACT_3 = 264;
+const NTC_NPC_ID_CAIN_ACT_3 = 246;
+const NTC_NPC_ID_ALKOR = 254;
+const NTC_NPC_ID_ASHEARA = 252;
+const NTC_NPC_ID_ORMUS = 255;
+const NTC_NPC_ID_HRATLI = 253;
+
+// Act 4 NPCs
+const NTC_NPC_ID_CAIN_ACT_4 = 265;
+const NTC_NPC_ID_HALBU = 257;
+const NTC_NPC_ID_TYRAEL_ACT_4 = 367;
+const NTC_NPC_ID_JAMELLA = 405;
+
+// Act 5 NPCs
+const NTC_NPC_ID_CAIN_ACT_5 = 520;
+const NTC_NPC_ID_TYRAEL_ACT_5 = 521;
+const NTC_NPC_ID_LARZUK = 511;
+const NTC_NPC_ID_ANYA_FROZEN_RIVER = 527;
+const NTC_NPC_ID_ANYA_TOWN = 512;
+const NTC_NPC_ID_MALAH = 513;
+const NTC_NPC_ID_QUALKEHK = 515;
+const NTC_NPC_ID_NIHLATHAK_TOWN = 514;
+const NTC_NPC_ID_NIHLATHAK_HALLS_OF_VAUGHT = 526;
+
+// UNIT types
+const NTC_UNIT_PLAYER = 0;
+const NTC_UNIT_NPC = 1;
+const NTC_UNIT_MERC = NTC_UNIT_NPC;
+const NTC_UNIT_MONSTER = NTC_UNIT_NPC;
+const NTC_UNIT_OBJECT = 2;
+const NTC_UNIT_MISSILE = 3;
+const NTC_UNIT_ITEM = 4;
+const NTC_UNIT_TILE = 5;
+const NTC_UNIT_STASH = 267;
+const NTC_UNIT_CUBE = 549;
+
+const NTC_AREA_ID_ACT_1 = 1;
+const NTC_AREA_ID_ACT_2 = 40;
+const NTC_AREA_ID_ACT_3 = 75;
+const NTC_AREA_ID_ACT_4 = 103;
+const NTC_AREA_ID_ACT_5 = 109;
+
+// COLOR types
+const NTC_COLOR_BASE_WHITE = 0;
+const NTC_COLOR_BASE_RED = 1;
+const NTC_COLOR_BASE_GREEN = 2;
+const NTC_COLOR_BASE_BLUE = 3;
+const NTC_COLOR_BASE_GOLD = 4;
+const NTC_COLOR_BASE_GRAY = 5;
+const NTC_COLOR_BASE_BLACK = 6;
+const NTC_COLOR_BASE_GOLD2 = 7;
+const NTC_COLOR_BASE_ORANGE = 8;
+const NTC_COLOR_BASE_YELLOW = 9;
+
+const NTC_HAND_RIGHT = 0;
+const NTC_HAND_LEFT = 1;
+
+const NTC_CLICK_LDOWN = 0;
+const NTC_CLICK_LHOLD = 1;
+const NTC_CLICK_LUP = 2;
+const NTC_CLICK_RDOWN = 3;
+const NTC_CLICK_RHOLD = 4;
+const NTC_CLICK_RUP = 5;
+
+const NTC_SHIFT_NONE = 0;
+const NTC_SHIFT_HOLD = 1;
+
+const NTC_LOG_COMMON = 0;
+const NTC_LOG_ITEM = 1;
+
+const NTC_DELAY_FRAME = 40;
+
+var NTC_ItemQualityToName = new Array(9);
+NTC_ItemQualityToName[0] = "None";
+NTC_ItemQualityToName[1] = "Low Quality";
+NTC_ItemQualityToName[2] = "Normal";
+NTC_ItemQualityToName[3] = "Superior";
+NTC_ItemQualityToName[4] = "Magic";
+NTC_ItemQualityToName[5] = "Set";
+NTC_ItemQualityToName[6] = "Rare";
+NTC_ItemQualityToName[7] = "Unique";
+NTC_ItemQualityToName[8] = "Crafted";
+
+var NTC_ItemQualityToD2Color = new Array(11);
+NTC_ItemQualityToD2Color[0] = COLOR_0;
+NTC_ItemQualityToD2Color[1] = COLOR_0;
+NTC_ItemQualityToD2Color[2] = COLOR_0;
+NTC_ItemQualityToD2Color[3] = COLOR_0;
+NTC_ItemQualityToD2Color[4] = COLOR_3;
+NTC_ItemQualityToD2Color[5] = COLOR_2;
+NTC_ItemQualityToD2Color[6] = COLOR_9;
+NTC_ItemQualityToD2Color[7] = COLOR_4;
+NTC_ItemQualityToD2Color[8] = COLOR_8;
+NTC_ItemQualityToD2Color[9] = COLOR_11;
+NTC_ItemQualityToD2Color[10] = COLOR_1;
+
+var NTC_ItemQualityToMGRColor = new Array(9);
+NTC_ItemQualityToMGRColor[0] = COLOR_6;
+NTC_ItemQualityToMGRColor[1] = COLOR_6;
+NTC_ItemQualityToMGRColor[2] = COLOR_6;
+NTC_ItemQualityToMGRColor[3] = COLOR_6;
+NTC_ItemQualityToMGRColor[4] = COLOR_3;
+NTC_ItemQualityToMGRColor[5] = COLOR_2;
+NTC_ItemQualityToMGRColor[6] = COLOR_9;
+NTC_ItemQualityToMGRColor[7] = COLOR_4;
+NTC_ItemQualityToMGRColor[8] = COLOR_8;
+
+function NTC_IncludeConfig(filepath, createCharConfigsOverride)
+{
+
+	var _configname;
+	var _fullconfigname;
+	var _shortconfigname;
+	var _configfile;
+	var _customcharconfig;
+	var _defaultcharconfig;
+
+	if(arguments.length > 1)
+		createCharConfigs = createCharConfigsOverride;
+
+	switch(me.classid)
+	{
+	case NTC_CHAR_CLASS_AMAZON:
+		_fullconfigname = "NTConfig_Amazon_" + me.charname + ".ntl";
+		_shortconfigname = "NTConfig_Amazon.ntl";
+		break;
+	case NTC_CHAR_CLASS_SORCERESS:
+		_fullconfigname = "NTConfig_Sorceress_" + me.charname + ".ntl";
+		_shortconfigname = "NTConfig_Sorceress.ntl";
+		break;
+	case NTC_CHAR_CLASS_NECROMANCER:
+		_fullconfigname = "NTConfig_Necromancer_" + me.charname + ".ntl";
+		_shortconfigname = "NTConfig_Necromancer.ntl";
+		break;
+	case NTC_CHAR_CLASS_PALADIN:
+		_fullconfigname = "NTConfig_Paladin_" + me.charname + ".ntl";
+		_shortconfigname = "NTConfig_Paladin.ntl";
+		break;
+	case NTC_CHAR_CLASS_BARBARIAN:
+		_fullconfigname = "NTConfig_Barbarian_" + me.charname + ".ntl";
+		_shortconfigname = "NTConfig_Barbarian.ntl";
+		break;
+	case NTC_CHAR_CLASS_DRUID:
+		_fullconfigname = "NTConfig_Druid_" + me.charname + ".ntl";
+		_shortconfigname = "NTConfig_Druid.ntl";
+		break;
+	case NTC_CHAR_CLASS_ASSASSIN:
+		_fullconfigname = "NTConfig_Assassin_" + me.charname + ".ntl";
+		_shortconfigname = "NTConfig_Assassin.ntl";
+		break;
+	}
+
+	switch(filepath) {
+		case "NTBot/char_configs": 
+			{
+				_configname = _fullconfigname;
+				_configfile = FileOpen(filepath + "/" + _fullconfigname, 0);
+				if(_configfile)	//Char config exists - Good
+					_configfile.Close();
+				else if(createCharConfigs && filepath == "NTBot/char_configs") {
+					createCharConfigs = false;
+					_customcharconfig = FileOpen("NTBot/char_configs/" + _fullconfigname, 1);
+					_defaultcharconfig = FileOpen("NTBot/char_configs/" + _shortconfigname, 0);
+					while(!_defaultcharconfig.eof) {
+						_customcharconfig.WriteLine(_defaultcharconfig.ReadLine());
+					}
+					_customcharconfig.Close();
+					_defaultcharconfig.Close();
+					while(me.ingame) {
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "================> " + COLOR_2 + "Auto Character Config Creation Complete" + COLOR_14 + "<================");
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "=============>   " + COLOR_2 + "Press Stop on Manager & Edit Character Config" + COLOR_14 + "   <=============");
+					Print(COLOR_14 + "===========================================================");
+					Delay(Random(8000,11000))
+					}
+				}
+				else {
+					_configname = _shortconfigname;
+					if(filepath == "NTBot/char_configs/") {
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "=====>     " + COLOR_3 + "DEFAULT CONFIG LOADED " + COLOR_14 + "     <=====");
+					Print(COLOR_14 + "===========================================================");
+					}
+				}
+			}
+			break;
+		case "NTRush/rush_configs": 
+			{
+				_configname = _fullconfigname;
+				_configfile = FileOpen(filepath + "/" + _fullconfigname, 0);
+				if(_configfile)	//Char config exists - Good
+					_configfile.Close();
+				else if(createCharConfigs && filepath == "NTRush/rush_configs") {
+					createCharConfigs = false;
+					_customcharconfig = FileOpen(filepath + "/" + _fullconfigname, 1);
+					_defaultcharconfig = FileOpen(filepath + "/" + _shortconfigname, 0);
+					while(!_defaultcharconfig.eof) {
+						_customcharconfig.WriteLine(_defaultcharconfig.ReadLine());
+					}
+					_customcharconfig.Close();
+					_defaultcharconfig.Close();
+					while(me.ingame) {
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "================> " + COLOR_2 + "Auto Character Config Creation Complete" + COLOR_14 + "<================");
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "=============>   " + COLOR_2 + "Press Stop on Manager & Edit Character Config" + COLOR_14 + "   <=============");
+					Print(COLOR_14 + "===========================================================");
+					Delay(Random(8000,11000))
+					}
+				}
+				else {
+					_configname = _shortconfigname;
+					if(filepath == "NTRush/rush_configs") {
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "=====>     " + COLOR_3 + "DEFAULT RUSH CONFIG LOADED " + COLOR_14 + "     <=====");
+					Print(COLOR_14 + "===========================================================");
+					}
+				}
+			}
+		break;
+		case "NTMap/char_configs": 
+			{
+				_configname = _fullconfigname;
+				_configfile = FileOpen(filepath + "/" + _fullconfigname, 0);
+				if(_configfile)	//Char config exists - Good
+					_configfile.Close();
+				else if(createCharConfigs && filepath == "NTMap/char_configs") {
+					createCharConfigs = false;
+					_customcharconfig = FileOpen(filepath + "/" + _fullconfigname, 1);
+					_defaultcharconfig = FileOpen(filepath + "/" + _shortconfigname, 0);
+					while(!_defaultcharconfig.eof) {
+						_customcharconfig.WriteLine(_defaultcharconfig.ReadLine());
+					}
+					_customcharconfig.Close();
+					_defaultcharconfig.Close();
+					while(me.ingame) {
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "================> " + COLOR_2 + "Auto Character Config Creation Complete" + COLOR_14 + "<================");
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "=============>   " + COLOR_2 + "Press Stop on Manager & Edit Character Config" + COLOR_14 + "   <=============");
+					Print(COLOR_14 + "===========================================================");
+					Delay(Random(8000,11000))
+					}
+				}
+				else {
+					_configname = _shortconfigname;
+					if(filepath == "NTMap/char_configs") {
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "=====>     " + COLOR_3 + "DEFAULT MAP CONFIG LOADED " + COLOR_14 + "     <=====");
+					Print(COLOR_14 + "===========================================================");
+					}
+				}
+			}
+		break;
+	}
+	Include(filepath + "/NTConfig.ntl");
+	Include(filepath + "/" + _configname);
+}
+
+function NTC_IncludeLibs()
+{
+	Include("libs/common/NTAttack.ntl");
+	Include("libs/common/NTCubing.ntl");
+	Include("libs/common/NTItemParser.ntl");
+	Include("libs/common/NTMove.ntl");
+	Include("libs/common/NTPrecast.ntl");
+	Include("libs/common/NTSnagIt.ntl");
+	Include("libs/common/NTTown.ntl");
+	Include("libs/common/NTTownManager.ntl");
+	Include("libs/common/NTTownMove.ntl");
+	Include("libs/common/MyCatchShrine.ntl");
+	Include("libs/common/NTUtilities.ntl");
+	Include("libs/common/NTTools.ntl");
+	Include("libs/common/NTRunewords.ntl");
+	Include("libs/common/LazyManCoding.ntl");
+	//Include("libs/common/NTVoyage.ntl");
+	Include("libs/common/NTItemlogger.ntl");
+	Include("libs/common/NTColorConverter.ntl");
+
+
+	switch (me.classid) {
+		case NTC_CHAR_CLASS_AMAZON:
+			Include("libs/common/NTAttackAmazon.ntl");
+			break;
+		case NTC_CHAR_CLASS_ASSASSIN:
+			Include("libs/common/NTAttackAssassin.ntl");
+			break;
+		case NTC_CHAR_CLASS_BARBARIAN:
+			Include("libs/common/NTAttackBarbarian.ntl");
+			break;
+		case NTC_CHAR_CLASS_DRUID:
+			Include("libs/common/NTAttackDruid.ntl");
+			break;
+		case NTC_CHAR_CLASS_NECROMANCER:
+			Include("libs/common/NTAttackNecromancer.ntl");
+			break;
+		case NTC_CHAR_CLASS_PALADIN:
+			Include("libs/common/NTAttackPaladin.ntl");
+			break;
+		case NTC_CHAR_CLASS_SORCERESS:
+			Include("libs/common/NTAttackSorceress.ntl");
+			break;
+	}
+}
+
+function NTC_CastSkill(skillid, usehand, x, y)
+{
+	var _hand;
+	var _shift;
+
+	if(arguments.length < 1)
+		return false;
+
+	if(arguments.length == 1)
+	{
+		_hand = NTC_CLICK_RDOWN;
+		_shift = NTC_SHIFT_NONE;
+		usehand = NTC_HAND_RIGHT;
+	}
+	else
+	{
+		if(usehand == NTC_HAND_RIGHT)
+		{
+			_hand = NTC_CLICK_RDOWN;
+			_shift = NTC_SHIFT_NONE;
+		}
+		else if(usehand == NTC_HAND_LEFT)
+		{
+			_hand = NTC_CLICK_LDOWN;
+			_shift = NTC_SHIFT_NONE;
+		}
+		else
+		{
+			_hand = NTC_CLICK_LDOWN;
+			_shift = NTC_SHIFT_HOLD;
+			usehand = NTC_HAND_LEFT;
+		}
+	}
+
+	if(NTC_PutSkill(skillid, usehand))
+	{
+		var i, n;
+		var _mode;
+
+		if(!NTC_ClearCursor())
+			return false;
+
+		for(i = 0 ; i < 5 ; i++)
+		{
+			switch(arguments.length)
+			{
+			case 1:
+			case 2:
+				ClickMap(_hand, _shift, me.x, me.y);
+				break;
+			case 3:
+				if(!ClickMap(_hand, _shift, x))
+				{
+					NTC_Delay(NTC_DELAY_FRAME);
+					return false;
+				}
+				break;
+			default:
+				ClickMap(_hand, _shift, x, y);
+				break;
+			}
+
+			for(n = 0 ; n < 4 ; n++)
+			{
+				NTC_Delay(NTC_DELAY_FRAME);
+
+				_mode = me.mode;
+				if(_mode == 7 || _mode == 8 || (_mode >= 10 && _mode <= 16) || _mode == 18)
+				{
+					NTC_Delay(NTC_DELAY_FRAME);
+					break;
+				}
+			}
+
+			ClickMap(_hand+2, NTC_SHIFT_NONE, null);
+
+			if(n < 4)
+			{
+				for(i = 0 ; i < 100 ; i++)
+				{
+					NTC_Delay(20);
+
+					if(me.mode != _mode)
+						break;
+				}
+
+				return true;
+			}
+
+			NTC_Delay(NTC_DELAY_FRAME);
+		}
+	}
+
+	return false;
+}
+
+function NTC_PutSkill(skillid, hand)
+{
+	if(me.GetSkill(hand) == skillid)
+		return true;
+
+	if(GetBaseStat("skills.txt", skillid, 182))
+		return false;
+
+	if(NTC_GetSkillLevel(skillid) < 1)
+		return false;
+
+	return me.SetSkill(skillid, hand);
+}
+
+function NTC_GetSkillLevel(skillid)
+{
+	var _level = me.GetSkill(skillid, true);
+
+	if(_level != null)
+		return _level;
+
+	return 0;
+}
+
+function NTC_GetCastDelay(skillid)
+{
+	var _delay = GetBaseStat("skills.txt", skillid, 165);
+
+	if(_delay)
+		return (_delay*NTC_DELAY_FRAME);
+
+	return 0;
+}
+
+function NTC_SwapWeapons(switchto)
+{
+	if(arguments.length > 0 && me.weaponstab == switchto)
+		return true;
+
+	NTC_PingDelay(200);
+
+	if(!NTC_WaitIdleMode())
+		return false;
+
+	return me.SwapWeapons();
+}
+
+function NTC_DoClick(button, shift, x, y)
+{
+	if(arguments.length < 2)
+		return false;
+
+	if(button != NTC_CLICK_LDOWN)
+		button = NTC_CLICK_RDOWN;
+
+	switch(arguments.length)
+	{
+	case 2:
+		ClickMap(button, shift, me.x, me.y);
+		break;
+	case 3:
+		if(!ClickMap(button, shift, x))
+			return false;
+		break;
+	default:
+		ClickMap(button, shift, x, y);
+		break;
+	}
+
+	NTC_Delay(200);
+
+	ClickMap(button+2, NTC_SHIFT_NONE, null);
+
+	return true;
+}
+
+function NTC_MyGold()
+{
+	return me.GetStat(14) + me.GetStat(15);
+}
+
+function NTC_MyGoldCarry()
+{
+	return me.GetStat(14);
+}
+
+function NTC_StashGoldFull() //1.13 fix
+{
+	return (me.GetStat(15) == 2500000);
+}
+
+function NTC_CharGoldFull()
+{
+	return (me.GetStat(14) >= (me.GetStat(12)*10000));
+}
+
+function NTC_CheckOwner(object, ownername)
+{
+	var _owner;
+
+	if(!object)
+		return false;
+
+	_owner = object.GetParent();
+	if(!_owner)
+		return false;
+
+	if(arguments.length < 2)
+	{
+		if(_owner == me.name || _owner.name == me.name)
+			return true;
+	}
+	else
+	{
+		if(_owner == ownername || _owner.name == ownername)
+			return true;
+	}
+
+	return false;
+}
+
+function NTC_ItemToCursor(item)
+{
+	if(me.itemoncursor)
+		return true;
+
+	for(var i = 0 ; i < 80 ; i++)
+	{
+		if((i % 40) == 0)
+			me.ClickItem(0, item);
+
+		NTC_Delay(100);
+
+		if(me.itemoncursor)
+		{
+			NTC_PingDelay(200);
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function NTC_ClearCursor()
+{
+	if(!me.itemoncursor)
+		return true;
+
+	for(var i = 0 ; i < 40 ; i++)
+	{
+		if((i % 20) == 0)
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE);
+
+		NTC_Delay(100);
+
+		if(!me.itemoncursor)
+			return true;
+	}
+
+	return false;
+}
+
+function NTC_GetMerc()
+{
+	var _merc;
+
+	_merc = me.GetMerc();
+
+	if(_merc)
+	{
+		if(_merc.hp > 0 && _merc.mode != 0 && _merc.mode != 12)
+			return _merc;
+	}
+
+	return null;
+}
+
+function NTC_GetSpecialChest()
+{
+	var _chest;
+
+	_chest = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3260));
+
+	if(_chest)
+	{
+		do
+		{
+			switch(_chest.classid)
+			{
+			case 354:
+			case 355:
+			case 356:
+			case 397:
+			case 405:
+			case 406:
+			case 407:
+			case 455:
+				return _chest;
+			}
+		} while(_chest.GetNext());
+	}
+
+	return null;
+}
+
+function NTC_OpenChest(chest)
+{
+	if(!chest)
+		return false;
+
+	if(chest.mode > 0)
+		return false;
+
+	for(var i = 0 ; i < 20 ; i++)
+	{
+		if((i % 10) == 0)
+		{
+			if(GetDistance(me, chest) > 2)
+				NTM_MoveTo(chest.areaid, chest.x+1, chest.y);
+
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, chest);
+		}
+
+		NTC_Delay(200);
+
+		if(chest.mode > 0)
+			return true;
+	}
+
+	return false;
+}
+
+function NTC_Delay(amount, random)
+{
+	if(arguments.length < 2)
+		Delay(amount);
+	else
+		Delay(amount+Random(0, random));
+}
+
+function NTC_PingDelay(amount)
+{
+	var _currentping = me.ping;
+
+	if(_currentping > 100)
+		_currentping -= 100;
+	else
+		_currentping = 0;
+
+	NTC_Delay(amount+_currentping);
+}
+
+function NTC_InTown(who)
+{
+	var _areaid;
+
+	if(arguments.length < 1)
+		who = me;
+
+	while(who.areaid == 0)
+		NTC_Delay(NTC_DELAY_FRAME);
+
+	_areaid = who.areaid;
+
+	return (_areaid == NTC_AREA_ID_ACT_1 || _areaid == NTC_AREA_ID_ACT_2 || _areaid == NTC_AREA_ID_ACT_3 || _areaid == NTC_AREA_ID_ACT_4 || _areaid == NTC_AREA_ID_ACT_5);
+}
+
+function NTC_InMyParty(playerName)
+{
+	var _player;
+	var _myPartyId;
+
+	_player = GetPlayerUnit();
+
+	if(_player)
+	{
+		_myPartyId = _player.partyid;
+
+		if(_myPartyId != 65535)
+		{
+			do
+			{
+				if(_player.name == playerName && _myPartyId == _player.partyid)
+					return true;
+			} while(_player.GetNext());
+		}
+	}
+
+	return false;
+}
+
+function NTC_FindUnit(unittype, search, retry)
+{
+	var _unit;
+
+	switch(arguments.length)
+	{
+	case 0:
+		return null;
+	case 1:
+		search = null;
+	case 2:
+		retry = 0;
+		break;
+	}
+
+	for(var i = 0 ; i <= retry ; i++)
+	{
+		_unit = GetUnit(unittype, search);
+
+		if(_unit)
+			return _unit;
+
+		if(i < retry)
+			NTC_Delay(200);
+	}
+
+	return null;
+}
+
+function NTC_GetBeltSize()
+{
+	var _items = me.GetItems();
+
+	if(!_items)
+		return 1;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 1 && _items[i].itemloc == 8)
+		{
+			if(_items[i].classid == 344 || _items[i].classid == 345)
+				return 2;
+			else if(_items[i].classid == 346 || _items[i].classid == 347)
+				return 3;
+
+			return 4;
+		}
+	}
+
+	return 1;
+}
+
+function NTC_FindScript(scriptname)
+{
+	var _script;
+	var _scriptpath;
+
+	if(scriptname == undefined){ // added for leave with leader mod
+		return false;
+	}
+
+	_script = GetScript();
+
+	if(_script)
+	{
+		do
+		{
+			_scriptpath = _script.name.toLowerCase();
+
+			if(_scriptpath.indexOf(scriptname.toLowerCase()) != -1)
+				return _script;
+		} while(_script.GetNext());
+	}
+
+	return null;
+}
+
+function NTC_SendMsgToScript(scriptname, msg)
+{
+	var _script = NTC_FindScript(scriptname);
+	if(_script)
+		return _script.Send(msg);
+
+	return false;
+}
+
+function NTC_StopScript(scriptname)
+{
+	var _script = NTC_FindScript(scriptname);
+
+	if(_script)
+		return _script.Stop();
+
+	return false;
+}
+
+function NTC_WaitIdleMode()
+{
+	var _mode;
+
+	for(var i = 0 ; i < 25 ; i++)
+	{
+		_mode = me.mode;
+
+		if((_mode >= 1 && _mode <= 3) || _mode == 5 || _mode == 6)
+			return true;
+
+		NTC_Delay(NTC_DELAY_FRAME);
+	}
+
+	return false;
+}
+
+function NTC_SendLogToOOG(type, logString)
+{
+	return SendCopyData("D2NT Manager", null, 9<<16|type, logString);
+}
+
+/////////////////////////////////////////////////////
+///// Jinay item log start///////////////////////////
+/////////////////////////////////////////////////////
+
+function NTC_LogCurScript(script)
+{
+   var _file = new Array();
+   var _hfile = FileOpen(me.account + "_scripts.txt", 2);
+   if(!_hfile)
+      return false;
+
+   while(line = _hfile.ReadLine())
+      _file.push(line);
+
+   _hfile.Close();
+
+   var _hfile = FileOpen(me.account + "_scripts.txt", 1);
+   if(!_hfile)
+      return false;
+
+   if(_file.length > 0)
+      _hfile.WriteLine(_file.pop())
+
+   _hfile.WriteLine(script);
+   _hfile.Close();
+}
+
+function NTC_GetScript(index)
+{
+   var _script;
+
+   if(arguments.length < 1)
+      index = false;
+
+   var _hfile = FileOpen(me.account + "_scripts.txt", 2);
+   if(!_hfile)
+      return false;
+
+   _script = _hfile.ReadLine();
+   if(index)
+      _script = _hfile.ReadLine();
+
+   _hfile.Close();
+
+   return _script;
+}
+/////////////////////////////////////////////////////
+///// Jinay item log start///////////////////////////
+/////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////
+///// Bobtite's openall chest in area start /////////////////
+/////////////////////////////////////////////////////////////
+///// credit for print chest id's goes to ringelblume1 //////
+/////////////////////////////////////////////////////////////
+
+function OpenChestsInArea() {
+	//var ChestIds = [104, 105, 106, 107, 5,6,87,92,143,140,141,144,146,147,148, 176, 177, 181, 183, 198, 240 , 241 , 242 , 243, 329, 330, 331,332, 333, 334 , 335, 336, 354, 355, 356, 371 ,387 , 389, 390, 391, 397 , 405 , 406 , 407 , 413 , 420 , 424 , 425 , 430 , 431 , 432 , 433 , 454 , 455 , 501 , 502 ,504 , 505, 580, 581]
+	var ChestLocs =[];
+	var ChestIdstest = [];
+		var unit = GetPresetUnits(me.areaid);
+		if(unit){
+			for (var j = 0; j < unit.length; j++){
+				for (var c = 0; c < NTConfig_Chestids.length; c++){
+					if (NTConfig_Chestids[c] == unit[j].id){
+						ChestLocs.push([unit[j].roomx*5+unit[j].x,unit[j].roomy*5+unit[j].y])
+						ChestIdstest.push(unit[j].id)
+					}
+				}
+			}
+		}
+
+	while(ChestLocs.length > 0){
+		ChestLocs.sort(SortRoomInt);
+		var _room = ChestLocs.shift();
+		var _id = ChestIdstest.shift();
+		NTM_MoveTo(me.areaid, _room[0], _room[1]);
+		var chest = NTC_FindUnit(NTC_UNIT_OBJECT);
+		if(chest){
+			do{
+				if(GetDistance(me.x,me.y,chest.x,chest.y)<3){
+					if(NTC_OpenChest(chest)){
+						if(NTConfig_CheckChestid)
+							Print(COLOR_17 + chest.name + " = " + chest.classid);
+					}
+					NTSI_PickItems();
+				}
+			}while(chest.GetNext());
+		}
+	}
+}
+
+function SortRoomInt(a, b) {
+   if(GetDistance(me.x, me.y, a[0], a[1]) < GetDistance(me.x, me.y, b[0], b[1]))
+      return -1;
+
+   return 1;
+}
+/////////////////////////////////////////////////////////////
+///// Bobtite's openall chest in area stop /////////////////
+/////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////
+/// Added by petrus2, it should make it easier to see huge numbers///
+/// intended to work with NTExp.ntl but it will work anywhere////////
+/////////////////////////////////////////////////////////////////////
+
+function add_commas(nStr)
+{
+	nStr += '';
+	x = nStr.split('.');
+	x1 = x[0];
+	x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(d+)(d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return x1 + x2;
+}
+
+function addSeparatorsNF(nStr, inD, outD, sep)
+{
+	nStr += '';
+	var dpos = nStr.indexOf(inD);
+	var nStrEnd = '';
+	if (dpos != -1) {
+		nStrEnd = outD + nStr.substring(dpos + 1, nStr.length);
+		nStr = nStr.substring(0, dpos);
+	}
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(nStr)) {
+		nStr = nStr.replace(rgx, '$1' + sep + '$2');
+	}
+	return nStr + nStrEnd;
+}
+//////////////////////////////////////////////////
+///End of petrus2 editing/////////////////////////
+//////////////////////////////////////////////////
+
+function NTC_RemoveLag(target, delay, count)
+{
+    if (arguments.length < 2) delay = 700;
+    if (arguments.length < 3) count = 0;
+
+    NTM_MoveTo(me.areaid, me.x + Random(-10, 10), me.y + Random(-10, 10));
+
+    me.Cancel(0);
+    Delay(delay);
+
+    if (GetUIState(0x09))
+        NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, target || me);
+
+    Delay(delay);
+
+    me.Cancel(1);
+}
+
+function OpenSpecialChestsInArea() {
+	var ChestIds = [354,355, 356, 397, 405, 406, 407, 455]
+	var ChestLocs =[];
+	var ChestIdstest = [];
+	var unit = GetPresetUnits(me.areaid);
+		if(unit){
+			for (var j = 0; j < unit.length; j++){
+				for (var c = 0; c < ChestIds.length; c++){
+					if (ChestIds[c] == unit[j].id){
+						ChestLocs.push([unit[j].roomx*5+unit[j].x,unit[j].roomy*5+unit[j].y])
+						ChestIdstest.push(unit[j].id)
+					}
+				}
+			}
+		}
+
+	while(ChestLocs.length > 0){
+		ChestLocs.sort(SortRoomInt);
+		var _room = ChestLocs.shift();
+		var _id = ChestIdstest.shift();
+		NTM_MoveTo(me.areaid, _room[0], _room[1]);
+		var chest = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3260))
+		if(chest){
+			do{
+				if(GetDistance(me.x,me.y,chest.x,chest.y)<3){
+					if(NTC_OpenChest(chest)){
+						if(NTConfig_CheckChestid)
+							Print(COLOR_17 + chest.name + " = " + chest.classid);
+					}
+					NTSI_PickItems();
+				}
+			}while(chest.GetNext());
+		}
+	}
+}
+
+function NTC_OpenChestsInAreaNear (_orgx, _orgy, range) // credit for original function to muddy waters modded by stairbuilder
+{
+	var _orgx, _orgy, _chest, _dist, _mindist, _minIndex;
+	_chest = NTC_FindUnit(NTC_UNIT_OBJECT);
+	_lootableChests = [];
+	var _NTL_ChestSkipList = [];
+	if(_chest)
+	{
+		do
+		{
+			if(_chest.mode == 0 && GetDistance(_orgx, _orgy, _chest.x, _chest.y) < range  && (NTConfig_Chestids.indexOf(_chest.classid) > -1) &&_chest.name != GetLocaleString(5386) && _NTL_ChestSkipList.indexOf(_chest.gid) == -1)
+				_lootableChests.push(new Lootable(_chest.x, _chest.y, _chest.gid));
+		} while(_chest.GetNext());
+
+		for(var i = 0; i < _lootableChests.length; i++)
+		{
+			_mindist = 1E3;
+			_minIndex = -1;
+
+			for(var j = 0; j < _lootableChests.length; j++)
+			{
+				if(!_lootableChests[j].looted)
+				{
+					_dist = GetDistance(me.x, me.y, _lootableChests[j].x, _lootableChests[j].y);
+
+					if(_dist < _mindist)
+					{
+						_mindist = _dist;
+						_minIndex = j;
+					}
+				}
+			}
+
+			if(_minIndex > -1)
+			{
+				_chest = NTC_FindUnit(NTC_UNIT_OBJECT, _lootableChests[_minIndex].gid);
+
+				if(_chest)
+				{
+					if(NTC_OpenChest(_chest)){
+						if(NTConfig_CheckChestid)
+							Print(COLOR_17 + _chest.name + " = " + _chest.classid);
+						NTSI_PickItems();
+					}
+					_NTL_ChestSkipList.push(_chest.gid);
+				}
+
+				_lootableChests[_minIndex].looted = true;
+			}
+			else
+				break;
+		}
+
+		//NTSI_PickItems();
+
+		return true;
+	}
+
+	return false;
+}
+
+function Lootable(x, y, gid)
+{
+	this.gid = gid;
+	this.x = x;
+	this.y = y;
+	this.looted = false;
+}
+
+function GoWestFromLutGholein(){
+	if(me.areaid == 40){
+		if(CheckForRogueScripts()){
+			_warriv = NTC_FindUnit(NTC_UNIT_NPC, 175, 5);
+			if(_warriv && GetDistance(me.x,me.y,_warriv.x,_warriv.y)<20){
+				NTM_MoveTo(me.areaid, _warriv.x, _warriv.y);
+				if(NTT_DoInteract(_warriv))
+				if(NTT_DoInteract(_warriv)){
+					for(var i = 0 ; i < 4 ; i++){
+						if((i % 4) == 0)
+							me.SelectNPCMenu(0x0D37);
+						NTC_Delay(500);
+					} me.Cancel(1);
+				}
+			}
+		}
+	} return;
+}
+
+function CheckForRogueScripts()
+{
+	UsingWarrivNow = false;
+	var ActOneScripts = ["NTBloodMoor.ntj", "NTColdPlains.ntj", "NTBurialGrounds.ntj","NTStonyField.ntj",
+						"NTUndergroundPassage.ntj", "NTDarkWood.ntj", "NTBlackMarsh.ntj", "NTTamoeHighland.ntj",
+						"NTOuterCloister.ntj", "NTBarracks.ntj", "NTJail.ntj", "NTInnerCloister.ntj",
+						"NTCatacombs.ntj", "NTMooMooFarm.ntj"]
+	var NTC_S = ActOneScripts;
+	for(n = 0 ; n < NTConfig_Script.length; n++){
+		if(NTConfig_Script[n] == (NTC_S[0] || NTC_S[1] || NTC_S[2] || NTC_S[3] || NTC_S[4] || NTC_S[5] || NTC_S[6] || NTC_S[7] || NTC_S[8] || NTC_S[9] || NTC_S[10] || NTC_S[11] || NTC_S[12])){
+			UsingWarrivNow = true;
+			return true;
+		}
+	}
+	if(UsingWarrivNow) { return true; }
+	else { return false; }
+}
+
+function NTC_CheckPlayer(leader){
+	var _player = GetPlayerUnit();
+	while(_player.GetNext()){
+		if(_player.name == leader){
+			_leaderareaid = _player.areaid;
+			return true;
+		}
+	}
+	return false;
+}
+
+function NTC_FindMonster(classid, spectype)
+{
+	var _monster;
+
+	if(arguments.length < 1)
+		return false;
+
+	if(arguments.length < 2)
+		spectype = 0;
+
+	for(var i = 0 ; i < 2 ; i++)
+	{
+		_monster = GetUnit(NTC_UNIT_MONSTER, classid);
+
+		if(_monster)
+		{
+			if(spectype)
+			{
+				do
+				{
+					if(_monster.spectype & spectype)
+						return _monster;
+				} while(_monster.GetNext());
+			}
+			else
+				return _monster;
+		}
+
+		if(i < 1)
+			NTC_PingDelay(200);
+	}
+
+	return false;
+}
+
+function NTC_GetUnit(unittype, classid)
+{
+	var _unit;
+
+	for(var i = 0 ; i < 2 ; i++)
+	{
+		if(arguments.length < 2)
+			_unit = GetUnit(unittype);
+		else
+			_unit = GetUnit(unittype, classid);
+
+		if(_unit)
+			return _unit;
+
+		if(i < 1)
+			NTC_PingDelay(200);
+	}
+
+	return false;
+}
+
+function NTC_LogPrintSimple(filepath, mesg){ // Fixed redundancy..
+	var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
+	var logfile = FileOpen(filepath, 2); // opens file
+
+	logfile.WriteLine(date + " " + mesg );
+	logfile.Close();
+}
+
+function NTC_NextGameSayererer(){
+	var _MyGame = me.gamename;
+	var _MyEval;
+	var _MyIncrease;
+	if (_MyGame.indexOf("-") != -1) { var _MyNewGame = _MyGame.substring(_MyGame.lastIndexOf("-") + 1, _MyGame.length); }
+	else {
+		var _MyNewGameName	= "a random game name";
+		return _MyNewGameName;
+	}
+	if(_MyNewGame != 99) { _MyEval = (parseFloat(_MyNewGame,10)+1); } else { _MyEval = "00"; }
+	if(_MyEval < 10 && _MyEval != 00) { _MyIncrease = "0" + _MyEval; } else { _MyIncrease = _MyEval; }
+	var _MyNewGameName = _MyGame.substring(0, _MyGame.lastIndexOf("-"));
+	if(DebugToLogs){ NTU_LogPrint("logs/testlog/"+me.charname+"-GameName.txt", " current game is[" + me.gamename + "] " + " NEW GAME WILL BE [" + mYfINAL + "] ");
+	}
+	return _MyNewGameName + "-" + _MyIncrease;
+}
+
+function NTC_CancelOut(delay){
+	if(arguments.length < 1) { delay = 1e2; }
+	Delay(delay);
+	me.Cancel(0);
+	Delay(delay);
+	me.Cancel(1);
+	Delay(delay);
+}
+
+function NT_File(path, mode, msg, delay) { //big thanks to all the koreans out there
+    var _msg  = "";
+    var _line = "";
+    var _fileHandle;
+    var _isFileCheck = false;
+
+    if (arguments.length < 3) { msg   = ""; }
+    if (arguments.length < 4) { delay = (mode > 0) ? 5 : 2; }
+
+    while (delay--) {
+        if (mode == 2 && !_isFileCheck) {
+            _fileHandle = FileOpen(path, 0);
+            if (!_fileHandle)
+                _fileHandle = FileOpen(path, 1);
+
+            if (_fileHandle)
+                _fileHandle.Close();
+
+            _isFileCheck = true;
+        }
+
+        _fileHandle = FileOpen(path, mode);
+        if (_fileHandle)
+            break;
+
+        if (delay)
+            Delay(200);
+    }
+
+    if (_fileHandle) {
+        if (mode == 0) {
+            while (!_fileHandle.eof) {
+                _line = _fileHandle.ReadLine();
+                if (_line || !_fileHandle.eof)
+                    _msg += _line + msg;
+            }
+        }
+        else if (msg)
+            _fileHandle.WriteLine(msg);
+
+        _fileHandle.Close();
+    }
+
+    return _msg;
+}
+
+function NTC_LogLocation(script)
+{
+	var _hfile = FileOpen("logs/loc/" + me.charname + "_LocInfo.txt", 1);
+	if(!_hfile) {
+		var _this = "Rogue Encampment";
+		return _this;
+	}
+
+	_hfile.WriteLine(script);
+	_hfile.Close();
+
+}
+
+function NTC_GetLocation(index)
+{
+	var _script;
+
+	if(arguments.length < 1)
+		index = false;
+
+	var _hfile = FileOpen("logs/loc/" + me.charname + "_LocInfo.txt", 0);
+	if(!_hfile) {
+		var _this = "Rogue Encampment";
+		return _this;
+	}
+
+	_script = _hfile.ReadLine();
+	_hfile.Close();
+
+	return _script;
+}
+
+function NTC_CancelMenus() { // more koreans
+	while (GetUIState(0x01) || GetUIState(0x08) || GetUIState(0x0C) || GetUIState(0x0F) || GetUIState(0x14) ||
+		GetUIState(0x17) || GetUIState(0x19) ||   GetUIState(0x1A) || GetUIState(0x24)){
+
+		for (var i = 0; i < 40; i++){
+			if ((i % 20) == 0){
+				me.Cancel(1);
+			}
+			Delay(100);
+			if (!GetUIState(0x01) && !GetUIState(0x08) && !GetUIState(0x0C) && !GetUIState(0x0F) && !GetUIState(0x14) &&
+					!GetUIState(0x17) && !GetUIState(0x19) &&  !GetUIState(0x1A) && !GetUIState(0x24)){
+
+				NTC_PingDelay(300);
+				break;
+			}
+		}
+	}
+}
+
+function NTC_StopScriptLeecher(){
+	_script = NTC_FindScript(NTConfig_Script[CurScriptIndex]);
+	if(_script){
+		if(_script.running){
+			_script.Stop();
+			NTC_Delay(150);
+			ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+		}
+	}
+	return;
+}
+
+function NTC_PrintPossibleLeaders()
+{
+	var _player;
+	var _myPartyId;
+
+	_player = GetPlayerUnit();
+
+	if(_player)
+	{
+		do
+		{
+			if( _player.name == me.name)
+				continue;
+			NTC_LogPrintSimple("logs/namelog/"+me.charname+"-leaderName.txt", _player.name);
+		} while(_player.GetNext());
+	}
+	return false;
+}
+
+function NTC_TimeKeeper(Message){  // actually more for use as an anti drop
+	var time = 0;
+	var idleTime;
+	while(1){
+		Delay(1000);
+		time++;
+		if(time){
+			var hours = parseInt((time/3600), 10)
+			var minutes = parseInt((time - (parseInt((hours * 3600), 10))) / 60);
+			var seconds = parseInt((time), 10) - parseInt(((hours * 3600) + (minutes * 60)), 10)
+			idleTime = hours + "h " + minutes + "m " + seconds +"s"
+		}
+		Say(Message + idleTime );
+	}
+}
+
+function NTC_PickSpecialItem(_item) {
+	var groundItem = NTC_FindUnit(NTC_UNIT_ITEM, _item, 2); // may want to change the 10 to smaller #
+	var theTorch;
+	if(!groundItem) { // we are going to assume that if item is not on ground we have it
+		return true;
+	}
+	if(groundItem && groundItem.classid == 604){
+		do{
+			if(groundItem.quality == 7){ // check to make sure that the LC is in fact a torch
+				theTorch = groundItem;
+				break;
+			}
+		} while(_portal.GetNext());
+		for(var i = 0 ; i < 10 ; i++){
+			if(theTorch.mode == 3 || theTorch.mode == 5){
+				if(NTC_PickUpItemIntSpecial(theTorch)){
+					Delay(10);
+				}
+				else{
+					NTA_ClearPosition(10, false);
+				}
+			}
+			if(theTorch.mode != 3 && theTorch.mode != 5){
+				var _parent;
+				NTC_PingDelay(100);
+				_parent = theTorch.GetParent();
+				if(_parent && _parent.gid == me.gid){
+					var _area = GetArea();
+					Print(COLOR_8 + "Picked up " + COLOR_4 + "HellFireTorch");
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+			Delay(250)
+		}
+	}
+	else if(groundItem){
+		for(var i = 0 ; i < 10 ; i++){
+			if(groundItem.mode == 3 || groundItem.mode == 5){
+				if(NTC_PickUpItemIntSpecial(groundItem)){
+					Delay(10);
+				}
+				else{
+					NTA_ClearPosition(10, false);
+				}
+			}
+			if(groundItem.mode != 3 && groundItem.mode != 5){
+				var _parent;
+				NTC_PingDelay(100);
+				_parent = groundItem.GetParent();
+				if(_parent && _parent.gid == me.gid){
+					var _area = GetArea();
+					Print(COLOR_4 + "Picked up " + COLOR_8 + groundItem.name.split("\n")[0])
+					if(groundItem.classid >= 650 && groundItem.classid <= 652){
+						NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_2 + " Kept: " + COLOR_8 + groundItem.name.split("\n")[0]+ ";" + groundItem.itemdesc + "\n" + COLOR_2 + "iLvl: " + groundItem.itemlevel + "\n" + COLOR_2 + "Area: " +_area.name);
+					}
+					else{
+						NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_2 + " Kept: " + NTC_ItemQualityToMGRColor[groundItem.quality] + groundItem.name.split("\n")[0]+ ";" + groundItem.itemdesc + "\n" + COLOR_2 + "iLvl: " + groundItem.itemlevel + "\n" + COLOR_2 + "Area: " +_area.name);
+					}
+					return true;
+				}
+				else{
+					return false;
+				}
+			}
+			Delay(250)
+		}
+	}
+	return false;
+}
+
+function NTC_PickUpItemIntSpecial(snagitem){
+	var i;
+	var _classid;
+	_classid = snagitem.classid;
+	for(i = 0 ; i < 40 ; i++){
+		if((i % 10) == 0 && (snagitem.mode == 3 || snagitem.mode == 5)){
+			if(GetDistance(me, snagitem) > 3)
+				NTM_MoveTo(snagitem.areaid, snagitem.x, snagitem.y);
+			if(NTC_ClearCursor())
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, snagitem);
+		}
+		NTC_Delay(NTC_DELAY_FRAME);
+		if(snagitem.mode != 3 && snagitem.mode != 5){
+			var _parent;
+			NTC_PingDelay(100);
+			_parent = snagitem.GetParent();
+			return (_parent && _parent.gid == me.gid);
+		}
+	}
+	return false;
+}
+
+
+function NTC_PrintRandomColor(){
+	var possibleColors =
+	[
+	 COLOR_0,
+	 COLOR_1,
+	 COLOR_2,
+	 COLOR_3,
+	 COLOR_4,
+	 COLOR_5,
+	 //COLOR_6,
+	 COLOR_7,
+	 COLOR_8,
+	 COLOR_9,
+	 COLOR_10,
+	 COLOR_11,
+	 //COLOR_12,
+	 COLOR_13,
+	 COLOR_14,
+	 COLOR_15,
+	 COLOR_16,
+	 COLOR_17,
+	 COLOR_18,
+	 COLOR_19,
+	 COLOR_20,
+	 //COLOR_21,
+	 //COLOR_22,
+	 //COLOR_23,
+	 //COLOR_24,
+	 COLOR_25,
+	]
+	var randomColor = possibleColors[Math.floor(Math.random()*possibleColors.length)]
+	return randomColor;
+}
+
+function NTC_ShowPossibleColors(){ // this will print out all possible colors
+	var possibleColors =
+	[
+	 COLOR_0,
+	 COLOR_1,
+	 COLOR_2,
+	 COLOR_3,
+	 COLOR_4,
+	 COLOR_5,
+	 COLOR_6,
+	 COLOR_7,
+	 COLOR_8,
+	 COLOR_9,
+	 COLOR_10,
+	 COLOR_11,
+	 COLOR_12,
+	 COLOR_13,
+	 COLOR_14,
+	 COLOR_15,
+	 COLOR_16,
+	 COLOR_17,
+	 COLOR_18,
+	 COLOR_19,
+	 COLOR_20,
+	 COLOR_21,
+	 COLOR_22,
+	 COLOR_23,
+	 COLOR_24,
+	 COLOR_25
+	]
+	for(var i = 0 ; i < possibleColors.length ; i++){
+		Print(possibleColors[i] + "This is COLOR_" + i)
+		Delay(1000);
+	}
+}
+
+function NTC_RandomSelect(varArray){ // this uses the array as an arguement to make it universal for other uses
+	var randomReturn = varArray[Math.floor(Math.random() * varArray.length)];
+	return randomReturn;
+}
+
+function NTC_IsLastScript(scriptName) {
+	return NTConfig_Script[NTConfig_Script.length - 1] === scriptName;
+}
+
+function NTC_GetNextGame() {
+	function Pad(num) {
+		if (num < 10) {
+			num = 0 + "" + num;
+		}
+
+		return num;
+	}
+
+	var i, result, number,
+		game = me.gamename;
+
+	for (i = game.length - 1; i > -1; i -= 1) {
+		if (isNaN(game[i])) {
+			break;
+		}
+	}
+
+	result = game.substring(0, i + 1);
+	number = parseInt(game.substring(i + 1), 10) === 99 ? 0 : (parseInt(game.substring(i + 1), 10) + 1); // 99 correction
+	result += Pad(number);
+
+	return result;
+}
+
+// this is a simple info storage that returns the areaid from a wp id
+var NTC_WPIdToAreaId = [];
+NTC_WPIdToAreaId[0] = 1;
+NTC_WPIdToAreaId[1] = 3;
+NTC_WPIdToAreaId[2] = 4;
+NTC_WPIdToAreaId[3] = 5;
+NTC_WPIdToAreaId[4] = 6;
+NTC_WPIdToAreaId[5] = 27;
+NTC_WPIdToAreaId[6] = 29;
+NTC_WPIdToAreaId[7] = 32;
+NTC_WPIdToAreaId[8] = 35;
+NTC_WPIdToAreaId[9] = 40;
+NTC_WPIdToAreaId[10] = 48;
+NTC_WPIdToAreaId[11] = 42;
+NTC_WPIdToAreaId[12] = 57;
+NTC_WPIdToAreaId[13] = 43;
+NTC_WPIdToAreaId[14] = 44;
+NTC_WPIdToAreaId[15] = 52;
+NTC_WPIdToAreaId[16] = 74;
+NTC_WPIdToAreaId[17] = 46;
+NTC_WPIdToAreaId[18] = 75;
+NTC_WPIdToAreaId[19] = 76;
+NTC_WPIdToAreaId[20] = 77;
+NTC_WPIdToAreaId[21] = 78;
+NTC_WPIdToAreaId[22] = 79;
+NTC_WPIdToAreaId[23] = 80;
+NTC_WPIdToAreaId[24] = 81;
+NTC_WPIdToAreaId[25] = 83;
+NTC_WPIdToAreaId[26] = 101;
+NTC_WPIdToAreaId[27] = 103;
+NTC_WPIdToAreaId[28] = 106;
+NTC_WPIdToAreaId[29] = 107;
+NTC_WPIdToAreaId[30] = 109;
+NTC_WPIdToAreaId[31] = 111;
+NTC_WPIdToAreaId[32] = 112;
+NTC_WPIdToAreaId[33] = 113;
+NTC_WPIdToAreaId[34] = 115;
+NTC_WPIdToAreaId[35] = 123;
+NTC_WPIdToAreaId[36] = 117;
+NTC_WPIdToAreaId[37] = 118;
+NTC_WPIdToAreaId[38] = 129;

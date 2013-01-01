@@ -1,0 +1,140 @@
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	NTTMGR_TownManager();
+	if(!NTTM_TownMove("waypoint")){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	if(!NTM_TakeWaypoint(74)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+	NTP_DoPrecast(true);
+	if(NTConfig_OpenSummonerChests) {
+		var _object = GetPresetUnits(me.areaid);
+		for(var i = 0; i < _object.length; i++) {
+			if(_object[i].id == 357) {
+				if(_object[i].x == 11 && _object[i].y == 11){
+					Print("Summoner is at the "+COLOR_2+"Top Right");
+					NTM_MoveTo(me.areaid,  25863, 5449); //Bottom Right End No Summoner
+					Chestify();
+					NTM_MoveTo(me.areaid,  25445, 5869); //Bottom Left End No Summoner
+					Chestify();
+					NTM_MoveTo(me.areaid,  25023, 5449); //Top Left End No Summoner
+					Chestify();
+					NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 357, 2, 2); //Top Right Summoner
+					NTA_KillMonster(250);
+					Chestify();
+					if(NTConfig_ClearPosition)
+						NTA_ClearPosition();
+					NTSI_PickItems();
+				}
+				else if (_object[i].x == 26 && _object[i].y == 11){
+					Print("Summoner is at the "+COLOR_2+"Bottom Right");
+					NTM_MoveTo(me.areaid,  25445, 5869); //Bottom Left End No Summoner
+					Chestify();
+					NTM_MoveTo(me.areaid,  25023, 5449); //Top Left End No Summoner
+					Chestify();
+					NTM_MoveTo(me.areaid,  25450, 5030); //Top Right End No Summoner
+					Chestify();
+					NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 357, 2, 2); //Bottom Right Summoner
+					NTA_KillMonster(250);
+					Chestify();
+					if(NTConfig_ClearPosition)
+						NTA_ClearPosition();
+					NTSI_PickItems();
+				}
+				else if (_object[i].x == 11 && _object[i].y == 21){
+					Print("Summoner is at the "+COLOR_2+"Bottom Left");
+					NTM_MoveTo(me.areaid,  25023, 5449); //Top Left End No Summoner
+					Chestify();
+					NTM_MoveTo(me.areaid,  25450, 5030); //Top Right End No Summoner
+					Chestify();
+					NTM_MoveTo(me.areaid,  25863, 5449); //Bottom Right End No Summoner
+					Chestify();
+					NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 357, 2, 2); //Bottom Left Summoner
+					NTA_KillMonster(250);
+					Chestify();
+					if(NTConfig_ClearPosition)
+						NTA_ClearPosition();
+					NTSI_PickItems();
+				}
+				else {
+					Print("Summoner is at the "+COLOR_2+"Top Left");
+					NTM_MoveTo(me.areaid,  25450, 5030); //Top Right End No Summoner
+					Chestify();
+					NTM_MoveTo(me.areaid,  25863, 5449); //Bottom Right End No Summoner
+					Chestify();
+					NTM_MoveTo(me.areaid,  25445, 5869); //Bottom Left End No Summoner
+					Chestify();
+					NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 357, 2, 2); //Top Left Summoner
+					NTA_KillMonster(250);
+					Chestify();
+					if(NTConfig_ClearPosition)
+						NTA_ClearPosition();
+					NTSI_PickItems();
+				}
+			}
+		}
+	}
+	if(!NTConfig_OpenSummonerChests) {
+		if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 357, 2, 2)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+			return;
+		}
+	}
+	if(!NTConfig_OpenSummonerChests) {
+		if(!NTA_KillMonster(250))	{
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+			return;
+		}
+	}
+	if(NTConfig_ClearPosition)
+		NTA_ClearPosition();
+	NTSI_PickItems();
+	if(NTConfig_ClearArcaneSanc > 0) {
+		if(NTConfig_ClearArcaneSanc == 1){
+			NTConfig_SkipRegularMonsters = false;
+			NTP_DoPrecast();
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+			}
+		}
+		if(NTConfig_ClearArcaneSanc == 2){
+			NTConfig_SkipRegularMonsters = true;
+			NTP_DoPrecast();
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+			}
+		}
+	}
+	if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+		OpenChestsInArea();
+	}
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function Chestify(){
+	NTA_ClearPosition(20, true);
+	NTC_OpenChestsInAreaNear(me.x, me.y, 30);
+	NTSI_PickItems();
+	NTC_InTown();
+	NTM_MoveTo(me.areaid, 5108, 5059);
+	NTTMGR_TownManager(true);
+	NTM_MoveTo(me.areaid, 5069, 5066);
+	if(!NTM_TakeWaypoint(74)){ Print("Waypoint Error!"); }
+	if(!me.GetState(32) || !me.GetState(51)) { NTP_DoPrecast(); }
+}

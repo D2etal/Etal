@@ -1,0 +1,496 @@
+/**
+ * @author agor
+ * @projectdesc Logs Items into xml file
+ * @mods by Muddy_Waters (Last update: 04.20.2010)
+ */
+ 
+Include("libs/common/NTItemAlias.ntl");
+
+function NTI_CheckLog() {
+	var currentDate = new Date();
+	var dateString = currentDate.toLocaleFormat("%m-%d-%y-[%p]");
+	var filehandle = FileOpen("logs/Item Log/" + dateString + "_itemlog.xml", 2);
+	if(filehandle)
+	{
+		var line = filehandle.ReadLine();
+		// Check if file already exists
+		if(line == "")
+		{
+			Print(COLOR_25 + "Creating New Log File for "+me.charname+": " +dateString+"_itemlog123.xml");
+			// Creation of the new file
+			filehandle.WriteLine("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>"); 
+			filehandle.WriteLine("<?xml-stylesheet href=\"itemlog.xsl\" type=\"text/xsl\"?>");
+			filehandle.WriteLine("<itemlog>");
+			filehandle.WriteLine("</itemlog>");
+		}
+		filehandle.Close();
+		return true;
+	}
+	return false;
+}
+
+function NTI_CheckILog() {
+	var currentDate = new Date();
+	var dateString = currentDate.toLocaleFormat("%m-%d-%y-[%p]");
+	var filehandle = FileOpen("logs/Item Log/" + dateString + "_" + me.charname + "_itemlog.xml", 2);
+	if(filehandle)
+	{
+		var line = filehandle.ReadLine();
+		// Check if file already exists
+		if(line == "")
+		{
+			Print(COLOR_25 + "Creating New Log File for "+me.charname+": " + dateString + "_" + me.charname + "_itemlog.xml");
+			// Creation of the new file
+			filehandle.WriteLine("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>"); 
+			filehandle.WriteLine("<?xml-stylesheet href=\"itemlog.xsl\" type=\"text/xsl\"?>");
+			filehandle.WriteLine("<itemlog>");
+			filehandle.WriteLine("</itemlog>");
+		}
+		filehandle.Close();
+		return true;
+	}
+	return false;
+}
+
+function NTC_GetScript(index) {
+	var _script;
+
+	if(arguments.length < 1)
+		index = false;
+
+	var _hfile = FileOpen("logs/loc/" + me.charname + "_LocInfo.txt", 0);
+	if(!_hfile) {
+		var _this = "Rogue Encampment";
+		return _this;
+	}
+
+	_script = _hfile.ReadLine();
+	_hfile.Close();
+
+	return _script;
+}
+
+function NTI_WriteILog(item, me, _isEthereal, _mode, gamble, npc, crafted) {
+	if(arguments.length < 5)
+	{
+		gamble = false;
+		npc = '';
+		crafted = false;
+	}
+
+	if(!NTI_CheckILog())
+		NTI_ErrorLog(item, me, 2);
+	// Checks if there is already an item logged matching the current item object
+	if(NTI_DIsLogged(item, me))
+	{
+		if(item.gid > 1) {
+			NTI_ErrorLog(item, me, 0);
+			return false;
+		}
+	}
+	var dateString = new Date().toLocaleFormat("%m-%d-%y-[%p]");
+	var filehandle = FileOpen("logs/Item Log/" + dateString + "_" + me.charname + "_itemlog.xml", 2);
+	var templine = "";
+	var content = "";
+	var aCounter = 0;
+	// Skips XML header lines because they cause errors when creating the E4X object
+	if(filehandle)
+	{
+		while(!filehandle.eof)
+		{
+			templine = filehandle.ReadLine()
+			if(aCounter > 1) 
+				content += templine;
+
+			aCounter++;
+		}
+		filehandle.Close();
+	}
+	else
+	{
+		NTI_ErrorLog(item, me, 1);
+		return false;
+	}
+	// Creation of the E4X Object
+	var itemlog = new XML(content);
+	// Creates a Time String
+	// Format: http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
+	time_now = new Date();
+	var timestring = time_now.toLocaleFormat("%a %m/%d/%y %H:%M:%S");
+	// Gets the name of the current itemtype
+	var itemTypeDesc = NTI_NameItem(item.classid);
+	// Adds a unique identifier to each item
+	var itemid = time_now.getTime();
+	var typeId = item.classid;
+	var _Ethereal;
+	if(_isEthereal) { _Ethereal = "Yes"; } else {	_Ethereal = "No"; }
+	var _sockets = item.GetStat(_NTIPAliasStat["sockets"]);
+	// Defines the itemname
+	var itemname;
+	if(item.name)
+		itemname = item.name.split("\n")[0];
+	else
+		itemname = "Itemname is NULL";
+	
+	var itemdesc;
+	var last_color='';
+	if(item.itemdesc)
+	{
+		itemdesc = item.itemdesc.replace(REGEX1, function(str, m1) { last_color = m1 || last_color; return '|'+last_color } ).replace(REGEX2, REPLACE2).replace(REGEX3, REPLACE3).replace(REGEX4, REPLACE4).replace(REGEX5, REPLACE5);
+		itemdesc = itemdesc.replace((itemdesc.split("|")[0] + "|"), "");
+	}
+	else {
+		itemdesc = "Item not picked up||Ethereal: " + _Ethereal + "|Sockets: " + _sockets + "|";
+		if(crafted) { itemdesc += "ÿc8Crafted |"; }
+	}
+	//Add the last location that was saved
+	if(gamble)
+		var loc = "Gambled: " + npc;
+	else if(crafted)
+		var loc = "Crafted";
+	else
+		var loc = NTC_GetScript();
+
+	itemlog.item += <item id={itemid} char={me.charname} time={timestring} quality={item.quality} ethereal={_isEthereal} mode={_mode} name={itemname} ilvl={item.itemlevel} location={loc} type={typeId} typedesc={itemTypeDesc}>{itemdesc}</item>;
+	// Creation of the file output, headers first and then the itemlog content
+	content = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
+	content += "<?xml-stylesheet href=\"Rendering/itemlog.xsl\" type=\"text/xsl\"?>\n";
+	content += itemlog.toXMLString();
+
+	// Overwrites the whole file
+	var fhandle = FileOpen("logs/Item Log/" + dateString + "_" + me.charname + "_itemlog.xml", 1);
+	if(!fhandle)
+	{
+		NTI_ErrorLog(item, me, 1);
+		return false;
+	}
+	fhandle.WriteLine(content);
+	fhandle.Close();
+	
+	return true;
+}
+
+function NTI_WriteLog(item, me, _isEthereal, _mode, gamble, npc, crafted) {
+	if(arguments.length < 5)
+	{
+		gamble = false;
+		npc = '';
+		crafted = false;
+	}
+
+	if(!NTI_CheckLog())
+		NTI_ErrorLog(item, me, 2);
+	// Checks if there is already an item logged matching the current item object
+	if(NTI_IsLogged(item, me))
+	{
+		if(item.gid > 1) {
+			NTI_ErrorLog(item, me, 0);
+			return false;
+		}
+	}
+	var dateString = new Date().toLocaleFormat("%m-%d-%y-[%p]");
+	var filehandle = FileOpen("logs/Item Log/" + dateString + "_itemlog.xml", 2);
+	var templine = "";
+	var content = "";
+	var aCounter = 0;
+	// Skips XML header lines because they cause errors when creating the E4X object
+	if(filehandle)
+	{
+		while(!filehandle.eof)
+		{
+			templine = filehandle.ReadLine()
+			if(aCounter > 1) 
+				content += templine;
+
+			aCounter++;
+		}
+		filehandle.Close();
+	}
+	else
+	{
+		NTI_ErrorLog(item, me, 1);
+		return false;
+	}
+	// Creation of the E4X Object
+	var itemlog = new XML(content);
+	// Creates a Time String
+	// Format: http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
+	time_now = new Date();
+	var timestring = time_now.toLocaleFormat("%a %m/%d/%y %H:%M:%S");
+	// Gets the name of the current itemtype
+	var itemTypeDesc = NTI_NameItem(item.classid);
+	// Adds a unique identifier to each item
+	var itemid = time_now.getTime();
+	var typeId = item.classid;
+	var _Ethereal;
+	if(_isEthereal) { _Ethereal = "Yes"; } else {	_Ethereal = "No"; }
+	var _sockets = item.GetStat(_NTIPAliasStat["sockets"]);
+	// Defines the itemname
+	var itemname;
+	if(item.name)
+		itemname = item.name.split("\n")[0];
+	else
+		itemname = "Itemname is NULL";
+	
+	var itemdesc;
+	var last_color='';
+	if(item.itemdesc)
+	{
+		itemdesc = item.itemdesc.replace(REGEX1, function(str, m1) { last_color = m1 || last_color; return '|'+last_color } ).replace(REGEX2, REPLACE2).replace(REGEX3, REPLACE3).replace(REGEX4, REPLACE4).replace(REGEX5, REPLACE5);
+		itemdesc = itemdesc.replace((itemdesc.split("|")[0] + "|"), "");
+	}
+	else {
+		itemdesc = "Item not picked up||Ethereal: " + _Ethereal + "|Sockets: " + _sockets + "|";
+		if(crafted) { itemdesc += "ÿc8Crafted |"; }
+	}
+	//Add the last location that was saved
+	if(gamble)
+		var loc = "Gambled: " + npc;
+	else if(crafted)
+		var loc = "Crafted";
+	else
+		var loc = NTC_GetScript();
+
+	itemlog.item += <item id={itemid} char={me.charname} time={timestring} quality={item.quality} ethereal={_isEthereal} mode={_mode} name={itemname} ilvl={item.itemlevel} location={loc} type={typeId} typedesc={itemTypeDesc}>{itemdesc}</item>;
+	// Creation of the file output, headers first and then the itemlog content
+	content = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
+	content += "<?xml-stylesheet href=\"Rendering/itemlog.xsl\" type=\"text/xsl\"?>\n";
+	content += itemlog.toXMLString();
+
+	// Overwrites the whole file
+	var fhandle = FileOpen("logs/Item Log/" + dateString + "_itemlog.xml", 1);
+	if(!fhandle)
+	{
+		NTI_ErrorLog(item, me, 1);
+		return false;
+	}
+	fhandle.WriteLine(content);
+	fhandle.Close();
+	
+	return true;
+}
+
+function NTI_NameItem(itemid)
+{
+	if(itemid >= 610 && itemid <= 642)
+		return "Rune";
+	if((itemid >= 557 && itemid <= 586) || (itemid >= 597 && itemid <= 601))
+		return "Gem";
+	if((itemid >= 531 && itemid <= 552) || (itemid >= 644 && itemid <= 646))
+		return "Quest Item";
+	if(itemid >= 647 && itemid <= 649)
+		return "Key";
+	if(itemid >= 650 && itemid <= 652)
+		return "Body Part";
+	if(itemid == 653)
+		return "Token";
+	if(itemid >= 654 && itemid <= 657)
+		return "Essence";
+	if(!_NTIPIDToName[itemid])
+		return "Database Error";
+	else
+		return _NTIPIDToName[itemid];
+}
+
+function NTI_DIsLogged(item, me) {
+	var checkTime;
+	switch(item.quality)
+	{
+		// checkTime in minutes!
+		case 1:// low quality
+				checkTime = 15;
+				break;				
+		case 2:// normal
+				switch(NTI_NameItem(item.classid))
+				{
+					case "Rune":
+						checkTime = 5;
+						break;
+					case "Gem":
+						checkTime = 5;
+						break;
+					case "Quest Item:":
+						checkTime = 10;
+						break;
+					default:
+						checkTime = 20;		
+				}
+				break;
+		case 3:// superior
+				checkTime = 30;
+				break;
+		case 4:// magic
+				checkTime = 30;
+				break;
+		case 5:// set
+				checkTime = 60;
+				break;
+		case 6://rare
+				checkTime = 200;
+				break;
+		case 7:// unique
+				checkTime = 60;
+				break;
+		case 8:// crafted
+				checkTime = 200;
+				break;
+		default:
+				checkTime = 20;
+				break;
+	}
+	var itemdesc = "";
+	var last_color = "";
+	if(item.itemdesc)
+	{
+		itemdesc = item.itemdesc.replace(REGEX1, function(str, m1) { last_color = m1 || last_color; return '|'+last_color } ).replace(REGEX2, REPLACE2).replace(REGEX3, REPLACE3).replace(REGEX4, REPLACE4);
+		itemdesc = itemdesc.replace((itemdesc.split("|")[0] + "|"), "");
+	}
+	else
+		itemdesc = "Itemdesc is NULL|";
+
+	var now = new Date();
+	var dateString = now.toLocaleFormat("%m-%d-%y-[%p]");
+	var fhandle = FileOpen("logs/Item Log/" + dateString + "_" + me.charname + "_itemlog.xml", 2);
+	var xmlDataArray = new Array();
+	var templine = "";
+	if(fhandle) {
+		while(!fhandle.eof)
+		{
+			if(!((templine = fhandle.ReadLine()) == "</itemlog>"))
+				xmlDataArray.push(templine);
+		}
+		fhandle.Close();
+	} else { return false; }
+		
+	for(var i = xmlDataArray.length-2; i > 0; i--) {
+		if((now.getTime() - parseInt(xmlDataArray[i].split(/"/g)[1])) < checkTime*60000) {
+			if(parseInt(xmlDataArray[i].split(/"/g)[19]) == item.classid) {
+				if(parseInt(xmlDataArray[i].split(/"/g)[7]) == item.quality) {
+					if(parseInt(xmlDataArray[i].split(/"/g)[15]) == item.itemlevel) {
+						if(xmlDataArray[i].split(/"/g)[13] == item.name.split("\n")[0]) {
+							if(xmlDataArray[i].split(/">/g)[1].replace("</item>", "") == itemdesc) {
+								return true;
+							} else { continue; }
+						} else { continue; }		
+					} else { continue; }
+				} else { continue; }
+			} else { continue; }
+		} else { break; }
+	} return false;
+}
+
+function NTI_IsLogged(item, me) {
+	var checkTime;
+	switch(item.quality)
+	{
+		// checkTime in minutes!
+		case 1:// low quality
+				checkTime = 15;
+				break;				
+		case 2:// normal
+				switch(NTI_NameItem(item.classid))
+				{
+					case "Rune":
+						checkTime = 5;
+						break;
+					case "Gem":
+						checkTime = 5;
+						break;
+					case "Quest Item:":
+						checkTime = 10;
+						break;
+					default:
+						checkTime = 20;		
+				}
+				break;
+		case 3:// superior
+				checkTime = 30;
+				break;
+		case 4:// magic
+				checkTime = 30;
+				break;
+		case 5:// set
+				checkTime = 60;
+				break;
+		case 6://rare
+				checkTime = 200;
+				break;
+		case 7:// unique
+				checkTime = 60;
+				break;
+		case 8:// crafted
+				checkTime = 200;
+				break;
+		default:
+				checkTime = 20;
+				break;
+	}
+	var itemdesc = "";
+	var last_color = "";
+	if(item.itemdesc)
+	{
+		itemdesc = item.itemdesc.replace(REGEX1, function(str, m1) { last_color = m1 || last_color; return '|'+last_color } ).replace(REGEX2, REPLACE2).replace(REGEX3, REPLACE3).replace(REGEX4, REPLACE4);
+		itemdesc = itemdesc.replace((itemdesc.split("|")[0] + "|"), "");
+	}
+	else
+		itemdesc = "Itemdesc is NULL|";
+
+	var now = new Date();
+	var dateString = now.toLocaleFormat("%m-%d-%y-[%p]");
+	var fhandle = FileOpen("logs/Item Log/" + dateString + "_itemlog.xml", 2);
+	var xmlDataArray = new Array();
+	var templine = "";
+	if(fhandle) {
+		while(!fhandle.eof)
+		{
+			if(!((templine = fhandle.ReadLine()) == "</itemlog>"))
+				xmlDataArray.push(templine);
+		}
+		fhandle.Close();
+	} else { return false; }
+		
+	for(var i = xmlDataArray.length-2; i > 0; i--) {
+		if((now.getTime() - parseInt(xmlDataArray[i].split(/"/g)[1])) < checkTime*60000) {
+			if(parseInt(xmlDataArray[i].split(/"/g)[19]) == item.classid) {
+				if(parseInt(xmlDataArray[i].split(/"/g)[7]) == item.quality) {
+					if(parseInt(xmlDataArray[i].split(/"/g)[15]) == item.itemlevel) {
+						if(xmlDataArray[i].split(/"/g)[13] == item.name.split("\n")[0]) {
+							if(xmlDataArray[i].split(/">/g)[1].replace("</item>", "") == itemdesc) {
+								return true;
+							} else { continue; }
+						} else { continue; }		
+					} else { continue; }
+				} else { continue; }
+			} else { continue; }
+		} else { break; }
+	} return false;
+}
+
+function NTI_ErrorLog(item, me, errorcode) {
+	var dateString = new Date().toLocaleFormat("%a %m/%d/%y %H:%M:%S");
+	var errorOutput = "[" + dateString + " <" + me.charname + "> ] ";
+	switch(errorcode)
+	{	
+		case 0:
+			Print(COLOR_1 + "Itemlog Error: Item is already in log!");
+			errorOutput += "Item Error: Item appears to be in log already (" + item.name + ", " + NTI_NameItem(item.classid) + "[" + item.quality + "])";
+			break;
+		case 1:
+			Print(COLOR_1 +"Itemlog Error: Filehandle is null!");
+			errorOutput += "File Error: Filehandle is null (Could not log "+ item.name + ", " + NTI_NameItem(item.classid) + "[" + item.quality + "])";
+			break;
+		case 2:
+			Print(COLOR_1 +"Itemlog Error: Logfile could not be created!");
+			errorOutput += "File Error: Logfile could not be created (Could not log "+ item.name + ", " + NTI_NameItem(item.classid) + "[" + item.quality + "])";
+			break;
+		default:
+			errorOutput += "Unknown Error";
+			break;
+	}
+	var filehandle = FileOpen("logs/Item Log/ErrorLog.txt", 2);
+	if(filehandle)
+	{
+		filehandle.WriteLine(errorOutput);
+		filehandle.Close();
+	}
+}

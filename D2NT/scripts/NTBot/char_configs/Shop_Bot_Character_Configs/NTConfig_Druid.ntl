@@ -1,0 +1,185 @@
+
+//=========================================================================================================
+// shop bot settings
+//=========================================================================================================
+
+// false = for expansion, true = for classic (act 4 max)
+var is_D2C = false;
+
+//just uncomment the shop_npcNumber.push that you wish to use.  You can set bot to use as many as you want
+
+var shop_npcNumber = new Array();
+//shop_npcNumber.push( 1 );  // Act 1: Akara
+//shop_npcNumber.push( 2 );  // Act 1: Charsi
+//shop_npcNumber.push( 3 );  // Act 1: Gheed
+
+//shop_npcNumber.push( 4 );  // Act 2: Drognan
+//shop_npcNumber.push( 5 );  // Act 2: Fara
+//shop_npcNumber.push( 6 );  // Act 2: Elzix
+
+//shop_npcNumber.push( 7 );  // Act 3: Ormus
+//shop_npcNumber.push( 8 );  // Act 3: Hratli
+//shop_npcNumber.push( 9 );  // Act 3: Asheara
+
+//shop_npcNumber.push( 10 ); // Act 4: Jamella
+//shop_npcNumber.push( 11 ); // Act 4: Halbu
+
+shop_npcNumber.push( 12 ); // Act 5: Anya
+//shop_npcNumber.push( 13 ); // Act 5: Larzuk
+//shop_npcNumber.push( 14 ); // Act 5: Malah
+
+// Kill monsters in nith's temple
+// NOTE: to clear area you must have attacks configured
+var autoClear = true;
+
+// true = use wp for anya (if you don't got), false = use red portal (nith's temple)
+var anyaGoWp = false;
+
+// false = do not quit on error, true = quit on error
+var errorGoQuitGame = true;
+
+//==========================================================================================================
+// Don't forget to uncomment NTConfig_Script.push("NTShopbot.ntj"); below
+//==========================================================================================================
+
+function NT_LoadConfig()
+{
+	NTConfig_Script.push("NTShopbot.ntj"); //shop bot 
+
+	//-----------------------------------------------------------------------------------
+	// SnagIt configuration
+	// Select one group only (normal / advance / extreme / Master)
+	//-----------------------------------------------------------------------------------
+	NTConfig_NIPFilePath.push("Master/shop.nip"); //note this pickit is pretty liberal so you may want to tighten it up
+	NTConfig_SnagRange = 40;	// Radius to check for dropped items. 40 is a good number here
+	
+	//------------------------------------------------------------------------------
+	// Speed settings
+	//------------------------------------------------------------------------------
+	me.maxgametime = 1800; // time in seconds, maximum game length (0 is infinite)
+	NTConfig_StartDelay = 0;	// Delay time in milliseconds to start;
+	NTConfig_AreaDelay = 500;	// Delay time in milliseconds to change area;
+	NTConfig_SnagDelay = 500;	// Delay time in milliseconds to wait before starting picking items
+	
+	//------------------------------------------------------------------------------
+	// Chicken settings
+	//------------------------------------------------------------------------------
+	NTConfig_SkipHealLife = 90;		// If you have more than this percent of life, you won't go to a healer
+	NTConfig_SkipHealMana = 70;		// If you have more than this percent of mana, you won't go to a healer
+
+	NTConfig_LifeThresh = 85;		// Drink a normal potion if under this percent of life.
+	NTConfig_LifeRejuvThresh = 45;	// Drink a rejuvenation potion if under this percent of life.
+	NTConfig_ManaThresh = 30;		// Drink a normal potion if under this percent of mana.
+	NTConfig_ManaRejuvThresh = 0;	// Drink a rejuvenation potion if under this percent of mana.
+
+	NTConfig_LifeChicken = 20;							// This is your D2NT chicken life percent. If you go below this life total, exit game.
+	NTConfig_ManaChicken = 0;							// This is your D2NT chicken mana percent. If you go below this mana total, exit game.
+
+	// These chicken values are optional and can run alongside the traditional D2NT chicken or as a standalone chicken
+	// The Etal version comes with additional logging and will restart D2 instead of exitting the game for crash protection
+	// To disable, use 0
+	NTConfig_EtalLifeChicken = 0;						// This is your Etal chicken life percent. If you go below this life total, exit D2.
+	NTConfig_EtalManaChicken = 0;						// This is your Etal chicken mana percent. If you go below this mana total, exit D2.
+	
+	NTConfig_TPChicken = 60; 		//life percent for tp chicken set to zero if you don't want to use
+
+	NTConfig_MercLifeThresh = 50;	// This is the threshold to use a life potion on your merc in percent.
+	NTConfig_MercRejuvThresh = 0;	// This is the threshold to use a rejuv potion on your merc in percent.
+	NTConfig_MercChicken = 0;		// This is your mercs chicken life percent. If he goes below this, exit game.
+
+
+	//------------------------------------------------------------------------------
+	// Inventory settings
+	//------------------------------------------------------------------------------
+	NTConfig_FreeSpace = 6;		// Number of free columns. If less full columns are free stashing is set.
+
+	// The numbers correspond to your inventory. Set 0 to keep whatever is there, 1 to stash it.
+	NTConfig_Columns[0] = [0,0,0,0,0,0,0,0,0,0];
+	NTConfig_Columns[1] = [0,0,0,0,0,0,0,0,0,0];
+	NTConfig_Columns[2] = [0,0,0,0,0,0,0,0,0,0];
+	NTConfig_Columns[3] = [0,0,0,0,0,0,0,0,0,0];
+
+	NTConfig_MinGoldToStash = 100000;	// Maximum gold amount carried before going to stash
+
+	//----------------------------------------------------------------------------------------------
+	// Belt settings
+	// Type of potion used in each belt column
+	// Available types : "hp" = health | "mp" = mana | "rv" = rejuv. Can use other potion types too.
+	// Keep equal types at adjacent columns. First HP then MP and then HP again is a bad choice.
+	// Keep HP and MP at the beginning of the belt (in case you want to use rejuv and other types).
+	// Rejuvenations MUST, I REPEAT MUST be at the end of the belt (last x columns).
+	// To use rejuvenations only, put "rv" in all columns.
+	//----------------------------------------------------------------------------------------------
+	NTConfig_BeltColType[0] = "hp";
+	NTConfig_BeltColType[1] = "mp";
+	NTConfig_BeltColType[2] = "rv";
+	NTConfig_BeltColType[3] = "rv";
+
+	//------------------------------------------------------------------------------
+	// config options default setting work 
+	// these need to be here to avoid errors
+	//------------------------------------------------------------------------------
+	NTConfig_Cubing = false;						// Enable cubing
+	NTConfig_MakeRunewords = false;
+	NTConfig_Gamble = false;						// Enable gambling
+	NTConfig_IdentAtCain = true;					// will skip using cain if something in inventory is suppose to be kept unid.  Also will not log sold items
+	NTConfig_PocketChange = 500000;					// set this to amount of gold you want to keep on hand.  Make adjustments to this and repair to keep equiptment from breaking
+	NTConfig_DontCainAct = [0];						// list any act you don't want to use cain on seperated by ",".  Set to "0" to id in all acts
+	NTConfig_Repair = "40"							// Set to how much durability you want to repair at 40 is normal 99 is as soon as you loose one point
+	NTConfig_AlwaysUseCain = false;					// this to true to always use cain even it it will id something that is not suppose to be id'd that is stuch in inventory
+	NTConfig_PublicMode = false;						// if you set this to true make sure party leecheronly in leech sections is set tp false
+	NTConfig_CheckCloneDiablo = true;				// Set to true if you want to wait in game after notifying "Diablo Walks the Earth" msg.
+	NTConfig_FastPickit = false;						// Recomended only in Public games with a Snag delay of 0 (Can cause Chickens only use if you have to beat out leechers)
+	NTConfig_UseMerc = true;						// Set to true if you use a mercenary, will revive merc at a reviver npc.
+	NTConfig_ResetEnigma = true;  					// Set to true to reset enigma when tele bug exists
+	me.quitonhostile = false;						// Set to true to quit when someone hostiles you
+	NTConfig_ClearPosition = false;					// Set to true if you want to clear area after killing boss.
+	NTConfig_PrioritizeWeakerFoes = false;			// Enable to kill weaker foes with higher priority as well as clear areas of minions and other foes prior to killing bosses
+	NTConfig_PrioritizeWeakerFoesAreaDisable = [];	// Use IDs from D2NT\sdk\areas.txt to disable for specific areas, e.g. [124,83] would disable Nihlathak and Travincial
+	NTConfig_SwitchTele = false; 					// use this if higher fcr on switch for tele make sure attack switch is tab 1 and is a slight chance of breaking an eth cta spirit
+	NTConfig_PreBuffFade = false; 					// use to stand in fire until fade is triggered.  Must have last wish for this
+	NTConfig_StopIfStashInventoryFull = false;    	// Pauses bot when stash/inventory are full (helpful for HardCore players)
+	NTConfig_SkipRegularMonsters = false;			// If true will only kill Champions, Uniques and Bosses
+	NTConfig_DropExtraRejuvs = false;				// When belt is full bot will either drop extra rejuvs when a new rejuv is found or drink them. true to drop, false to drink
+	NTConfig_LogSoldItemQUality = 7;				// The bot will log items >= item quality set. example "4" would log everything "6" would log rare and unique only (magic=4, set=5, rare=6, unique=7)
+	NTConfig_TeleGrab = 0; 							// 0 = No, 1 = Yes. Look for items every teleport? (Recommended for aura stacking.)
+	NTConfig_CheckPassword = false; 				// quit if game is made without password 	obv set to false if you run un-passworded games
+	NTConfig_PatryOnlyLeader = false;
+
+	//------------------------------------------------------------------------------
+	// Attack configuration
+	// Change the 0's to corosponding #'s found in /D2NT/sdk/skills.txt
+	//------------------------------------------------------------------------------
+	NTConfig_AttackSkill[0] = 0; // First skill. Maybe slow missiles
+	NTConfig_AttackSkill[1] = 0; // Primary skill to super unique/champion.
+	NTConfig_AttackSkill[2] = 0; // Primary untimed skill to super unique/champion.
+	NTConfig_AttackSkill[3] = 0; // Primary skill to others.
+	NTConfig_AttackSkill[4] = 0; // Primary untimed skill to others.
+	NTConfig_AttackSkill[5] = 0; // Secondary skill in case monster is immune to primary skill.
+	NTConfig_AttackSkill[6] = 0; // Secondary untimed skill.
+	NTConfig_AttackSkill[7] = 0; // Tertiary skill to everything else in case monster is immune to both primary and secondary.
+	NTConfig_AttackSkill[8] = 0; // Tertiary untimed skill. 
+	NTConfig_AttackSkill[9] = 0; // Primary skill to boss (diablo/baal/meph/etc) Not immune to spells I guess.
+	
+	//------------------------------------------------------------------------------
+	// Check safe settings
+	//------------------------------------------------------------------------------
+	// Check self safe. Set to []; if you wont.
+	// 01=Potion. 02=Poison. 04=Amplify Damage. 08=Weaken. 10=Iron Maiden. 20=Decrepify. 40=Lower Resist. 80=Blood Mana.
+	// Use this format: ['01','02'] etc. Add as many or as little as you want.
+
+	NTConfig_CheckSelfSafe = [];
+
+	// Check merc's safe. Set to []; if you wont.
+	// 01=Death, 02=Poison, 04=Amplify Damage, 08=Weaken, 10=Iron Maiden, 20=Decrepify, 40=Lower Resist
+	// Use this format: ['01','02'] etc. Add as many or as little as you want.
+
+	NTConfig_CheckMercSafe = [];
+
+	//------------------------------------------------------------------------------
+	// Class Specific settings
+	//------------------------------------------------------------------------------
+
+
+
+}

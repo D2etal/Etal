@@ -1,0 +1,327 @@
+function NTRW_CheckItem(item, checkonly)
+{
+	if(!NTConfig_MakeRunewords)
+		return false;
+
+	if(arguments.length < 2)
+		checkonly = false;
+
+	var _baseitem;
+	var _needhel;
+	var _classid = item.classid;
+
+	for(var i = 0 ; i < NTConfig_Runeword.length ; i++)
+	{
+		_needhel = 1;
+		_items = me.GetItems(NTRW_AliasToClassid(NTConfig_Runeword[i][0]));
+		
+		if(!_items || _items.length == 0)
+			continue;
+
+		for(var n = 0 ; n < _items.length ; n++)
+		{
+			if(_items[n].GetStat(194) == (NTConfig_Runeword[i].length - 1) && _items[n].quality < 4 && _items[n].mode == 0 && (_items[n].itemloc == 0 || _items[n].itemloc == 4) && !(_items[n].itemflag&0x4000000))
+			{
+				_baseitem = _items[n];
+				break;
+			}
+		}
+
+		if(_baseitem)
+		{
+			for(var j = 1 ; j < NTConfig_Runeword[i].length ; j++)
+			{
+				if(NTRW_AliasToClassid(NTConfig_Runeword[i][j]) == 624)
+					_needhel++;
+					
+				if(NTRW_AliasToClassid(NTConfig_Runeword[i][j]) == _classid)
+				{
+					if(NTRW_CheckItemNum(NTRW_AliasToClassid(NTConfig_Runeword[i][j])) < 1 || checkonly)
+						return true;
+				}
+			}
+			
+			if(_classid == 624)
+			{
+				if(NTRW_CheckItemNum(624) < _needhel || checkonly)
+					return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+function NTRW_CheckRunewords()
+{
+	var checkrunes;
+	var checkbase = false;
+	var result = true
+	var _needhel;
+	
+	for(var i = 0 ; i < NTConfig_Runeword.length ; i++)
+	{
+		checkbase = false;
+		checkrunes = true;
+		_needhel = 1;
+	
+		for(var j = 0 ; j < NTConfig_Runeword[i].length ; j++)
+		{
+			if(j == 0)
+			{
+				_items = me.GetItems(NTRW_AliasToClassid(NTConfig_Runeword[i][0]));
+				
+				if(!_items || _items.length == 0)
+					break;
+				
+				for(var n = 0 ; n < _items.length ; n++)
+				{
+					if(_items[n].GetStat(194) == (NTConfig_Runeword[i].length - 1) && _items[n].quality < 4 && (_items[n].itemloc == 0 || _items[n].itemloc == 4) && !(_items[n].itemflag&0x4000000))
+					{
+						checkbase = true;
+						break;
+					}
+				}
+				
+				continue;
+			}
+			
+			if(NTRW_CheckItemNum(NTRW_AliasToClassid(NTConfig_Runeword[i][j])) == 0)
+				checkrunes = false;
+				
+			if(NTRW_AliasToClassid(NTConfig_Runeword[i][j]) == 624)
+				_needhel++;
+				
+			if(NTRW_CheckItemNum(624) < _needhel)
+				checkrunes = false;
+				
+			if(checkrunes && checkbase)
+				return true;
+		}
+	}
+	
+	return false;
+}
+
+function NTRW_CheckItemNum(id)
+{
+	var num = 0;
+	var _items;
+	
+	_items = me.GetItems();
+	
+	if(!_items)
+		return 0;
+	
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(id == _items[i].classid)
+			num++;
+	}
+	
+	return num;
+}
+
+function NTRW_MakeRuneword()
+{
+	var _items;
+	var baseitem;
+	var haveitem;
+	var _helrune = me.GetItems(624);
+	var _needhel = 1;
+	
+	if(!_helrune || _helrune.length < _needhel)
+		return false;
+
+	for(var i = 0 ; i < NTConfig_Runeword.length ; i++)
+	{
+		baseitem = false;
+		_needhel = 1;
+		
+		haveitem = true;
+		
+		for(var j = 0 ; j < NTConfig_Runeword[i].length ; j++)
+		{
+			if(NTRW_AliasToClassid(NTConfig_Runeword[i][j]) == 624)
+				_needhel++;
+
+			_items = me.GetItems(NTRW_AliasToClassid(NTConfig_Runeword[i][j]));
+
+			if(!_items || _items.length == 0)
+			{
+				haveitem = false;
+				break;
+			}
+		}
+		
+		if(!_helrune || _helrune.length < _needhel)
+			haveitem = false;
+
+		if(haveitem)
+		{
+			for(var j = 0 ; j < NTConfig_Runeword[i].length ; j++)
+			{
+				_items = me.GetItems(NTRW_AliasToClassid(NTConfig_Runeword[i][j]));
+				
+				for(var n = 0 ; n < _items.length ; n++)
+				{
+					if(_items[n].GetStat(194) == (NTConfig_Runeword[i].length - 1) && _items[n].quality < 4 && _items[n].mode == 0 && (_items[n].itemloc == 0 || _items[n].itemloc == 4) && !(_items[n].itemflag&0x4000000))
+					{
+						baseitem = _items[n];
+						break;
+					}
+				}
+				
+				if(j == 0)
+					continue;
+
+				if(!baseitem)
+					break;
+
+				if(!NTT_CheckSpace(baseitem.xsize, baseitem.ysize)) 
+				{
+					Print("Insufficient space");
+					return false;
+				}
+				
+				NTC_ItemToCursor(_items[0]);
+				NTC_PingDelay(250);
+				
+				if(!me.itemoncursor) 
+				{
+					for(var c = 0 ; c < 3 ; c++) 
+					{
+						NTC_ItemToCursor(_items[0]);
+						if(me.itemoncursor)
+							break;
+					}
+				}
+				
+				me.ClickItem(0, baseitem.x, baseitem.y, baseitem.itemloc);
+				NTC_PingDelay(250);
+			}
+
+			if(baseitem) 
+			{
+				var _result = 0;
+				
+				for(var m = 0; m < NTConfig_KeepRuneword.length && !_result; m++)
+					_result = (MySI_MiniNTIPCheckItem(baseitem, NTConfig_KeepRuneword[m]) == 1);
+
+				if(!_result) 
+				{
+					NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_1 + "Rerolling Runeword: " + NTC_ItemQualityToMGRColor[baseitem.quality] + baseitem.name.split("\n")[0]+ ";" + baseitem.itemdesc + "\n " + COLOR_2 + "iLvl: " + baseitem.itemlevel);
+					me.Cancel(1);
+					NTRW_BuyTP();
+					NTTM_TownMove("stash");
+					
+					var _stash = NTC_FindUnit(NTC_UNIT_OBJECT, NTC_UNIT_STASH, 5);
+				
+					NTT_DoInteract(_stash);
+					NTRW_Reroll(baseitem);
+					NTTMGR_VisitStash(false);
+				}
+				else
+					NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_2 + "Kept Runeword: " + NTC_ItemQualityToMGRColor[baseitem.quality] + baseitem.name.split("\n")[0]+ ";" + baseitem.itemdesc + "\n " + COLOR_2 + "iLvl: " + baseitem.itemlevel);
+			}
+		}
+	}
+}
+
+function MySI_MiniNTIPCheckItem(item, ntip) //taken from korean d2nt mod
+{
+    var _result     = 0;
+    var _identified = item.itemflag & _NTIPAliasFlag["identified"];
+    var _ntip       = NTIPParseLineInt(ntip);
+
+    if (_ntip)
+    {
+        if (_ntip[0].length > 0)
+        {
+            if (eval(_ntip[0]))
+            {
+                if (_ntip[1].length > 0)
+                {
+                    if (eval(_ntip[1]))
+                        return 1;
+                    else if (!_identified && _result == 0)
+                        _result = -1;
+                }
+                else
+                    return 1;
+            }
+        }
+        else if (_ntip[1].length > 0)
+        {
+            if (eval(_ntip[1]))
+                return 1;
+            else if (!_identified && _result == 0)
+                _result = -1;
+        }
+    }
+
+    return _result;
+}
+
+function NTRW_BuyTP()
+{
+	var _npc;
+	var _items;
+	
+	_items = me.GetItems(529);
+	
+	if(_items.length > 0)
+		return false;
+	
+	var _npcList = [["akara", NTC_NPC_ID_AKARA], ["drognan", NTC_NPC_ID_DROGNAN], ["ormus", NTC_NPC_ID_ORMUS], ["jamella", NTC_NPC_ID_JAMELLA], ["malah", NTC_NPC_ID_MALAH]];
+	
+	NTTM_TownMove(_npcList[me.act-1][0]);
+	_npc = NTC_FindUnit(NTC_UNIT_NPC, _npcList[me.act-1][1], 5);
+	if(_npc)
+		NTT_DoInteract(_npc);
+	NTT_DoTrade(_npc);
+	for(var i = 0 ; i < 3 ; i++) {
+		_items = _npc.GetItems(529);
+		NTT_ShopItem(_items[0], _npc, 3);
+		_items = me.GetItems(529);
+		if(_items.length > 0)
+			break;
+	}
+
+	me.Cancel(1);
+	
+	return true;
+}
+
+function NTRW_Reroll(item)
+{
+	var _tpscroll = me.GetItems(529);
+	var _helrune = me.GetItems(624);
+	var _cube = me.GetItems(NTC_UNIT_CUBE);
+	
+	NTCU_MoveItemToCubeInt(_cube[0], _tpscroll[0]);
+	NTCU_MoveItemToCubeInt(_cube[0], _helrune[0]);
+	NTCU_MoveItemToCubeInt(_cube[0], item);
+	
+	NTCU_OpenCubeInt(_cube[0]);
+	
+	Transmute();
+	NTC_PingDelay(800);
+	
+	if(NTCU_CheckCubeInventoryInt() > 0)	
+	{
+		if(NTCU_ClearCubeInt() < 1)
+			return false;
+
+		NTCU_CloseCubeInt();
+	}
+	
+	me.Cancel(1);
+}
+
+function NTRW_AliasToClassid(input)
+{
+	if(isNaN(input))
+		return _NTIPAliasClassID[input.replace(/\s+|;/g, "").toLowerCase()];
+	return input;
+}

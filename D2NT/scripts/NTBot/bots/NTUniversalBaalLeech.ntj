@@ -1,0 +1,629 @@
+//////////////// config options /////////////////////////////
+//// NTConfig_FollowtoWorldStone = true;
+
+//// NTConfig_LeechBaal = 1, 2 or, 3;
+//// NTConfig_Leader
+//// NTConfig_LeechPrecast
+//// NTConfig_LeechBo
+//// NTConfig_UsePaliAura
+//// NTConfig_PreWaveSpam
+//// NTConfig_TeleEachWaveHelper
+//// NTConfig_LeechHolyBoltBaal
+//// NTConfig_TeleEachWaveHelper
+//// NTConfig_LeechHydra
+//// NTConfig_LeechWalkAround
+////
+RegisterEvent(EVENT_SCRIPTMSG, HostileHandler);
+var _hostilepause = false;
+
+var poscount = 1;
+var TakeShrine = -1;
+var  Baal_PreMessage = "";
+
+var _trapsPreCasted;
+
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	NTConfig_Shrines = [0]; // this turns off grabbing shrine grabbing option may want to add a check if you are searching shrines, but really doesn't matter
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	NTTMGR_TownManager();
+	LXPC_SearchShrines();
+	if(XpSearchContinue){ // this handles the case where you have searched all areas and haven't found a shrine
+		NTTM_CheckAct(5);
+		NTTM_TownMove("portalspot");
+		while(TakeShrine <= 2){
+			NT_BaalLeechMessageHandler();
+			Delay(500);
+		}
+		switch(NTConfig_LeechBaal)
+		{
+			case 1:
+				if(!NT_LeechBaalFighter()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NT_LeechBaalFighter()");
+				}
+				break;
+			case 2:
+				if(!NT_LeechBaalFighterWalking()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NT_LeechBaalFighterWalking()");
+				}
+				break;
+			default:
+				if(!NT_LeechBaalPassively()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NT_LeechBaalPassively()");
+				}
+				break;
+		}
+	}
+	else if(NTC_InTown()){
+		NTTM_CheckAct();
+		NTTM_TownMove("portalspot");
+		while(TakeShrine <= 0){
+			NT_BaalLeechMessageHandler();
+			Delay(500);
+		}
+		LXPC_GrabShrineXp();
+		NTTM_TownMove("portalspot");
+		while(TakeShrine <= 2){
+			NT_BaalLeechMessageHandler();
+			Delay(500);
+		}
+		switch(NTConfig_LeechBaal)
+		{
+			case 1:
+				if(!NT_LeechBaalFighter()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NT_LeechBaalFighter()");
+				}
+				break;
+			case 2:
+				if(!NT_LeechBaalFighterWalking()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NT_LeechBaalFighterWalking()");
+				}
+				break;
+			default:
+				if(!NT_LeechBaalPassively()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NT_LeechBaalPassively()");
+				}
+				break;
+		}
+	}
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function NT_LeechBaalPassively(){
+
+	for(var i = 0 ; i < 100 && me.areaid == 109 ; i++){
+		NTM_UsePortal("BluePortal", 131, NTConfig_Leader);
+	}
+	if(NTConfig_LeechPrecast){
+		NTP_DoPrecast(true, NTConfig_LeechBo);
+	}
+	NTM_MoveTo(me.areaid, leechpos[0], leechpos[1]);
+	if(NTConfig_UsePaliAura > 0){
+		NTC_PutSkill(NTConfig_UsePaliAura, NTC_HAND_RIGHT);
+	}
+	if(NTConfig_FollowtoWorldStone){
+		while(NTC_CheckPlayer(NTConfig_Leader)){
+			if(_leaderareaid == 132)
+				break;
+			if(NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe) || me.hp <= parseInt((me.hpmax*NTConfig_TPChicken)/100)){
+				if(!NTTMGR_VisitTown())
+					return 0;
+			}
+			if(!NTKBL_ThronePreAttackInt()){
+				NTC_Delay(800);
+			}
+			else{
+				NTC_Delay(200);
+			}
+		}
+		var _portal;
+		NTM_MoveTo(me.areaid, 15092, 5010);
+		while(NTC_FindUnit(NTC_UNIT_MONSTER, 543)){
+			NTC_Delay(500);
+		}
+		_portal = NTC_FindUnit(NTC_UNIT_OBJECT, 563, 1);
+		if(!_portal){
+			return false;
+		}
+		if(!NTM_UsePortal("Portal", 132, null, _portal)){
+			return false;
+		}
+		NTM_MoveTo(me.areaid, 15193, 5913);
+		if(NTConfig_LeechPrecast){
+			NTP_DoPrecast(true, NTConfig_LeechBo);
+		}
+		if(NTConfig_UsePaliAura > 0){
+			NTC_PutSkill(NTConfig_UsePaliAura, NTC_HAND_RIGHT);
+		}
+		while(NTC_CheckPlayer(NTConfig_Leader)){
+			if(_leaderareaid != 132)
+				break;
+			Delay(500);
+		}
+		return true;
+	}
+	else{
+		while(NTC_CheckPlayer(NTConfig_Leader)){
+			if(_leaderareaid == 132)
+				break;
+			if(NTTMGR_CheckCurse(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe) || me.hp <= parseInt((me.hpmax*NTConfig_TPChicken)/100)){
+				if(!NTTMGR_VisitTown())
+					return 0;
+			}
+			Delay(500);
+		}
+		return true;
+	}
+}
+
+function NTKBL_ThronePreAttackInt(){
+	if(me.classid == NTC_CHAR_CLASS_SORCERESS){
+		if(NTConfig_PreWaveSpam > 0){
+			if(poscount == 1){
+				poscount = 2;
+				return NTC_CastSkill(NTConfig_PreWaveSpam, 0, KBLSpamPos[0], KBLSpamPos[1]);
+			}
+			else if(poscount == 2){
+				poscount = 3;
+				return NTC_CastSkill(NTConfig_PreWaveSpam, 0, KBLSpamPos[2], KBLSpamPos[3]);
+			}
+			else{
+				poscount = 1;
+				return NTC_CastSkill(NTConfig_PreWaveSpam, 0, KBLSpamPos[4], KBLSpamPos[5]);
+			}
+		}
+	}
+	return false;
+}
+
+function NT_LeechBaalFighter(){
+	var i;
+	var _wave;
+	var _starttick;
+	for(var i = 0 ; i < 100 && me.areaid == 109 ; i++){
+		if(NT_FindLeaderTPInt(131, NTConfig_Leader)){
+			NTM_UsePortal("BluePortal", 131, NTConfig_Leader)
+		}
+		else if(NT_FindLeaderTPInt(130, NTConfig_Leader)){
+			NTM_UsePortal("BluePortal", 130, NTConfig_Leader)
+		}
+	}
+	if(NTConfig_LeechBo){ Delay(Random(3000,5000)); }
+	else{ Delay(Random(500,1500)); }
+	if(me.areaid == 130){
+		NTP_DoPrecast(true, NTConfig_LeechBo);
+		if(!NTM_TakeStair(131)){
+			return false;
+		}
+		if(!NTM_MoveTo(me.areaid, 15112, 5068)){
+			return false;
+		}
+	}
+	else{
+		NTP_DoPrecast(true, NTConfig_LeechBo);
+	}
+	NT_ClearThroneInt();
+	while(1){
+		NTC_Delay(100);
+		NTM_MoveTo(me.areaid, prewavespot[0], prewavespot[1]); //break;
+		if(me.GetState(2))
+			NTC_PutSkill(109, NTC_HAND_RIGHT);
+		if(NTConfig_IdInField){
+			NT_FieldID();
+		}
+		for(i = 0 ; i < 6 ; i++){
+			_wave = NT_ThroneCheckInt();
+			if(_wave > 0)
+				break;
+			NTC_Delay(50);
+		}
+		_starttick = GetTickCount();
+		while(_wave == 0){
+			if(!NT_ThronePreAttackInt())
+				NTC_Delay(200);
+			if(GetTickCount()-_starttick > 17000){
+				NT_ClearThroneInt();
+				_starttick = GetTickCount();
+			}
+			_wave = NT_ThroneCheckInt();
+		}
+		switch(_wave){
+			case 1:
+				if(NTConfig_TeleEachWaveHelper){
+					NTM_TeleportTo(me.x+1, me.y+3);
+                }
+				NTA_ClearPosition(40, true, 1);
+				NTP_DoPrecast(true, NTConfig_LeechBo);
+				break;
+			case 2:
+				if(NTConfig_TeleEachWaveHelper){
+					NTM_TeleportTo(me.x+1, me.y+3);
+                }
+				if(NTConfig_LeechHolyBoltBaal)
+					if (me.classid == NTC_CHAR_CLASS_PALADIN && NTConfig_AttackSkill[5] == 101)
+						achmel();
+				NTA_ClearPosition(40, true, 2);
+				break;
+			case 3:
+				if(NTConfig_TeleEachWaveHelper){
+					NTM_TeleportTo(me.x+1, me.y+3);
+                }
+				NTA_ClearPosition(40, true, 2);
+				if(NTConfig_LeechHydra > 0){
+					NT_CheckHydraInt();
+				}
+				else
+					NTC_Delay(3000);
+				break;
+			case 4:
+				if(NTConfig_TeleEachWaveHelper){
+					NTM_TeleportTo(me.x+1, me.y+3);
+                }
+				NTA_ClearPosition(40, true, 2);
+				break;
+			case 5:
+				if(NTConfig_TeleEachWaveHelper){
+					NTM_TeleportTo(me.x+1, me.y+3);
+                }
+				NTA_ClearPosition(40, true);
+				break;
+			default:
+				if(NTConfig_TeleEachWaveHelper){
+					NTM_TeleportTo(me.x+1, me.y+3);
+                }
+				NTA_ClearPosition(40, true, 1);
+				break;
+		}
+		if(_wave != 0) // Need to force a one time cast/wave Assassin only
+			_trapsPreCasted = false;
+		if(_wave == 5)
+			break;
+	}
+	if(NTConfig_FollowtoWorldStone){
+		var _portal;
+		/*if(NTConfig_TownBeforeBaal && NTT_CheckInventoryBeforeBaal()){ // leaving this in for now..may or may not impliment it
+			Delay(1000);
+			if(NTConfig_PublicMode)
+			Say(Baal_FreeSpaceMessage);
+			NTTMGR_VisitTown();
+		}*/
+		if(NTConfig_WaitAtPassiveSPotForBaal) {
+			NTM_MoveTo(me.areaid, 15118, 5003); // change to help with baal bug
+		} else {
+			NTM_MoveTo(me.areaid, 15092, 5010);
+		}
+		NTP_DoPrecast(true, NTConfig_LeechBo);
+		if(NTConfig_IdInField){
+			NT_FieldID();
+		}
+		while(NTC_FindUnit(NTC_UNIT_MONSTER, 543))
+			NTC_Delay(500);
+		_portal = NTC_FindUnit(NTC_UNIT_OBJECT, 563, 1);
+		if(!_portal){
+			return false;
+		}
+		if(!NTM_UsePortal("Portal", 132, null, _portal)){
+			return false;
+		}
+		NTM_MoveTo(me.areaid, 15138, 5916);
+		if(!NTA_KillMonster(544)){
+			return false;
+		}
+		NTSI_PickItems();
+	}
+	return true;
+}
+
+function NT_LeechBaalFighterWalking(){
+
+	var i;
+	var _wave;
+	var _starttick;
+	for(var i = 0 ; i < 100 && me.areaid == 109 ; i++)
+		NTM_UsePortal("BluePortal", 131, NTConfig_Leader);
+	NTP_DoPrecast(true, NTConfig_LeechBo);
+	NTM_WalkTo(15115, 5045);
+	NTA_ClearPosition(25, true, 2);
+	NTM_WalkTo(15092, 5045);
+	NTA_ClearPosition(40, true, 2);
+	while(1){
+		NTM_MoveTo(me.areaid, prewavespot[0], prewavespot[1]); //break;
+		if(me.GetState(2))
+			NTC_PutSkill(109, NTC_HAND_RIGHT);
+		if(NTConfig_IdInField){
+			NT_FieldID();
+		}
+		for(i = 0 ; i < 6 ; i++){
+			_wave = NT_ThroneCheckInt();
+			if(_wave > 0)
+			break;
+			NTC_Delay(500);
+		}
+		_starttick = GetTickCount();
+		while(_wave == 0){
+			if(!NT_ThronePreAttackInt())
+			NTC_Delay(200);
+			if(GetTickCount()-_starttick > 20000)
+			_starttick = GetTickCount();
+			_wave = NT_ThroneCheckInt();
+		}
+		switch(_wave){
+			case 1:
+				NTA_ClearPosition(40, true, 1);
+				NTP_DoPrecast(true, NTConfig_LeechBo);
+				break;
+			case 3:
+				NTA_ClearPosition(40, true, 2);
+				break;
+			case 4:
+				NTA_ClearPosition(40, true, 2);
+				break;
+			case 5:
+				NTA_ClearPosition(40, true);
+				break;
+			default:
+				NTA_ClearPosition(40, true, 1);
+				break;
+		}
+		if(_wave != 0) // Need to force a one time cast/wave Assassin only
+			_trapsPreCasted = false;
+		if(_wave == 5)
+			break;
+	}
+	if(NTConfig_FollowtoWorldStone){
+		var _portal;
+		NTM_WalkTo(15092, 5010);
+		NTP_DoPrecast(true, NTConfig_LeechBo);
+		if(NTConfig_IdInField){
+			NT_FieldID();
+		}
+		while(NTC_GetUnit(NTC_UNIT_MONSTER, 543))
+		NTC_Delay(500);
+		_portal = NTC_GetUnit(NTC_UNIT_OBJECT, 563, 1);
+		if(!_portal){
+			return false;
+		}
+		if(!NTM_UsePortal("Portal", 132, null, _portal)){
+			return false;
+		}
+		NTM_WalkTo(15175, 5938);
+		NTM_WalkTo(15138, 5938);
+		if(!NTA_KillMonster(544)){
+			return false;
+		}
+		NTSI_PickItems();
+	}
+	return true;
+}
+
+function NT_ThroneCheckInt(){
+	var _monster;
+	if(!NTC_GetUnit(NTC_UNIT_MONSTER, 543))
+	return 5;
+	_monster = NTC_GetUnit(NTC_UNIT_MONSTER);
+	if(_monster){
+		do{
+			if(NTA_IsValidMonster(_monster)){
+				if(_monster.classid == 23 || _monster.classid == 62)
+					return 1;
+				if(_monster.classid == 105 || _monster.classid == 381)
+					return 2;
+				if(_monster.classid == 557)
+					return 3;
+				if(_monster.classid == 558)
+					return 4;
+				if(_monster.classid == 571)
+					return 5;
+			}
+		} while(_monster.GetNext());
+	}
+	return 0;
+}
+
+function NT_ThronePreAttackInt(){
+	if(me.classid == NTC_CHAR_CLASS_SORCERESS){
+		if(NTConfig_PreWaveSpam > 0){
+			if(poscount == 1){
+				poscount = 2;
+				return NTC_CastSkill(NTConfig_PreWaveSpam, 0, KBLSpamPos[0], KBLSpamPos[1]);
+			}
+			else if(poscount == 2){
+				poscount = 3;
+				return NTC_CastSkill(NTConfig_PreWaveSpam, 0, KBLSpamPos[2], KBLSpamPos[3]);
+			}
+			else{
+				poscount = 1;
+				return NTC_CastSkill(NTConfig_PreWaveSpam, 0, KBLSpamPos[4], KBLSpamPos[5]);
+			}
+		}
+	}
+	else if(me.classid == NTC_CHAR_CLASS_DRUID){
+		if(NTConfig_AttackSkill[3] == 245){
+			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, DruidPreAtt[0], DruidPreAtt[1]);
+		}
+	}
+	else if(me.classid == NTC_CHAR_CLASS_NECROMANCER){
+		if(NTConfig_PreWaveSpam > 0)
+			return NTC_CastSkill(NTConfig_PreWaveSpam, _NTA_SkillHand[NTConfig_PreWaveSpam], NecroPreAtt[0], NecroPreAtt[1]);
+	}
+	else if(me.classid == NTC_CHAR_CLASS_PALADIN){
+		if(NTConfig_AttackSkill[3] == 112){
+			NTC_PutSkill(NTConfig_AttackSkill[3], NTC_HAND_LEFT);
+			NTC_PutSkill(NTConfig_AttackSkill[4], NTC_HAND_RIGHT);
+			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 15092, 5028);
+		}
+	}
+	else if(me.classid == NTC_CHAR_CLASS_ASSASSIN){
+		var _attackPos = [15088,5023,15087,5032,15098,5022,15101,5034,15094,5029];
+		if(NTConfig_UseTraps && !_trapsPreCasted) {
+			for(var i=0;i<5;i++) {
+				if(i == 0 || i == 2 || i == 3) // Added delays to prevent trap miscast
+					NTC_Delay(25);
+				if(NTConfig_TrapSet[i] > 0)
+					NTC_CastSkill(NTConfig_TrapSet[i], NTC_HAND_RIGHT, _attackPos[i*2],_attackPos[(i*2)+1]);
+			}
+			_trapsPreCasted = true;
+		}
+		if(NTConfig_AttackSkill[3] == 256)
+			if(me.GetSkillStatus(NTConfig_AttackSkill[3]) != 8)
+				return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 15093, 5030);
+	}
+	return false;
+}
+
+function NT_ClearThroneInt(){
+	var _attackpos = [15112, 5068, 15075, 5065, 15114, 5045, 15114, 5012, 15095, 5024, 15078, 5013, 15092, 5040];
+	for(var i = 0 ; i < _attackpos.length ; i += 2){
+		NTM_MoveTo(me.areaid, _attackpos[i], _attackpos[i+1]);
+		NTA_ClearPosition(25, true, 2);
+	}
+}
+
+function NT_CheckHydraInt(){
+	var _hydra1, _hydra2, _hydra3;
+	_hydra1 = NTC_FindUnit(NTC_UNIT_MONSTER, 351);
+	_hydra2 = NTC_FindUnit(NTC_UNIT_MONSTER, 352);
+	_hydra3 = NTC_FindUnit(NTC_UNIT_MONSTER, 353);
+	if((_hydra1 && _hydra1.GetStat(172) != 2 && _hydra1.GetState(105))
+	  || (_hydra2 && _hydra2.GetStat(172) != 2 && _hydra2.GetState(105))
+	  || (_hydra3 && _hydra3.GetStat(172) != 2 && _hydra3.GetState(105))){
+		if(NTConfig_LeechHydra == 1)
+			NTM_MoveTo(me.areaid, 15112, 5004); // right side
+		else if(NTConfig_LeechHydra == 2)
+			NTM_MoveTo(me.areaid, 15073, 5002); // left side
+		if(me.GetState(2))
+			NTC_PutSkill(109, NTC_HAND_RIGHT);
+		NTC_PingDelay(3000);
+	}
+}
+
+function achmel(){
+	var x = 0;
+	var _holdTargetHp = 0;
+	NTC_PutSkill(NTConfig_AttackSkill[6], NTC_HAND_RIGHT);
+	var _achmel = NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(21852));
+	while (_achmel && _achmel.hp > 0){
+		_holdTargetHp = _achmel.hp;
+		for(var i = 0; i < 5 ; i++){
+			NTC_CastSkill(NTConfig_AttackSkill[5], NTC_HAND_LEFT, _achmel);
+		}
+		if(_holdTargetHp <= _achmel.hp && NTConfig_LeechWalkAround) {
+			x++;
+			if(x % 2 == 0)
+				NTM_WalkTo(me.x+10, me.y);
+			else
+				NTM_WalkTo(me.x-10, me.y);
+		}
+	}
+	var _company = NTC_FindUnit(NTC_UNIT_MONSTER, 105);
+	do{
+		while (_company != null && _company.hp >0 && !_company.GetState(53) && !_company.GetState(96)){
+			_holdTargetHp = _company.hp;
+			for(var i = 0; i < 5 ; i++){
+				NTC_CastSkill(NTConfig_AttackSkill[5], NTC_HAND_LEFT, _company);
+			}
+			if(_holdTargetHp <= _company.hp && NTConfig_LeechWalkAround){
+				x++;
+				if(x % 2 == 0)
+					NTM_WalkTo(me.x+10, me.y);
+				else
+					NTM_WalkTo(me.x-10, me.y);
+			}
+		}
+	} while (_company && _company.GetNext());
+}
+
+function HostileHandler(msg){
+	if(msg == "pause"){
+		if(_hostilepause){
+			Print("yc3Resuming...");
+			_hostilepause = false;
+		}
+		else {
+			Print("yc1Pausing to kill hostiles...");
+			_hostilepause = true;
+			ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+			ClickMap(NTC_CLICK_RUP, NTC_SHIFT_NONE, null);
+			while(_hostilepause)
+			NTC_Delay(250);
+		}
+	}
+}
+
+function NT_BaalLeechMessageHandler(){ // credit for the basics of this function goes to kolton
+
+	var _msg = NT_File("logs/messagecomands/"+me.charname+"-baal.txt", 0);
+
+	if (_msg && _msg != Baal_PreMessage){ // only 2 cases here.  1. grabs shrine  2. takes tp depending on message.  Ofc need to make sure if 2 happens 1 will happen also
+        Baal_PreMessage = _msg;				//^^^^^^ so maybe do a var switch here instead of breaking the loop???? can return the var change instead of returning true maybe
+        switch (_msg.substring(_msg.indexOf("/") + 1)){ // see under this function for idea
+			case "grabshrine":
+				//Print(COLOR_8 + "retrieved take shrine message")
+				TakeShrine = 1;
+				return; // actualy may just go back to having this return false pretty sure that would work just as well
+				//break;
+			case "takebtp":
+				//Print(COLOR_8 + "retrieved take tp message");
+				TakeShrine = 3;
+				return; //return false is all we have to do to break the above while loop
+				//break;
+		}
+	}
+	return;
+}
+
+function NT_FindLeaderTPInt(dest, ownername){
+	var _portal;
+	var _portalname;
+
+	_portalname = GetLocaleString(3226);
+
+	for(var i = 0 ; i <= 2 ; i++){
+		_portal = NTC_FindUnit(NTC_UNIT_OBJECT, _portalname);
+		if(_portal){
+			do{
+				if(_portal.mode == 2 && NTC_CheckOwner(_portal, ownername) && GetDistance(me, _portal) <= 30
+				&& (_portal.subareaid == dest || _portal.subareaid == dest + 768))
+					return true;
+			} while(_portal.GetNext());
+		}
+	}
+	return false;
+}
+
+function CheckTamoeHighland(){ 	// should change this to move to tamoe without going to pit
+	if(NTTM_CheckAct()){
+		NTTM_TownMove("waypoint");
+		NTM_TakeWaypoint(6);
+		NTP_DoPrecast(true);
+		NTM_MoveToStair(7, 12);
+		return true;
+	}
+	return false;
+}
+
+function CheckBloodMoor(){ // this should go into common file someplace or in shrine files
+	if(!NTTM_CheckAct(1)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	if(!NTTM_TownMove("exit")){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	NTC_PingDelay(200);
+	NTTM_OutOfAct1();
+}

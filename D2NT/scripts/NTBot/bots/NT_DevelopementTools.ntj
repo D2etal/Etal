@@ -1,0 +1,580 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//																													                      //
+// NT_Developement tools started by stairbuilder on 11-26-10                                                                              //
+// My hope is that others will contribute to this script so we can have a nice little development file to work from                       //
+// Feel free to add to this file or to change anything to make it more useful                                                             //
+// also as we all know some of the id names are wrong/different so if you find something that is wrong or different feel free to chang it //										 //
+//																													                      //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+objectid = false;
+monsterid = false;					// prints the name and id number of monsters.  Probably should set a range for it but been using it for summons
+getstate = false;					// prints id # of state and "active" if the state is active
+var MonsterIdRange = 	[0, 575];	// set the range of id's you want to look for ie [420, 432] looks for druid summons
+									// you can set the MonsterRange = [0, 575] and it will give all monsters near you, but to be effective need to add a range to it
+var StateIdRange = 	[0, 159];		// set the range of me.states you want to check if active ie [141, 154] looks for druid states
+var _mestate;
+var ObjectIdRange = [0, 600]		// this is range of object id's similar to above ranges
+var _objectlookrange = 5		// this is the distance that you wish to look for objects from your toon
+
+function NTMain()
+{
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+  
+	me.maxgametime = 0;
+
+	Print(COLOR_1 + IdToName() + " - CharacterClass(" +me.classid+ ")");
+
+	if(monsterid){
+		for(var i = MonsterIdRange[0]; i < MonsterIdRange[1] ; i++){
+			var _monster = NTC_FindUnit(NTC_UNIT_MONSTER, i);
+			if(NTC_FindUnit(NTC_UNIT_MONSTER, i)){
+				if(_monster.GetParent() != null)
+					Print(COLOR_8 + _monster.name + " - monsterid(" + i + ") - parent is (" +_monster.GetParent().name + ")" + " - monster mode is " + "[" + _monster.mode + "]");
+				else
+					Print(COLOR_8 +  _monster.name + " - monsterid(" + i + ")" + " - monster mode is " + "[" + _monster.mode + "]");
+				Delay(500);
+			}
+		}
+	}
+
+	if(getstate){
+		for(var i = StateIdRange[0]; i < StateIdRange[1]; i++){
+			if(me.GetState(i)){
+				Print(COLOR_9 + StateToName(i).toLowerCase() + " - me.GetState(" + i  +") is active ");
+				Delay(500);	
+			}
+		}
+	}
+
+	if(objectid){
+		for(var i = ObjectIdRange[0]; i < ObjectIdRange[1] ; i++){
+			var _object = NTC_FindUnit(NTC_UNIT_OBJECT, i);
+			if(NTC_FindUnit(NTC_UNIT_OBJECT, i) && (GetDistance(me.x,me.y,_object.x,_object.y)<_objectlookrange))
+				Print(COLOR_14 + "object name is - " + _object.name + " - objectid - (" + i + ")" + " - objects mode is " + "[" + _object.mode + "]");
+			//Delay(500);
+		}
+	}
+
+}
+
+function IdToName(){
+	
+	switch(me.classid)
+	{
+		case 0:
+			return "Amazon";
+		case 1:
+			return "Sorceress";
+		case 2:
+			return "Necromancer";
+		case 3:
+			return "Paladin";			
+		case 4:
+			return "Barbarian";						
+		case 5:
+			return "Druid";						
+		case 6:
+			return "Assassin";			
+	}
+}
+
+function StateToName(_mestate){
+	
+	var _state;
+	
+	switch(_mestate)
+	{
+		case 0:
+			return "NONE"; 
+				break;
+		case 1:
+			return "FREEZE";
+				break;
+		case 2:
+			return "POISON";
+				break;
+		case 3:
+			return "RESISTFIRE";
+				break;				
+		case 4:
+			return "RESISTCOLD";
+				break;							
+		case 5:
+			return "RESISTLIGHT";
+				break;							
+		case 6:
+			return "RESISTMAGIC ";
+				 	
+		case 7:
+			return "PLAYERBODY"; 
+				break;
+		case 8:
+			return "RESISTALL";
+				break;
+		case 9:
+			return "AMPLIFYDAMAGE ";
+				break;
+		case 10:
+			return "FROZENARMOR"; 
+				break;
+		case 11:
+			return "COLD";
+				break;
+		case 12:
+			return "INFERNO";
+				break;
+		case 13:
+			return "BLAZE";
+				break;				
+		case 14:
+			return "BONEARMOR";
+				break;							
+		case 15:
+			return "CONCENTRATE";
+				break;							
+		case 16:
+			return "ENCHANT";
+				break;	
+		case 17:
+			return "INNERSIGHT"; 
+				break;
+		case 18:
+			return "SKILL_MOVE";
+				break;
+		case 19:
+			return "WEAKEN";
+				break;
+		case 20:
+			return "CHILLINGARMOR"; 
+				break;
+		case 21:
+			return "STUNNED";
+				break;
+		case 22:
+			return "SPIDERLAY";
+				break;
+		case 23:
+			return "DIMVISION";
+				break;				
+		case 24:
+			return "SLOWED";
+				break;							
+		case 25:
+			return "FETISHAURA";
+				break;							
+		case 26:
+			return "SHOUT";
+				break;	
+		case 27:
+			return "TAUNT"; 
+				break;
+		case 28:
+			return "CONVICTION";
+				break;
+		case 29:
+			return "CONVICTED";
+				break;
+		case 30:
+			return "ENERGYSHIELD"; 
+				break;
+		case 31:
+			return "VENOMCLAWS";
+				break;
+		case 32:
+			return "BATTLEORDERS";
+				break;
+		case 33:
+			return "MIGHT";
+				break;				
+		case 34:
+			return "PRAYER";
+				break;							
+		case 35:
+			return "HOLYFIRE";
+				break;							
+		case 36:
+			return "THORNS";
+				break;	
+		case 37:
+			return "DEFIANCE"; 
+				break;
+		case 38:
+			return "THUNDERSTORM";
+				break;
+		case 39:
+			return "LIGHTNINGBOLT";
+				break;
+		case 40:
+			return "BLESSEDAIM"; 
+				break;
+		case 41:
+			return "STAMINA";
+				break;
+		case 42:
+			return "CONCENTRATION";
+				break;
+		case 43:
+			return "HOLYWIND";
+				break;				
+		case 44:
+			return "HOLYWINDCOLD";
+				break;							
+		case 45:
+			return "CLEANSING";
+				break;							
+		case 46:
+			return "HOLYSHOCK";
+				break;	
+		case 47:
+			return "SANCTUARY"; 
+				break;
+		case 48:
+			return "MEDITATION";
+				break;
+		case 49:
+			return "FANATICISM";
+				break;
+		case 50:
+			return "REDEMPTION"; 
+				break;
+		case 51:
+			return "BATTLECOMMAND";
+				break;
+		case 52:
+			return "PREVENTHEAL";
+				break;
+		case 53:
+			return "CONVERSION";
+				break;				
+		case 54:
+			return "UNINTERRUPTABLE";
+				break;							
+		case 55:
+			return "IRONMAIDEN";
+				break;							
+		case 56:
+			return "TERROR";
+				break;	
+		case 57:
+			return "ATTRACT"; 
+				break;
+		case 58:
+			return "LIFETAP";
+				break;
+		case 59:
+			return "CONFUSE";
+				break;
+		case 60:
+			return "DECREPIFY"; 
+				break;
+		case 61:
+			return "LOWERRESIST";
+				break;
+		case 62:
+			return "OPENWOUNDS";
+				break;
+		case 63:
+			return "DOPPLEZON";
+				break;				
+		case 64:
+			return "CRITICALSTRIKE";
+				break;							
+		case 65:
+			return "DODGE";
+				break;							
+		case 66:
+			return "AVOID";
+				break;	
+		case 67:
+			return "PENETRATE"; 
+				break;
+		case 68:
+			return "EVADE";
+				break;
+		case 69:
+			return "PIERCE";
+				break;
+		case 70:
+			return "WARMTH"; 
+				break;
+		case 71:
+			return "FIREMASTERY";
+				break;
+		case 72:
+			return "LIGHTNINGMASTERY";
+				break;
+		case 73:
+			return "COLDMASTERY";
+				break;				
+		case 74:
+			return "SWORDMASTERY";
+				break;							
+		case 75:
+			return "AXEMASTERY";
+				break;							
+		case 76:
+			return "MACEMASTERY";
+				break;	
+		case 77:
+			return "POLEARMMASTERY"; 
+				break;
+		case 78:
+			return "THROWINGMASTERY";
+				break;
+		case 79:
+			return "SPEARMASTERY";
+				break;
+		case 80:
+			return "INCREASEDSTAMINA"; 
+				break;
+		case 81:
+			return "IRONSKIN";
+				break;
+		case 82:
+			return "INCREASEDSPEED";
+				break;
+		case 83:
+			return "NATURALRESISTANCE";
+				break;				
+		case 84:
+			return "FINGERMAGECURSE";
+				break;							
+		case 85:
+			return "NOMANAREGEN";
+				break;							
+		case 86:
+			return "JUSTHIT";
+				break;	
+		case 87:
+			return "SLOWMISSILES"; 
+				break;
+		case 88:
+			return "SHIVERARMOR";
+				break;
+		case 89:
+			return "BATTLECRY";
+				break;
+		case 90:
+			return "BLUE"; 
+				break;
+		case 91:
+			return "RED";
+				break;
+		case 92:
+			return "DEATH_DELAY";
+				break;
+		case 93:
+			return "VALKYRIE";
+				break;				
+		case 94:
+			return "FRENZY";
+				break;							
+		case 95:
+			return "BERSERK";
+				break;							
+		case 96:
+			return "REVIVE";
+				break;	
+		case 97:
+			return "ITEMFULLSET"; 
+				break;
+		case 98:
+			return "SOURCEUNIT";
+				break;
+		case 99:
+			return "REDEEMED";
+				break;
+		case 100:
+			return "HEALTHPOT"; 
+				break;
+		case 101:
+			return "HOLYSHIELD";
+				break;
+		case 102:
+			return "JUST_PORTALED";
+				break;
+		case 103:
+			return "MONFRENZY";
+				break;				
+		case 104:
+			return "CORPSE_NODRAW";
+				break;							
+		case 105:
+			return "ALIGNMENT";
+				break;							
+		case 106:
+			return "MANAPOT";
+				break;	
+		case 107:
+			return "SHATTER"; 
+				break;
+		case 108:
+			return "SYNC_WARPED";
+				break;
+		case 109:
+			return "CONVERSION_SAVE";
+				break;
+		case 110:
+			return "PREGNANT"; 
+				break;
+		case 111:
+			return "111";
+				break;
+		case 112:
+			return "RABIES";
+				break;
+		case 113:
+			return "DEFENSE_CURSE";
+				break;				
+		case 114:
+			return "BLOOD_MANA";
+				break;							
+		case 115:
+			return "BURNING";
+				break;							
+		case 116:
+			return "DRAGONFLIGHT";
+				break;	
+		case 117:
+			return "MAUL"; 
+				break;
+		case 118:
+			return "CORPSE_NOSELECT";
+				break;
+		case 119:
+			return "SHADOWWARRIOR";
+				break;
+		case 120:
+			return "FERALRAGE"; 
+				break;
+		case 121:
+			return "SKILLDELAY";
+				break;
+		case 122:
+			return "PROGRESSIVE_DAMAGE";
+				break;
+		case 123:
+			return "PROGRESSIVE_STEAL";
+				break;				
+		case 124:
+			return "PROGRESSIVE_OTHER";
+				break;							
+		case 125:
+			return "PROGRESSIVE_FIRE";
+				break;							
+		case 126:
+			return "PROGRESSIVE_COLD";
+				break;	
+		case 127:
+			return "PROGRESSIVE_LIGHTNING"; 
+				break;
+		case 128:
+			return "SHRINE_ARMOR";
+				break;
+		case 129:
+			return "SHRINE_COMBAT";
+				break;
+		case 130:
+			return "SHRINE_RESIST_LIGHTNING"; 
+				break;
+		case 131:
+			return "SHRINE_RESIST_FIRE";
+				break;
+		case 132:
+			return "SHRINE_RESIST_COLD";
+				break;
+		case 133:
+			return "SHRINE_RESIST_POISON";
+				break;				
+		case 134:
+			return "SHRINE_SKILL";
+				break;							
+		case 135:
+			return "SHRINE_MANA_REGEN";
+				break;							
+		case 136:
+			return "SHRINE_STAMINA";
+				break;	
+		case 137:
+			return "SHRINE_EXPERIENCE"; 
+				break;
+		case 138:
+			return "FENRIS_RAGE";
+				break;
+		case 139:
+			return "WOLF";
+				break;
+		case 140:
+			return "BEAR"; 
+				break;
+		case 141:
+			return "BLOODLUST";
+				break;
+		case 142:
+			return "CHANGECLASS";
+				break;
+		case 143:
+			return "ATTACHED";
+				break;				
+		case 144:
+			return "HURRICANE";
+				break;							
+		case 145:
+			return "ARMAGEDDON";
+				break;							
+		case 146:
+			return "INVIS";
+				break;	
+		case 147:
+			return "BARBS"; 
+				break;
+		case 148:
+			return "WOLVERINE";
+				break;
+		case 149:
+			return "OAKSAGE";
+				break;
+		case 150:
+			return "VINE_BEAST"; 
+				break;
+		case 151:
+			return "CYCLONEARMOR";
+				break;
+		case 152:
+			return "CLAWMASTERY";
+				break;
+		case 153:
+			return "CLOAK_OF_SHADOWS";
+				break;				
+		case 154:
+			return "RECYCLED";
+				break;							
+		case 155:
+			return "WEAPONBLOCK";
+				break;							
+		case 156:
+			return "CLOAKED";
+				break;	
+		case 157:
+			return "QUICKNESS"; 
+				break;
+		case 158:
+			return "BLADESHIELD";
+				break;
+		case 159:
+			return "FADE";
+				break;
+			
+	}
+	return _state;
+}
+

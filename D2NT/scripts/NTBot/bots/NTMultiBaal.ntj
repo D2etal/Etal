@@ -1,0 +1,53 @@
+//Universal baal leecher by Kolton
+
+var _leadernames = ["Esp_Elite", "Dunedin"]; //casing matters
+var _safemessages = ["safe", "clear"]; //casing doesn't matter
+
+function NTMain(){
+ 
+	Include("libs/common/NTCommon.ntl"); 
+	NTC_IncludeLibs(); 
+	NTC_IncludeConfig("NTBot/char_configs"); 
+
+	NT_LoadConfig(); 
+	NTSI_LoadNIPFiles("NTBot/item_configs"); 
+
+	NTA_Initialize();
+	
+	RegisterEvent(EVENT_GAMEMSG, Chat); 
+
+	if(!NTTM_CheckAct(5)) { 
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()"); 
+		return; 
+	} 
+	NTTMGR_TownManager();
+	NTTM_TownMove("portalspot"); 
+	while(me.areaid == 109)
+		NTC_Delay(200); 
+	NTC_Delay(500); 
+	NTM_MoveTo(me.areaid, 15113, 5050);
+	NTP_DoPrecast(true); 
+	while(1)
+		Delay(500);
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END"); 
+}
+
+function Chat(msg, type) {
+	if(type == 4){
+		for(var i = 0 ; i < _leadernames.length ; i++){
+			if(msg.indexOf(_leadernames[i]) != -1) {
+				NTC_Delay(500);
+				NTC_SendMsgToScript("NTBotGame.ntj", "QuitGame");
+			}
+		}
+	}
+	else for(var i = 0 ; i < _safemessages.length ; i++){
+		if(msg.toLowerCase().indexOf(_safemessages[i]) != -1){
+			for(var i = 0 ; i < _leadernames.length ; i++){
+				if(NTM_UsePortal("BluePortal", 131, _leadernames[i]))
+					break;
+			}
+		}
+	}
+}
+

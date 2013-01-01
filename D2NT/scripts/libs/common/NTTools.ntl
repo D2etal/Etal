@@ -1,0 +1,86 @@
+function NTT_PrintCoordinatesIPandGateway()
+{
+	{
+	NTC_Delay(1000);
+
+	while (me.areaid != 0)
+		{
+		NTC_Delay(3000);
+			{
+			Print(COLOR_1 + " got to " + "Area: " + me.areaid + " X: " + me.x + " Y: " + me.y + " On: " + me.gatewayid + " IP: " + me.gameserverip);
+			}
+		}
+	}
+}
+
+var AntiIdleAct = ["the Rogue Encampment", "Lut Gohlein", "the Kurast Docks", "the Pandemonium Fortress", "Harrogath"];
+var AntiIdleActPreMsg = ["I feel like going to ", "I'm gonna WayPoint to ", "How about I go to ", "I'll just mosy on over to ", "Hey, let's head to "];
+var AntiIdleAct1 = ["kashya", "gheed", "charsi", "akara", "warriv"];
+var AntiIdleAct2 = ["lysander", "cain", "fara", "drognan", "atma"];
+var AntiIdleAct3 = ["hratli", "cain", "alkor", "ormus", "meshif"];
+var AntiIdleAct4 = ["stash", "cain", "halbu", "tyrael", "jamella"];
+var AntiIdleAct5 = ["stash", "cain", "malah", "larzuk", "qual-kehk"];
+var AntiIdlePreMsg = ["!I'm gonna go see ", "!I wonder what's up with ", "!Lets go see ", "!I didn't see you over there ", "!Well if it isn't "];
+
+function NTT_AntiIdle()
+{
+	while (me.areaid != 0){
+		NTC_PingDelay(3000);
+		t = Random(0,4);
+		abcde = Random(0,4);
+		var WeGonnaChangeAct;
+
+		if(WeGonnaChangeAct == undefined){
+			WeGonnaChangeAct = 0;
+		} else if(WeGonnaChangeAct == 5){
+			qrstu = Random(1,5);
+			vwxyz = Random(0,4);
+			Say(AntiIdleActPreMsg[vwxyz] + AntiIdleAct[qrstu-1]);
+			if(!NTTM_CheckAct(qrstu)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+				return;
+			}
+		} else{
+			WeGonnaChangeAct++;
+		}
+
+		switch(me.areaid){
+			case 1:
+				Say(AntiIdlePreMsg[abcde] + AntiIdleAct1[t] + "!");
+				if(!NTTM_TownMove(AntiIdleAct1[t])) {
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+					return;
+				}
+				break;
+			case 40:
+				Say(AntiIdlePreMsg[abcde] + AntiIdleAct2[t] + "!");
+				if(!NTTM_TownMove(AntiIdleAct2[t])) {
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+					return;
+				}
+				break;
+			case 75:
+				Say(AntiIdlePreMsg[abcde] + AntiIdleAct3[t] + "!");
+				if(!NTTM_TownMove(AntiIdleAct3[t])) {
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+					return;
+				}
+				break;
+			case 103:
+				Say(AntiIdlePreMsg[abcde] + AntiIdleAct4[t] + "!");
+				if(!NTTM_TownMove(AntiIdleAct4[t])) {
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+					return;
+				}
+				break;
+			case 109:
+				Say(AntiIdlePreMsg[abcde] + AntiIdleAct5[t] + "!");
+				if(!NTTM_TownMove(AntiIdleAct5[t])) {
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+					return;
+				}
+			break;
+		}
+		Delay(Random(2000,5000));
+	}
+}

@@ -1,0 +1,185 @@
+//OrganFarmer put together by stairbuilder
+
+var KeyofTerror = me.GetItems("pk1");
+var KeyofHate = me.GetItems("pk2");
+var KeyofDestruction = me.GetItems("pk3");
+
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+
+	NTConfig_MercLifeThresh = 0;
+	NTConfig_MercRejuvThresh = 0; //won't waste pots on merc
+	NTConfig_UseMerc = false; //won't revive merc before ubers..need to add to OF script also
+
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	Print(COLOR_14  +  "OrganHelper start ");
+	Print(COLOR_14  +  "OPen the Portals for me!! ");
+	if(me.areaid == 133){
+		Print(COLOR_11  +  "Killing Lillith")
+		Print(COLOR_11  +  "2Love Those Boobs")
+		NTP_DoPrecast(true);
+		NTOF_KillLilith()
+	}
+	if(me.areaid == 134){
+		Print(COLOR_11  +  "Killing Duriel")
+		NTP_DoPrecast(true);
+		NTOF_KillUberDuriel()
+	}
+	if(me.areaid == 135){
+		Print(COLOR_11  +  "Killing Izzy")
+		NTP_DoPrecast(true);
+		NTOF_KillIzual()
+	}
+}
+
+function NTOF_KillLilith(){
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 397, 2, 2)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+	NTM_MakeTP(true);  // comment this line and line below if you want to kill lilith
+	NTC_Delay(20000);
+	if(!NTA_KillMonster(707)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+		return;
+	}
+	NTC_PingDelay(100);
+	Print(COLOR_11  +  "Thanks for the Horn")
+	NTC_PingDelay(500);
+	NTSI_PickItems();
+	NTM_MakeTP();
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226))
+	while(true){
+		if(NTM_GetCloserInt(_portal))
+		NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+		NTC_Delay(100);
+		if(me.areaid != 133)
+		break;
+	}
+}
+
+function NTOF_KillIzual(){
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 397, 2, 2)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+	NTM_MakeTP(true);// comment this line and line below if you want to kill izzy
+	NTC_Delay(20000);
+	if(!NTA_KillMonster(706)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+		return;
+	}
+	NTC_PingDelay(100);
+	Print(COLOR_11  +  "Thanks for the Brain")
+	NTC_PingDelay(200);
+	NTSI_PickItems();
+	NTM_MakeTP();
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226))
+	while(true){
+		if(NTM_GetCloserInt(_portal))
+		NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+		NTC_Delay(100);
+		if(me.areaid != 135)
+		break;
+	}
+}
+
+function NTOF_KillUberDuriel(){
+	NTOF_FindUberDuriel();
+	var UberDuriel = NTC_FindMonster(708);
+	if(UberDuriel){
+		NTM_MoveTo(me.areaid, UberDuriel.x, UberDuriel.y);
+	}
+	NTM_MakeTP(true);// comment this line and line below if you want to kill duriel
+	NTC_Delay(20000);
+	if(!NTA_KillMonster(708)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+		return;
+	}
+	NTC_PingDelay(100);
+	Print(COLOR_11  +  "Thanks for the Eye")
+	NTC_PingDelay(200);
+	NTSI_PickItems();
+	NTM_MakeTP();
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226))
+	while(true){
+		if(NTM_GetCloserInt(_portal))
+		NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+		NTC_Delay(100);
+		if(me.areaid != 134)
+		break;
+	}
+}
+
+function NTOF_FindUberDuriel() {
+	var FindLoc = [20196, 8694, 20308, 8588, 20187, 8639, 20100, 8550, 20103, 8688, 20144, 8709, 20263, 8811, 20247, 8665];
+	var _teleport;
+	var _path;
+	var _result;
+	for(var k = 0 ; k < FindLoc.length; k+=2){
+		if(NTC_InTown() || NTC_GetSkillLevel(54) < 1)
+		_teleport = false;
+		else
+		_teleport = true;
+		_path = GetPath(me.areaid, me.x, me.y, FindLoc[k], FindLoc[k+1], _teleport);
+		if(_path){
+			for(var i = 0 ; i < _path.length ; i++){
+				if(_teleport)
+				_result = NTM_TeleportTo(_path[i][0], _path[i][1]);
+				else
+				_result = NTM_WalkTo(_path[i][0], _path[i][1]);
+				if(NTC_FindMonster(708))
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function NTC_FindMonster(classid, spectype){
+	var _monster;
+	if(arguments.length < 1)
+	return null;
+	if(arguments.length < 2)
+	spectype = 0;
+	for(var i = 0 ; i < 2 ; i++){
+		_monster = GetUnit(NTC_UNIT_MONSTER, classid);
+		if(_monster){
+			if(spectype){
+				do{
+					if(_monster.spectype & spectype)
+					return _monster;
+				} while(_monster.GetNext());
+			}
+			else
+			return _monster;
+		}
+		if(i < 1)
+		NTC_PingDelay(NTC_DELAY_FRAME);
+	}
+	return null;
+}
+
+function NTOF_PreBuffFade(){
+	if(NTTM_TownMove("waypoint")){
+		if(NTM_TakeWaypoint(107)){
+			NTP_DoPrecast(true);
+			NTM_MoveTo(me.areaid, 7811, 5872);
+			Print(COLOR_11  +  "Getting Buffed");
+			while(true){
+				if(me.GetStat(181) > 0)
+				break;
+				NTC_Delay(200);
+			}
+		}
+	}
+	Print(COLOR_11  +  "There's Our Fade");
+}

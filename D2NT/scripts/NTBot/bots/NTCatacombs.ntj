@@ -1,0 +1,344 @@
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	NTTMGR_TownManager();
+	if(!NTTM_TownMove("waypoint")){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	if(NTConfig_ClearAllCatacombs > 0){
+		if(!NTM_TakeWaypoint(32)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+			return;
+		}
+		NTP_DoPrecast(true);
+		if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+			OpenChestsInArea();
+		}
+		if(!NTM_MoveToPresetUnit(33, NTC_UNIT_TILE, 15)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+			return;
+		}
+		if(!NTM_TakeStair(34)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+			return;
+		}
+		NTP_DoPrecast();
+		if(NTConfig_ClearAllCatacombs > 0){
+			if(NTConfig_ClearAllCatacombs == 1){
+				NTConfig_SkipRegularMonsters = false;
+				NTP_DoPrecast();
+				if(!NTA_ClearLevel()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+				}
+			}
+			if(NTConfig_ClearAllCatacombs == 2){
+				NTConfig_SkipRegularMonsters = true;
+				NTP_DoPrecast();
+				if(!NTA_ClearLevel()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+				}
+			}
+		}
+		if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+			OpenChestsInArea();
+		}
+		if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_TILE, 18)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+			return;
+		}
+		if(!NTM_TakeStair(35)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+			return;
+		}
+		NTP_DoPrecast();
+		if(NTConfig_ClearAllCatacombs > 0){
+			if(NTConfig_ClearAllCatacombs == 1){
+				NTConfig_SkipRegularMonsters = false;
+				NTP_DoPrecast();
+				if(!NTA_ClearLevel()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+				}
+			}
+			if(NTConfig_ClearAllCatacombs == 2){
+				NTConfig_SkipRegularMonsters = true;
+				NTP_DoPrecast();
+				if(!NTA_ClearLevel()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+				}
+			}
+		}
+		if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+			OpenChestsInArea();
+		}
+		if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_TILE, 18)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+			return;
+		}
+		if(!NTM_TakeStair(36)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+			return;
+		}
+		NTP_DoPrecast();
+		if(NTConfig_ClearAllCatacombs > 0){
+			if(NTConfig_ClearAllCatacombs == 1){
+				NTConfig_SkipRegularMonsters = false;
+				NTP_DoPrecast();
+				if(!NTA_ClearLevel()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+				}
+			}
+			if(NTConfig_ClearAllCatacombs == 2){
+				NTConfig_SkipRegularMonsters = true;
+				NTP_DoPrecast();
+				if(!NTA_ClearLevel()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+				}
+			}
+		}
+		if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+			OpenChestsInArea();
+		}
+		if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_TILE, 18)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+			return;
+		}
+		if(!NTM_TakeStair(37)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+			return;
+		}
+		NTP_DoPrecast(true);
+		if(me.classid == NTC_CHAR_CLASS_SORCERESS){
+			DetermineAndyDeathStyleRightMeow();
+		}
+		else{
+			if(!NTM_MoveTo(me.areaid, 22532, 9553)){ // left wall
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+				return;
+			}
+			if(!NTA_KillMonster(156)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+				return;
+			}
+		}
+		NTC_PingDelay(200);
+		NTSI_PickItems();
+		if(NTConfig_ClearAndarielThrone){
+			var _attackpos = [22570, 9584, 22546, 9593, 22518, 9587, 22558, 9556, 22552, 9515, 22540, 9537, 22542, 9554, 22548, 9580];
+			for(var i = 0 ; i < _attackpos.length ; i += 2){
+				NTM_MoveTo(me.areaid, _attackpos[i], _attackpos[i+1]);
+				NTA_ClearPosition(30, 0x04);
+				NTA_ClearPosition(30);
+				NTSI_PickItems();
+			}
+			NTT_CleanPotions();
+		}
+		if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+			OpenChestsInArea();
+		}
+		if(NTConfig_ClearAllCatacombs > 0){
+			if(NTConfig_ClearAllCatacombs == 1){
+				NTConfig_SkipRegularMonsters = false;
+				NTP_DoPrecast();
+				if(!NTA_ClearLevel()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+				}
+			}
+			if(NTConfig_ClearAllCatacombs == 2){
+				NTConfig_SkipRegularMonsters = true;
+				NTP_DoPrecast();
+				if(!NTA_ClearLevel()){
+					NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+				}
+			}
+		}
+	}
+	else{
+		if(!NTM_TakeWaypoint(35)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+			return;
+		}
+		NTP_DoPrecast(true);
+		for(var i = 0 ; i < 2 ; i++){
+			if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+				OpenChestsInArea();
+			}
+			if(!NTM_MoveToStair(me.areaid, 36+i)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToStair()");
+				return;
+			}
+			if(!NTM_TakeStair(36+i)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+				return;
+			}
+		}
+		NTP_DoPrecast(true);
+		if(me.classid == NTC_CHAR_CLASS_SORCERESS){
+			DetermineAndyDeathStyleRightMeow();
+		}
+		else{
+			if(!NTM_MoveTo(me.areaid, 22532, 9553)){ // left wall
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+				return;
+			}
+			if(!NTA_KillMonster(156)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+				return;
+			}
+		}
+		NTC_PingDelay(200);
+		NTSI_PickItems();
+		if(NTConfig_ClearAndarielThrone){
+			var _attackpos = [22570, 9584, 22546, 9593, 22518, 9587, 22558, 9556, 22552, 9515, 22540, 9537, 22542, 9554, 22548, 9580];
+			for(var i = 0 ; i < _attackpos.length ; i += 2){
+				NTM_MoveTo(me.areaid, _attackpos[i], _attackpos[i+1]);
+				NTA_ClearPosition(30, 0x04);
+				NTA_ClearPosition(30);
+				NTSI_PickItems();
+			}
+			NTT_CleanPotions();
+		}
+		if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+			OpenChestsInArea();
+		}
+	}
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function DetermineAndyDeathStyleRightMeow()
+{
+    switch (NTConfig_PositionAndy)
+    {
+		case 0: // right wall
+			if(!NTM_MoveTo(me.areaid, 22563, 9556)){ //right wall
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+				return;
+			}
+			if(!NTA_KillMonster(156)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+				return;
+			}
+			break;
+
+		case 1: // left wall
+			if(!NTM_MoveTo(me.areaid, 22532, 9553)){ // left wall
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+				return;
+			}
+			if(!NTA_KillMonster(156)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+				return;
+			}
+			break;
+
+		case 2: // veeery close to her
+			if(!NTM_MoveTo(me.areaid, 22547, 9547)){ // left wall
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+				return;
+			}
+			if(!NTA_KillMonster(156)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+				return;
+			}
+			break;
+
+		case 3: // "dance" left/right in case she's coming close
+			if(!NTM_MoveTo(me.areaid, 22561, 9555)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+				return;
+			}
+			if (!MyAnd_KillAndariel2())
+				return "MyAnd_KillAndariel2()";
+			break;
+
+		case 4: // don't trigger her
+			if(!NTM_MoveTo(me.areaid, 22566, 9587)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+				return;
+			}
+			NTA_ClearPosition(22);
+			if (me.x != 22566 || me.y != 9587)
+				NTM_MoveTo(me.areaid, 22562, 9583);
+			if (!MyAnd_KillAndariel3())
+				return "MyAnd_KillAndariel3()";
+			break;
+	}
+	return;
+}
+
+function MyAnd_KillAndariel2()
+{
+    var _iAttack, _targetHp;
+    var _target = NTC_FindUnit(NTC_UNIT_MONSTER, 156, 5);
+    if (!_target)
+        return false;
+    _iAttack  = 0;
+    _targetHp = _target.hp;
+    while (_target.hp > 0 && _target.mode != 0 && _target.mode != 12) {
+        NTC_CastSkill(NTConfig_AttackSkill[1], NTC_HAND_RIGHT, _target);
+        while (_target.hp > 0 && _target.mode != 0 && _target.mode != 12 && me.GetSkillStatus(NTConfig_AttackSkill[1]) == 8){
+            if (GetDistance(me, _target) <= 10)
+                NTM_MoveTo(me.areaid, (me.x > 22548) ? 22534 : 22561, 9555);
+			if (me.GetSkillStatus(NTConfig_AttackSkill[2]) != 8)
+				NTC_CastSkill(NTConfig_AttackSkill[2], NTC_HAND_LEFT, _target);
+			else
+				Delay(NTC_DELAY_FRAME);
+        }
+        if (GetDistance(me, _target) <= 10)
+            NTM_MoveTo(me.areaid, (me.x > 22548) ? 22534 : 22561, 9555);
+        if ((++_iAttack % 7) == 0) {
+            if (_target.hp < _targetHp)
+                _targetHp = _target.hp;
+            else
+                return false;
+        }
+    }
+    return true;
+}
+
+function MyAnd_KillAndariel3()
+{
+    var _iAttack, _targetHp, _preX, _preY;
+    var _target = NTC_FindUnit(NTC_UNIT_MONSTER, 156, 5);
+    if (!_target)
+        return false;
+    _iAttack  = 0;
+    _targetHp = _target.hp;
+    while (_target.hp > 0 && _target.mode != 0 && _target.mode != 12) {
+        NTC_CastSkill(NTConfig_AttackSkill[1], NTC_HAND_RIGHT, _target);
+        if (GetDistance(me, _target) <= 30) {
+            while (_target.hp > 0 && _target.mode != 0 && _target.mode != 12 && me.GetSkillStatus(NTConfig_AttackSkill[1]) == 8)
+                NTC_CastSkill(NTConfig_AttackSkill[2], NTC_HAND_LEFT, _target);
+        }
+        else {
+            while (_target.hp > 0 && _target.mode != 0 && _target.mode != 12 && me.GetSkillStatus(NTConfig_AttackSkill[1]) == 8)
+                Delay(NTC_DELAY_FRAME);
+        }
+        if (GetDistance(me, _target) > 23) {
+            _preX = me.x;
+            _preY = me.y;
+            if (NTA_ClearPosition(18))
+                NTM_MoveTo(me.areaid, _preX, _preY);
+        }
+        if ((++_iAttack % 4) == 0) {
+            if (_target.hp < _targetHp)
+                _targetHp = _target.hp;
+            else
+                NTM_MoveTo(me.areaid, me.x - 4, me.y - 4);
+        }
+    }
+    NTM_MoveTo(_target.areaid, _target.x, _target.y + 15);
+    return true;
+}

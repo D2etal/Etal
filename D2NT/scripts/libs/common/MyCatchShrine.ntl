@@ -1,0 +1,159 @@
+// no colors to convert
+var MyCS_CatchShrineCount  = new Array();
+var lastShrineLoc;
+var area;
+var ThisShrine;
+var XpSearchContinue = true; 
+var FoundShrineArea = me.areaid;
+
+function MyCS_CheckShrines (_shrine) {
+	for (var i = 0; i < NTConfig_Shrines.length; i++) {
+		if (_shrine.shrinetype == NTConfig_Shrines[i] && (!me.GetState(128) && !me.GetState(129) && !me.GetState(130) && !me.GetState(131) && !me.GetState(132) && !me.GetState(133) && !me.GetState(134) && !me.GetState(135) && !me.GetState(136) && !me.GetState(137) && !me.GetState(138))) {
+			lastShrineLoc = i;
+			return true;
+		}
+		else if (_shrine.shrinetype == NTConfig_Shrines[i] && (_shrine.shrinetype == 1 || _shrine.shrinetype == 2 || _shrine.shrinetype == 3 || _shrine.shrinetype == 18 || _shrine.shrinetype == 20 || _shrine.shrinetype == 2)){
+			lastShrineLoc = i;
+			return true;
+		}
+		else if (_shrine.shrinetype == NTConfig_Shrines[i] && (me.GetState(128) || me.GetState(129)|| me.GetState(130)|| me.GetState(131)|| me.GetState(132)|| me.GetState(133)|| me.GetState(134)|| me.GetState(135)|| me.GetState(136)|| me.GetState(137)|| me.GetState(138)) && i <= lastShrineLoc) {
+			lastShrineLoc = i;
+			return true;
+		}
+	}
+	return false;
+}
+
+function MyCS_CheckCatchShrine(_shrine) {
+	for (var i = 0; i < MyCS_CatchShrineCount.length; i++)
+		if (MyCS_CatchShrineCount[i] == _shrine.gid)
+			return false;
+	
+	MyCS_CatchShrineCount.push(_shrine.gid);
+	return true;
+}
+
+function MyCS_CatchShrine() {
+	var shrine = GetUnit(NTC_UNIT_OBJECT, GetLocaleString(3255));
+	var _isTelekinesis = NTC_GetSkillLevel(43);
+	
+	if (shrine) {
+		do {
+			if (!shrine.mode && MyCS_CheckCatchShrine(shrine) && MyCS_CheckShrines (shrine)) {
+				if(NTConfig_LogShrines){
+					NTU_LogPrint("logs/shrinelog/"+me.charname+"-shrinelog.txt", " MyCatchShrine[" + shrine.shrinetype + "] " + "ObjectName[" + shrine.name + "] " + "ClassId[" + shrine.classid+ "] ");				
+				}
+				if (NTM_MoveCloseInt(shrine, 20)){
+					if (shrine.shrinetype == 15 && NTConfig_ShareExpShrine){
+						NTM_MoveTo(me.areaid, shrine.x+3, shrine.y+3);
+						NTA_ClearPosition(20, false, 0);
+						NTM_MoveTo(me.areaid, shrine.x+3, shrine.y+3);
+						NTM_MakeTP();
+						area = GetArea();
+						Say("Exp Shrine up in Act " + me.act + " " + area.name);!i
+						NTA_ClearPosition(20, false, 0);
+						NTSI_PickItems();
+					}
+					else if (NTC_CHAR_CLASS_SORCERESS && _isTelekinesis) {
+						NTC_CastSkill(43, NTC_HAND_RIGHT, shrine); 
+					}
+					else if (!_isTelekinesis || !NTConfig_Telekinesis) {
+						NTM_GetCloserInt(shrine);
+						NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, shrine);
+					}
+					if (shrine.shrinetype == 18) {
+						NTSI_PickItems();
+					}
+					if (me.GetState(134)) {
+						NTP_DoPrecast(true);
+					}
+					break;
+				}
+			}
+		} while (shrine.GetNext());
+	}
+}
+
+function LXPC_GrabShrineXp(){
+	NTM_UsePortal("BluePortal", FoundShrineArea);
+	if(ThisShrine){
+		while(!me.GetState(137) && !ThisShrine.mode){
+			if(NTM_GetCloserIntS(ThisShrine)){
+				if(NTConfig_LogShrines){
+					NTU_LogPrint("logs/shrinelog/"+me.charname+"-leechshrinelog.txt", " LBXP Shrine Type[" + ThisShrine.shrinetype + "] " + "ObjectName[" + ThisShrine.name + "] " + "ClassId[" + ThisShrine.classid+ "] ");				
+				}
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, ThisShrine);
+			}
+			NTC_Delay(100);															
+		}		
+	}
+	NTTM_CheckAct(5);
+}
+
+function LXPC_FindShrines(){	
+	var ShrineIds = [2, 81, 83, 85, 86, 93, 96, 97, 109, 116, 120, 123, 124, 133, 134, 135, 
+					136, 150, 151, 172, 173, 184, 190, 191, 197, 199, 200, 201, 226, 231, 
+					232, 260, 275, 276, 277, 278, 279, 282, 299, 300, 303, 325, 361, 414, 
+					415, 421, 422, 423, 427, 428, 464, 465, 472, 479, 483, 484, 488, 491, 
+					492, 495, 497, 499, 503, 509, 512, 520, 521, 522];
+	var ShrineLocs = [];
+	var unit = GetPresetUnits(me.areaid);
+	if(unit){	
+		
+		for (var j = 0; j < unit.length; j++){
+			for (var c = 0; c < ShrineIds.length; c++){				
+				if (ShrineIds[c] == unit[j].id){
+						ShrineLocs.push([unit[j].roomx*5+unit[j].x + 3,unit[j].roomy*5+unit[j].y])					
+				}
+			}
+		}
+	}
+	while(ShrineLocs.length > 0){
+		ShrineLocs.sort(SortRoomInt);
+		var _room = ShrineLocs.shift();
+		NTM_MoveTo(me.areaid, _room[0], _room[1]);		
+		var shrine = NTC_FindUnit(NTC_UNIT_OBJECT, "shrine");
+
+		if(shrine){
+			do{		
+				if(GetDistance(me.x,me.y,shrine.x,shrine.y)<5){
+					if(shrine.shrinetype == 15 && shrine.mode == 0){ 	
+						ThisShrine = shrine;
+						XpSearchContinue = false;									
+						FoundShrineArea = me.areaid;									
+						if(NTConfig_ClearAroundShrine)
+							NTA_ClearPos(2, 15, 500, true);
+						if(GetDistance(me, shrine) > 2)
+							NTM_MoveTo(shrine.areaid, shrine.x+1, shrine.y);
+						if(!NTM_MakeTP(true)){  
+							NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MakeTP()");
+							break;
+						}
+					}
+				}
+			}while(shrine.GetNext());
+		}
+		if(NTC_InTown())
+			break;
+	}	
+}
+
+function LXPC_SearchShrines(){// could add an arguement here to call which area array to work with so can use this in choas and baal
+	if(_FindXPArea.length > 0){ 
+		for(var i = 0 ; i < _FindXPArea.length && XpSearchContinue ; i++){ 	
+			NTTM_CheckAct();												  		
+			if(_FindXPArea[i] == 2)
+				CheckBloodMoor();
+			else if(_FindXPArea[i] == 7) // could make this into a switch statement switch(_FindXPArea[i]) if I add more areas that don't have wp's
+				CheckTamoeHighland();
+			else if(NTC_InTown()){	
+				NTTMGR_TownManager();
+				NTTM_TownMove("waypoint");			
+				Delay(1000)
+				NTM_TakeWaypoint(_FindXPArea[i]);							 
+			}															  
+			NTP_DoPrecast(true);
+			LXPC_FindShrines();
+		}
+	}
+}

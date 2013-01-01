@@ -1,0 +1,110 @@
+//ChaosLeecher - Works only in conjunction with ChaosLeader
+
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	RegisterEvent(EVENT_GAMEMSG, chat);
+
+	if(!NTTM_CheckAct(4)) {
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	NTTMGR_TownManager();
+	if(!NTTM_TownMove("portalspot")) {
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	while(1) {
+		if(me.mode == 17 || me.mode == 0 || me.hp < 1)
+			me.Cancel(0);
+		NTC_Delay(250);
+	}
+}
+
+function chat(msg, type)
+{
+	if(type == 0) {
+		var _split = msg.split(":");
+		if(_split.length >= 1 && _split[1] != undefined) {
+			var _sender = _split[0].substring(3, _split[0].length - 3);
+			var _msg = _split[1].substring(1);
+			if(_sender == NTConfig_Leader) {
+				switch(_msg) {
+					case "come":
+						NTC_Delay(100);
+						if(me.areaid == 103){
+							CL_TakePortal();
+							NTP_DoPrecast(true);
+						}
+						break;
+					case "back":
+						NTC_Delay(100);
+						if(me.areaid == 108)
+							CL_TakePortal();
+						break;
+					case "come diablo":
+						NTC_Delay(100);
+						if(me.areaid == 103) {
+							CL_TakePortal();
+							Delay(500);
+							ClickMap(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, 7763, 5268);
+							ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+							//NTP_DoPrecast(true);
+						}
+						break;
+					case "diablo dead":
+							if(!NTM_MoveTo(me.areaid, 7792, 5292)) {
+								NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+								return;
+							}
+						NTSI_PickItems();
+						Delay(Random(2000,4000));
+						NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+						break;
+				}
+			}
+		}
+	}
+	else if(type == 4 && (msg.indexOf("weaken") != -1) && (msg.indexOf(NTConfig_Leader) != -1)) {
+		NTC_Delay(750);
+		ExitGame();
+	}
+}
+
+function CL_TakePortal()
+{
+	var _prearea = me.areaid;
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226), 10);
+	if(!_portal)
+		return false;
+
+	do {
+		if(GetDistance(me, _portal) < 15) {
+			for(var i = 0 ; i < 20 ; i++) {
+				if((i % 5) == 0) {
+					if(i == 10)
+						NTM_MoveTo(_prearea, me.x+6, me.y+6);
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+				}
+				NTC_Delay(200);
+				if(me.areaid != _prearea)
+					break;
+			}
+			while(me.areaid == 0)
+				NTC_Delay(200);
+			if(me.areaid == _prearea)
+				return false;
+			NTC_PingDelay(NTConfig_AreaDelay);
+			return true;
+		}
+	} while(_portal.GetNext());
+	return false;
+}

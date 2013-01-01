@@ -1,0 +1,454 @@
+var _TLAliases = new Array();
+
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+
+	NTC_IncludeConfig("NTBot/char_configs");
+	NT_LoadConfig();
+
+	Print(COLOR_3 + "Toothless NIP Checker] - Load");
+
+	TLNC_LoadItemAliases();
+
+	if (NTConfig_NIPFilePath && NTConfig_NIPFilePath.length > 0)
+	{
+		var msg;
+		msg = NTConfig_NIPFilePath.length + 
+			" nip file" + 
+			(NTConfig_NIPFilePath.length==1?"":"s") + 
+			" found."
+		Print(msg);
+		
+		var woops;
+		var item;
+		try { item = me.GetItems()[0]; woops = false;}
+		catch (error) { Print("Please have at least one item on this character"); woops = true;}
+		if (!woops) TLNC_DoIt(item);
+	}
+	else
+		Print("No nip files found - check your character config file.");
+
+	while(1)
+		NTC_Delay(500);
+		
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function TLNC_ParseLine(f, clean, line)
+{
+	var i, j;
+	var input;
+	var sections;
+	var keywords;
+	var keyword;
+	var keywordErrors = "\tKeyword Errors\t:\t";
+	var keywordValue;
+	var keywordValueErrors = "\tAlias Errors\t\t:\t";
+	var errors = '';
+	var working;
+	var aliases;
+	var ret = false;
+	const KEYWORDS = "ftncqlps";
+
+	sections = clean.split("#");
+	if (sections[0] && sections[0].length > 4)
+	{
+		working = sections[0];
+		keywords = sections[0].match(/\[((\s*?.*?)*?)\]/gi);
+		if (keywords && keywords.length > 0)
+		{
+			for (var i = 0; i < keywords.length; i++)
+			{
+				keyword = keywords[i].substring(1, keywords[i].length - 1);
+				working = working.slice(keywords[i].length);
+				if (i + 1 < keywords.length)
+				{
+					keywordValue = working.slice(0, working.indexOf(keywords[i + 1]) - 1);
+					working = working.slice(keywordValue.length + 1);
+					keywordValue = keywordValue.replace(/[^\'a-zA-Z 0-9]+/g, '');
+				}
+				else
+				{
+					keywordValue = working.replace(/[^\'a-zA-Z 0-9]+/g, '');
+				}
+				
+				aliases = _TLAliases[keyword.substring(0, 1)];
+				if (!aliases)
+				{
+						keywordErrors += keyword + " ";
+						ret = false;
+				}				
+				else
+				{
+					if (aliases.indexOf(keywordValue) < 0)
+					{
+						keywordValueErrors += keywordValue + " ";
+						ret = false;
+					}
+					else
+					{
+						ret = true;
+					}
+				}
+			}
+		}
+		else
+		{
+			keywordErrors += "No keywords found before # ";
+			ret = false;
+		}
+	}
+
+	if (sections[1] && sections[1].length > 4)
+	{
+		working = sections[1];
+		keywords = sections[1].match(/\[((\s*?.*?)*?)\]/gi);
+
+		if (keywords && keywords.length > 0)
+		{
+			for (var i = 0; i < keywords.length; i++)
+			{
+				keyword = keywords[i].substring(1, keywords[i].length - 1);
+				working = working.slice(keywords[i].length);
+
+				aliases = _TLAliases["s"];
+				if (aliases.indexOf(keyword) < 0)
+				{
+					keywordValueErrors += keyword + " ";
+					ret = false;
+				}
+				else
+				{
+					ret = true;
+				}
+			}
+		}
+		else
+		{
+			keywordErrors += "No keywords found before # ";
+			ret = false;
+		}
+	}
+
+	if (!ret)
+	{
+		f.WriteLine(line);
+		f.WriteLine(keywordErrors);
+		f.WriteLine(keywordValueErrors);
+		f.WriteLine("");
+	}
+
+	return ret;
+}
+
+
+function TLNC_DoIt(item)
+{
+	var passRT = 0;
+	var failRT = 0;
+	var nipsRT = 0;
+
+	var pass = 0;
+	var fail = 0;
+	var nips = 0;
+
+	var input;
+	var line;
+	var nip;
+	var evals;
+	var output;
+	var fileNameNip;
+	var fileNameOutput;
+	var woops;
+	var msg;
+
+	
+	for (var nipfile = 0 ; nipfile < NTConfig_NIPFilePath.length ; nipfile++)
+	{
+		fileNameNip = "NTBot/item_configs/" + NTConfig_NIPFilePath[nipfile];
+		nip = FileOpen(fileNameNip, 0);
+		if (nip)
+		{
+			pass = 0;
+			fail = 0;
+			nips = 0;
+			
+			fileNameOutput = "NTBot/item_configs/TLNipCheck_" + NTConfig_NIPFilePath[nipfile].replace("/", "_") + ".txt";
+			output = FileOpen(fileNameOutput, 1);
+			if (output)
+			{
+				while (!nip.eof)
+				{
+					input = nip.ReadLine();
+					
+					var i = input.indexOf("//");
+					line = i >= 0 ? input.slice(0, i) : input;
+					line = line.replace(/ |;|\t|\v|\f|\r|\n/g, "").toLowerCase();
+
+					if (line.length == 0)
+						continue;
+					nips++;
+				
+					if (!TLNC_ParseLine(output, line, input))
+					{
+						fail++;
+						continue;
+					}
+					
+					evals = NTIPParseLineInt_DontPrintTY(line);
+					if (evals && evals.length > 0)
+					{
+						if (evals[0].length > 0)
+						{
+							try
+							{
+								eval(evals[0]);
+								if (evals[1].length > 0)
+								{
+									try { eval(evals[1]); woops = false; }
+									catch (error)
+									{
+										TLNC_WriteIt(output, input, "\tEval error\t\t:\tAfter #");
+										woops = true;
+									}
+								}
+								else woops = false;
+							}
+							catch (error)
+							{
+								TLNC_WriteIt(output, input, "\tEval error\t\t:\tBefore #");
+								woops = true;
+							}
+							woops == true ? fail++ : pass++;
+						}
+						else
+						{
+							if (evals[1].length > 0)
+							{
+								try { eval(evals[1]); woops = false; }
+								catch (error)
+								{
+									TLNC_WriteIt(output, input, "\tEval error\t\t:\tAfter #");
+									woops = true;
+								}
+							}
+							woops == true ? fail++ : pass++;
+						}
+					}
+				}
+				
+				msg = "File (" + eval(nipfile+1) + "/" + NTConfig_NIPFilePath.length + ") " + NTConfig_NIPFilePath[nipfile];
+				msg += fail > 0 ? COLOR_1 + "FAIL" : COLOR_2 + "OK";
+				msg += fail > 0 ? COLOR_0 : COLOR_2;
+				msg += " (" + pass + "/" + nips + ")";
+				msg += fail > 0 ? COLOR_1 : COLOR_0;
+				msg += " (" + fail + "/" + nips + ")";
+				Print(msg);
+				Print("");
+
+				TLNC_WriteIt(output, "PASS : " + pass, "FAIL : " + fail);
+				output.Close();
+			}
+			else
+				Print(COLOR_1 + "Error creating output file : " + fileNameOutput);
+				
+			nip.Close();
+			passRT += pass;
+			failRT += fail;
+			nipsRT += nips;
+		}
+		else
+			Print(COLOR_1 + "Error opening nip file : " + fileNameNip);
+	}
+
+	Print("TOTALS : " + nipsRT + " total, " + COLOR_1 + passRT + " pass, " + COLOR_1 + failRT + " fail");
+	if (failRT > 0)
+		Print(COLOR_1 + "Check output files in /NTBot/item_configs/ directory");
+}
+
+function TLNC_WriteIt(f, l1, l2)
+{
+	f.WriteLine(l1);
+	f.WriteLine(l2);
+	f.WriteLine(" ");
+}
+
+function TLNC_LoadItemAliases()
+{
+	var arr;
+
+	arr = new Array();
+	for (k in _NTIPAliasType)
+		arr.push(k);
+	_TLAliases["t"] = arr;
+
+	arr = new Array();
+	for (k in _NTIPAliasClassID)
+		arr.push(k);
+	_TLAliases["n"] = arr;
+
+	arr = new Array();
+	for (k in _NTIPAliasClass)
+		arr.push(k);
+	_TLAliases["c"] = arr;
+
+	arr = new Array();
+	for (k in _NTIPAliasQuality)
+		arr.push(k);
+	_TLAliases["q"] = arr;
+	
+	arr = new Array();
+	for (k in _NTIPAliasFlag)
+		arr.push(k);
+	_TLAliases["f"] = arr;
+
+	// #
+
+	arr = new Array();
+	for (k in _NTIPAliasStat)
+		arr.push(k);
+	_TLAliases["s"] = arr;	
+}
+
+function NTIPParseLineInt_DontPrintTY(input)
+{
+	var i;
+	var _start, _end;
+	var _section, _keyword;
+	var _result;
+
+	_end = input.indexOf("//");
+	if(_end != -1)
+		input = input.substring(0, _end);
+
+	input = input.replace(/\s+|;/g, "").toLowerCase();
+	
+	if(input.length < 5)
+		return null;
+
+	_result = input.split("#");
+
+	if(_result[0] && _result[0].length > 4)
+	{
+		_section = _result[0].split("[");
+
+		_result[0] = _section[0];
+
+		for(i = 1 ; i < _section.length ; i++)
+		{
+			_end = _section[i].indexOf("]") + 1;
+
+			switch(_section[i][0])
+			{
+			case 't':
+				_result[0] += "item.itemtype";
+				break;
+			case 'n':
+				_result[0] += "item.classid";
+				break;
+			case 'c':
+				_result[0] += "item.itemclass";
+				break;
+			case 'q':
+				_result[0] += "item.quality";
+				break;
+			case 'f':
+				if(_section[i][_end] == '!')
+					_result[0] += "!(item.itemflag&";
+				else
+					_result[0] += "(item.itemflag&";
+
+				_end += 2;
+				break;
+			case 'l':
+				_result[0] += "item.itemlevel";
+				break;
+			case 'p':
+				_result[0] += "item.itemprefix";
+				break;
+			case 's':
+				_result[0] += "item.itemsuffix";
+				break;
+			default:
+				//Print("Unknown Keyword : " + input);
+				break;
+			}
+
+			for(_start = _end ; _end < _section[i].length ; _end++)
+			{
+				if(!NTIPIsSyntaxInt(_section[i][_end]))
+					break;
+			}
+
+			_result[0] += _section[i].substring(_start, _end);
+
+			for(_start = _end ; _end < _section[i].length ; _end++)
+			{
+				if(NTIPIsSyntaxInt(_section[i][_end]))
+					break;
+			}
+
+			_keyword = _section[i].substring(_start, _end);
+
+			if(isNaN(_keyword))
+			{
+				switch(_section[i][0])
+				{
+				case 't':
+					_result[0] += _NTIPAliasType[_keyword];
+					break;
+				case 'n':
+					_result[0] += _NTIPAliasClassID[_keyword];
+					break;
+				case 'c':
+					_result[0] += _NTIPAliasClass[_keyword];
+					break;
+				case 'q':
+					_result[0] += _NTIPAliasQuality[_keyword];
+					break;
+				case 'f':
+					_result[0] += _NTIPAliasFlag[_keyword] + ")";
+					break;
+				}
+			}
+			else
+			{
+				if(_section[i][0] == 'f')
+					_result[0] += _keyword + ")";
+				else
+					_result[0] += _keyword;
+			}
+
+			_result[0] += _section[i].substring(_end);
+		}
+	}
+	else
+		_result[0] = "";
+
+	if(_result[1] && _result[1].length > 4)
+	{
+		_section = _result[1].split("[");
+
+		_result[1] = _section[0];
+
+		for(i = 1 ; i < _section.length ; i++)
+		{
+			_end = _section[i].indexOf("]");
+
+			_keyword = _section[i].substring(0, _end);
+
+			if(isNaN(_keyword))
+				_result[1] += "item.GetStat(" + _NTIPAliasStat[_keyword] + ")";
+			else
+				_result[1] += "item.GetStat(" + _keyword + ")";
+
+			_result[1] += _section[i].substring(_end+1);
+		}
+	}
+	else
+		_result[1] = "";
+
+	return _result;
+}

@@ -1,0 +1,161 @@
+=======================
+ NTBot Script for D2NT
+=======================
+
+4.2 - Added Essense cubing recipe (need to update config file)
+      Added Essense's alias in NTItemAlias.ntl
+      Fixed NTSnagIt(111) error when picking up potion
+
+4.1 - Added Tristram bot script (need to update config file)
+      Added Barbarian attack routine
+      Added upgrade cubing recipe (need to update config file)
+      Added [Prefix], [Suffix] keyword in NTItemParser.ntl
+      Added NTC_WaitIdleMode() function
+      Added NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe (need to update config file)
+      Improved attack routine
+      Renamed NTC_GetUnit() to NTC_FindUnit() function
+      Removed NTC_FindMonster() function
+      Removed NTC_WaitCastDone() function
+      Removed NTConfig_SkipHealCurses, NTConfig_CheckSafe (need to update config file)
+
+4.0 - Added Treehead, Act3 Sewers bot script (need to update config file)
+      Added NTA_ClearLevel() function
+      Added NTA_ClearRoom() function
+      Fixed delay bug when picking up gold
+      Ignore undead fetish in NTA_IsValidTarget() function
+      Changed NTConfig_AttackSkill (need to update config file)
+      Changed NTConfig_CubingItem option (need to update config file)
+       * Removed null parameters
+      Changed NTA_ClearPosition() function's argument
+      Changed NTC_SendLogToOOG() function's argument
+      Renamed NTC_CheckSkill() to NTC_GetSkillLevel() function
+      Renamed NTC_DoCast() to NTC_CastSkill() function
+      Removed NTA_ClearRooms() function
+
+3.9.1 - Added KurastTravel bot script (need to update config file)
+        Rewrote NTSnagIt.ntl script
+        Improved NTM_MoveTo() function
+        Improved NTA_ClearRooms() function
+        Improved NTM_TakeUnit() and NTM_TakeStair(areaid) functions
+
+3.9 - Added NTItemParser.ntl and NTItemAlias.ntl (goodbye njip~)
+       * NIP Syntax is changed (read [Item-parser Syntax Information] in NTItemParser.ntl)
+      Added major cubing recipe (need to update config file)
+       * Gem, Rune, Magic, Craft, Socket
+      Added Coldworm bot scripts (need to update config file)
+      Added NTC_GetSpecialChest() function
+      Added NTConfig_GambleStartGold (need to update config file)
+      Improved NTM_MoveTo() function
+      Improved NTM_TakeWaypoint() function
+
+3.8.1 - Fixed NTC_CheckOwner() function
+        If belt is full, will omit picking up the potion
+        If you have unique charms already, will omit picking up unique charm
+        Removed NTConfig_BeltColMin option (need to update config file)
+
+3.8 - Added Hephasto, Izual, Radament, Hole bot scripts (need to update config file)
+      Added NTConfig_KillBloodRaven option in NTMausoleum.ntj (need to update config file)
+      Added NTM_MoveToPresetUnit() function
+      Added NTM_MoveToStair() function
+      Added NTM_TakeUnit() function
+      Added NTM_TakeStair() function
+      Rewrote all bot scripts
+      Rewrote NTM_TeleportTo() and NTM_WalkTo() functions
+      Rewrote NTM_GetStairInt() function
+      Rewrote NTTM_MoveToInt() function
+      If you have no char's config, will load default config
+      If attack skill is '0', will detect attack skill automatically
+      Changed NTC_IncludeConfig() function's argument
+      Changed NTSI_LoadNIPFiles() function's argument
+      Fixed NTT_DoInteract() function
+      Removed NTM_MoveToObject() function
+      Removed NTM_TakeStairs() function
+
+3.7.4 - Increased max attack count
+        Improved NTA_ClearRooms() function
+        Improved NTM_MoveTo() function
+        Fixed getRandomString() function in NTBot.ntj
+        Added NTConfig_UseRedemptionHP, NTConfig_UseRedemptionMP (need to update config file)
+        Removed NTConfig_UseRedemption (need to update config file)
+
+3.7.3 - Changed script's encoding type from ANSI to Unicode
+        Fixed NTP_BOSwitch() function
+
+3.7.2 - Improved NTT_DoInteract() function
+
+3.7.1 - Fixed bug that can't close belt menu
+
+3.7 - Added NTMap.ntj / NTMapGame.ntj for maphack
+      Added Clone Diablo notification (need to update config file)
+      Improved NTCubing.ntl script
+      Improved action of character select screen
+      Changed script from starter.ntj to NTBot.ntj
+      Changed script from default.ntj to NTBotGame.ntj
+      Removed NTT_MenuCancel() function
+
+3.6 - Added FrozenRiver script (need to update config file)
+      Added GlacialTrail script (need to update config file)
+      Added IcyCellar script (need to update config file)
+      Added Chest routine in AncientTunnels script
+      Added CTA routine when clearing rooms
+      Fixed NTC_DoCast() function
+      Removed Frozenstein script
+
+3.5.2 - Fixed NTC_DoCast() function (I think it caused the realm down)
+        Fixed potion loop
+        Removed gameMaxLength in starter.ntj. You can set it in config file (need to update config file)
+
+3.5.1 - Improved action of character select screen
+
+3.5 - Added cubing log
+      Added many features in starter.ntj
+      Fixed NTC_DoCast() function
+      Improved Town Manager's action
+      Supported multi-language Diablo II perfectly
+      Updated sdk folder
+
+3.4 - Added untimed attack (need to update config file)
+      Added gems and runes cubing (need to update config file)
+       * Don't edit nip files for cubing. It picks up automatically
+      Supported multi-language Diablo II (need to test^^)
+      Adjusted attack positions in NTPit.ntj
+      Now display error log in detail
+      Removed NTAreas.ntl
+
+3.3.1 - Added NTM_TakeWaypoint() function
+        Improved NTC_GetCastDelay() function
+
+3.3 - Fixed range of Static Field
+      Fixed bug that drink all potions when merc is dead
+      Fixed NTC_GetMerc() function
+      Improved NTA_IsValidTarget() function
+      Improved NTA_GetDamageType() function
+      Updated sdk folder
+
+3.2 - Fixed bug that can't search unit sometimes
+      Fixed bug that can't enter Duriel's room sometimes
+      Removed "levelreq" keyword in njip.ntl. Use stat 92
+      Added sdk folder
+
+3.1 - Changed NTConfig_ClearPitLevel1 option (0 : don't clear, 1 : clear path only, 2 : clear all)
+      Fixed bug that NTC_FindMonster() returns null
+
+3.0 - Initial release
+
+
+=======================
+ NTMap Script for D2NT
+=======================
+
+1.2.1 - Added server ip on Status panel
+
+1.2 - Added toggle key
+       * auto party - keypad '*'
+    - Added Life and Mana Chicken options (need to update config file)
+    - Added NTConfig_AutoParty option (need to update config file)
+
+1.1 - Added toggle key
+       * Show or hide enemy - keypad '-'
+       * Show or hide missile - keypad '+'
+
+1.0 - Initial release

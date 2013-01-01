@@ -1,0 +1,13 @@
+This is only needed if you run non-English versions of D2.
+(Otherwise don't worry about it.)
+
+Instalation
+1. Copy/Paste the entire data folder into your diablo 2 folder.
+2. Open your manager and check the Direct txt box.
+
+
+Etal will now be in English, no more language problems.
+This will not effect d2 running without without the bot or if you uncheck the direct txt box in manager it will return to your normal language.
+
+Give Feedback:
+http://www.ProjectEtal.com

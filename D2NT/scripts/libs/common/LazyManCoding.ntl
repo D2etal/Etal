@@ -1,0 +1,65 @@
+// no color converts here 
+var tptown = true;
+function TownShit(spot, act){
+	if(arguments.length < 1){
+		spot = "waypoint";
+	}
+	if(arguments.length < 2){
+		if(me.areaid == 1){
+			act = 1
+		}
+		if(me.areaid == 40){
+			act = 2
+		}
+		if(me.areaid == 75){
+			act = 3
+		}
+		if(me.areaid == 103){
+			act = 4
+		}
+		if(me.areaid == 109){
+			act = 5
+		}
+	}
+	if(me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109)
+		tptown = false;
+	if(tptown)
+		NTM_MakeTP(true);
+	tptown = true;
+	NTTM_CheckAct(act);
+	NTTMGR_TownManager();
+	if(spot)
+		NTTM_TownMove(spot);
+}
+function afterkill(range){
+	if(arguments.length < 1){
+		range = 20;
+	}
+	if(NTConfig_ClearPosition) 
+			NTA_ClearPosition(range);
+	NTSI_PickItems();
+}
+function wpbo(wp){
+	NTM_TakeWaypoint(wp);
+	NTP_DoPrecast();
+}
+function movekillm(MonsterUnitId, StringId, AreaId){
+	if(arguments.length < 3){
+		AreaId = me.areaid;
+	}
+	NTM_MoveToPresetUnit(AreaId, NTC_UNIT_MONSTER, MonsterUnitId);
+	NTA_KillMonster(GetLocaleString(StringId));
+}
+function movekillo(objectUnitId, StringId, AreaId){
+	if(arguments.length < 3){
+		AreaId = me.areaid;
+	}
+	NTM_MoveToPresetUnit(AreaId, NTC_UNIT_OBJECT, objectUnitId);
+	NTA_KillMonster(GetLocaleString(StringId));
+}
+function stairs(targetid, areaid){
+	if(arguments.length < 2)
+		areaid = me.areaid
+	NTM_MoveToStair(areaid, targetid);
+	NTM_TakeStair(targetid);
+}

@@ -1,0 +1,865 @@
+/*
+	controlInfo() Class written by njaguar
+	v3.1
+*/
+
+function controlInfo() {
+	this.controls							= new Array();
+	this.controls.lobby						= new Array();
+	this.controls.lobby.name					= "Lobby";
+	this.controls.lobby.id						= 1;
+
+	this.controls.lobby.textBox					= new Array();
+	this.controls.lobby.textBox.chat				= [4,28,410,354,298];
+	this.controls.lobby.textBox.status				= [4,447,398,290,269];
+	this.controls.lobby.textBox.characterInfo			= [4,143,588,230,87];
+
+	this.controls.lobby.button					= new Array();
+	this.controls.lobby.button.create				= [6,533,469,120,20];
+	this.controls.lobby.button.join					= [6,652,469,120,20];
+	this.controls.lobby.button.channel				= [6,535,490,80,20];
+	this.controls.lobby.button.ladder				= [6,614,490,80,20];
+	this.controls.lobby.button.quit					= [6,693,490,80,20];
+	this.controls.lobby.button.enterChat				= [6,27,480,120,20];
+	this.controls.lobby.button.help					= [6,146,480,120,20];
+
+	this.controls.lobby.location = [
+		this.controls.lobby.button.enterChat,
+		this.controls.lobby.button.help,
+	];
+
+
+	this.controls.lobby.inLine					= new Array();
+	this.controls.lobby.inLine.name					= "Waiting In Line";
+	this.controls.lobby.inLine.id					= 2;
+
+	this.controls.lobby.inLine.textBox				= new Array();
+	this.controls.lobby.inLine.textBox.inLine			= [4,427,234,300,100];
+
+	this.controls.lobby.inLine.button				= new Array();
+	this.controls.lobby.inLine.button.cancel			= [6,433,433,96,32];
+	
+	this.controls.lobby.inLine.location = [
+		this.controls.lobby.inLine.textBox.inLine,
+		this.controls.lobby.inLine.button.cancel,
+	];
+
+	this.controls.lobby.serverDown					= new Array();
+	this.controls.lobby.serverDown.name				= "Server Down";
+	this.controls.lobby.serverDown.id				= 24;
+
+	this.controls.lobby.serverDown.textBox				= new Array();
+	this.controls.lobby.serverDown.textBox.serverDown		= [4,438,300,326,150];
+	this.controls.lobby.serverDown.textBox.serverDown.key		= [5139];
+
+	this.controls.lobby.serverDown.location = [
+		this.controls.lobby.serverDown.textBox.serverDown,
+	]
+
+	// this is also the Please Wait dialog in the lobby, as well as Character Already Exists for creating chars
+	this.controls.lobby.pleaseWait					= new Array();
+	this.controls.lobby.pleaseWait.name				= "Please Wait...";//"Lost Connection";
+	this.controls.lobby.pleaseWait.id				= 25;
+	
+	this.controls.lobby.pleaseWait.textBox				= new Array();
+	this.controls.lobby.pleaseWait.textBox.pleaseWait		= [4,268,320,264,120];
+	
+	this.controls.lobby.pleaseWait.button				= new Array();
+	this.controls.lobby.pleaseWait.button.cancel			= [6,351,337,96,32];
+
+	this.controls.lobby.pleaseWait.location = [
+		this.controls.lobby.pleaseWait.textBox.pleaseWait,
+		this.controls.lobby.pleaseWait.button.cancel,
+	];
+
+
+	// this is also the Please Wait dialog in the lobby
+	this.controls.lobby.lostConnection				= new Array();
+	this.controls.lobby.lostConnection.name				= "Lost Connection";
+	this.controls.lobby.lostConnection.id				= 17;
+	
+	this.controls.lobby.lostConnection.textBox			= new Array();
+	this.controls.lobby.lostConnection.textBox.lostConnection	= [4,268,320,264,120];
+	this.controls.lobby.lostConnection.textBox.lostConnection.key	= [5351];
+	
+	this.controls.lobby.lostConnection.button			= new Array();
+	this.controls.lobby.lostConnection.button.ok			= [6,351,337,96,32];
+
+	this.controls.lobby.lostConnection.location = [
+		this.controls.lobby.lostConnection.textBox.lostConnection,
+		this.controls.lobby.lostConnection.button.ok,
+	];
+
+
+	// Game Name Already Exists
+	this.controls.lobby.gameExists					= new Array();
+	this.controls.lobby.gameExists.name				= "Game Already Exists";
+	this.controls.lobby.gameExists.id				= 26;
+	
+	this.controls.lobby.gameExists.textBox				= new Array();
+	this.controls.lobby.gameExists.textBox.gameExists		= [4,438,300,326,150];
+	this.controls.lobby.gameExists.textBox.gameExists.key		= [5138];
+	
+	this.controls.lobby.gameExists.location = [
+		this.controls.lobby.gameExists.textBox.gameExists,
+	];	
+
+
+	// Game Does Not Exist (also A Game Already Exists With That Name and Server Down w/ different key)
+	this.controls.lobby.gameDoesNotExist				= new Array();
+	this.controls.lobby.gameDoesNotExist.name			= "Game Does Not Exist";
+	this.controls.lobby.gameDoesNotExist.id				= 28;
+	
+	this.controls.lobby.gameDoesNotExist.textBox			= new Array();
+	this.controls.lobby.gameDoesNotExist.textBox.text		= [4,438,300,326,150];
+	this.controls.lobby.gameDoesNotExist.textBox.text.key		= [5159];
+
+	this.controls.lobby.gameDoesNotExist.location = [
+		this.controls.lobby.gameDoesNotExist.textBox.text,
+	];
+
+
+	this.controls.lobby.chat					= new Array();
+	this.controls.lobby.chat.name					= "Lobby Chat";
+	this.controls.lobby.chat.id					= 3;
+
+	this.controls.lobby.chat.button 				= new Array();
+	this.controls.lobby.chat.button.send				= [6,27,470,80,20];
+	this.controls.lobby.chat.button.whisper				= [6,107,470,80,20];
+	this.controls.lobby.chat.button.help				= [6,187,470,80,20];
+	this.controls.lobby.chat.button.squelch				= [6,27,490,72,20];
+	this.controls.lobby.chat.button.unsquelch			= [6,99,490,96,20];
+	this.controls.lobby.chat.button.emote				= [6,195,490,72,20];
+
+	this.controls.lobby.chat.textBox				= new Array();
+	this.controls.lobby.chat.textBox.channelName			= [4,28,138,354,60];
+	this.controls.lobby.chat.textBox.channelText           = [4,28,410,354,298];
+
+	this.controls.lobby.chat.location = [
+		this.controls.lobby.chat.button.send,
+		this.controls.lobby.chat.button.whisper,
+		this.controls.lobby.chat.button.help,
+	];
+
+		
+	this.controls.lobby.create					= new Array();
+	this.controls.lobby.create.name					= "Create Game";
+	this.controls.lobby.create.id					= 4;
+
+	this.controls.lobby.create.textBox				= new Array();
+	this.controls.lobby.create.textBox.createGame			= [4,496,111,200,22];
+	this.controls.lobby.create.textBox.gameName			= [4,427,134,150,12];
+	this.controls.lobby.create.textBox.password			= [4,427,188,300,12];
+	this.controls.lobby.create.textBox.gameDescription		= [4,427,243,300,12];
+	this.controls.lobby.create.textBox.maxNumberOfPlayers		= [4,632,306,300,12];
+	this.controls.lobby.create.textBox.characterDifference		= [4,632,342,300,12];
+	this.controls.lobby.create.textBox.levels			= [4,705,342,150,12];
+	this.controls.lobby.create.textBox.normal			= [4,723,380,150,12];
+	this.controls.lobby.create.textBox.nightmare			= [4,579,380,150,12];
+	this.controls.lobby.create.textBox.hell				= [4,459,380,150,12];
+	
+	this.controls.lobby.create.editBox				= new Array();
+	this.controls.lobby.create.editBox.gameName			= [1,432,162,158,20];
+	this.controls.lobby.create.editBox.password			= [1,432,217,158,20];
+	this.controls.lobby.create.editBox.gameDescription		= [1,432,268,333,20];
+	this.controls.lobby.create.editBox.maxNumberOfPlayers		= [1,657,308,27,20];
+	this.controls.lobby.create.editBox.characterDifference		= [1,657,342,27,20];
+
+	this.controls.lobby.create.button				= new Array();
+	this.controls.lobby.create.button.createGame			= [6,594,433,172,32];
+	this.controls.lobby.create.button.cancel			= [6,433,433,96,32];
+	this.controls.lobby.create.button.maxNumberOfPlayersUp		= [6,681,296,15,12];//not tested
+	this.controls.lobby.create.button.maxNumberOfPlayersDown	= [6,681,310,15,12];//not tested
+	this.controls.lobby.create.button.useCharacterDifference	= [6,431,341,15,16];//not tested
+	this.controls.lobby.create.button.characterDifferenceUp		= [6,681,332,15,12];//not tested
+	this.controls.lobby.create.button.characterDifferenceDown	= [6,681,346,15,12];//not tested
+	this.controls.lobby.create.button.normal			= [6,430,381,16,16];
+	this.controls.lobby.create.button.nightmare			= [6,555,381,16,16];
+	this.controls.lobby.create.button.hell				= [6,698,381,16,16];
+	
+	this.controls.lobby.create.location = [
+		this.controls.lobby.create.editBox.gameName,
+		this.controls.lobby.create.editBox.password,
+		this.controls.lobby.create.editBox.gameDescription,
+	];
+
+
+	// insert all game join controls here
+	this.controls.lobby.join					= new Array();
+	this.controls.lobby.join.name					= "Join Game";
+	this.controls.lobby.join.id					= 5;
+	
+	this.controls.lobby.join.editBox				= new Array();
+	this.controls.lobby.join.editBox.gameName			= [1,432,148,155,20];
+	this.controls.lobby.join.editBox.password			= [1,606,148,155,20];
+	
+	this.controls.lobby.join.textBox				= new Array();
+	this.controls.lobby.join.textBox.joinGame			= [4,496,106,200,22];
+	this.controls.lobby.join.textBox.gameName			= [4,428,121,150,12];
+	this.controls.lobby.join.textBox.password			= [4,602,121,150,12];
+	this.controls.lobby.join.textBox.gameNamePlayers		= [4,431,212,200,12];
+	this.controls.lobby.join.textBox.gameList			= [4,432,393,160,173];	// list is stored in extended text
+	this.controls.lobby.join.textBox.gameDetails			= [4,609,393,143,194];	// details is stored in extended text
+
+	this.controls.lobby.join.button					= new Array();
+	this.controls.lobby.join.button.joinGame			= [6,594,433,172,32];
+	this.controls.lobby.join.button.cancel				= [6,433,433,96,32];
+	
+	this.controls.lobby.join.location = [
+		this.controls.lobby.join.editBox.gameName,
+		this.controls.lobby.join.textBox.joinGame,
+		this.controls.lobby.join.textBox.gameList,		
+	];
+
+	
+	// insert all game ladder controls here
+	this.controls.lobby.ladder					= new Array();
+	this.controls.lobby.ladder.name					= "Ladder";
+	this.controls.lobby.ladder.id					= 6;
+
+	this.controls.lobby.ladder.textBox				= new Array();
+	this.controls.lobby.ladder.button				= new Array();
+	this.controls.lobby.ladder.list					= new Array();
+
+
+	// insert all game channel controls here
+	this.controls.lobby.channel					= new Array();
+	this.controls.lobby.channel.name				= "Channel List";
+	this.controls.lobby.channel.id					= 7;
+
+	this.controls.lobby.channel.textBox				= new Array();
+	this.controls.lobby.channel.editBox				= new Array();
+	this.controls.lobby.channel.button				= new Array();
+	this.controls.lobby.channel.list				= new Array();
+
+
+	// insert all main menu controls here
+	this.controls.mainMenu						= new Array();
+	this.controls.mainMenu.name					= "Main Menu";
+	this.controls.mainMenu.id					= 8;
+
+	this.controls.mainMenu.textBox					= new Array();
+	this.controls.mainMenu.textBox.d2Version			= [4,0,599,200,40];
+
+	this.controls.mainMenu.button					= new Array();
+	this.controls.mainMenu.button.gateway				= [6,264,391,272,25];
+	this.controls.mainMenu.button.battleNet				= [6,264,366,272,35];
+	this.controls.mainMenu.button.otherMultiplayer			= [6,264,433,272,35];
+	this.controls.mainMenu.button.singlePlayer			= [6,264,324,272,35];
+	this.controls.mainMenu.button.credits				= [6,264,528,135,25];
+	this.controls.mainMenu.button.cinematics			= [6,402,528,135,25];
+	this.controls.mainMenu.button.exitDiabloII			= [6,264,568,272,35];
+
+	this.controls.mainMenu.location = [
+		this.controls.mainMenu.button.battleNet,
+		this.controls.mainMenu.button.otherMultiplayer,
+		this.controls.mainMenu.button.singlePlayer,
+	];
+	
+
+	// connecting to battle.net
+	this.controls.mainMenu.connecting				= new Array();
+	this.controls.mainMenu.connecting.id				= 21;
+	this.controls.mainMenu.connecting.name				= "Connecting to Battle.net";
+	
+	this.controls.mainMenu.connecting.textBox			= new Array();
+	this.controls.mainMenu.connecting.textBox.connectingTo		= [4,222,280,340,60];
+	this.controls.mainMenu.connecting.textBox.body			= [4,222,360,340,70];	// contains connecting to battle.net/fastest server, accessing your account, or checking versions
+	this.controls.mainMenu.connecting.textBox.progress		= [4,222,370,340,20];	// dots
+	
+	this.controls.mainMenu.connecting.button			= new Array();
+	this.controls.mainMenu.connecting.button.cancel			= [6,330,416,128,35];
+
+	this.controls.mainMenu.connecting.location = [
+		this.controls.mainMenu.connecting.textBox.connectingTo,
+		this.controls.mainMenu.connecting.textBox.body,
+		this.controls.mainMenu.connecting.textBox.progress,
+		this.controls.mainMenu.connecting.button.cancel,
+	];
+
+
+	// startup screen
+	this.controls.d2Splash						= new Array();
+	this.controls.d2Splash.name					= "D2 Splash"
+	this.controls.d2Splash.id					= 18;
+	
+	this.controls.d2Splash.textBox					= new Array();
+	this.controls.d2Splash.textBox.copyright			= [4,100,580,600,80];
+	
+	this.controls.d2Splash.location = [
+		this.controls.d2Splash.textBox.copyright,
+	];
+
+
+
+	// insert all bnet login controls here (including account settings)
+	// add: ACCOUNT SETTINGS, CHANGE PASSWORD, GET NEW PASSWORD, CHANGE EMAIL, CREATE NEW ACCOUNT agreement & form
+	this.controls.login						= new Array();
+	this.controls.login.name					= "Login";
+	this.controls.login.id						= 9;
+	
+	this.controls.login.textBox					= new Array();
+	this.controls.login.textBox.accountName				= [4,321,340,300,32];
+	this.controls.login.textBox.password				= [4,321,394,300,32];
+	this.controls.login.textBox.heading				= [4,200,350,400,100];
+
+	this.controls.login.editBox					= new Array();
+	this.controls.login.editBox.accountName				= [1,322,342,162,19];
+	this.controls.login.editBox.password				= [1,322,396,162,19];
+
+	this.controls.login.button					= new Array();
+	this.controls.login.button.createNewAccount			= [6,264,572,272,35];
+	this.controls.login.button.accountSettings			= [6,264,528,272,35];
+	this.controls.login.button.logIn				= [6,264,484,272,35];
+	this.controls.login.button.exit					= [6,33,572,128,35];
+
+	this.controls.login.location = [
+		this.controls.login.textBox.accountName,
+		this.controls.login.editBox.password,
+		this.controls.login.editBox.accountName,
+		this.controls.login.button.logIn,
+	];
+
+
+	// login error, permanent failure, bad account or password
+	this.controls.login.loginError					= new Array();
+	this.controls.login.loginError.name				= "Login Error";
+	this.controls.login.loginError.id				= 10;
+
+	this.controls.login.loginError.textBox				= new Array();
+	this.controls.login.loginError.textBox.loginError		= [4,195,237,410,40];	// used for invalid login/password popups
+	this.controls.login.loginError.textBox.invalidPassword		= [4,199,377,402,140];
+	this.controls.login.loginError.textBox.invalidAccount		= [4,199,377,402,140];
+
+	this.controls.login.loginError.button				= new Array();
+	this.controls.login.loginError.button.ok			= [6,335,412,128,35];	// used for invalid login/password popups
+
+	this.controls.login.loginError.location = [
+		this.controls.login.loginError.textBox.loginError,
+		this.controls.login.loginError.button.ok,
+	];
+
+
+	// unable to connect, related to ip-bans or no internet connection
+	this.controls.login.unableToConnect				= new Array();
+	this.controls.login.unableToConnect.name			= "Unable To Connect";
+	this.controls.login.unableToConnect.id				= 11;
+	
+	this.controls.login.unableToConnect.textBox			= new Array();
+	this.controls.login.unableToConnect.textBox.title		= [4,158,220,485,40];
+	this.controls.login.unableToConnect.textBox.head		= [4,162,320,477,100];
+	this.controls.login.unableToConnect.textBox.body		= [4,162,420,477,100];
+
+	this.controls.login.unableToConnect.button			= new Array();
+	this.controls.login.unableToConnect.button.ok			= [6,335,450,128,35];
+	
+	this.controls.login.unableToConnect.location = [
+		this.controls.login.unableToConnect.textBox.title,
+		this.controls.login.unableToConnect.textBox.head,
+		this.controls.login.unableToConnect.button.ok,
+	];
+
+
+	this.controls.login.cdkeyInUse					= new Array();
+	this.controls.login.cdkeyInUse.name				= "Cdkey In Use";
+	this.controls.login.cdkeyInUse.id				= 19;
+
+	this.controls.login.cdkeyInUse.textBox				= new Array();
+	this.controls.login.cdkeyInUse.textBox.unableToConnect		= [4,158,220,485,40];
+	this.controls.login.cdkeyInUse.textBox.cdkeyInUse		= [4,162,270,477,50];
+	this.controls.login.cdkeyInUse.textBox.byWho			= [4,158,310,485,40];
+	this.controls.login.cdkeyInUse.textBox.onlyOneRegistered	= [4,162,420,477,100];
+	
+	this.controls.login.cdkeyInUse.button				= new Array();
+	this.controls.login.cdkeyInUse.button.ok			= [6,335,450,128,35];
+	
+	this.controls.login.cdkeyInUse.location = [
+		this.controls.login.cdkeyInUse.textBox.unableToConnect,
+		this.controls.login.cdkeyInUse.textBox.cdkeyInUse,
+		this.controls.login.cdkeyInUse.textBox.byWho,
+	];
+
+
+	// login - invalid cdkey
+	this.controls.login.invalidCdkey				= new Array();
+	this.controls.login.invalidCdkey.id				= 22;
+	this.controls.login.invalidCdkey.name				= "Invalid Cdkey";
+	
+	this.controls.login.invalidCdkey.textBox			= new Array();
+	this.controls.login.invalidCdkey.textBox.unableToConnect	= [4,158,220,485,40];
+	this.controls.login.invalidCdkey.textBox.invalidCdkey		= [4,162,320,477,100];
+	this.controls.login.invalidCdkey.textBox.invalidCdkey.key	= [5202, 10912];
+	this.controls.login.invalidCdkey.textBox.uninstall		= [4,162,420,477,100];
+
+	this.controls.login.invalidCdkey.button				= new Array();
+	this.controls.login.invalidCdkey.button.ok			= [6,335,450,128,35];
+
+	this.controls.login.invalidCdkey.location = [
+		this.controls.login.invalidCdkey.textBox.unableToConnect,
+		this.controls.login.invalidCdkey.textBox.invalidCdkey,
+		this.controls.login.invalidCdkey.textBox.uninstall,
+		this.controls.login.invalidCdkey.button.ok
+	];
+
+
+	// insert all character select screen controls here (including single player)
+	this.controls.characterSelect					= new Array();
+	this.controls.characterSelect.name				= "Character Select";
+	this.controls.characterSelect.id				= 12;
+	
+	this.controls.characterSelect.textBox				= new Array();
+	this.controls.characterSelect.textBox.selectedCharName		= [4,85,78,466,42];
+	this.controls.characterSelect.textBox.currentRealm		= [4,629,44,145,21];
+	this.controls.characterSelect.textBox.selectedCurrentRealm	= [4,626,100,151,44];
+	this.controls.characterSelect.textBox.characters		= new Array(8);
+	this.controls.characterSelect.textBox.characters[0]		= [4,237,178,72,93];
+	this.controls.characterSelect.textBox.characters[1]		= [4,509,178,72,93];
+	this.controls.characterSelect.textBox.characters[2]		= [4,237,271,72,93];
+	this.controls.characterSelect.textBox.characters[3]		= [4,509,271,72,93];
+	this.controls.characterSelect.textBox.characters[4]		= [4,237,364,72,93];
+	this.controls.characterSelect.textBox.characters[5]		= [4,509,364,72,93];
+	this.controls.characterSelect.textBox.characters[6]		= [4,237,457,72,93];
+	this.controls.characterSelect.textBox.characters[7]		= [4,509,457,72,93];
+	this.controls.characterSelect.textBox.characterInfo		= new Array(8);
+	this.controls.characterSelect.textBox.characterInfo[0]		= [4,37,178,200,92];
+	this.controls.characterSelect.textBox.characterInfo[1]		= [4,309,178,200,92];
+	this.controls.characterSelect.textBox.characterInfo[2]		= [4,37,271,200,92];
+	this.controls.characterSelect.textBox.characterInfo[3]		= [4,309,271,200,92];
+	this.controls.characterSelect.textBox.characterInfo[4]		= [4,37,364,200,92];
+	this.controls.characterSelect.textBox.characterInfo[5]		= [4,309,364,200,92];
+	this.controls.characterSelect.textBox.characterInfo[6]		= [4,37,457,200,92];
+	this.controls.characterSelect.textBox.characterInfo[7]		= [4,309,457,200,92];
+	this.controls.characterSelect.textBox.deleteConfirmation	= [];
+
+	this.controls.characterSelect.button				= new Array();
+	this.controls.characterSelect.button.ok				= [6,627,572,128,35];
+	this.controls.characterSelect.button.exit			= [6,33,572,128,35];
+	this.controls.characterSelect.button.createNew			= [6,33,528,168,60];
+	this.controls.characterSelect.button.convertTo			= [6,233,528,168,60];
+	this.controls.characterSelect.button.deleteChar			= [6,433,528,168,60];
+	this.controls.characterSelect.button.changeRealm		= [6,609,113,182,30];
+	this.controls.characterSelect.button.deleteYes			= [6,421,337,96,32];
+	this.controls.characterSelect.button.deleteNo			= [];
+	
+	this.controls.characterSelect.location = [
+		this.controls.characterSelect.textBox.selectedCharName,
+		this.controls.characterSelect.textBox.characters[0],
+		this.controls.characterSelect.textBox.characterInfo[7],		
+	];
+
+
+	this.controls.characterCreate					= new Array();
+	this.controls.characterCreate.name				= "Character Create";
+	this.controls.characterCreate.id				= 29;
+
+	this.controls.characterCreate.editBox				= new Array();
+	this.controls.characterCreate.editBox.charName			= [1,318,510,157,16];
+
+	this.controls.characterCreate.textBox				= new Array();
+	this.controls.characterCreate.textBox.selectHeroClass		= [4,0,80,800,50];
+	this.controls.characterCreate.textBox.charName			= [4,321,512,200,32];
+	this.controls.characterCreate.textBox.bottomText		= [4,210,610,430,120];
+	this.controls.characterCreate.textBox.expansionChar		= [4,339,561,200,32];
+	this.controls.characterCreate.textBox.hardcore			= [4,339,581,100,32];
+	this.controls.characterCreate.textBox.ladderChar		= [4,339,601,200,32];
+	this.controls.characterCreate.textBox.className			= [4,0,180,800,100];
+	this.controls.characterCreate.textBox.classDesc			= [4,250,210,300,100];
+
+	this.controls.characterCreate.button				= new Array();
+	this.controls.characterCreate.button.exit			= [6,33,572,128,35];
+	this.controls.characterCreate.button.expansionChar		= [6,319,540,15,16];
+	this.controls.characterCreate.button.hardcore			= [6,319,560,15,16];
+	this.controls.characterCreate.button.continueHardcore		= [6,421,337,96,32];
+	this.controls.characterCreate.button.ladderChar			= [6,319,580,15,16];
+	this.controls.characterCreate.button.ok				= [6,627,572,128,35];
+
+	this.controls.characterCreate.chars				= new Array(9);
+	this.controls.characterCreate.chars[0]				= [2,100,337,88,184]; // amazon 
+	this.controls.characterCreate.chars[6]        = [2,232,364,88,184]; // assassin
+	this.controls.characterCreate.chars[2]        = [2,301,333,88,184]; // necro
+	this.controls.characterCreate.chars[4]        = [2,400,330,88,184]; // barb
+	this.controls.characterCreate.chars[3]        = [2,521,339,88,184]; // pally
+	this.controls.characterCreate.chars[1]        = [2,626,353,88,184]; // sorc
+	this.controls.characterCreate.chars[5]        = [2,720,370,88,184]; // druid
+  
+	this.controls.characterCreate.location = [
+		this.controls.characterCreate.textBox.selectHeroClass,
+	];
+
+	// Name exists dialog on characer create page
+  this.controls.characterCreate.nameExists     = new Array();
+  this.controls.characterCreate.nameExists.name    = "Name Exists";
+  this.controls.characterCreate.nameExists.id      = 30;
+  
+  this.controls.characterCreate.nameExists.textBox   = new Array();
+  this.controls.characterCreate.nameExists.textBox.errorMsg  = [4,268,320,264,120];
+  this.controls.characterCreate.nameExists.textBox.errorMsg.key = [5165];
+
+  this.controls.characterCreate.nameExists.button    = new Array();
+  this.controls.characterCreate.nameExists.button.cancel = [6,351,337,96,32];
+
+  this.controls.characterCreate.nameExists.location = [
+    this.controls.characterCreate.nameExists.textBox.errorMsg,
+  ];
+
+
+
+
+	// realm down on char select screen
+	this.controls.characterSelect.realmDown				= new Array();
+	this.controls.characterSelect.realmDown.name			= "Realm Down";
+	this.controls.characterSelect.realmDown.id			= 13;
+
+	this.controls.characterSelect.realmDown.textBox			= new Array();
+	this.controls.characterSelect.realmDown.textBox.realmDown	= [4,45,318,531,140];
+	this.controls.characterSelect.realmDown.textBox.realmDown.key	= [11162];
+
+	this.controls.characterSelect.realmDown.location = [
+		this.controls.characterSelect.realmDown.textBox.realmDown,
+	];
+	this.controls.characterSelect.realmDown.checkNullText		= true;
+
+
+	// Connecting on char select screen
+	this.controls.characterSelect.connecting			= new Array();
+	this.controls.characterSelect.connecting.name			= "Connecting...";
+	this.controls.characterSelect.connecting.id			= 23;
+
+	this.controls.characterSelect.connecting.textBox		= new Array();
+	this.controls.characterSelect.connecting.textBox.connecting	= [4,37,178,547,35];
+	this.controls.characterSelect.connecting.textBox.connecting.key	= [11065];
+
+	this.controls.characterSelect.connecting.location = [
+		this.controls.characterSelect.connecting.textBox.connecting,
+	];
+	this.controls.characterSelect.connecting.checkNullText		= true;
+
+
+	// Popup: You were,disconnected from,battle.net.  Please,reconnect.
+	this.controls.characterSelect.disconnected			= new Array();
+	this.controls.characterSelect.disconnected.name			= "Disconnected";
+	this.controls.characterSelect.disconnected.id			= 14;
+	
+	this.controls.characterSelect.disconnected.textBox		= new Array();
+	this.controls.characterSelect.disconnected.textBox.disconnected	= [4,268,300,264,100];
+	
+	this.controls.characterSelect.disconnected.button		= new Array();
+	this.controls.characterSelect.disconnected.button.ok		= [6,351,337,96,32];
+	
+	this.controls.characterSelect.disconnected.location = [
+		this.controls.characterSelect.disconnected.textBox.disconnected,
+		this.controls.characterSelect.disconnected.button.ok,
+	];
+	
+	
+	// Single Player - Difficulty Select
+	this.controls.characterSelect.difficulty			= new Array();
+	this.controls.characterSelect.difficulty.name			= "Select Difficulty";
+	this.controls.characterSelect.difficulty.id			= 20;
+
+	this.controls.characterSelect.difficulty.textBox		= new Array();
+	this.controls.characterSelect.difficulty.textBox.select		= [4,264,260,272,35];
+
+	this.controls.characterSelect.difficulty.button			= new Array();
+	this.controls.characterSelect.difficulty.button.normal		= [6,264,297,272,35];
+	this.controls.characterSelect.difficulty.button.nightmare	= [6,264,340,272,35];
+	this.controls.characterSelect.difficulty.button.hell		= [6,264,383,272,35];
+	
+	this.controls.characterSelect.difficulty.location = [
+		this.controls.characterSelect.difficulty.textBox.select,
+		this.controls.characterSelect.difficulty.button.normal,
+		this.controls.characterSelect.difficulty.button.nightmare,
+		this.controls.characterSelect.difficulty.button.hell,
+	];
+
+
+	// new character controls
+	this.controls.newCharacter					= new Array();	
+	this.controls.newCharacter.name					= "New Character";	
+	this.controls.newCharacter.id					= 15;	
+
+	this.controls.newCharacter.textBox				= new Array();
+	this.controls.newCharacter.editBox				= new Array();
+	this.controls.newCharacter.button				= new Array();
+
+
+	// Please Wait control popup
+	this.controls.characterSelect.pleaseWait			= new Array();
+	this.controls.characterSelect.pleaseWait.name			= "Please Wait";
+	this.controls.characterSelect.pleaseWait.id			= 16;
+
+	this.controls.characterSelect.pleaseWait.textBox		= new Array();
+	this.controls.characterSelect.pleaseWait.textBox.pleaseWait	= [4,268,300,264,100];
+
+	this.controls.characterSelect.pleaseWait.button			= new Array();
+	this.controls.characterSelect.pleaseWait.button.cancel		= [6,351,337,96,32];
+
+	this.controls.characterSelect.pleaseWait.location = [
+		this.controls.characterSelect.pleaseWait.textBox.pleaseWait,
+		this.controls.characterSelect.pleaseWait.button.cancel,
+	];
+	
+	
+	// select gateway (realm)
+	this.controls.gateway						= new Array();
+	this.controls.gateway.name					= "Select Gateway";
+	this.controls.gateway.id					= 27;
+	this.controls.gateway.baseX					= 285;
+	this.controls.gateway.baseY					= 352;
+	this.controls.gateway.nextY					= 24;
+
+	this.controls.gateway.textBox					= new Array();
+	this.controls.gateway.textBox.selectGateway			= [4,237,270,340,35];
+	this.controls.gateway.textBox.ifCurrentGateway			= [4,257,345,320,84];
+	this.controls.gateway.textBox.realmList				= [4,257,500,292,160];
+
+	this.controls.gateway.button					= new Array();
+	this.controls.gateway.button.ok					= [6,281,538,96,32];
+	this.controls.gateway.button.cancel				= [6,436,538,96,32];
+
+	this.controls.gateway.location = [
+		this.controls.gateway.textBox.realmList,
+		this.controls.gateway.button.ok,
+		this.controls.gateway.button.cancel,
+	];
+
+	// Terms Of Use
+	this.controls.termsOfUse					= new Array();
+	this.controls.termsOfUse.name					= "Terms Of Use";
+	this.controls.termsOfUse.id					= 31;
+	
+	this.controls.termsOfUse.button					= new Array();
+	this.controls.termsOfUse.button.agree				= [6,525,513,128,35];
+	this.controls.termsOfUse.button.disagree			= [6,133,513,128,35];
+	
+	this.controls.termsOfUse.location = [
+		this.controls.termsOfUse.button.agree,
+		this.controls.termsOfUse.button.disagree,
+	];
+
+
+	// create new account
+	this.controls.newAccount					= new Array();
+	this.controls.newAccount.name					= "Create New Account";
+	this.controls.newAccount.id					= 32;
+	
+	this.controls.newAccount.editBox				= new Array();
+	this.controls.newAccount.editBox.accountName			= [1,322,342,162,19];
+	this.controls.newAccount.editBox.password			= [1,322,396,162,19];
+	this.controls.newAccount.editBox.confirmPassword		= [1,322,450,162,19];
+
+	this.controls.newAccount.button					= new Array();
+	this.controls.newAccount.button.ok				= [6,627,572,128,35];
+
+	this.controls.newAccount.location = [
+		this.controls.newAccount.editBox.accountName,
+		this.controls.newAccount.editBox.password,
+		this.controls.newAccount.editBox.confirmPassword,
+		this.controls.newAccount.button.ok,
+	];
+	
+
+	// register email
+	this.controls.email						= new Array();
+	this.controls.email.name					= "Register Email";
+	this.controls.email.id						= 33;
+	
+	this.controls.email.editBox					= new Array();
+	this.controls.email.editBox.email				= [4,252,340,300,32];
+	this.controls.email.editBox.confirmEmail			= [4,252,394,300,32];
+
+	this.controls.email.button					= new Array();
+	this.controls.email.button.register				= [6,265,527,272,35];
+	this.controls.email.button.dontRegister				= [6,265,572,272,35];
+
+	this.controls.email.location = [
+		this.controls.email.editBox.email,
+		this.controls.email.editBox.confirmEmail,
+		this.controls.email.button.register,
+		this.controls.email.button.dontRegister,
+	];
+
+	// Confirm No Email
+	this.controls.email.confirm    					 = new Array();
+	this.controls.email.confirm.name   				 = "Confirm No Email";
+	this.controls.email.confirm.id    				 = 34;
+
+	this.controls.email.confirm.button				 = new Array();
+	this.controls.email.confirm.button.continue  			 = [6,415,412,128,35];
+	
+	this.controls.email.confirm.location = [
+		this.controls.email.confirm.button.continue,
+	];
+
+	// getLocation will iterate over these, in this order, do error checkers first
+	this.locations = [
+		this.controls.characterSelect.pleaseWait,
+		this.controls.lobby.gameDoesNotExist,
+		this.controls.lobby.gameExists,
+		this.controls.lobby.lostConnection,
+		this.controls.characterCreate.nameExists,
+		this.controls.lobby.pleaseWait,
+		this.controls.lobby.inLine,
+		this.controls.lobby.serverDown,
+		this.controls.characterSelect.realmDown,
+		this.controls.characterSelect.connecting,
+		this.controls.characterSelect.disconnected,
+		this.controls.login.loginError,
+		this.controls.login.invalidCdkey,
+		this.controls.login.unableToConnect,
+		this.controls.login.cdkeyInUse,
+		this.controls.lobby.create,
+		this.controls.lobby.join,
+//		ladder
+//		channel
+		this.controls.lobby.chat,
+		this.controls.lobby,
+		this.controls.characterSelect.difficulty,
+		this.controls.characterSelect,
+		this.controls.login,
+		this.controls.mainMenu.connecting,
+		this.controls.gateway,
+		this.controls.mainMenu,
+		this.controls.d2Splash,
+		this.controls.characterCreate,
+		this.controls.termsOfUse,
+		this.controls.email.confirm,
+		this.controls.email,
+		this.controls.newAccount,
+	];
+
+	this.gameTypes = [
+		this.controls.mainMenu.button.singlePlayer,
+		this.controls.mainMenu.button.battleNet,
+		this.controls.mainMenu.button.otherMultiplayer,
+	];
+	
+	this.gameDifficulties = [
+		this.controls.lobby.create.button.normal,
+		this.controls.lobby.create.button.nightmare,
+		this.controls.lobby.create.button.hell,
+	];
+	
+	this.singlePlayerDifficulties = [
+		this.controls.characterSelect.difficulty.button.normal,
+		this.controls.characterSelect.difficulty.button.nightmare,
+		this.controls.characterSelect.difficulty.button.hell,
+	];
+	
+	this.clickDelay = 250;
+	this.textDelay = 100;
+	this.clickDelayRandom = 0;
+	this.textDelayRandom = 0;
+	
+	this.realmNames = [];
+	this.realmNames["U.S. WEST"] = 0;
+	this.realmNames["U.S. EAST"] = 1;
+	this.realmNames["ASIA"] = 2;
+	this.realmNames["EUROPE"] = 3;
+
+
+	// returns control object if exists, else null
+	this.get = function( controlArray ) {
+		retControl = 0;
+		if( controlArray && controlArray.length==5 ) {
+			retControl = GetControl( controlArray[0], controlArray[1], controlArray[2], controlArray[3], controlArray[4] );
+		}
+		return retControl;
+	}
+
+	// Character class selection in create character dialog
+	this.clickClass = function( classId ) {
+	  if ( control = this.get( this.controls.characterCreate.chars[classId] ) ) {
+	    control.Click(-25, 100);
+	    return true;
+	  }
+	  else {
+	    return false;
+	  }
+	}
+	// clicks object, if it exists, return true if exists, false if not
+	this.click = function( controlArray, _x, _y, _skipdelay ) {
+		if( control = this.get( controlArray ) ) {
+			if( _x || _y ) {
+				control.Click( _x, _y );
+			} else {
+				control.Click( );
+			}
+
+			if(!_skipdelay) Delay( this.clickDelay + Random( 0, this.clickDelayRandom ) );
+			return true;
+		}
+		return false;
+	}
+
+	// sets text on object, returns false if not exists
+	this.setText = function( controlArray, str ) {
+		if( controlArray[0]==1 ) {
+		if( control = this.get( controlArray ) ) {
+			var _string = '' + str;
+			control.SetText( _string );
+			
+			Delay( this.textDelay + Random( 0, this.textDelayRandom ) );
+			return true;
+		}
+		}
+		return false;
+	}
+	
+	// clicks a realm entry, this is 0 based! 0 = top entry (uswest)
+	this.clickRealmEntry = function( realmEntryIndex ) {
+		this.click( this.controls.gateway.textBox.realmList, 0, (realmEntryIndex*this.controls.gateway.nextY)+(this.controls.gateway.nextY/2) );
+	}
+
+	// returns the 0 based index of the currently selected realm
+	this.getCurrentRealmIndex = function( ) {
+		retVal = -1;
+		control = this.get( controlData.controls.mainMenu.button.gateway );
+		if(control) {
+			realmString = control.text.substring(control.text.indexOf(":")+2, control.text.length);
+			if(realmString in this.realmNames) retVal = this.realmNames[realmString];
+		}
+		return retVal;
+	}
+
+	this.getLocation = function( ) {
+		for(_i=0; _i<this.locations.length; _i++) {
+			found = 0;
+			for(_j=0; _j<this.locations[_i].location.length; _j++) {
+				if( (control = this.get( this.locations[_i].location[_j] )) && (!this.locations[_i].checkNullText || control.text!=null) ) {
+					if(this.locations[_i].location[_j].key) {
+						for(_k=0; _k<this.locations[_i].location[_j].key.length; _k++) {
+							if((_s = control.GetText()) && GetLocaleString(this.locations[_i].location[_j].key[_k]) == String(_s.join(" ")) ) {
+								found++;
+								break;
+							}
+						}
+					} else {
+						found++;
+					}
+				}
+			}
+			if(found == this.locations[_i].location.length) return this.locations[_i];
+		}
+
+		return 0;	// no valid location found
+	
+	}
+	
+	// returns the current location, see locations array for listing
+	this.getLocationQuick = function( ) {	
+		for(_i=0; _i<this.locations.length; _i++) {
+			found = true;
+			for(_j=0; _j<this.locations[_i].location.length; _j++) {
+				if( !(control = this.get( this.locations[_i].location[_j] )) ||
+					( this.locations[_i].checkNullText && control.text==null ) ) {
+					found = false;
+					break;
+				}
+			}
+			if(found) return this.locations[_i];
+		}
+	
+		return 0;	// no valid location found
+	}
+}

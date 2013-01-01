@@ -1,0 +1,133 @@
+var KeyofDestruction = me.GetItems("pk3");
+var _NTNihlathak_Locations = new Array(8, 4);
+
+_NTNihlathak_Locations[0] = [12519, 5203, 12522, 5227]; // Top Left
+_NTNihlathak_Locations[1] = [12704, 5019, 12692, 5022]; // Top Right
+_NTNihlathak_Locations[2] = [12705, 5391, 12723, 5413]; // Bottom Right
+_NTNihlathak_Locations[3] = [12889, 5206, 12898, 5228]; // Bottom Left
+_NTNihlathak_Locations[4] = [12519, 5203, 12522, 5196]; // Top Left
+_NTNihlathak_Locations[5] = [12704, 5019, 12692, 5413]; // Top Right
+_NTNihlathak_Locations[6] = [12705, 5391, 12727, 5022]; // Bottom Right
+_NTNihlathak_Locations[7] = [12889, 5206, 12898, 5192]; // Bottom Left
+
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	NTTMGR_TownManager();
+	if(!NTTM_CheckAct(5)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	if(!NTTM_TownMove("portal")){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	if(!NTM_UsePortal("Portal", 121)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_UsePortal()");
+		return;
+	}
+	NTP_DoPrecast(true);
+	if(!NTM_MoveTo(me.areaid, 10061, 13234)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+		return;
+	}
+	if(NTA_KillMonster(GetLocaleString(22497))){
+		if(NTConfig_ClearPosition)
+			NTA_ClearPosition();
+
+		NTSI_PickItems();
+	}
+	if(((KeyCount_D == 0) || (KeyofDestruction && KeyofDestruction.length < KeyCount_D)) && NTConfig_NihlathakExtensionOFPT){
+			var _location;
+			for(var i = 0 ; i < 3 ; i++){
+				if(!NTM_MoveToStair(me.areaid, 122+i)){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToStair()");
+					return;
+				}
+				if(!NTM_TakeStair(122+i)){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
+					return;
+				}
+			}
+			NTP_DoPrecast(false);
+			_location = NT_FindNihlathakInt();
+			if(_location == -1){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NT_FindNihlathakInt()");
+				return;
+			}
+			if(!NTM_MoveTo(me.areaid, _NTNihlathak_Locations[_location][2], _NTNihlathak_Locations[_location][3])){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+				return;
+			}
+			if(!NTA_KillMonster(526)){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
+				return;
+			}
+			if(NTConfig_ClearPosition) { NTA_ClearPosition(); }
+			NTSI_PickItems();
+
+			if(!NTM_MoveTo(me.areaid, _NTNihlathak_Locations[_location][2], _NTNihlathak_Locations[_location][3])){ // this is to move out of mob a bit
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+				return;
+			}
+
+			if(NTConfig_OpenEvilUrnNihl){
+				if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 466)){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+					return;
+				}
+				var _EvilUrn;
+				_EvilUrn = NTC_FindUnit(NTC_UNIT_OBJECT, 466);
+				if(_EvilUrn){
+					if(NTM_MoveTo(_EvilUrn.areaid, _EvilUrn.x+1, _EvilUrn.y)){
+						if(NTC_OpenChest(_EvilUrn))
+							NTC_Delay(1000);
+						NTA_ClearPosition(20, true)
+						NTC_Delay(500);
+						NTA_ClearPosition(20, true)
+						NTSI_PickItems();
+					}
+
+				}
+			}
+		NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+	}
+	else{
+		Print(COLOR_8 + "already have " + KeyCount_D + " destruction keys skipping nihlathak");
+		NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+	}
+}
+
+// Internal function
+function NT_FindNihlathakInt(){
+	var i, x, y;
+	var _nihlathak;
+	var _mindist = 999999;
+	var _currdist;
+	var _location = -1;
+	_nihlathak = GetPresetUnits(me.areaid, NTC_UNIT_OBJECT, 462);
+	if(!_nihlathak || _nihlathak.length < 1)
+		return _location;
+	x = _nihlathak[0].roomx*5 + _nihlathak[0].x;
+	y = _nihlathak[0].roomy*5 + _nihlathak[0].y;
+	for(i = 0 ; i < 8 ; i++){
+		_currdist = GetDistance(_NTNihlathak_Locations[i][0], _NTNihlathak_Locations[i][1], x, y);
+		if(_currdist < _mindist){
+			_mindist = _currdist;
+			_location = i;
+		}
+	}
+	return _location;
+}

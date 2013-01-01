@@ -1,0 +1,22 @@
+[Name] == thegoldenbird 
+[Name] == horadriccube  need to go through and double check that everything is in here
+[Name] == ajadefigurine //  this needs to be added to the general pickit
+[Name] == lamesen'stome 
+[Name] == mephisto'ssoulstone 
+[Name] == bookofskill // should actually just put the nip push in char_configs right under the script push
+[Name] == scrollofinifuss // 
+[Name] == keytothecairnstones // 
+[Name] == potionoflife // 
+[Name] == malah'spotion 
+[Name] == thegidbinn
+[Name] == horadricmalus
+[Name] == hellforgehammer
+[Name] == shaftofthehoradricstaff
+[Name] == topofthehoradricstaff
+
+[Name] == khalim'seye
+[Name] == khalim'sheart
+[Name] == khalim'sbrain
+[Name] == khalim'swill
+
+// can make a function for the print to screen "picked up" colors with a switch statement type thing

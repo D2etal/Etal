@@ -1,0 +1,1100 @@
+// OrganFarmerPlus torcher put together by stairbuilder	
+// thanks to kolton, d2od, ethic, those nifty koreans, roflman, and all the etal users that have made suggestions on this script
+// re written 6-14-2011
+var debugPrintOFPT = false; 
+var debugPrintOFPT2 = false;
+
+var _stopped = false;
+var evenBrains = false;
+var evenEyes = false;
+var evenHorns = false;
+var miniUberCount = 0; 
+var haveOrgans = false;
+var makeOrgans = false;
+var makeTorch = false;
+var existingPortal = []; 
+
+// 0 didn't start, 2 opened portal, 4 killed.
+var lilithDone = 0; 
+var durielDone = 0;
+var izzyDone = 0;
+var gameReturn = false;
+var secondReturn = false;
+
+function NTMain(){
+	
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+		
+	NTConfig_TPChicken = 0; 	
+		
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	Print(NTC_PrintRandomColor() + "OrganFarmerPT v2.0 Start ");
+	
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	
+	NTTMGR_TownManager();
+	
+	if(NTConfig_UseAltAttacksOFPT){ // sets alt skills for ubers and minis
+		NTConfig_AttackSkill[1] = NTConfig_AttackSkillOFPT_1;	
+		NTConfig_AttackSkill[2] = NTConfig_AttackSkillOFPT_2;	
+	}
+
+	if(NTConfig_ExitReEnterOnClickbug){ // 
+		Include("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT2.ntj");
+		if(gameReturn){
+			if(!NTConfig_UseMercOFPT){
+				NTConfig_UseMerc = false; 
+			}
+			if(debugPrintOFPT2) { Print(COLOR_1 + "In game return");}
+			Include("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT.ntj");
+			if(returnType == 4){ // 4 = miniubers
+				if(NTConfig_PreBuffFade && me.GetStat(181) < 1) {
+					NT_PreBuffFade();							
+				}
+				if(!NTTM_CheckAct(5)){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+					return;
+				}
+				NTTM_TownMoveXY(5134, 5056);
+				NT_TakeMiniPortal(NT_FindNeededPortalReturn());
+				NTC_PingDelay(NTConfig_AreaDelay);
+				NT_CheckKeyBossAreaid();	
+				if(NT_CountPortalsForReturn() < 3){
+					NT_OpenMiniPortals();
+				}
+			}
+			else if(returnType == 2){ // 2 = trist 
+				if(NTConfig_PreBuffFade && me.GetStat(181) < 1) {
+					NT_PreBuffFade();							
+				}
+				if(!NTTM_CheckAct(5)){
+					NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+					return;
+				}				
+				NTTM_TownMove("stash");
+				if(NT_TakeTristPortal()){ 
+					NT_DoUbers();
+				}
+			}
+			if(!secondReturn){ // if there are 2 click bug games in a row this keeps bot from reseting the print files
+				NT_File("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT2.txt", 1, "false");		
+				NT_File("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT2.ntj", 1, "var gameReturn = false;  "); // sets bot to not return
+			}
+			NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+			return;
+		}
+	}
+	
+	if(!NT_CanOpenPortals()){
+		if(!makeOrgans){
+			Print(NTC_PrintRandomColor() + "Not enough keys to open portals");
+		}
+		if(!haveOrgans){
+			Print(NTC_PrintRandomColor() + "Not enough organs to open portal.");
+		}
+		NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+		return;	
+	}
+	
+	if(makeOrgans){
+		Print(NTC_PrintRandomColor() + "We Have Enough Keys")
+		if(NTConfig_PreBuffFade && me.GetStat(181) < 1) {
+			NT_PreBuffFade();							
+		}
+		if(!NTTM_CheckAct(5)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+			return;
+		}
+		NT_OpenMiniPortals();
+		if(!NTConfig_MakeTorchSameGame){
+			//Say("!well this is the problem");
+			NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+			return;
+		}
+	}		
+	
+	if(NTConfig_MakeTorchSameGame){ // re-checks to see if we can make a torch after possibly making organs
+		NT_CanOpenPortals();
+	}
+	
+	if(makeTorch){
+		Print(NTC_PrintRandomColor() + "We Have Enough Organs and No Torch")
+		Print(NTC_PrintRandomColor() + "It's Uber Time")
+		if(NTConfig_PreBuffFade && me.GetStat(181) < 1){
+			NT_PreBuffFade();	
+		}
+		if(!NTTM_CheckAct(5)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+			return;
+		}
+		NTTMGR_TownManager(); //get potions if needed after getting fade on
+		Print(NTC_PrintRandomColor() + "opening Tristram portal")
+		
+		NT_CubeOrgans();
+		NTC_PingDelay(NTConfig_CubingDelays);
+		NT_TakeTristPortal();
+		NTC_PingDelay(NTConfig_AreaDelay); 
+		NT_DoUbers();
+		
+		NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+		return;
+	}
+	else {
+		NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+	}
+}		
+
+function NT_OpenMiniPortals() {
+	var miniSpots = []; // I know could have used parallel arrays, but was playing 
+		miniSpots[0] = [5134, 5056];
+		miniSpots[1] = [5132, 5063];
+		miniSpots[2] = [5130, 5070];
+	var _message = ["first", "second", "third"]; 
+	var openedPortals = 0;
+	if(NTConfig_ExitReEnterOnClickbug && gameReturn){
+		openedPortals = NT_CountPortalsForReturn();
+	}	
+	for(var i = openedPortals ; i < 3 && !_stopped ; i++){
+		NTTMGR_TownManager();
+		if(debugPrintOFPT) { CheckPrintPortals(); }
+		Print(NTC_PrintRandomColor() + "opening " + _message[i] + " portal")
+		if(NTConfig_OpenPortalsStacked){
+			if(!NT_CubeKeys(5134, 5056)){
+				return false;													
+			}															
+		}
+		else{
+			if(!NT_CubeKeys(miniSpots[i][0], miniSpots[i][1])){
+				return false;													
+			}															
+		}
+		
+		if(debugPrintOFPT) { CheckPrintPortals(); }
+		
+		NTC_PingDelay(NTConfig_CubingDelays);
+		if(!NT_TakeMiniPortal(NT_FindNewPortal())){ 
+			return false;
+		}
+		NT_CheckKeyBossAreaid();			
+	}
+	return true;
+}
+
+function NT_CubeKeys(spotx, spoty) {  
+	var keyOfTerror = me.GetItems("pk1");												
+	var keyOfHate = me.GetItems("pk2");													
+	var keyOfDestruction = me.GetItems("pk3");
+	if(keyOfTerror && keyOfTerror.length > 0 && keyOfHate && keyOfHate.length > 0 && keyOfDestruction && keyOfDestruction.length > 0){
+		var _stash;
+		NTTM_TownMove("stash");
+		NT_FindExistingPortals();  
+		_stash = NTC_FindUnit(NTC_UNIT_OBJECT, NTC_UNIT_STASH);
+		if(_stash){	
+			if(NTT_DoInteract(_stash)){
+				var cube;
+				cube = me.GetItems(NTC_UNIT_CUBE);
+				if(!cube || cube.length < 1){
+					return false;
+				}	
+				if(NTCU_CheckCubeInventoryInt() > 0){
+					if(!NTCU_OpenCubeInt(cube[0])){
+						return false;
+					}
+					if(NTCU_ClearCubeInt() < 1){
+						return false;
+					}
+					NTCU_CloseCubeInt();
+				}
+			}
+			NTCU_MoveItemToCubeInt(cube[0], keyOfTerror[0])
+			NTCU_MoveItemToCubeInt(cube[0], keyOfHate[0])
+			NTCU_MoveItemToCubeInt(cube[0], keyOfDestruction[0])
+			NTTM_TownMoveXY(spotx, spoty);
+			Delay(250)			
+			if(!NTCU_OpenCubeInt(cube[0])){
+				return false;
+			}
+			Delay(250)			
+			if(Transmute()){ 
+				NTC_PingDelay(NTConfig_CubingDelays);
+				NTCU_CloseCubeInt();
+				NTC_PingDelay(NTConfig_CubingDelays);
+				NTC_CancelMenus();
+				NTC_PingDelay(parseInt((NTConfig_CubingDelays / 2), 10));
+				NTC_PingDelay(100);
+				return true;
+			}
+			else{
+				NTC_PingDelay(NTConfig_CubingDelays);
+				Print(COLOR_1 + "didn't open portal");
+				NTCU_CloseCubeInt();
+				return false;
+			}
+		}
+	}
+	else{
+		return false;
+	}
+}
+
+function NT_TakeMiniPortal(takePortal){ 
+	var rightPortal;						
+	if(!takePortal) {
+		return false; 
+	}
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226));	
+	var _gid;
+	if(_portal){ 
+		do
+		{
+			if(!NT_IsPossiblePortal(_portal)){
+				continue;
+			}
+			_gid = _portal.gid;
+			if(_gid == takePortal){
+				rightPortal = _portal;
+				break;
+			}
+		} while(_portal.GetNext());  
+		Delay(250)
+	}	
+	if(rightPortal){
+		switch(rightPortal.subareaid) // sets vars for click bug re entry
+		{
+			case 133:
+			case 389:
+					lilithDone = 2;
+					if(debugPrintOFPT2) { Print(COLOR_1 + "litlithDone status = " + lilithDone); }
+					break;
+			case 134:
+			case 390:
+					durielDone = 2;
+					if(debugPrintOFPT2) { Print(COLOR_1 + "durielDone status = " + durielDone); }
+					break;
+			case 135:
+			case 391:
+					izzyDone = 2;
+					if(debugPrintOFPT2) { Print(COLOR_1 + "izzyDone status = " + izzyDone); }									
+					break;
+		}
+		while(rightPortal.mode != 2){
+			Delay(500);
+		}							
+		Delay(200)
+					
+		for(var i = 0 ; i <25 ; i++){ 
+			if(NTM_GetCloserInt(rightPortal)) {
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, rightPortal);
+			}
+			NTC_Delay(250);															
+			if(me.areaid != 109){
+				break; 
+			}
+		}		
+		while(me.areaid == 0){
+			NTC_Delay(200);
+		}
+		NTC_PingDelay(NTConfig_AreaDelay);
+		if(me.areaid == 109){
+			me.maxgametime = 0;
+			if(NTConfig_TimeBeforeExitOnClickBugOrgans == 0){
+				var time = 0;
+				while(1){
+					NTC_TimeKeeper("!Failed to take portal in game for     ");
+				}
+			}
+			else{
+				Say("!Failed to interact with portal");
+				Delay(2e3);
+				if(NTConfig_ExitReEnterOnClickbug){ 
+					NT_CheckNeededPortalReturn();
+					if(NTConfig_ShowDetailsInManager){									
+						NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_1 + "Exiting and renentering game because of click bug on Organs");
+					}
+					NT_File("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT4.txt", 1, 
+						me.gamename + "/" + me.gamepassword
+					);	 	
+					NT_File("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT2.txt", 1, 
+						"return"
+					);	
+					NT_File("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT2.ntj", 1, 
+						"var gameReturn = true;  " 
+					);				
+					NT_File("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT.ntj", 1, 
+						"var returnType = 4; " // 2 = trist, 4 = miniubers
+						+ "var gameReturn = true;  " 
+						+ "var neededPortal = " + NT_CheckNeededPortalReturn() + ";  " // 0 = none/default, 2 = trist, 4 = lilith, 6 = duriel, 8 = izzy.  these are which portal we failed on
+						+ "var portalCount = " + miniUberCount + ";  "  
+					);
+					Delay(500);
+				}
+				for(i = NTConfig_TimeBeforeExitOnClickBugOrgans ; i > -1 ; i--){
+					Say("!exiting game in " + i + " seconds");
+					Delay(1000);
+				}
+				secondReturn = true; // this is ugly, but seems that it returns to main before exitting.  If this happens when you are in a return
+				NTC_SendMsgToScript("NTBotGame.ntj", "QuitGame"); // ^^^ game and have a portal fail it won't gameReturn gets set to false so 2nd go round doen't work
+				Delay(2000);				
+			}
+		}
+	}
+	return me.areaid != 109;
+}
+
+function NT_TakeTristPortal(){
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226))
+	if( _portal){
+		do
+		{
+			if(!NT_IsPossiblePortal(_portal)){
+				continue;
+			}
+			if(_portal.subareaid == 136 || _portal.subareaid == 392){ 
+				break;			
+			}						
+		} while(_portal.GetNext());  
+		Delay(250)
+		while(_portal.mode != 2){
+			Delay(500);
+		}		
+		Delay(1000); 
+		for(var i = 0 ; i <25 ; i++){ 
+			if(NTM_GetCloserInt(_portal)){ 
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal); 
+			}
+			NTC_Delay(250);															
+			if(me.areaid != 109){
+				break; 
+			}
+		}		
+		Delay(250)
+		while(me.areaid == 0){
+			NTC_Delay(200);
+		}
+		NTC_PingDelay(NTConfig_AreaDelay);
+		if(me.areaid == 136){
+			return true;
+		}
+		if(me.areaid == 109){
+			me.maxgametime = 0;
+			if(NTConfig_TimeBeforeExitOnClickBugTorch == 0){
+				NTC_TimeKeeper("!Failed to take portal in game for     ");
+			}
+			else{
+				Say("!Failed to interact with portal");
+				Delay(2e3);
+				if(NTConfig_ExitReEnterOnClickbug){ 
+					if(NTConfig_ShowDetailsInManager){
+						NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_1 + "Exiting and renentering game because of click bug on Torch");
+					}
+					NT_CheckNeededPortalReturn();
+					NT_File("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT4.txt", 1, 
+						me.gamename + "/" + me.gamepassword
+					);	 
+					NT_File("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT2.txt", 1, 
+						"return"
+					);	
+					NT_File("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT2.ntj", 1, 
+						"var gameReturn = true;  " 
+					);				
+					NT_File("logs/OFPTLog/OFPTcomands/"+me.account+"-OFPT.ntj", 1, 
+						"var returnType = 2; " // 2 = trist, 4 = miniubers
+						+ "var gameReturn = true;  " 
+						+ "var neededPortal = " + neededPortal + ";  " // 0 = none/default, 2 = trist, 4 = lilith, 6 = duriel, 8 = izzy.  these are which portal we failed on
+						+ "var portalCount = " + miniUberCount + ";  "  
+					);
+					Delay(500)
+				}
+				for(i = NTConfig_TimeBeforeExitOnClickBugTorch ; i > -1 ; i--){
+					Say("!exiting game in " + i + " seconds");
+						Delay(1000);
+				}				
+				NTC_SendMsgToScript("NTBotGame.ntj", "QuitGame");
+				Delay(2000);
+			}
+		}
+	}
+	else{
+		return false;
+	}
+}
+
+function NT_CheckKeyBossAreaid(){
+	NT_CheckUneven();
+	switch(me.areaid)
+	{
+		case 133: 
+			miniUberCount++; 
+			Print(NTC_PrintRandomColor() + "Killing Lillith")//i             
+			if(NT_KillLilith()){
+				lilithDone = 4; 
+				if(debugPrintOFPT2) { Print(COLOR_1 + "lilithDone status = " + lilithDone); }															
+			}
+			if(NTConfig_TryToEven && evenHorns && miniUberCount == 1 && !gameReturn){
+				Print(NTC_PrintRandomColor() + "Trying to even organs");
+				Delay(1000);
+				Print(NTC_PrintRandomColor() + "Skipping the next 2 portals");												
+				if(NTConfig_ShowDetailsInManager){
+					NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_1 + "Trying to even organs skipping next 2 portals");
+				}
+				NTU_LogPrint("logs/OFPTLog/"+me.charname+"-organlog.txt", "Lilith mini uber count is " + miniUberCount + " even horns = " + evenHorns + " ");
+				_stopped = true;
+			}
+			break;
+	
+		case 134: 
+			miniUberCount++; 
+			Print(NTC_PrintRandomColor() + "Killing Duriel")						
+			if(NT_KillUberDuriel()){
+				durielDone = 4;
+				if(debugPrintOFPT2) { Print(COLOR_1 + "durielDone status = " + durielDone); }												
+			}
+			if(NTConfig_TryToEven && evenEyes && miniUberCount == 1 && !gameReturn){
+				Print(NTC_PrintRandomColor() + "Trying to even organs");
+				Delay(1000);
+				Print(NTC_PrintRandomColor() + "Skipping the next 2 portals");												
+				if(NTConfig_ShowDetailsInManager){					
+					NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_1 + "Trying to even organs skipping next 2 portals");
+				}
+				
+				NTU_LogPrint("logs/OFPTLog/"+me.charname+"-organlog.txt", "Duriel mini uber count is " + miniUberCount + " even eyes = " + evenEyes + " ");
+				_stopped = true;
+			}
+			break;
+		
+		case 135: 
+			miniUberCount++; 
+			Print(NTC_PrintRandomColor() + "Killing Izzy")//r
+			if(NT_KillIzual()){
+				izzyDone = 4;
+				if(debugPrintOFPT2) { Print(COLOR_1 + "izzyDone status = " + izzyDone); }									
+			}
+			if(NTConfig_TryToEven && evenBrains && miniUberCount == 1 && !gameReturn){
+				Print(NTC_PrintRandomColor() + "Trying to even organs");
+				Delay(1000);
+				Print(NTC_PrintRandomColor() + "Skipping the next 2 portals");												
+				if(NTConfig_ShowDetailsInManager){
+					NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_1 + "Trying to even organs skipping next 2 portals");
+				}
+				_stopped = true;
+				NTU_LogPrint("logs/OFPTLog/"+me.charname+"-organlog.txt", "Izzy mini uber count is " + miniUberCount + " even brains = " + evenBrains + " ");
+			}
+			break;
+	}
+		return; 
+}
+
+function NT_CubeOrgans(){
+	var mephistosBrain = me.GetItems("mbr");
+	var baalsEye = me.GetItems("bey");
+	var diablosHorn = me.GetItems("dhn");
+	if(mephistosBrain && mephistosBrain.length > 0 && baalsEye && baalsEye.length > 0 && diablosHorn && diablosHorn.length > 0){
+		var stash;
+		NTTM_TownMove("stash");
+		stash = NTC_FindUnit(NTC_UNIT_OBJECT, NTC_UNIT_STASH);
+		if(stash){
+			if(NTT_DoInteract(stash)){
+				var cube;
+				cube = me.GetItems(NTC_UNIT_CUBE);
+				if(!cube || cube.length < 1){
+					return false;
+				}
+				if(NTCU_CheckCubeInventoryInt() > 0){
+					if(!NTCU_OpenCubeInt(cube[0])){
+						return false;
+					}	
+					if(NTCU_ClearCubeInt() < 1){
+						return false;
+					}
+					NTCU_CloseCubeInt();
+				}
+			}
+			NTCU_MoveItemToCubeInt(cube[0], mephistosBrain[0])
+			NTCU_MoveItemToCubeInt(cube[0], baalsEye[0])
+			NTCU_MoveItemToCubeInt(cube[0], diablosHorn[0])
+			Delay(250)
+			if(!NTCU_OpenCubeInt(cube[0])){
+				return false;
+			}
+			Delay(250)
+			if(Transmute()){ 
+				NTC_PingDelay(NTConfig_CubingDelays);
+				NTCU_CloseCubeInt();
+				NTC_PingDelay(NTConfig_CubingDelays);
+				NTC_CancelMenus();
+				NTC_PingDelay(parseInt((NTConfig_CubingDelays / 2), 10));
+				return true;
+			}
+			else{ 
+				NTC_PingDelay(NTConfig_CubingDelays);
+				Print(COLOR_1 + "didn't open portal");
+				NTCU_CloseCubeInt();
+				return false;
+			}
+		}
+	}
+	else
+		return false;
+}
+
+function NT_KillLilith(){ 
+	entryX = me.x
+	entryY = me.y
+	NTP_DoPrecast(true);
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 397, 2, 2)){
+		return false;
+	}
+	if(!NT_KillMonster(707)){
+		return false;													
+	}
+	NTC_PingDelay(100);
+	NTC_PickSpecialItem(650);
+	if(NTConfig_UseNormalSnag){
+		NTC_PingDelay(100);		
+		NTSI_PickItems();
+	}
+	if(NTConfig_TakeRedPortalTownLilith){	
+		NTM_MoveTo(me.areaid, entryX, entryY)
+		var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226))
+		for(var i = 0 ; i <25 ; i++){ 
+			if(NTM_GetCloserInt(_portal)){ 
+				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal); 
+			}
+			NTC_Delay(250);															
+			if(me.areaid != 132){
+				break;
+			}
+		}
+	}
+	else{
+		NTM_MakeTP(true);
+	}
+	NTC_PingDelay(NTConfig_AreaDelay);
+	NTTMGR_VisitStash(); // force stash organs between mini's
+	return true;
+}
+
+function NT_KillIzual(){ 
+	NTP_DoPrecast(true);
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 397, 2, 2)){
+		return false;
+	}
+	if(!NT_KillMonster(706)){
+		return false;
+	}
+	NTC_PingDelay(100);
+	NTC_PickSpecialItem(652);
+	if(NTConfig_UseNormalSnag){
+		NTC_PingDelay(100);		
+		NTSI_PickItems();
+	}	
+	NTM_MakeTP(true);
+	NTTMGR_VisitStash(); // force stash organs between mini's
+	return true;
+}
+		   
+function NT_KillUberDuriel(){ 
+	NTP_DoPrecast(true);
+	NT_FindUberDuriel();
+	var UberDuriel = NTC_FindMonster(708);
+	if(UberDuriel){
+		NTM_MoveTo(me.areaid, UberDuriel.x, UberDuriel.y);
+
+	}
+	if(!NT_KillMonster(708)){
+		return false;
+	}
+	NTC_PingDelay(100);
+	NTC_PickSpecialItem(651);
+	if(NTConfig_UseNormalSnag){
+		NTC_PingDelay(100);
+		NTSI_PickItems();
+	}	
+	NTM_MakeTP(true);
+	NTTMGR_VisitStash(); // force stash organs between mini's
+	return true;
+}
+
+function NT_FindUberDuriel(){			
+	var _findLoc = [20196, 8694, 20308, 8588, 20187, 8639, 20100, 8550, 20103, 8688, 20144, 8709, 20263, 8811, 20247, 8665]; 
+	for(var i = 0 ; i < _findLoc.length; i += 2){
+		NTM_MoveTo(me.areaid, _findLoc[i], _findLoc[i+1]);
+		if(NTC_FindUnit(NTC_UNIT_MONSTER, 708)){
+			break;
+		}
+	}
+}
+
+function NT_PreBuffFade() {
+	var specialCheckSelf = ['01'];
+	var specialMercCheck = [];
+	if(NTTM_TownMove("waypoint")){
+		if(NTM_TakeWaypoint(107)){
+			NTP_DoPrecast(true);
+			NTM_MoveTo(me.areaid, 7811, 5872);
+			Print(NTC_PrintRandomColor() + "Activating fade");
+			while(1){
+				if(me.GetStat(181) > 0) {
+					break;
+				}
+				if(NTTMGR_CheckSafe(specialCheckSelf, specialMercCheck)){
+					NTM_MoveTo(me.areaid, 7811, 5872);
+				}
+				NTC_Delay(200);
+			}
+		}
+	}
+	Print(NTC_PrintRandomColor() + "There's Our Fade");
+	return;
+}
+
+function NT_KillMonster(classid) { // purpose of this is to increase max attacks for lilith 
+	var _target;
+	if(NTConfig_AttackSkill[1] < 1){
+		return false;
+	}
+	_target = NTC_FindUnit(NTC_UNIT_MONSTER, classid, 5);
+	if(!_target){
+		return false;
+	}
+	if(_target.IsAttackable()){
+		var _attackcount = 0;
+		while(_attackcount < 800 && NTA_IsValidMonster(_target)){
+			if(NTA_Attack(_target, (_attackcount%30) == 0) < 2){
+				break;
+			}
+			_attackcount++;
+		}
+	}
+	return (_target.hp <= 0 || _target.mode == 0 || _target.mode == 12);
+}
+
+function NT_CheckUneven(){ // if first portal opened gets us an organ that is less than 1 of the other 2 skips next 2 portals to try and even organs
+	var _brain = me.GetItems("mbr");
+	var _eye = me.GetItems("bey");
+	var _horn = me.GetItems("dhn");
+	if(_brain.length < _eye.length || _brain.length < _horn.length){
+		evenBrains = true;
+	}
+	if(_eye.length < _brain.length || _eye.length < _horn.length){
+		evenEyes = true;
+	}
+	if(_horn.length < _brain.length || _horn.length < _eye.length){
+		evenHorns = true;
+	}
+	return;
+}
+
+function NT_CanOpenPortals() {
+	var keyOfTerror = me.GetItems("pk1");
+	var keyOfHate = me.GetItems("pk2");
+	var keyOfDestruction = me.GetItems("pk3");
+	var mephistosBrain = me.GetItems("mbr");
+	var baalsEye = me.GetItems("bey");
+	var diablosHorn = me.GetItems("dhn");
+	
+	if(!NTConfig_UseMercOFPT){
+		NTConfig_UseMerc = false; 
+	}
+	if(keyOfTerror && keyOfTerror.length >= 3 && keyOfHate && keyOfHate.length >= 3 
+	&& keyOfDestruction && keyOfDestruction.length >= 3) {
+		makeOrgans = true;
+	}
+	if(mephistosBrain && mephistosBrain.length > 0 && baalsEye && baalsEye.length > 0 
+	&& diablosHorn && diablosHorn.length > 0) {
+		haveOrgans = true;
+		if(NT_CheckToMakeTorch()){
+			makeTorch = true;
+		}
+	}
+	if(makeOrgans || makeTorch){
+		return true;
+	}
+	return false;
+}
+
+function NT_CheckToMakeTorch() { 
+	var hellFireTorch = me.GetItems("cm2");
+	if(NTConfig_DontMakeTorch){
+		Print(NTC_PrintRandomColor() + "NTConfig_DontMakeTorch is set to true");
+		Print(NTC_PrintRandomColor() + "Skipping Ubers")
+		return false;
+	}
+	if(hellFireTorch && hellFireTorch.length > 0){
+		for(var i = 0 ; i < hellFireTorch.length ; i++) {
+			if(hellFireTorch[i].quality == 7){
+				Print(NTC_PrintRandomColor() + "Already Have A Torch");
+				Print(NTC_PrintRandomColor() + "Skipping Ubers")			
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+function NT_FindExistingPortals(){ // this function is called before cubing keys.  Checks for already opened portals so we can find the one we will open next
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226));
+	var _gid;
+	if(_portal){ 
+		do{
+			if(!NT_IsPossiblePortal(_portal)){
+				continue;
+			}
+			_gid = _portal.gid;
+			if(debugPrintOFPT) { Print(COLOR_1 + _gid + "  " +  _portal.name + " " + _portal.subareaid); }
+			if( existingPortal.indexOf(_gid) == -1){ // if the portal has not already been pushed into the existingPortal array
+				 existingPortal.push(_gid); // push it into the array now
+			}
+			if(debugPrintOFPT) { CheckPrintPortals(); }
+		} while(_portal.GetNext());
+	}
+	return;
+}
+
+function NT_FindNewPortal(){ // now we have opened a new portal lets find it
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226));	
+	var _gid;
+	if(_portal){
+		do
+		{
+			if(!NT_IsPossiblePortal(_portal)){
+				continue;
+			}
+			_gid = _portal.gid;
+			if( existingPortal.indexOf(_gid) == -1){ 
+				if(debugPrintOFPT) { Print(COLOR_4 + "this is the portal to take!! " + _gid + "  " +  _portal.name + " " + _portal.subareaid); }
+				return _gid;  // return this portal.  which will be the one taken
+			}						
+		} while(_portal.GetNext());  
+		Delay(250)
+	}
+	return false; 
+}
+
+function NT_IsPossiblePortal(possiblePortal) { // this checks for portals that we actually interested in.
+	if((possiblePortal.subareaid == 133 || possiblePortal.subareaid == 134 || possiblePortal.subareaid == 135 
+	|| possiblePortal.subareaid == 389 || possiblePortal.subareaid == 390 || possiblePortal.subareaid == 391 
+	|| possiblePortal.subareaid == 136 || possiblePortal.subareaid == 392) 
+	&& !NTC_CheckOwner(possiblePortal, me.name)) {
+			return true;
+	}
+	else { return false; }
+}
+
+function NT_KillMeph(){
+	var checkMeph;
+	var baitMeph = false;
+	for(var j = 0 ; j < 20 ; j++){
+		checkMeph = GetUnit(NTC_UNIT_MONSTER, 704);
+		if(checkMeph){ 
+			for(i = 0 ; i < 35 ; i++){// for loop to wait for meph to be in range
+				if(GetDistance(me, checkMeph) <= 10){
+					baitMeph = true;
+					break; // found meph and is close
+				}
+				if(i == 25){
+					NTM_MoveTo(me.areaid, 25125, 5167);
+				}
+				Delay(100);
+			}
+		}
+		else{
+			Delay(100);
+		}
+		if(baitMeph || i > 0){
+			break;
+		}
+	}
+	NTM_MoveTo(me.areaid, 25129, 5208) // meph kill spot
+	if(checkMeph){
+		for(i = 0 ; i < 10 ; i++){
+			if(GetDistance(me, checkMeph) <= 10){
+				break;
+			}
+			Delay(100);
+		}
+		if(!NT_KillMonster(704)){	//meph
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+	return false;
+}
+
+function NT_KillBaal(){
+	var baitBaal = false; 
+	NTM_MoveTo(me.areaid, 25162, 5141);
+	for(var j = 0 ; j < 20 ; j++){
+		checkBaal = GetUnit(NTC_UNIT_MONSTER, 709);
+		if(checkBaal){ // for loop to wait for baal to come to us
+			for(i = 0 ; i < 30 ; i++){
+				if(GetDistance(me, checkBaal) <= 3){
+					baitBaal = true;
+					break; // baal is in our range
+				}
+				Delay(100);
+			}
+		}
+		else{
+			Delay(100);
+		}
+		if(baitBaal || i > 0){ 
+			break;
+		}
+	}
+	if(checkBaal){
+		if(!NT_KillMonster(709)){//baal
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+	return false;
+}
+
+function NT_DoUbers(){
+	var oldAura;
+	var killedMeph = true;
+	var killedBaal = true;
+	var killedDiablo = true;
+	if(!NTM_MoveTo(me.areaid, 25068, 5078)){ // bo spot
+		return;
+	}
+	NTP_DoPrecast(true);
+	if(me.classid == NTC_CHAR_CLASS_PALADIN) {
+		var _salvation_level = NTC_GetSkillLevel(125);
+		if(_salvation_level > 0) {
+			oldAura = NTConfig_AttackSkill[2]; 
+			NTConfig_AttackSkill[2] = 125; 
+		}
+	}
+	var toMeph = [25040,5101, 25040, 5166, 25122, 5173];
+	for(i = 0; i < toMeph.length; i += 2){
+		if(!NTM_MoveTo(me.areaid, toMeph[i], toMeph[i+1])){
+			return;
+		}
+	}
+	Delay(500);
+	if(!NT_KillMeph()){		// made this return true or false in case missed kill the first time
+		Print("didn't kill meph");		
+		killedMeph = false;
+	}
+		
+	if (oldAura && !killedMeph && NTConfig_KeepSalvOnMephFail){ // added && killedMeph so if fail to kill meph 1st time it will keep slavation on to hopefully reduce chickens
+		Print(COLOR_1 + "keeping savation because I missed killing mephisto");
+	}
+	else if (oldAura){ // this allows for a char_config optional bypass
+		NTConfig_AttackSkill[2] = oldAura;
+	}
+	if(NTConfig_BOafterMeph){
+		var boAfterPathX = [25040, 25040, 25040, 25181];
+		var boAfterPathY = [5208, 5048, 5208, 5208];
+		for(i = 0 ; i < boAfterPathX.length ; i++){
+			if(i == 2){
+				NTP_DoPrecast(true);
+			}
+			NTM_MoveTo(me.areaid, boAfterPathX[i], boAfterPathY[i]);
+		}
+	}
+	if(!NT_KillBaal()){
+		Print("didn't kill baal");
+		killedBaal = false;// made this return true or false in case missed kill the first time
+	}
+	if(!NT_KillMonster(705)){//diablo
+		Print("didn't kill diablo");
+		killedDiablo = false;
+	}
+
+	if(!killedMeph || !killedBaal || !killedDiablo){ 
+		if(NTConfig_ShowDetailsInManager){
+			NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_2 + "In second chance to kill ubers");
+		}
+		for(var i = 0 ; i < 30 ; i++){
+			if(!killedMeph){
+				Print("trying to kill meph again");
+				if(NTC_FindUnit(NTC_UNIT_MONSTER, 704)){
+					NT_KillMonster(704);
+					killedMeph = true;
+				}
+			}
+			if(!killedDiablo){
+				Print("trying to kill diablo again");
+				if(NTC_FindUnit(NTC_UNIT_MONSTER, 705)){
+					NT_KillMonster(705);
+					killedDiablo = true;
+				}
+			}
+			if(!killedBaal){
+				Print("trying to kill baal again");
+				if(NTC_FindUnit(NTC_UNIT_MONSTER, 706)){
+					NT_KillMonster(706);
+					killedBaal = true;
+				}
+			}
+			if(killedMeph && killedBaal && killedDiablo){
+				break;
+			}
+			Delay(200);
+			switch(i)
+			{
+				case 10:
+					NTM_MoveTo(me.areaid, 25128, 5136);
+					break;
+				case 20:
+					NTM_MoveTo(me.areaid, 25129, 5151);
+					break;
+			}		
+		}
+	}
+	if(debugPrintOFPT2) {Print("killedMeph is " + killedMeph);}
+	if(debugPrintOFPT2) {Print("killedDiablo is " + killedDiablo);}
+	if(debugPrintOFPT2) {Print("killedBaal is " + killedBaal);}
+	
+	NTC_PingDelay(100);
+	NTC_PickSpecialItem(604);
+	if(NTConfig_UseNormalSnag){
+		NTC_PingDelay(100);		
+		NTSI_PickItems();
+	}	
+	if(!NTM_MoveTo(me.areaid, 25103, 5141)){ // back to portal
+		return;
+	}
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226));
+	for(var i = 0 ; i <25 ; i++){ 
+		if(NTM_GetCloserInt(_portal)){ 
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal); 
+		}
+		NTC_Delay(250);															
+		if(me.areaid != 136){
+			break; 
+		}
+	}		
+	Delay(250)
+	while(me.areaid == 0){
+		NTC_Delay(200);
+	}
+	NTC_PingDelay(NTConfig_AreaDelay);
+	return;
+}
+
+////////////////////////// test functions start ////////////////////////////////////////////
+
+function CheckPrintNewPortals(returnportal){
+	Print(COLOR_8 + "CheckPrintNewPortals " + returnportal); // + "  " +  returnportal.name + " " + returnportal.subareaid);
+}
+
+function CheckPrintPortals(){
+	Print(COLOR_2 + "portals in existingPortal array are");
+	for(var i = 0 ; i < existingPortal.length ; i++){
+		Print(COLOR_1 + existingPortal[i]);
+		Delay(500);
+	}
+	Print(COLOR_2 + "---------------------------------------------------------------");	
+	return;
+}
+
+////////////////////////// test functions end /////////////////////////////////////////////////
+
+function NT_CheckNeededPortalReturn(){ // this will set the neededPortal var before exiting the bugged game
+	if(lilithDone == 2){				
+		return neededPortal = 4;
+	}
+	else if(durielDone == 2){
+		return neededPortal = 6;
+	}
+	else if(izzyDone == 2){
+		return neededPortal = 8;
+	}
+	else{
+		return neededPortal = 0; 
+	}
+}
+
+function NT_FindNeededPortalReturn(){ // this will give us the portal we bugged on once we return to game
+	switch(neededPortal) // 0 = none/default, 2 = trist, 4 = lilith, 6 = duriel, 8 = izzy. trist is probably not going to be used
+	{
+		case 2: // 2 = trist this is more error catching
+			Print(COLOR_1 + "well that wasn't suppose to happen");
+			break;
+		case 4: // lilith
+				searchPortal = 133;
+				break;
+		case 6: // duriel
+				searchPortal = 134;
+				break;
+		case 8: // izzy
+				searchPortal = 135;
+				break;
+	}
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226));	
+	if(!_portal){
+		return false;
+	}
+	if(_portal){
+		do
+		{
+			if(!NT_IsPossiblePortal(_portal)){
+				continue;
+			}
+			_gid = _portal.gid;
+			if(_portal.subareaid == searchPortal || _portal.subareaid == searchPortal + 256){
+				return _gid; 
+			}
+		} while(_portal.GetNext());  
+		Delay(250)
+	}	
+}
+
+function NT_CountPortalsForReturn(){
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226));	
+	var thisManyMinis = 0;
+	if(_portal){
+		do
+		{
+			if((_portal.subareaid == 133 || _portal.subareaid == 134 || _portal.subareaid == 135 
+			|| _portal.subareaid == 389 || _portal.subareaid == 390 || _portal.subareaid == 391)
+			&& !NTC_CheckOwner(_portal, me.name)) {
+				thisManyMinis++;
+			}
+			
+			
+		} while(_portal.GetNext());  
+		Delay(250)
+	}	
+	return thisManyMinis;
+}
+
+function NT_CheckMonstersClose(range, number){ // add number of monsters close before moving this should actually be based on item to be picked or tp to be taken.  This is not being used, but leaving it here for later maybe
+    if(arguments.length < 1){
+        range == 5;
+	}
+    var _monstercount = 0;    
+    var _checkMonster = NTC_FindUnit(NTC_UNIT_MONSTER);
+    if(_checkMonster){
+        do{
+            if(_checkMonster.IsAttackable() && NTA_IsValidMonster(_checkMonster) && GetDistance(me.x, me.y, _checkMonster.x, _checkMonster.y) < range){
+				_monstercount++;
+            }
+        } while(_checkMonster.GetNext());
+    }
+	if(_monstercount >= number){
+		return true;
+	}
+ 	if(_monstercount <= number){
+		return false;
+	}   
+}
+

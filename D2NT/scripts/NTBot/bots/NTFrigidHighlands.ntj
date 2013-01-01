@@ -1,0 +1,133 @@
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	NTTMGR_TownManager();
+	if(!NTTM_TownMove("waypoint")){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+	if(!NTM_TakeWaypoint(111)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+	NTP_DoPrecast(true);
+	if(NTConfig_KillEldritch){
+		if(!NTM_MoveTo(me.areaid, 3750, 5090)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
+			return;
+		}
+		if(NTA_KillMonster(GetLocaleString(22500))){
+			if(NTConfig_ClearPosition)
+				NTA_ClearPosition();
+			NTSI_PickItems();
+			if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+				OpenChestsInArea();
+			}
+		}
+	}
+	if(NTConfig_KillEyeBack){
+		if(!NTM_MoveToPresetUnit(111, NTC_UNIT_MONSTER, 784, -5, 5)) {
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+			return;
+		}
+		if(NTA_KillMonster(GetLocaleString(22499))){
+			if(NTConfig_ClearPosition)
+				NTA_ClearPosition();
+			NTSI_PickItems();
+			if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+				OpenChestsInArea();
+			}
+		}
+	}
+	if(NTConfig_KillSharptooth){
+		if(!NTM_MoveToPresetUnit(111, NTC_UNIT_MONSTER, 790, -7, 6)) {
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+			return;
+		}
+		if(NTA_KillMonster(GetLocaleString(22493))){
+			if(NTConfig_ClearPosition)
+				NTA_ClearPosition();
+			NTSI_PickItems();
+			if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+				OpenChestsInArea();
+			}
+		}
+	}
+	if(NTConfig_ClearFrigidHighlands == 1){
+		NTConfig_SkipRegularMonsters = false;
+		NTP_DoPrecast();
+		if(!NTA_ClearLevel()){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTA_ClearLevel()");
+			return;
+		}
+	}
+	if(NTConfig_ClearFrigidHighlands == 2){
+		NTConfig_SkipRegularMonsters = true;
+		NTP_DoPrecast();
+		if(!NTA_ClearLevel()){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTA_ClearLevel()");
+			return;
+		}
+	}
+	if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+		OpenChestsInArea();
+	}
+	if(NTConfig_ClearAbaddon > -1){
+		if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT,60)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+			return;
+		}
+		if(!NTM_TakeUnit(NTC_UNIT_OBJECT,60)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeUnit()");
+			return;
+		}
+		NTP_DoPrecast();
+		if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 397)){
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+			return;
+		}
+		if(NTConfig_ClearPosition)
+			NTA_ClearPosition(15);
+		NTSI_PickItems();
+		if(NTConfig_OpenChest){
+			var _chest;
+			_chest = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3260));
+			if(_chest){
+				if(NTC_OpenChest(_chest))
+					NTSI_PickItems();
+			}
+		}
+		if(NTConfig_ClearAbaddon == 1){
+			NTConfig_SkipRegularMonsters = false;
+			NTP_DoPrecast();
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTA_ClearLevel()");
+				return;
+			}
+		}
+		if(NTConfig_ClearAbaddon == 2){
+			NTConfig_SkipRegularMonsters = true;
+			NTP_DoPrecast();
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTA_ClearLevel()");
+				return;
+			}
+		}
+		if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
+			OpenChestsInArea();
+		}
+	}
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}

@@ -1,0 +1,16 @@
+Page Down = Scrolls through your config bosses, ty Thursty
+Page Up = scrolls back through your config bosses and again ty Thursty
+
+Number Pad 1 = Drop Items in Inventory and Stash
+Number Pad 2 = Use NTU_DevelopementTools
+    *Please note*
+    Setting are configured within D2NT\scripts\libs\common\NTUtilities.ntl
+    This is great for finding chest id's, monster id's etc.
+Number Pad 3 = Prints the current x, y coord to logs/testlog/yourcharname/-Coords
+Number Pad 4 = Prints this list ingame, lol.
+Number Pad 5 = Item logging to a file in logs folder
+Number Pad 6 = Displays Item Level of whats held on cursor.
+Number Pad 9 = Lists character stats and other usefull info
+
+Number Pad * = x,y coord and area id, name
+Number Pad + = toothless nip checker

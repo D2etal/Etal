@@ -1,0 +1,134 @@
+function NTMain()
+{
+	Delay(1000);
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeConfig("NTMap/char_configs");
+
+	var _count = 0;
+	var _LifeMax, _ManaMax;
+	var _player, _mypartyid;
+
+	NT_LoadConfig("NTMap/char_configs");
+
+	SetStatusText("NTMap 1.2.1 - " + me.gameserverip);
+
+	RegisterEvent(EVENT_KEYDOWN, NT_KeyEvents);
+
+	SetUIState(0x0A, true);
+
+	_LifeMax = me.hpmax;
+	_ManaMax = me.mpmax;
+
+	if(NTConfig_LifeChicken > 0)
+		me.chickenhp = parseInt((_LifeMax*NTConfig_LifeChicken)/100);
+
+	if(NTConfig_ManaChicken > 0)
+		me.chickenmp = parseInt((_ManaMax*NTConfig_ManaChicken)/100);
+
+	while(1)
+	{
+		if(!NTC_InTown())
+		{
+			if(_LifeMax != me.hpmax)
+			{
+				_LifeMax = me.hpmax;
+
+				if(NTConfig_LifeChicken > 0)
+					me.chickenhp = parseInt((_LifeMax*NTConfig_LifeChicken)/100);
+			}
+
+			if(_ManaMax != me.mpmax)
+			{
+				_ManaMax = me.mpmax;
+
+				if(NTConfig_ManaChicken > 0)
+					me.chickenmp = parseInt((_ManaMax*NTConfig_ManaChicken)/100);
+			}
+		}
+
+		if(_count++ > 10)
+		{
+			if(NTConfig_AutoParty)
+			{
+				_player = GetPlayerUnit();
+
+				if(_player)
+				{
+					_mypartyid = _player.partyid;
+
+					while(_player.GetNext())
+					{
+						if(_player.partyid == 65535 || _player.partyid != _mypartyid)
+						{
+							if(_player.partyflag == 2)
+							{
+								me.ClickParty(_player, 2);
+								break;
+							}
+
+							if(_player.partyid == 65535)
+							{
+								if(_player.partyflag == 4)
+									break;
+
+								me.ClickParty(_player, 2);
+								NTC_Delay(NTC_DELAY_FRAME);
+
+								if(_player.partyflag == 4 || (_player.partyid != 65535 && _player.partyid == _mypartyid))
+									break;
+							}
+						}
+					}
+				}
+			}
+
+			_count = 0;
+		}
+
+		NTC_Delay(200);
+	}
+}
+
+function NT_KeyEvents(keycode)
+{
+	switch(keycode)
+	{
+	case 109: // show or hide enemy - keypad '-'
+		if(me.showenemyonautomap)
+		{
+			me.showenemyonautomap = false;
+			Print("Enemy on Automap : Off");
+		}
+		else
+		{
+			me.showenemyonautomap = true;
+			Print("Enemy on Automap : On");
+		}
+		break;
+	case 107: // show or hide missile - keypad '+'
+		if(me.showmissileonautomap)
+		{
+			me.showmissileonautomap = false;
+			Print("Missile on Automap : Off");
+		}
+		else
+		{
+			me.showmissileonautomap = true;
+			Print("Missile on Automap : On");
+		}
+		break;
+	case 106: // auto party on/off - keypad '*'
+		if(NTConfig_AutoParty)
+		{
+			NTConfig_AutoParty = false;
+			Print("Auto Party : Off");
+		}
+		else
+		{
+			NTConfig_AutoParty = true;
+			Print("Auto Party : On");
+		}
+		break;
+	}
+}

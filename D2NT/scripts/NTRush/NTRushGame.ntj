@@ -1,0 +1,359 @@
+var CurScriptIndex = 0;
+var LastScript = false;
+var Rev = "GVRushBot";
+
+// Provalone Edit //
+//Include("libs/common/NTExp.ntl");
+//NTE_InitializeStats();
+//
+var SoJNotify = false;
+var CloneDiabloString = GetLocaleString(11005);
+var SoJString = GetLocaleString(11004).substr(3);
+var CloneDiabloNotify = false;
+var SoJNotify = false;
+var SoJElapsedTime = 0;
+var InitLife;
+var Corpses = 0;
+var checkActOnce = false;
+function D2NTStatus(where, time, message) { return SendCopyData('D2NT Manager', null, where << 16 | time, message); }
+function NTMain()
+{
+	Delay(1000);
+
+	InitLife = me.hp;
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+	Include("libs/common/NTExp.ntl");
+
+	Print(COLOR_4 + "[+] GVRushBot loaded [+]");
+	
+	NT_LoadConfig();
+	NTE_InitializeStats();
+
+	if(NTConfig_FreeSpace == 0)
+		Print(COLOR_2 + "Please don't forget to set NTConfig_FreeSpace in your character config to avoid your inv filling");
+
+	NT_ClearMessages(); // leech improvements
+
+	//var _time1 = NTU_timeStamp();
+	//Print ("Begin Parse: "+_time1);
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+	//var _time2 = NTU_timeStamp();
+	//Print ("End Parse: "+_time2);
+
+	// ubi21 Enigma reset start
+	////////////////////////////
+	NTU_LogExitStatus("F");
+
+	// ubi21 Enigma reset end
+	////////////////////////////
+
+	if(NTConfig_StartDelay > 0);
+		NTC_Delay(NTConfig_StartDelay);
+
+	GetPath(me.areaid, me.x, me.y, me.x, me.y, true);
+
+	//SetUIState(0x0A, true);
+
+	// ubi21 Enigma reset start
+	////////////////////////////
+	if(!NTT_PutBackEnigma()) {
+		NTC_Delay(240000); // Wait 4 mins to prevent r/d 240000
+		ExitGame();
+	}
+	// ubi21 Enigma reset end
+	////////////////////////////
+
+	if(NTConfig_CheckPassword && !me.gamepassword){
+		Print(COLOR_1 + "1No password found exiting game");//s
+		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "Exiting Game- No Password");
+		NTC_Delay(2000);
+		ExitGame();
+	}
+
+	Corpses = NTT_GetCorpses();
+	if (Corpses > 0 || InitLife < 10)
+		NTU_DeathLog(Corpses, InitLife);
+	if(NTConfig_RushScript.length > 0)
+	{
+		NTCU_InitCubing();
+
+		NTT_ClearInventory();
+		NTT_ClearBelt();
+
+		// ubi21 Enigma reset start
+		////////////////////////////
+		if(!NTT_LookForEnigma()) {
+			if (GetUIState(0x01))
+				SetUIState(0x01, false);
+			NTC_Delay(240000); // Wait 4 mins to prevent r/d 240000
+			ExitGame();
+		}
+		// ubi21 Enigma reset end
+		////////////////////////////
+
+		if(NTConfig_GoWestFromLut){ // if bot starts in act 2 use warriv to go to act 1
+			GoWestFromLutGholein();
+		}
+
+		Load("NTBot/tools/NTToolsThread.ntj");
+
+		RegisterEvent(EVENT_GAMEMSG, NT_GameMsgEvents);
+		RegisterEvent(EVENT_KEYDOWN, NT_KeyEvents);
+		RegisterEvent(EVENT_SCRIPTMSG, NT_ScriptMsgEvents);
+
+		Load("NTRush/rushbots/" + NTConfig_RushScript[CurScriptIndex]);
+		SetStatusText(Rev + " "+ NTConfig_RushScript[CurScriptIndex]);
+
+		Include("libs/common/NTSnagit.ntl");
+		NTSI_ClearIgnoredItems();
+
+		NTC_LogCurScript(NTConfig_RushScript[CurScriptIndex]);//jinay item log
+
+		while(!LastScript)
+		{
+			NTC_Delay(1000);
+		}
+	}
+
+	// Provalone Edit
+	NTE_ComputeStats(false);
+	//
+	ExitGame();
+}
+
+function NT_GameMsgEvents(msg, type)
+{
+
+	// ubi21 Enigma reset start
+	////////////////////////////
+	var _holdPauseCheck = "";
+	// ubi21 Enigma reset end
+	////////////////////////////
+
+	_area = GetArea();
+
+	if(type == 1 && (msg.toLowerCase().indexOf("d2nt") != -1 || msg.toLowerCase().indexOf("error") != -1 || msg.toLowerCase().indexOf("fail") != -1))
+	{
+		var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
+		var logfile = FileOpen("logs/errorlog/"+me.charname+"-errorlog.txt", 2);
+		if(!logfile)
+			var logfile = FileOpen("logs/errorlog/"+me.charname+"-errorlog.txt", 1);
+
+		logfile.WriteLine(date + " - " + msg);
+		logfile.Close();
+	}
+
+	else if(type == 1 && (msg.toLowerCase().indexOf("skipped") != -1 ))
+	{
+		var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
+		var logfile = FileOpen("logs/skiplog/"+me.charname+"-skiplog.txt", 2);
+		if(!logfile)
+			var logfile = FileOpen("logs/skiplog/"+me.charname+"-skiplog.txt", 1);
+
+		logfile.WriteLine(date + " - " + msg + " ( " + _area.name + " ) ");
+		logfile.Close();
+	}
+}
+
+function NT_KeyEvents(keycode)
+{
+	var _script;
+	switch(keycode) {
+		case Do_PauseBot:
+		_script = NTC_FindScript(NTConfig_RushScript[CurScriptIndex]);
+			if(_script) {
+				if(_script.running) {
+					_script.Stop();
+					NT_ClearMessages();
+					NTC_Delay(300);
+					ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+					SetStatusText(COLOR_1 + Rev + "    Paused " + NTConfig_RushScript[CurScriptIndex]);
+				}
+				else {
+					Load("NTRush/rushbots/" + NTConfig_RushScript[CurScriptIndex]);
+					SetStatusText(Rev + " " + NTConfig_RushScript[CurScriptIndex]);
+				}
+			}
+			break;
+		case Do_PrevScript:
+			_script = NTC_FindScript(NTConfig_RushScript[CurScriptIndex]);
+
+			if(_script.running) {
+				_script.Stop();
+				NT_ClearMessages();
+				NTC_Delay(300);
+				ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+				SetStatusText(COLOR_11 + Rev + " Stopped " + NTConfig_RushScript[CurScriptIndex]);
+				break;
+			}
+			else {
+				for(i=0; i<NTConfig_RushScript.length-1; i++) {
+					if(CurScriptIndex < NTConfig_RushScript.length-1)
+						CurScriptIndex++;
+					else
+						CurScriptIndex = 0;
+				}
+				SetStatusText(COLOR_14 + Rev + " Back to " + NTConfig_RushScript[CurScriptIndex]);
+			}
+			break;
+		case Do_NextScript:
+			_script = NTC_FindScript(NTConfig_RushScript[CurScriptIndex]);
+
+			if(_script.running) {
+				_script.Stop();
+				NT_ClearMessages();
+				SetStatusText(COLOR_11 + Rev + " Stopped " + NTConfig_RushScript[CurScriptIndex]);
+			}
+			else if(++CurScriptIndex < NTConfig_RushScript.length)
+				SetStatusText(COLOR_14 + Rev + " Skipped to " + NTConfig_RushScript[CurScriptIndex]);
+			else if(++CurScriptIndex >= NTConfig_RushScript.length) {
+				CurScriptIndex = 0;
+				SetStatusText(COLOR_2 + Rev + " Skipped to " + NTConfig_RushScript[CurScriptIndex]);
+			}
+			break;
+		case Do_DropItems:
+			NTU_DropItems();
+			break;
+		case Do_DevTools:
+			NTU_DevelopementTools();
+			break;
+		case Do_CoordLog:
+			NTU_LogPrint("logs/testlog/"+me.charname+"-Coords.txt", " New Coord[" + me.x + ", " + me.y + "] " );
+			break;
+		case Do_HotKeyList:
+			Key_HotList();
+			break;
+		case Do_CursorILvL:
+			NTU_CursorILvl();
+			break;
+		case Do_StatsLog:
+			NTU_CheckMyStats();
+			break;
+		case Do_PrintCoord:
+			NTU_CheckCoord();
+			break;
+		case Do_CheckSpace:
+			if(CheckStashSpace)
+				NTT_CheckFreeStashSpace(true);
+			if(CheckInvSpace)
+				NTT_CheckFreeInventorySpace(true);
+			break;
+		case Do_NipCheck:
+			NTU_TLNipCheck();
+			break;
+		case Do_InvTxtLog:
+			NTU_TLInventory();
+			break;
+		case Do_CheckBPs:
+			T_BPsPrint();
+			break;
+		case Do_ExitGame:
+			Print(COLOR_4 + "Calculating stats for game!");
+			NTE_ComputeStats(false);
+			ExitGame();
+			break;
+	}
+}
+
+function NT_ScriptMsgEvents(msg)
+{
+	var _area;
+
+	switch(msg)
+	{
+	case "QuitGame":
+		NTC_StopScript(NTConfig_RushScript[CurScriptIndex]);
+		NTC_CancelMenus();
+		LastScript = true;
+		break;
+	case "HOSTILE":
+		NTC_SendMsgToScript(NTConfig_RushScript[CurScriptIndex], "pause");
+		break;
+	case "SCRIPT_END":
+		if(++CurScriptIndex < NTConfig_RushScript.length)
+		{
+			NTTM_CheckAct();
+			Load("NTRush/rushbots/" + NTConfig_RushScript[CurScriptIndex]);
+			SetStatusText(Rev + "   " + NTConfig_RushScript[CurScriptIndex]);
+			NTC_LogCurScript(NTConfig_RushScript[CurScriptIndex]);
+		}
+		else{
+			LastScript = true;
+		}
+
+		break;
+	default:
+		Print(COLOR_1 + NTConfig_RushScript[CurScriptIndex] + " : " + msg + " failed");
+
+		_area = GetArea();
+
+		if(_area)
+			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + NTConfig_RushScript[CurScriptIndex] + " : " + msg + " failed (" + _area.name + ")");
+		else
+			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + NTConfig_RushScript[CurScriptIndex] + " : " + msg + " failed (unknown area)");
+
+		if(++CurScriptIndex < NTConfig_RushScript.length)
+		{
+			NTTM_CheckAct();
+			Load("NTRush/rushbots/" + NTConfig_RushScript[CurScriptIndex]);
+			SetStatusText(Rev + "  "  + NTConfig_RushScript[CurScriptIndex]);
+			NTC_LogCurScript(NTConfig_RushScript[CurScriptIndex]);
+		}
+		else
+			LastScript = true;
+		break;
+	}
+}
+
+function NTC_CancelMenus() { // more koreans
+	while (GetUIState(0x01) || GetUIState(0x08) || GetUIState(0x0C) || GetUIState(0x0F) || GetUIState(0x14) ||
+		GetUIState(0x17) || GetUIState(0x19) ||   GetUIState(0x1A) || GetUIState(0x24)){
+
+		for (var i = 0; i < 40; i++){
+			if ((i % 20) == 0){
+				me.Cancel(1);
+			}
+			Delay(100);
+			if (!GetUIState(0x01) && !GetUIState(0x08) && !GetUIState(0x0C) && !GetUIState(0x0F) && !GetUIState(0x14) &&
+					!GetUIState(0x17) && !GetUIState(0x19) &&  !GetUIState(0x1A) && !GetUIState(0x24)){
+
+				NTC_PingDelay(300);
+				break;
+			}
+		}
+	}
+}
+
+function NTC_StopScriptLeecher(){
+	_script = NTC_FindScript(NTConfig_RushScript[CurScriptIndex]);
+	if(_script){
+		if(_script.running){
+			_script.Stop();
+			NTC_Delay(150);
+			ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+		}
+	}
+	return;
+}
+
+function NTC_PrintPossibleLeaders()
+{
+	var _player;
+	var _myPartyId;
+
+	_player = GetPlayerUnit();
+
+	if(_player)
+	{
+		do
+		{
+			if( _player.name == me.name)
+				continue;
+			NTC_LogPrintSimple("logs/namelog/"+me.charname+"-leaderName.txt", _player.name);
+		} while(_player.GetNext());
+	}
+	return false;
+}

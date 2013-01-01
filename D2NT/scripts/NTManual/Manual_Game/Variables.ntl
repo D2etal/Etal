@@ -1,0 +1,64 @@
+var CurAcct = (!me.account) ? "Offline" : me.account;
+var CurChar = me.charname;
+var CurDiff = (me.diff == 1) ? "Nightmare" : (me.diff == 2) ? "Hell" : "Normal";
+var CurGame = (!me.gamename) ? "Single Player" : me.gamename;
+var CurRealm = (me.realm == "USWest") ? "US West" : (me.realm == "USEast") ? "US East" : (me.realm == "Asia") ? "Asia" : (me.realm == "Europe") ? "Europe" : "Offline";
+var DiffMod = (me.diff == 1) ? -40 : (me.diff == 2) ? -100 : 0;
+var ItemSInfo = false;
+var Online = (!me.gameserverip) ? (COLOR_1 + "Offline") : me.gameserverip.split(".")[3];
+var Private = true;
+var Today = new Date().toLocaleFormat("%d %b");
+
+var MGConfig_AutoParty;
+var MGConfig_ChickenWarn;
+var MGConfig_LifeChicken;
+var MGConfig_FriendsOnly;
+	var MG_SafeList;
+var MGConfig_ManaChicken;
+var MGConfig_RunFromHostile;
+var MGConfig_ShowEnemy;
+var MGConfig_ShowMap;
+var MGConfig_ShowMissile;
+var MGConfig_EstRun;
+
+var NTConfig_HostileHandler;
+var RunFromHostiles;
+var KillHostiler = false;
+var TauntHostile = false;
+
+var Key_EnemyOnMap;
+var Key_MissileOnMap;
+var Key_AutoParty;
+var Key_DoPrecast;
+var Key_PrintRes;
+var Key_PrintFCRPlus;
+var Key_PrintAbsorbs;
+var Key_PrintBPs;
+var Key_PrintChicken;
+var Key_PrintStats;
+var NTConfig_MercStats;
+var Key_HotKeyInfo;
+var Key_ExitGame;
+var Key_StashCheck;
+var StashChecking;
+var Key_InvCheck;
+var InvChecking;
+var Key_Credits;
+var Key_KeyCodeCheck;
+	var CheckKeyNumber = false;
+var Key_LoadChatR;
+	var ChatREnabled = false;
+var Key_ItemInfos;
+var Key_NextArea;
+var Key_LastArea;
+var Key_GoToTown;
+var Key_AntiIdle;
+	var MGAntiIdle = false;
+var Key_GameStats;
+
+var NTConfig_Telekinesis = false;
+
+Include("NTManual/Manual_Game/Settings.ntl");
+Include("NTManual/Manual_Game/ChatCalls.ntl");
+Include("NTManual/Manual_Game/ChatFunctions.ntl");
+Include("NTManual/Manual_Game/KeycodeFunctions.ntl");

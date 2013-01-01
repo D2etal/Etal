@@ -1,0 +1,33 @@
+//([Name] == Harpoon || [Name] == StygianPilum) && [Quality] <= Superior && [Flag] == Ethereal
+//[Name] == Knout && [Quality] <= Superior && [Flag] == Ethereal # [Sockets] == 0
+//([Name] == OrnatePlate || [Name] == AncientArmor) && [Quality] <= Superior && [Flag] == Ethereal # [Sockets] == 0
+//[Name] == AncientArmor && [Quality] < Superior && [Flag] == Ethereal # [Sockets] == 0
+//[Name] == TowerShield && [Quality] < Superior && [Flag] == Ethereal # [Sockets] == 0
+//[Name] == BoneShield && [Quality] < Superior && [Flag] == Ethereal # [Sockets] == 0
+//[Name] == GrimScythe && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] == 15 && ([Sockets] == 0 || [Sockets] == 6)
+([Name] == CrownShield || [Name] == Aerin Shield) && [Quality] <= Superior && [Flag] != Ethereal # [EnhancedDefense] == 15 && [EnhancedDamage] == 65 && [ToHit] >= 121 && ([Sockets] == 0 || [Sockets] == 4)
+[Name] == WarScepter && [Quality] <= Superior # [SkillZeal] == 3 && [SkillConcentration] >= 1 && ([Sockets] == 0 || [Sockets] == 5) && [ItemLevelReq] <= 18
+[Name] == WarScepter && [Quality] <= Superior # [SkillZeal] == 3 && [SkillDefiance] == 3 && ([Sockets] == 0 || [Sockets] == 5) && [ItemLevelReq] <= 18
+[Name] == HighlandBlade && [Quality] == Superior && [Flag] == Ethereal # [EnhancedDamage] >= 15 && ([Sockets] == 0 || [Sockets] == 4)
+([Name] == Ataghan || [Name] == Grim Scythe) && [Quality] == Magic && [Flag] != Ethereal # [EnhancedDamage] > 200 && [IAS] == 40
+([Name] == BreastPlate || [Name] == LightPlate ||[Name] == MagePlate) && [Quality] == Magic && [Flag] != Ethereal # [Sockets] == 3 && [MaxHP] == 80
+[Type] == Circlet && [Quality] == Magic && [Flag] != Ethereal # [ToHit] == 120 && [MaxHP] == 40
+[Name] == DragonShield && [Quality] == Magic # [Sockets] == 3 && [FBR] == 30
+[Type] == Jewel && [Quality] == Rare # [EnhancedDamage] == 30 && [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] == 40 && [Strength] >= 6
+[Type] == Jewel && ([Quality] == Rare || [Quality] == Magic) # [EnhancedDamage] == 30 && [HPRegen] == 4
+[Type] == Jewel && ([Quality] == Rare || [Quality] == Magic) # [MAXDamage] == 15 && [ColdResist] == 30
+[Type] == Jewel && ([Quality] == Rare || [Quality] == Magic) # [EnhancedDamage] == 20 && [MINDamage] >= 7
+[Type] == Jewel && ([Quality] == Rare || [Quality] == Magic) # [EnhancedDamage] >= 15 && [Strength] >= 4 && [Dexterity] >= 7
+[Type] == Jewel && ([Quality] == Rare || [Quality] == Magic) # [MINDamage] == 8 && [ItemLevelReq] <= 18
+[Name] == BecDeCorbin && ([Quality] == Rare || [Quality] == Magic) && [Flag] == Ethereal # [EnhancedDamage] >= 200 && [ItemReplenishDurability] >= 1 && (([IAS] == 40 && [Sockets] >= 0) || ([IAS] >= 30 && [Sockets] >= 1)) && [ItemLevelReq] <= 49
+[Name] == BecDeCorbin && ([Quality] == Rare || [Quality] == Magic) && [Flag] != Ethereal # [EnhancedDamage] >= 350 && (([IAS] == 40 && [Sockets] >= 0) || ([IAS] >= 30 && [Sockets] >= 1)) && [ItemLevelReq] <= 49
+[Name] == GrimScythe && ([Quality] == Rare || [Quality] == Magic) && [Flag] == Ethereal # [EnhancedDamage] >= 250 && [ItemReplenishDurability] >= 1 && ([IAS] == 20 || [Sockets] >= 2) && [ItemLevelReq] <= 49
+[Name] == GrimScythe && ([Quality] == Rare || [Quality] == Magic) && [Flag] != Ethereal # [EnhancedDamage] >= 440 && ([IAS] == 20 || [Sockets] >= 2) && [ItemLevelReq] <= 49
+[Name] == WarFork && ([Quality] == Rare || [Quality] == Magic) && [Flag] == Ethereal # [EnhancedDamage] >= 400 && [ItemReplenishDurability] >= 1 && [IAS] == 40 && [Sockets] >= 2 && [ItemLevelReq] <= 49
+[Name] == AncientAxe && ([Quality] == Rare || [Quality] == Magic) && [Flag] == Ethereal # [EnhancedDamage] >= 200 && [ItemReplenishDurability] >= 1 && (([IAS] == 40 && [Sockets] >= 0) || ([IAS] >= 20 && [Sockets] >= 1)) && [ItemLevelReq] <= 49
+[Name] == AncientAxe && ([Quality] == Rare || [Quality] == Magic) && [Flag] != Ethereal # [EnhancedDamage] >= 350 && (([IAS] == 40 && [Sockets] >= 0) || ([IAS] >= 20 && [Sockets] >= 1)) && [ItemLevelReq] <= 49
+[Name] == Bill && [Quality] <= Superior && [Flag] == Ethereal # [EnhancedDamage] == 15 && [ToHit] == 3 && ([Sockets] == 0 || [Sockets] == 4)
+
+//[Type] == Polearm && [Flag] == RuneWord # [ItemAura] > 0
+//[Type] == Polearm && [Flag] == RuneWord # [SkillMeditation] > 0
+//[Type] == Polearm && [Flag] == RuneWord

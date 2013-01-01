@@ -1,0 +1,821 @@
+// credit for this goes to D2od who knows way more than I do 
+// revised on 1-2-11 by stairbuilder  Credit for mod goes to Justin.Killen and I was pointed to it by fellgar
+// will now join game only when leader sends message from game.  must use NTLeaderStarter2 with this or will not join game
+// commented out the /f l line, but can be uncommented if you wich
+// added white screen of death fix and also some print txt for testing 2-17-11 stairbuilder
+// added stagger leech joining 9-25-11 by stair
+// added single /f l try to enter games for switching keys and missing the game join message 9-25-11 by stair
+// added a while loop and manager print if a bad cd key is used or bad account or password stair 9-25-11
+// added gameDoesNotExistDelay and txt file joining.  Must use updated leader entry point for the txt joining
+// not doing all this ^^^ for an ego trip, just so I know what I have added to this one, lmao
+
+// =============================================================================
+// Leader Account settings
+// =============================================================================
+var leaderAccountName = "leader Account"; 
+var leaderName = "leader name";
+// =============================================================================
+
+// Leecher game entry delays use to stagger when leechers join game...
+// [characterName, delay in milliseconds]...just leave these as they are if you don't want to 
+// use them
+// =============================================================================
+var leecher1 = ["characterName", 100];
+var leecher2 = ["characterName", 750];
+var leecher3 = ["characterName", 1250];
+var leecher4 = ["characterName", 2000];
+
+//==============================================================================
+// join options
+//==============================================================================
+var useFL = false;  				// set true if you wish your leecher to use /f l to join games.  useFL MUST be set to 0 for this to work
+var useFLCount = 1;				// this is seperate from the above setting allows you to use /f l to join, but will only spam /f l the set number of times.  set to 0 to disable
+var delayFL = 3000;				// milliseconds before the bot will use the /f l command in loby
+var reEnterSameGame = false;		// set to false to keep the bot from using /f l to re enter same game also must be set to false if you don't want bot to re enter same game for txt joining
+var useTextFileJoin = false;  	// use txt file communication between leader and leecher to join games.  False uses message sent from leader when in game
+var gameDoesNotExistDelay = 10;	// time to idle before trying if leader's game does not exist.  In seconds.
+var tryLeaderGame1x = false;		// will only try to enter the game one time.  Good for when leader drops before leecher gets in.
+
+// =============================================================================
+// Game password (leave blank if none)
+// =============================================================================
+var gamepassword = "";
+
+// =============================================================================
+// UseCDKeyChangeTrick :
+// if true, the follow bot will say his gamename/gamepwd (set in the OOG) in chat before each game
+//          in order to increment his number of runs (to switch CDKeys after xx runs)
+// if false, the follow bot will never change his CDKey
+// =============================================================================
+var UseCDKeyChangeTrick = true;
+
+// =============================================================================
+// Debug : set to true if you are experiencing problems with your JoinBot
+// it will log in your OOG the lobby chat actions
+// =============================================================================
+var Debug = false;
+
+////////////////////////////////////////////////////////////////////////////////
+// Lobby chat settings :
+////////////////////////////////////////////////////////////////////////////////
+
+// Set to true to join the chat after each game (needed for JoinBot)
+var joinChatAfterGame    = true;
+
+// Message said when you first enter the chat
+var firstJoinMessage     = "";
+
+// Message said after each game
+var chatMessageAfterGame = "";
+
+// if this is true, will join a random channel, otherwise it will use the channel below..
+var joinRandomChannel    = false;
+// Name of the channel you want to join (leave blank if you want to stay in the default channel)
+var joinChannelInChat    = "";
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Delays:
+////////////////////////////////////////////////////////////////////////////////
+
+// Minimum game length, waits in the lobby if last game was too short
+// I recommend to keep a value > 300000 (milliseconds) to avoid bnet temporary ban
+var gameMinLength        = 420000;
+
+// realm delays (minutes)
+var unableToConnectRetry       = 20;
+var realmDownRetry             = 480;
+var disconnectedRetry          = 5;
+var cdkeyInUseRetry            = 5;
+
+// interface delays (milliseconds)
+var connectingToBnetTimeout    = 20000;
+var characterScreenTimeout     = 10000;
+var pleaseWaitTimeout          = 10000;
+var createGameThreshold        = 10000;
+var createGameThresholdRandom  = 1000;
+var createGameTimeout          = 15000;
+var waitInLineTimeout          = 15000;
+var characterSelectDelay       = 1000;
+var loginDelay                 = 1000;
+var clickDelay                 = 500;
+var textDelay                  = 500;
+var clickDelayRandom           = 500;
+var textDelayRandom            = 500;
+var gameDoesNotExistDelayMin   = 600000; // this not for leech configuration. Look for gameDoesNotExistDelay above
+var gameDoesNotExistDelayMax   = 900000; // this not for leech configuration. Look for gameDoesNotExistDelay above
+var gameDoesNotExistTimeout    = 30000;
+var waitBeforeEnterChatMin     = 1000;
+var waitBeforeEnterChatMax     = 2000;
+var waitInChatBeforeActionsMin = 2000;
+var waitInChatBeforeActionsMax = 3000;
+
+// Only for JoinBot (friend list delay, milliseconds)
+var LeaderOfflineDelay         = 30000;
+var LeaderInChatDelay          = 10000;
+var GameIsFullDelay            = 30000;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// DO NOT EDIT ANYTHING BELOW THIS
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+//D2NT Manager Command
+
+const D2NT_MGR_LOADING = 1;
+const D2NT_MGR_READY = 2;
+const D2NT_MGR_LOGIN = 3;
+const D2NT_MGR_CREATE_GAME = 4;
+const D2NT_MGR_INGAME = 5;
+const D2NT_MGR_RESTART = 6;
+const D2NT_MGR_CHICKEN = 7;
+const D2NT_MGR_PRINT_STATUS = 8;
+const D2NT_MGR_PRINT_LOG = 9;
+
+var lastGameMade     = GetTickCount();
+var lastGameStatus     = 0;
+var nextGameMake     = 0;
+var inGameAt       = 0;
+var chatActionsDone   = false;
+var lastGameFailed     = false;
+var sayChatMsgAfterGame = false;
+
+Include("libs/controlInfo.ntl");
+Include("libs/common/NTColorConverter.ntl");
+
+var controlData = new controlInfo();
+
+var lastGame = "";
+var retryFL = 0;
+var game = '';
+var _gamename = "";
+var _gamepassword = "";
+var _leaderOfflineTick = -LeaderOfflineDelay;
+var _leaderInChatTick = -LeaderInChatDelay;
+var _GameIsFullTick = -GameIsFullDelay;
+
+function NTMain()
+{
+    Delay(1000);
+
+    var _ingame = false;
+
+    controlData.clickDelay = clickDelay;
+    controlData.textDelay = textDelay;
+    controlData.clickDelayRandom = clickDelayRandom;
+    controlData.textDelayRandom = textDelayRandom;
+    while(1)
+    {
+        if(me.ingame)
+        {
+            _gamename = me.gamename;
+            _gamepassword = me.gamepassword;
+
+            if(!inGameAt)
+                inGameAt = GetTickCount();
+
+            if(!_ingame)
+            {
+                RunGC(); // run garbage collector between each game
+
+                if(Load("NTBot/NTBotGame.ntj"))
+                {
+                    if(!reEnterSameGame) { NT_File("logs/messagecomands/"+me.charname+"-lastgame.txt", 1, me.gamename); }	// writes current game for comparing to new game to join next time in lobby	
+									
+					retryFL = 0; // sets the counter back to 0 upon game entry.
+					_ingame = true;
+
+                    if(me.playtype > 0)
+                        sendEventToOOG(D2NT_MGR_INGAME, "In Game[IP:" + me.gameserverip.split(".")[3] + "]", 0);
+                    else
+                        sendEventToOOG(D2NT_MGR_INGAME, "In Game", 0);
+
+                    lastGameStatus = 2; // in game successful
+
+                }
+            }
+
+            Delay(1000);
+        }
+        else
+        {
+            if(_ingame)
+            {
+				My_ExitGame_Check(); // out of korean modded d2nt fixes white screen of death
+				_ingame = false;
+                sayChatMsgAfterGame = true;
+
+                sendEventToOOG(D2NT_MGR_READY, "", 0);
+            }
+
+            locationAction(controlData.getLocation());
+
+            Delay(500);
+        }
+    }
+}
+
+function locationAction(location)
+{
+    switch(location.id)
+    {
+    case 3: // Lobby Chat
+        sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+		
+		//LogPrintSimple(me.account + "MyAccountTest.txt", me.account + " / " + me.charname) // this is to check for 2nd account login
+
+        if(!chatActionsDone)
+        {  
+            Delay(Random(waitInChatBeforeActionsMin, waitInChatBeforeActionsMax));
+
+            if(joinRandomChannel || joinChannelInChat != "")
+            {
+                Say("/join " + (joinRandomChannel ? getRandomString(Random(3,10)) : joinChannelInChat));
+                Delay(1000);
+            }
+
+            if(firstJoinMessage)
+            {
+                Say(firstJoinMessage);
+                Delay(200);
+            }
+
+            chatActionsDone = true;
+        }
+
+        if (chatMessageAfterGame && _gamename != "" && sayChatMsgAfterGame == true)
+        {
+            Say(chatMessageAfterGame);
+            sayChatMsgAfterGame = false;
+            Delay(200);
+        }
+
+        game = '';
+		if(useTextFileJoin) {
+			NT_RetrievenextGame(); //read message from txt file and set game and gamepassword vars from that 
+		} 
+		else {
+			if(useFL || useFLCount > 0) {
+				var _tick = GetTickCount();
+				if ((_leaderOfflineTick < 0 || (_leaderOfflineTick + LeaderOfflineDelay) < _tick) // maybe play with this so it skips it for 30 seconds
+				 && (_leaderInChatTick < 0 || (_leaderInChatTick + LeaderInChatDelay) < _tick)
+				 && (_GameIsFullTick < 0 || (_GameIsFullTick + GameIsFullDelay) < _tick))
+				{
+					Delay(500);			
+					DebugInOOG('Locating the leader : '+leaderAccountName);
+					if(useFLCount > 0 && retryFL < useFLCount) {
+						Delay(delayFL);
+						Say('/f l');
+						retryFL++;
+					}
+					else if(useFL) {
+						Delay(delayFL);
+						Say('/f l');
+					}
+					
+				}
+			}
+
+			if(chat = controlData.get(controlData.controls.lobby.chat.textBox.channelText))
+			{
+				var found_leader = false;
+				lines = chat.GetText();
+				if(!lines) { break; }
+				for (var line_id = lines.length - 1; line_id > -1; line_id--)
+				{
+					if (found_leader) // useless... :/
+						break;
+
+					if (lines[line_id].substring(0,1) == " ")
+						continue;
+
+					// retrieving the whole message
+					var msg = lines[line_id].replace(/^\s+|\s+$/, "");
+					var msglines = 1;
+					while (lines[line_id+msglines] != undefined && lines[line_id+msglines].substring(0,2) == "  ")
+					{
+						msg += " " + lines[line_id+msglines].replace(/^\s+|\s+$/, "");
+						msglines++;
+					}
+					if (msg.lastIndexOf(leaderName) >= 0)
+						DebugInOOG("yc8found him :;"+msg);
+
+					// checking if the msg is a friendly whisper
+					if (msg.lastIndexOf(leaderName + ' (*' +leaderAccountName+')') > -1 || msg.lastIndexOf(leaderName + '@' + GateWayToName() + ' (*' +leaderAccountName+')') > -1)              
+				   // if (msg.lastIndexOf(leaderName + ' (*' +leaderAccountName+')') > -1) // need to modify this and then add another to handle the "@USWest
+					{																	// should be just a matter of leaderName + '@' and then register the 2nd line as game name
+						 var regGameNameWhispered=/^.*in_new_game\s+(.*)$/gi; // replaced below with this to join on mesage upon entering game
+						//var regGameNameWhispered=/^.*(game|partie|spiel|partita|partida).*(nomm[^\s]*|called|chiamata)\s*([\w\s-]*\w)\s*\.\s*$/gi;
+						if (msg.match(regGameNameWhispered))
+							game = msg.replace(regGameNameWhispered, "$1"); // replaced below with this to join on mesage upon entering game
+							//game = msg.replace(regGameNameWhispered, "$3");
+
+						if (game != '')
+						{
+							found_leader = true;
+							break;
+						}
+					}
+
+					// checking if the msg is from the friend list
+					if (msg.lastIndexOf(': '+leaderAccountName+',') > -1)
+					{
+						found_leader = true;
+						var regOffline=/^.*(offline|desconectado).*$/gi;
+						var regInChat=/^.*(channel|canale?)\s*([\w\s-]*\w)\.?\s*$/gi;
+						var regGameName=/^.*(game|partie|spiel|partita|partida)\s*([\w\s-]*\w)\s*\(priv[^\)]*\)\.\s*$/gi;
+
+						if (msg.match(regOffline)
+							&& (_leaderOfflineTick < 0 || (_leaderOfflineTick + LeaderOfflineDelay) < _tick))
+						{
+							DebugInOOG('Leader is offline, delay '+Math.round(LeaderOfflineDelay/1000)+' sec for next /f l.');
+							_leaderOfflineTick = GetTickCount();
+						}
+						else if (msg.match(regInChat)
+								&& (_leaderInChatTick < 0 || (_leaderInChatTick + LeaderInChatDelay) < _tick))
+						{
+							DebugInOOG('Leader is in the chat "'+msg.replace(regInChat, "$2")+'", delay '+Math.round(LeaderInChatDelay/1000)+' sec for next /f l.');
+							_leaderInChatTick = GetTickCount();
+						}
+						else if (msg.match(regGameName)
+								&& ((_leaderOfflineTick < 0 || (_leaderOfflineTick + LeaderOfflineDelay) < _tick)
+									&& (_leaderInChatTick < 0 || (_leaderInChatTick + LeaderInChatDelay) < _tick)))
+						{
+							game = msg.replace(regGameName, "$2");
+						}
+						else if ((_leaderInChatTick < 0 || (_leaderInChatTick + LeaderInChatDelay) < _tick)
+								&& (_leaderOfflineTick < 0 || (_leaderOfflineTick + LeaderOfflineDelay) < _tick))
+						{
+							// unhandled line, supposelly "In Realm"
+							DebugInOOG('The leader was in the the lobby but not in chat, delay '+Math.round(LeaderInChatDelay/1000)+' sec for next /f l.');
+							_leaderInChatTick = GetTickCount();
+						}
+
+						break;
+					}
+				}
+
+				if (found_leader == false)
+					DebugInOOG('I couldn\'t find the leader in my friend list!');
+			}
+			else
+			{
+				DebugInOOG('I can\'t read the chat!');
+				//DebugInOOG('You probably haven\'t added the lobby chat controlinfo coordinates!');
+				Delay(30000);
+			}
+		}
+		if(!reEnterSameGame) { // added to check game name.  If same as last game then don't re enter.
+			NT_RetrieveLastGame();
+			//Delay(250);
+			if(lastGame == game) {
+				game = "";
+			}
+		}
+		if (game!="")
+		{
+			if (UseCDKeyChangeTrick)
+			{
+				// increasing the number of runs in the OOG (for CDKey switch)
+				// Problem : the gamename/gamepassword set in your OOG will be typed in the lobbyChat
+				// this may output a red message in the lobby chat if you have a password set (not a real problem)
+				// I recommend to set a gamename like "Run" and no gamepassword in your OOG. -> this will output "Run-01", "Run-02", etc in lobby chat before joining games
+				sendEventToOOG(D2NT_MGR_CREATE_GAME, location.name, 0);
+				Delay(1000);
+			}
+
+			DebugInOOG('Leader is in the game "' + game + '"');
+			controlData.click(controlData.controls.lobby.button.join);
+			Delay(100);
+		}
+		
+        break;
+
+    case 1:    // Lobby
+        if(location.id == 1 && joinChatAfterGame)
+        {
+			//LogPrintSimple(me.account + "MyAccountTest.txt", me.account + " / " + me.charname) // this is to check for 2nd account login            
+			Delay(Random(waitBeforeEnterChatMin, waitBeforeEnterChatMax));
+            controlData.click(controlData.controls.lobby.button.enterChat);
+            break;
+        }
+        break;
+
+    case 2: // Waiting In Line
+        if(GetTickCount()-lastGameMade > waitInLineTimeout)
+            controlData.click(controlData.controls.lobby.inLine.button.cancel);
+        break;
+
+    case 4: // Create Game
+        if(!controlData.get(controlData.controls.lobby.create.editBox.gameName))
+        {
+            controlData.click(controlData.controls.lobby.button.join);
+            Delay (500);
+            controlData.click(controlData.controls.lobby.button.create);
+            Delay (500);
+            break;
+        }
+
+        sendEventToOOG(D2NT_MGR_CREATE_GAME, location.name, 0);
+
+        locationTimeout(5000, location);
+
+        lastGameMade = GetTickCount();
+        lastGameStatus = 1; // pending creation
+        break;
+
+  case 5: // Join Game
+    if (game)
+    {
+		controlData.setText( controlData.controls.lobby.join.editBox.gameName, game);
+        Delay (100);
+        controlData.setText( controlData.controls.lobby.join.editBox.password, gamepassword);
+		//SendCopyData("D2NT Manager", null, 9<<16, "-- Debug : " + COLOR_1 +me.charname);
+		if(leecher1[0] == me.charname){
+			Delay(leecher1[1]);
+		}
+		else if(leecher2[0] == me.charname){
+			Delay(leecher2[1]);
+		}
+		else if(leecher3[0] == me.charname){
+			Delay(leecher3[1]);
+		}
+		else if(leecher4[0] == me.charname){
+			Delay(leecher4[1]);
+		}		
+		else{
+			Delay(100);
+		}
+		if(tryLeaderGame1x) {	
+			NT_File("logs/messagecomands/"+me.charname+"-lastgame.txt", 1, game); // writes current game for comparing to new game to join next time in lobby	
+			game = "";
+		}                
+		controlData.click(controlData.controls.lobby.join.button.joinGame);
+		RunGC(); // run garbage collector between each game
+        locationTimeout(5000, location);
+        lastGameStatus = 1; // pending join
+    }
+    else
+    {
+        DebugInOOG('No game to join : cancelling');
+        me.Cancel(1);
+        Delay(1000);
+    }
+    break;
+
+    case 6: // Ladder
+        break;
+
+    case 7: // Channel List
+        break;
+
+    case 8: // Main Menu
+        if(controlData.getCurrentRealmIndex() == me.gatewayid)
+        {
+            outputGameLength();
+            controlData.click(controlData.gameTypes[me.playtype]);
+        }
+        else
+            controlData.click(controlData.controls.mainMenu.button.gateway);
+        break;
+
+    case 9: // Login
+        sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+        Delay(loginDelay);
+
+        controlData.setText(controlData.controls.login.editBox.accountName, me.account);
+
+        sendEventToOOG(D2NT_MGR_LOGIN, location.name, 0);
+
+        locationTimeout(5000, location);
+        break;
+
+    case 10: // Login Error (this is a fatal error, so stop)
+        sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "Bad Account or PW Entered.......Idling", 0);
+		while(1) { Delay(500); }        
+		//sendEventToOOG(D2NT_MGR_RESTART, location.name, 10);
+        Delay(3500);
+        break;
+
+    case 11: // Unable To Connect
+        timeoutDelay(unableToConnectRetry*60*1000, location)
+        controlData.click(controlData.controls.login.unableToConnect.button.ok);
+        break;
+
+    case 12: // Character Select
+        var _time, _control;
+
+        sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+
+        for(_time = 0 ; _time < characterScreenTimeout ; _time += 500)
+        {
+            _control = controlData.get(controlData.controls.characterSelect.textBox.characterInfo[me.charloc]);
+            if(_control && _control.GetText() != undefined)
+                break;
+
+            Delay(500);
+        }
+
+        if(_time < characterScreenTimeout)
+        {
+            Delay(characterSelectDelay);
+
+            controlData.click(controlData.controls.characterSelect.textBox.characters[me.charloc], 0, 0, 1);
+            controlData.click(controlData.controls.characterSelect.textBox.characterInfo[me.charloc], 0, 0, 1);
+
+            // reset last game made, so it doesnt make a game immediately
+            inGameAt = 0;
+            setNextGameMake();
+        }
+        else
+        {
+            controlData.click(controlData.controls.characterSelect.button.exit);
+            timeoutDelay(realmDownRetry*60*1000, location);
+        }
+        break;
+
+    case 13: // Realm Down - Character Select screen
+        controlData.click(controlData.controls.characterSelect.button.exit);
+        timeoutDelay(realmDownRetry*60*1000, location);
+        break;
+
+    case 14: // Character Select - Disconnected
+        timeoutDelay(disconnectedRetry*60*1000, location);
+        controlData.click(controlData.controls.characterSelect.disconnected.button.ok);
+        break;
+
+    case 15: // New Character
+        break;    
+
+    case 16: // Character Select - Please Wait popup
+        if(!locationTimeout(pleaseWaitTimeout, location))
+            controlData.click(controlData.controls.characterSelect.pleaseWait.button.cancel);
+        break;
+
+    case 17: // Lobby - Lost Connection - just click okay, since we're toast anyway
+        controlData.click(controlData.controls.lobby.lostConnection.button.ok);
+        break;
+
+    case 18: // D2 Splash
+        controlData.click(controlData.controls.d2Splash.textBox.copyright);
+        break;
+
+    case 19: // Login - Cdkey In Use
+        timeoutDelay(cdkeyInUseRetry*60*1000, location);
+        controlData.click(controlData.controls.login.cdkeyInUse.button.ok);
+        break;
+
+    case 20: // Single Player - Select Difficulty
+        controlData.click(controlData.singlePlayerDifficulties[me.diff]);
+        break;
+
+    case 21: // Main Menu - Connecting
+        if(!locationTimeout(connectingToBnetTimeout, location))
+            controlData.click(controlData.controls.mainMenu.connecting.button.cancel);
+        break;
+
+    case 22: // Login - Invalid Cdkey (classic or xpac)
+        sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "Bad CD Key...........Idling", 0);
+		while(1) { Delay(500); }
+		//sendEventToOOG(D2NT_MGR_RESTART, location.name, 3600);
+        Delay(3500);
+        break;    
+
+    case 23: // Character Select - Connecting
+        if(!locationTimeout(characterScreenTimeout, location))
+            controlData.click(controlData.controls.characterSelect.button.exit);
+        break;
+
+    case 24: // Server Down - not much to do but wait..
+        break;
+
+    case 25: // Lobby - Please Wait
+        if(!locationTimeout(pleaseWaitTimeout, location))
+            controlData.click(controlData.controls.lobby.pleaseWait.button.cancel);
+        break;
+
+    case 26: // Lobby - Game Name Exists
+        sendEventToOOG(D2NT_MGR_PRINT_LOG, "yE00000Game already exists", 0);
+
+        inGameAt = 0;
+        lastGameStatus = 0;
+        setNextGameMake();
+
+        locationTimeout(15000, location);
+        break;
+
+    case 27: // Gateway Select
+        controlData.clickRealmEntry(me.gatewayid);
+        controlData.click(controlData.controls.gateway.button.ok);
+        break;
+
+    case 28: // Lobby - Game Does Not Exist
+        sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "Leader's game does not exist...........Idling", 0);
+		Delay(gameDoesNotExistDelay*1000);
+		inGameAt = Random(gameDoesNotExistDelayMin, gameDoesNotExistDelayMax);
+        lastGameStatus = 0;
+        setNextGameMake();
+
+        locationTimeout(gameDoesNotExistTimeout, location);
+        break;
+    default:
+        DebugInOOG("Unhandled location : "+location.id);
+        break;
+    }
+    DebugInOOG("Location : "+location.id);
+}
+
+function sendEventToOOG(locationId, statusString, pendingTime)
+{
+    return SendCopyData("D2NT Manager", null, (locationId<<16)|pendingTime, statusString);
+}
+
+function setNextGameMake()
+{
+    lastGameMade = GetTickCount();
+    nextGameMake = lastGameMade + createGameThreshold + Random(0-createGameThresholdRandom, createGameThresholdRandom) + inGameAt;
+    inGameAt = 0;
+    chatActionsDone = false;
+}
+
+function outputGameLength()
+{
+    if(inGameAt)
+    {
+        duration = GetTickCount() - inGameAt;
+
+        inGameAt = (duration < gameMinLength ? gameMinLength - duration : 0);
+    }
+}
+
+function locationTimeout(time, location)
+{
+    endtime = GetTickCount() + time;
+
+    while(controlData.getLocation().id == location.id && endtime > GetTickCount())
+    {
+        sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name + " (" + parseInt((endtime-GetTickCount())/1000) + "s)", 0);
+        Delay(500);
+    }
+
+    return (controlData.getLocation().id != location.id);
+}
+
+function timeoutDelay(time, location)
+{
+    endtime = GetTickCount() + time;
+
+    while(endtime > GetTickCount())
+    {
+        sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name + " (" + parseInt((endtime-GetTickCount())/1000) + "s)", 0);
+        Delay(1000);
+    }
+}
+
+function getRandomString(_length)
+{
+    _retString = "";
+    _charSet = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+    while(_length--)
+    {
+        _retString += _charSet.charAt(Random(0, _charSet.length-1));
+        Delay(1);
+    }
+
+    return _retString;
+}
+function DebugInOOG(logString)
+{
+    if (Debug)
+        return SendCopyData("D2NT Manager", null, 9<<16, "-- Debug : " + logString);
+    else
+        return false;
+}
+
+function My_ExitGame_Check()
+{
+    for (var i = 0; i < 40; i++)
+    {
+        if (controlData.getLocation().id != undefined)
+            break;
+
+        if (i > 38)
+        {
+            LogPrintSimple(me.account + " StarterTest.txt", "White Screen of Death: Restarting")
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "White Screen of Death: Restarting", 0);
+            sendEventToOOG(D2NT_MGR_RESTART, "", 5);
+            My_Delay(); // make sure and add this also
+        }
+
+        Delay(500);
+    }
+}
+
+function My_Delay(retry)
+{
+    if (arguments.length < 1)
+        retry = 20;
+
+    while (retry-- > 0)
+        Delay(1000);
+}
+
+function LogPrintSimple(filepath, mesg){ 
+
+	var _filepath = filepath;
+	var _mesg = mesg;
+	
+	var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
+	var logfile = FileOpen(_filepath, 2); // opens file 
+	if(!logfile)
+		var logfile = FileOpen(_filepath, 1); // if file not there then creates it
+
+	logfile.WriteLine(date + " " + _mesg );
+	logfile.Close();
+}
+
+function GateWayToName(){
+        switch(me.gatewayid){
+                case 0: return 'USWest';
+                case 1: return 'USEast';
+                case 2: return 'Asia';
+                case 3: return 'Europe';
+                default: return 'ugly'; // not sure how asia1, asia2, etc work so adding this for now   
+        }
+}				
+// modes 0 = read only, 1 = overwrite the file, 2 = add to file
+function NT_File(path, mode, msg, delay) { //big thanks to all the koreans out there
+    var _msg  = "";
+    var _line = "";
+    var _fileHandle;
+    var _isFileCheck = false;
+
+    if (arguments.length < 3) { msg   = ""; }
+    if (arguments.length < 4) { delay = (mode > 0) ? 5 : 2; }
+
+    while (delay--) {
+        if (mode == 2 && !_isFileCheck) {
+            _fileHandle = FileOpen(path, 0);
+            if (!_fileHandle)
+                _fileHandle = FileOpen(path, 1);
+
+            if (_fileHandle)
+                _fileHandle.Close();
+
+            _isFileCheck = true;
+        }
+
+        _fileHandle = FileOpen(path, mode);
+        if (_fileHandle)
+            break;
+
+        if (delay)
+            Delay(200);
+    }
+
+    if (_fileHandle) {
+        if (mode == 0) {
+            while (!_fileHandle.eof) {
+                _line = _fileHandle.ReadLine();
+                if (_line || !_fileHandle.eof)
+                    _msg += _line + msg;
+            }
+        }
+        else if (msg)
+            _fileHandle.WriteLine(msg);
+
+        _fileHandle.Close();
+    }
+
+    return _msg;
+}
+
+function NT_RetrieveLastGame() {
+	var grabLastGame = FileOpen("logs/messagecomands/"+me.charname+"-lastgame.txt", 0); // open file in read only
+	if(!grabLastGame){
+		var grabLastGame = FileOpen("logs/messagecomands/"+me.charname+"-lastgame.txt", 1); // because the file doesn't exist create it
+	}
+	if(grabLastGame){ 
+		lastGame = grabLastGame.ReadLine(); //retrieve the line and set the lastGame variable to it so we can check it against the game we may want to join
+		grabLastGame.Close();		
+	}
+	return;
+}
+
+function NT_RetrievenextGame() { // to retrieve game and pw
+	var grabLine;
+	var grabNextGame = FileOpen("logs/messagecomands/"+leaderName+"-nextgame.txt", 0); // open file in read only
+	if(!grabNextGame){
+		var grabNextGame = FileOpen("logs/messagecomands/"+leaderName+"-nextgame.txt", 1); // because the file doesn't exist create it
+	}
+	if(grabNextGame){ 
+		grabLine = grabNextGame.ReadLine(); //retrieve the line and set the nextGame variable to it so we can check it against the game we may want to join
+		game = grabLine.substring(0, grabLine.indexOf('/')); //extracting game name from beginning of line to the "/"
+		gamepassword = grabLine.substring(grabLine.indexOf('/') + 1, grabLine.length); //Parse after symbol till end of line.	
+		grabNextGame.Close();	
+	}
+	return;
+}
+// so now we need to add code to get the next game and pw as well as check it against the last game

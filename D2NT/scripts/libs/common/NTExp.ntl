@@ -1,0 +1,114 @@
+// Original Concept and Code by petrus2
+// Modified by Provalone
+// Updated by petrus2 Oct 12th, 2010
+// Updated by petrus2 and Spermatossauro Jun 11th, 2011
+// Further updated by petrus2 on Dec 30th, 2011
+// Minor tweaks by Tru on Sept 6th, 2012
+var _TotalExp = [0, 0, 500, 1500, 3750, 7875, 14175, 22680, 32886, 44396, 57715, 72144, 90180, 112725, 140906, 176132, 220165, 275207, 344008, 430010, 537513, 671891, 839864, 1049830, 1312287, 1640359, 2050449, 2563061, 3203826, 3902260, 4663553, 5493363, 6397855, 7383752, 8458379, 9629723, 10906488, 12298162, 13815086, 15468534, 17270791, 19235252, 21376515, 23710491, 26254525, 29027522, 32050088, 35344686, 38935798, 42850109, 47116709, 51767302, 56836449, 62361819, 68384473, 74949165, 82104680, 89904191, 98405658, 107672256, 117772849, 128782495, 140783010, 153863570, 168121381, 183662396, 200602101, 219066380, 239192444, 261129853, 285041630, 311105466, 339515048, 370481492, 404234916, 441026148, 481128591, 524840254, 572485967, 624419793, 681027665, 742730244, 809986056, 883294891, 963201521, 1050299747, 1145236814, 1248718217, 1361512946, 1484459201, 1618470619, 1764543065, 1923762030, 2097310703, 2286478756, 2492671933, 2717422497, 2962400612, 3229426756, 3520485254, 0, 0];
+var _ExpToNextLvl = [0, 500, 1000, 2250, 4125, 6300, 8505, 10206, 11510, 13319, 14429, 18036, 22545, 28181, 35226, 44033, 55042, 68801, 86002, 107503, 134378, 167973, 209966, 262457, 328072, 410090, 512612, 640765, 698434, 761293, 829810, 904492, 985897, 1074627, 1171344, 1276765, 1391674, 1516924, 1653448, 1802257, 1964461, 2141263, 2333976, 2544034, 2772997, 3022566, 3294598, 3591112, 3914311, 4266600, 4650593, 5069147, 5525370, 6022654, 6564692, 7155515, 7799511, 8501467, 9266598, 10100593, 11009646, 12000515, 13080560, 14257811, 15541015, 16939705, 18464279, 20126064, 21937409, 23911777, 26063836, 28409582, 30966444, 33753424, 36791232, 40102443, 43711663, 47645713, 51933826, 56607872, 61702579, 67255812, 73308835, 79906630, 87098226, 94937067, 103481403, 112794729, 122946255, 134011418, 146072446, 159218965, 173548673, 189168053, 206193177, 224750564, 244978115, 267026144, 291058498, 0, 0];
+
+var _startLvl;
+var _startExp;
+var _startTime;
+var _startGold;
+
+function NTE_InitializeStats() {
+    _startLvl = me.GetStat(12);
+    _startExp = me.GetStat(13);
+    if (_startExp < 0 || _startLvl >= 86) { _startExp = (2147483648 + _startExp); }
+    if (_startExp < 2147483648 && _startLvl >= 97) { _startExp = (2147483648 + _startExp); }
+
+    _startTime = GetTickCount();
+	
+	_startGold = (me.GetStat(14) + me.GetStat(15));
+}
+
+function NTE_GetStats() {
+    Print(_startLvl);
+}
+
+function NTE_ComputeStats(chickenFlag) {
+    var _endLvl = me.GetStat(12);
+    var _lvlsGained = _endLvl - _startLvl;
+    var _endExp = me.GetStat(13);
+    if (_endExp < 0 || _endLvl >= 86) { _endExp = (2147483648 + _endExp); }
+    if (_endExp < 2147483648 && _endLvl >= 97) { _endExp = (2147483648 + _endExp); }
+	
+	var _endGold = (me.GetStat(14) + me.GetStat(15));
+	if(_endGold == _startGold) { _goldCount = ""; } 
+	else if(_endGold < _startGold) { _goldCount = "\n" + COLOR_4 + "Gold " + COLOR_1 + "Lost: " + COLOR_2 + (_startGold - _endGold); }
+	else{ _goldCount = "\n" + COLOR_4 + "Gold Found: " + COLOR_2 + (_endGold - _startGold); }
+
+    var _endLvlExp = _TotalExp[_endLvl];
+    var _expGained = _endExp - _startExp;
+    var _endTime = GetTickCount();
+    if (_expGained <= 0) { _expGained = '0'; }
+
+    // Calculate percent of Exp obtained toward next level
+    // Remaining Exp / Exp needed to level
+    var _progressPercent = parseInt(1000 * (_endExp - _endLvlExp) / _ExpToNextLvl[_endLvl],10) / 10;
+	if(_progressPercent >= 0) { var _prop = _progressPercent + "%"; } else { var _prop = "0%"; };
+
+    // Estimate number of runs remaining until next level based on Exp gained
+    // Remaining Exp needed to level / Exp Gained
+	if(_expGained > 0)
+    {	var _runsToLevel = (100 - _progressPercent) * _ExpToNextLvl[_endLvl] / (100 * _expGained);
+		if(_runsToLevel > 10) {_runsToLevel = parseInt(_runsToLevel,10); } else { _runsToLevel = parseInt(100 * _runsToLevel,10) / 100; };
+		_runsToLvl = addSeparatorsNF(_runsToLevel, ",", ".", ",")
+	}
+	else {if(_endLvl == 99) {var _runsToLvl = 'You have reached Level 99';} else {var _runsToLvl = 'NA'}}
+
+    var GameIP = me.gameserverip.split(".")[3];
+    if(!GameIP) { GameIP = "Single Player"; }
+    var RunTime = parseInt(((_endTime - _startTime) / 60000),10) + "m " + (parseInt(((_endTime - _startTime) / 1000),10) - parseInt(((_endTime - _startTime) / 60000),10) * 60) + "s";
+
+	if(_lvlsGained > 0) var DidGainLvl = COLOR_1 + "\n Levels Gained : " + COLOR_1 + _lvlsGained;
+	else if(_lvlsGained < 1) var DidGainLvl = "";
+
+	//----------------------------------
+	//petrus2 edit starts here
+	//----------------------------------
+
+	var _timeToLvl = (_runsToLevel * (_endTime - _startTime)) ;
+
+	if(_expGained > 0)
+	{	if (_timeToLvl >= 86400000)
+			var TimeToLvl = parseInt((_timeToLvl / 86400000),10) + "d " + (parseInt((_timeToLvl / 3600000),10) - parseInt((_timeToLvl / 86400000),10) * 24)  + "h " + (parseInt((_timeToLvl / 60000),10) - parseInt((_timeToLvl / 3600000),10) * 60) + "m " + (parseInt((_timeToLvl / 1000),10) - parseInt((_timeToLvl / 60000),10) * 60) + "s";
+		else
+			{	if (_timeToLvl >= 3600000)
+					var TimeToLvl = parseInt((_timeToLvl / 3600000),10) + "h " + (parseInt((_timeToLvl / 60000),10) - parseInt((_timeToLvl / 3600000),10) * 60) + "m " + (parseInt((_timeToLvl / 1000),10) - parseInt((_timeToLvl / 60000),10) * 60) + "s";
+				else
+					var TimeToLvl = parseInt((_timeToLvl / 60000),10) + "m " + (parseInt((_timeToLvl / 1000),10) - parseInt((_timeToLvl / 60000),10) * 60) + "s";
+			}
+	}
+	else var TimeToLvl = "NA";
+
+
+	if(_runsToLvl == 'You have reached Level 99') var LvLProgXP = "";
+	else if(_runsToLvl != 'You have reached Level 99') var LvLProgXP = COLOR_4 + "\n Est. Time Until Next Level: " + COLOR_2 + TimeToLvl + COLOR_4 + "\n Est. Runs Until Next Level: " + COLOR_2 + _runsToLvl + COLOR_4 + "\n Current Level Progress: " + COLOR_2 + _prop + COLOR_4 + "\n Experience Gained: " + COLOR_2 + addSeparatorsNF(_expGained, ",", ".", ",");
+
+
+	//-----------------------------------
+	//petrus2 edit ends here
+	//-----------------------------------
+	if(MultiBotter) { MyRunnerName = COLOR_3 + me.charname + " "; } 
+	else { MyRunnerName = ""; }
+
+	if(_endLvl != 99) { PercToMax = MyRunnerName + COLOR_4 + "Game Statistics: [" + COLOR_8 + _prop + COLOR_4 + " to " + COLOR_8 + (_endLvl+1) + COLOR_4 + "]"; }
+	else { PercToMax = MyRunnerName + COLOR_4 + "Game Statistics: " + COLOR_8 + "[Already 99]"; }
+
+	if (!chickenFlag) {
+        // Messages to Console
+		NTC_SendLogToOOG(NTC_LOG_COMMON, PercToMax + ";" +
+		COLOR_1 + "--------------------------------------------------" +
+		LvLProgXP +
+        COLOR_4 + "\n Character Level: " + COLOR_2 + _endLvl +
+		DidGainLvl +
+		COLOR_4 + "\n Elapsed time: " + COLOR_2 + RunTime +
+        COLOR_4 + "\n Game IP Was" + COLOR_2 + "[" + GameIP + "]" +
+		_goldCount +
+        COLOR_0 + "\n Free Space Stash: " + COLOR_2 + NTT_CheckFreeStashSpace() +
+		COLOR_1 + "\n --------------------------------------------------");
+
+	}
+}

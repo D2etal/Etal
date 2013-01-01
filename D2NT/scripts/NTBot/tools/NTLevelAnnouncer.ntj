@@ -1,0 +1,88 @@
+var _MWLW_CharLevels = new Array();
+
+function NTMain(){
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NTC_IncludeLibs();
+	NT_LoadConfig();
+
+	while(1) {
+	MWLW_CheckLevelUps();
+	NTC_Delay(200);
+	}
+}
+
+// muddy waters code
+function MWC_CharClassIdToString(id)
+{
+	switch(id)
+	{
+		case NTC_CHAR_CLASS_AMAZON:
+			return GetLocaleString(4011);
+		case NTC_CHAR_CLASS_SORCERESS:
+			return GetLocaleString(4010);
+		case NTC_CHAR_CLASS_NECROMANCER:
+			return GetLocaleString(4009);
+		case NTC_CHAR_CLASS_PALADIN:
+			return GetLocaleString(4008);
+		case NTC_CHAR_CLASS_BARBARIAN:
+			return GetLocaleString(4007);
+		case NTC_CHAR_CLASS_DRUID:
+			return GetLocaleString(4012);
+		case NTC_CHAR_CLASS_ASSASSIN:
+			return GetLocaleString(4013);
+		default:
+			return "Unknown";
+	}
+}
+
+function MWLW_CheckLevelUps() //Muddy Waters level anouncer
+{
+	
+	var _player, _output;
+	_player = GetPlayerUnit();
+	
+	if(_player) {
+		while(_player.GetNext()) {
+			if(_player.level >= NTConfig_LevelMin) {
+				if(isNaN(_MWLW_CharLevels[_player.name]))
+						_MWLW_CharLevels[_player.name] = _player.level;
+				else if(_MWLW_CharLevels[_player.name] != _player.level) {
+					_MWLW_CharLevels[_player.name] = _player.level;
+					_output = NTConfig_Output + " %level, %name"; //what to announce
+					if(NTConfig_LogIt)
+					{
+						NT_File("logs/LevelsGainedInMyRuns/_________LevelLog_________.txt", 2, "" + _player.name + " has reached level " + _player.level); // logs to combined logger
+						NT_File("logs/LevelsGainedInMyRuns/" + _player.name + ".txt", 2, "" + _player.name + " has reached level " + _player.level); // logs to to char name specific file
+					}
+					_output = _output.replace(/%level/gi, _player.level); // replacing _player.level so its "%level"
+					_output = _output.replace(/%name/gi, _player.name); // replacing _player.name so its "%name"
+					_output = _output.replace(/%class/gi, MWC_CharClassIdToString(_player.classid)); // replacing _player.classid so its "%class"
+					
+					Say(_output); // says the output
+					NTC_Delay(200);
+				}
+			}  else if(_player.level < NTConfig_LevelMin) {
+				if(isNaN(_MWLW_CharLevels[_player.name]))
+					_MWLW_CharLevels[_player.name] = _player.level;
+				else if(_MWLW_CharLevels[_player.name] != _player.level)
+				{
+					_MWLW_CharLevels[_player.name] = _player.level;
+					_output = "ÿc2%name ÿc4has reached level ÿc2%level"; //what to announce
+					if(NTConfig_LogIt)
+						{
+							NT_File("logs/LevelsGainedInMyRuns/_________LevelLog_________.txt", 2, "" + _player.name + " has reached level " + _player.level); // logs to combined logger
+							NT_File("logs/LevelsGainedInMyRuns/" + _player.name + ".txt", 2, "" + _player.name + " has reached level " + _player.level); // logs to to char name specific file
+						}						
+					_output = _output.replace(/%level/gi, _player.level); // replacing _player.level so its "%level"
+					_output = _output.replace(/%name/gi, _player.name); // replacing _player.name so its "%name"
+					_output = _output.replace(/%class/gi, MWC_CharClassIdToString(_player.classid)); // replacing _player.classid so its "%class"
+					Print(_output); // prints the output
+					NTC_Delay(200);
+				}
+			}
+		}
+	}
+}
+// end of muddy waters code

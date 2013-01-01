@@ -1,0 +1,484 @@
+// NTConfig.ntl major update. Removal of tons of useless variables.
+// Now in order based on the char_config's themselves. Please stick to this so things are easier to track
+// Done by Tru - April 2012
+
+var NTConfig_Script = [];
+
+// Class Specific Var's
+	var DebugAttacksInGame;
+	// Assassin
+		var NTConfig_UseTraps;
+		var NTConfig_UseFade;
+		var NTConfig_UseBOS;
+		var NTConfig_UseCloakOfShadows;
+		var NTConfig_UseBladeShield;
+		var NTConfig_MinTrapRange;
+		var NTConfig_MinBossTrapRange;
+		var NTConfig_NumTraps;
+		var NTConfig_NumBossTrap;
+		var NTConfig_UseShadow;
+		var NTConfig_Venom;
+	// Barbarian
+		var NTConfig_UseFindItem;
+		var NTConfig_BuyPotsIfLackOfMana;
+		var NTConfig_FindItemRange;
+		var BarbSwitch;
+	// Druid
+		var NTConfig_CastRaven;
+		var DruidPreAtt = [];
+		var NTConfig_CastPast;
+		var NTConfig_NadoDist;
+	// Necromancer
+		var NTConfig_SkeletonArmy;
+		var NTConfig_MageArmy;
+		var NTConfig_ReviveArmy;
+		var NTConfig_ActiveSummon;
+		var NTConfig_Golem;
+		var NTConfig_Curse = [];
+		var NTConfig_TeleStomp;
+		var NTConfig_PoisonNovaDelay;
+		var NTConfig_SaferSummons;
+		var NecroPreAtt = [];
+	// Paladin
+		var NTConfig_UseRedemptionHP;
+		var NTConfig_UseRedemptionMP;
+		var NTConfig_OnlySmiteStationary;
+	// Paladin OFPT
+		var NTConfig_PreBuffFade;
+		var NTConfig_BOafterMeph;
+		var NTConfig_DontMakeTorch;
+		var NTConfig_TryToEven;
+		var NTConfig_UseNormalSnag;
+		var NTConfig_UseMercOFPT;
+		var NTConfig_TakeRedPortalTownLilith;
+		var NTConfig_OpenPortalsStacked;
+		var NTConfig_SwitchTele;
+		var NTConfig_SwitchTeleOFPT;
+		var NTConfig_MakeTorchSameGame;
+		var NTConfig_UseAltAttacksOFPT;
+		var NTConfig_AttackSkillOFPT_1;
+		var NTConfig_AttackSkillOFPT_2;
+		var NTConfig_CubingDelays;
+		var NTConfig_KeepSalvOnMephFail;
+		var NTConfig_ExitReEnterOnClickbug;
+		var NTConfig_TimeBeforeExitOnClickBugTorch;
+		var NTConfig_TimeBeforeExitOnClickBugOrgans;
+		var NTConfig_ShowDetailsInManager;
+		var NTConfig_KillFireEyeOFPT;
+		var NTConfig_NihlathakExtensionOFPT;
+		var NTConfig_PindleskinExtensionOFPT;
+		var KeyCount_D;
+		var KeyCount_H;
+		var KeyCount_T;
+		var NTConfig_OpenEvilUrnNihl;
+	// Sorceress
+		var NTConfig_ChainLightOnLightImmunes;
+		var NTConfig_Telekinesis;
+		var NTConfig_DancingSorc;
+		var NTConfig_AttackJump;
+		var NTConfig_BounceRange;
+		var NTConfig_DanceStartHp;
+		var NTConfig_DanceStartMp;
+		var NTConfig_CastStatic;
+		var NTConfig_SwitchCastSorc;
+		var NTConfig_StaticBossesOnly;
+		var NTConfig_StaticBossesSelect = [];
+		var KBLSpamPos = [];
+
+// Cloner Var's
+	var NTConfig_HotIP = [];
+	var NTConfig_SaySomethingNoob;
+	var NTConfig_JustAHunter;
+	var NTConfig_AvoidRD;
+//Aura Stack
+	var NTConfig_ArmorStack;
+	var NTConfig_HelmStack;
+	var NTConfig_WeaponStack;
+// Leech/Fighter
+	var NTConfig_Leader;
+	var NTConfig_PartyOnlyLeader;
+	var NTConfig_PartyMaxTime;
+	var NTConfig_LeechBo;
+	var NTConfig_LeechExitDelay;
+	var NTConfig_WaitForCowPortal;
+	var NTConfig_LeechFrom;
+	var NTConfig_TakeTpDiablo;
+	var NTConfig_UseChatCommandPortal;
+	var LeechTrav_TakeTp;
+	var NTConfig_TakeTpTravincal;
+	var NTConfig_LeechBaal;
+	var NTConfig_TakeTpBaal;
+	var NTConfig_LeechPrecast;
+	var NTConfig_TeleEachWaveHelper;
+	var leechpos = [];
+	var NTConfig_LeechHydra;
+	var NTConfig_FollowtoWorldStone;
+	var NTConfig_WaitAtPassiveSPotForBaal;
+	var NTConfig_GrabShrine;
+	var _FindXPArea = [];
+	var NTConfig_ClearAroundShrine;
+
+// Area Scripts
+	// Act 1
+		var NTConfig_ClearBloodMoor;
+		var NTConfig_DenOfEvil;
+		var NTConfig_ClearDenTwice;
+		var NTConfig_ClearColdPlains;
+		var NTConfig_ClearCPCaves;
+		var NTConfig_CPSpecialChest;
+		var NTConfig_ClearBurialGrounds;
+		var NTConfig_ClearMausoleum;
+		var NTConfig_ClearCrypt;
+		var NTConfig_ClearStony;
+		var NTConfig_ClearTristram;
+		var NTConfig_ClearPassageLevel1;
+		var NTConfig_ClearPassageLevel2;
+		var NTConfig_ClearDarkWood;
+		var NTConfig_ClearBlackMarsh;
+		var NTConfig_ClearForgotten;
+		var NTConfig_ClearTheHole;
+		var NTConfig_ClearTamoe;
+		var NTConfig_ClearTamoePit;
+		var NTConfig_ClearOCloister;
+		var NTConfig_ClearBarracks;
+		var NTConfig_ClearJail;
+		var NTConfig_ClearInnerCloister;
+		var NTConfig_ClearCathedral;
+		var NTConfig_ClearAllCatacombs;
+		var NTConfig_RightWall;				// Needs removed in the future
+		var NTConfig_PositionAndy;
+		var NTConfig_ClearAndarielThrone;
+		var NTConfig_CowKingChicken;
+	// Act 2
+		var NTConfig_RadSewerStairs;
+		var NTConfig_ClearRadSewers;
+		var NTConfig_WalkFromGohlein;
+		var NTConfig_ClearRockyWaste;
+		var NTConfig_ClearStonyTomb;
+		var NTConfig_ClearDryHills;
+		var NTConfig_ClearHallsofDead;
+		var NTConfig_ClearFarOasis;
+		var NTConfig_ClearMaggotLair;
+		var NTConfig_ClearLostCity;
+		var NTConfig_ClearAncientTunnels;
+		var NTConfig_ClearViperTemple;
+		var NTConfig_ClearHarem2;
+		var NTConfig_ClearPalaceCellar;
+		var NTConfig_ClearArcaneSanc;
+		var NTConfig_OpenSummonerChests;
+		var NTConfig_ClearMagiCanyon;
+		var NTConfig_RaidTombs;
+		var NTConfig_AvoidDuriel;
+	// Act 3
+		var NTConfig_ClearArachnidLair;
+		var NTConfig_ClearSpiderForest;
+		var NTConfig_ClearSpiderCavern;
+		var NTConfig_ClearGreatMarsh;
+		var NTConfig_ClearFlayerJungle;
+		var NTConfig_ClearFlayerDungeons;
+		var NTConfig_ClearSwampyPit;
+		var NTConfig_ClearLower;
+		var NTConfig_LowerChests;
+		var NTConfig_ClearBazaar;
+		var NTConfig_BazaarChests;
+		var NTConfig_ClearRuinedTemple;
+		var NTConfig_ClearDisusedFane;
+		var NTConfig_ClearSewersAct3;
+		var NTConfig_ClearForgottenTemple;
+		var NTConfig_ClearForgottenReliquary;
+		var NTConfig_ClearUpper;
+		var NTConfig_UpperChests;
+		var NTConfig_ClearRuinedFane;
+		var NTConfig_ClearDisusedReliquary;
+		var NTConfig_ClearTravincal;
+		var NTConfig_KillMeph;
+		var NTConfig_KillDuryCouncil;
+		var NTConfig_ClearDury;
+		var NTConfig_RedPortal;
+		var NTConfig_MoatTrick = [];
+	// Act 4
+		var NTConfig_ClearOutterSteppes;
+		var NTConfig_ClearPlains;
+		var NTConfig_ClearCityOfTheDamned;
+		var NTConfig_ClearRiverOfFire;
+		var NTConfig_Dodge;
+		var NTConfig_FastChaos;
+		var NTConfig_Entrance;
+		var NTConfig_LeechSupport;
+		var NTConfig_CS_EntranceTP;
+		var NTConfig_CS_StarTP;
+		var NTConfig_CS_NextGame;
+		var NTConfig_CS_LeechSupTP;
+		var NTConfig_CS_SealBasher;
+	// Act 5
+		var NTConfig_ClearBloodyFoothills;
+		var NTConfig_BloodyFoothillsBoss; 	// Replacing Kill Shenk/Dac
+		var NTConfig_KillShenk;				// Needs removed after a few commits
+		var NTConfig_KillDacFarren;			// Needs removed after a few commits
+		var NTConfig_ClearFrigidHighlands;
+		var NTConfig_KillEldritch;
+		var NTConfig_KillSharptooth;
+		var NTConfig_KillEyeback;
+		var NTConfig_ClearAbaddon;
+		var NTConfig_ClearArreatPlateau;
+		var NTConfig_ArreatEvilUrn;
+		var NTConfig_ClearPitOfAcheron;
+		var NTConfig_ClearCrystalline;
+		var NTConfig_ClearFrozenRiver;
+		var NTConfig_UseTemplePortal;
+		var NTConfig_KillPindleskin;
+		var NTConfig_KillNihlathak;
+		var NTConfig_OpenEvilUrnOrChests;	// Replaced The EvilUrn and Super Chest
+		var NTConfig_OpenEvilUrnNihl;		// Needs removed after a few commits
+		var NTConfig_ClearHalls;			// Made universal for the Temple
+		var NTConfig_ClearHallsOfVaught; 	// Needs removed after a few commits
+		var NTConfig_OpenHallsSuperChests;	// Needs removed after a few commits
+		var NTConfig_CheckVipers;
+		var NTConfig_DanceForPindle;
+		var NTConfig_ClearGlacialTrail;
+		var NTConfig_ClearDrifterCavern;
+		var NTConfig_ClearFrozenTundra;
+		var NTConfig_ClearInfernalPit;
+		var NTConfig_ClearAncientWay;
+		var NTConfig_ClearIcyCellar;
+		var NTConfig_ClearWorldStoneKeep;
+		var NTConfig_MakeWSK3TP;
+		var NTConfig_CheckSoulKillers;
+		var NTConfig_MakeHotTP;
+		var NTConfig_PreWaveTele;
+		var NTConfig_HolyBoltBaal;
+		var NTConfig_WalkAround;
+		var NTConfig_Wave2PSNCheck;
+		var NTConfig_Wave3Move;
+		var NTConfig_TownBeforeBaal;
+		var NTConfig_KillBaal;
+		var NTThrone_Announce;
+		var Baal_WSK3_TP_MSG;
+		var Baal_HotTp;
+		var Baal_SafeTp;
+		var Baal_KillBaalMessage;
+		var Baal_NextGameMessage;
+		var Baal_FreeSpaceMessage;
+		var Baal_BSayNextGame;
+// WP Grabber
+	var NTConfig_DoQuests = [];
+// Misc Scripts
+	var NTConfig_TLInventory_SkipEquipped;
+	var NTConfig_PickitOn;
+	var NTConfig_ShowEnemies;
+	var NTConfig_RevealMap;
+	var NTConfig_CheckStuff;
+	var NTConfig_HostileHandler;
+	var RunFromHostiles;
+	var KillHostiler;
+	var TauntHostile;
+	var BanFromChannel;
+	var ChanBotAcct;
+	var ChanBotTrigger;
+	var ChanBotCommand;
+// Speed Settings
+	var NTConfig_StartDelay;
+	var NTConfig_AreaDelay;
+	var NTConfig_SnagDelay;
+// Chicken
+	var NTConfig_SkipHealLife;
+	var NTConfig_SkipHealMana;
+	var NTConfig_LifeThresh;
+	var NTConfig_LifeRejuvThresh;
+	var NTConfig_ManaThresh;
+	var NTConfig_ManaRejuvThresh;
+	var NTConfig_LifeChicken;
+	var NTConfig_ManaChicken;
+	var NTConfig_EtalLifeChicken;
+	var NTConfig_EtalManaChicken;
+	var NTConfig_TPChicken;
+	var NTConfig_MercTPChicken;
+	var NTConfig_MercLifeThresh;
+	var NTConfig_MercRejuvThresh;
+	var NTConfig_MercChicken;
+// Inventory
+	var NTConfig_FreeSpaceBeforeBoss;
+	var NTConfig_FreeSpace;
+	var NTConfig_Columns = new Array(4);
+	NTConfig_Columns[0] = new Array(10);
+	NTConfig_Columns[1] = new Array(10);
+	NTConfig_Columns[2] = new Array(10);
+	NTConfig_Columns[3] = new Array(10);
+	var NTConfig_MinGoldToStash;
+// Belt
+	var NTConfig_BeltColType = new Array(4);
+// Pickit
+	var NTConfig_SnagRange;
+	var NTConfig_NIPFilePath = [];
+// Runewords
+	var NTConfig_MakeRunewords;
+	var NTConfig_Runeword = [];
+	var NTConfig_KeepRuneword = [];
+// Cubing
+	var NTConfig_Cubing;
+	var NTConfig_CubingItem = [];
+// Gambling
+	var NTConfig_Gamble;
+	var NTConfig_GambleStartGold;
+	var NTConfig_GambleStopGold;
+	var NTConfig_GC;
+	var NTConfig_GCAmuGold;
+	var NTConfig_GambleItem = [];
+// General Config
+	var NTConfig_PublicMode;
+	var NTConfig_CheckCloneDiablo;
+	var NTConfig_SoJWaitTime;
+	var NTConfig_FastPickit;
+	var NTConfig_UseMerc;
+	var NTConfig_ResetEnigma;
+	var NTConfig_QuitOnPing;
+	var NTConfig_PingInterval;
+	var NTConfig_ClearPosition;
+	var NTConfig_PrioritizeWeakerFoes;
+	var NTConfig_PrioritizeWeakerFoesAreaDisable = [];
+	var NTConfig_SwitchTele;
+	var NTConfig_PreBuffFade;
+	var NTConfig_StopIfStashInventoryFull;
+	var NTConfig_FreeRowsQuit;
+	var NTConfig_SkipRegularMonsters;
+	var NTConfig_DropExtraRejuvs;
+	var NTConfig_TeleGrab;
+	var NTConfig_CheckPassword;
+	var NTConfig_GoWestFromLut;
+	var NTConfig_MinPots;
+	var NTConfig_CheckPotsTown;
+	var NTConfig_AutoMule;
+	var NTConfig_FinishRun;
+	var NTConfig_MuleStash;
+	var NTConfig_MuleInv;
+ 	var NTConfig_UseKeysForPlaceHolder;
+	var NTConfig_PropsForEtal;
+	var NTConfig_MercStats;
+	var NTConfig_VoyageToMissingWps;
+// XML Logging
+	var NTConfig_UseXMLItemlog;
+	var NTConfig_IndependantLog;
+	var NTConfig_LogSoldItems;
+	var NTConfig_LogIgnoredItems;
+	var NTConfig_LogCraftedItems;
+	var NTConfig_LogItemQuality;
+// General Logging
+	var NTConfig_LogShrines;
+	var NTConfig_LogCraftingString;
+// Manager Logging
+	var NTConfig_LogSoldItemQuality;
+	var NTConfig_CubeProcessToManager;
+// Immunity Skipping
+	var NTConfig_AreasToNotSkipImmunes = [];
+	var NTConfig_SkipSingle = [];
+	var NTConfig_SkipDual = [];
+// Identify Options
+	var NTConfig_IdInField;
+	var NTConfig_FreeSpaceXY = [];
+	var NTConfig_AnnounceDroppedItems;
+	var NTConfig_dropMessages = [];
+	var NTConfig_IdentAtCain;
+	var NTConfig_PocketChange;
+	var NTConfig_DontCainAct = [];
+	var NTConfig_Repair;
+	var NTConfig_AlwaysUseCain;
+	var NTConfig_DropCainItems;
+// DPS Meter
+	var DPSMeter;
+	var miniDPSDisplay;
+	var DPSScanSpeed;
+	var DPSDisplayRate;
+	var DPSScanHist;
+// Open Chest
+	var NTConfig_OpenChest;
+	var NTConfig_OpenChests;
+	var NTConfig_CheckChestid;
+	var NTConfig_OpenChestsInAreaClearing;
+	var NTConfig_AreasToOpenChestClearing = [];
+	var NTConfig_DontOpenChestAreas = [];
+	var NTConfig_Chestids = [];
+	var NTConfig_OpenChestsInArea;
+// Shrine Grabber
+	var NTConfig_ShareExpShrine;
+	var NTConfig_Shrines = [];
+// Attack Config
+	var NTConfig_AttackSkill = new Array(10);
+	var prewavespot = [];
+	var NTConfig_PreWaveSpam;
+	var NTconfig_HighMaxAttack;
+	var NTConfig_HighMaxAttackAreas = [];
+	var NTConfig_HighMaxAttacks;
+	var NTConfig_LowMaxAttacks;
+	var MonstersToAttackFirst = [];
+	var NTConfig_AttackingThis;
+	var NTConfig_CheckSelfSafe = new Array();
+	var NTConfig_CheckMercSafe = new Array();
+
+
+// NTConfig_Global Variables
+	var Do_PauseBot;
+	var Do_PrevScript;
+	var Do_NextScript;
+	var Do_DropItems;
+	var Do_DevTools;
+	var Do_CoordLog;
+	var Do_HotKeyList;
+	var Do_InvTxtLog;
+	var Do_CursorILvL;
+	var Do_CheckSpace;
+	var CheckStashSpace;
+	var CheckInvSpace;
+	var Do_StatsLog;
+	var Do_PrintCoord;
+	var Do_NipCheck;
+	var Do_CheckBPs;
+	var Do_ExitGame;
+
+// Unknown variables
+var	NTConfig_KillBaalWalking;
+var _walkfightertp;
+var NTConfig_RunScriptAfterDiablo;
+var NTConfig_LeechKillBaal;
+var NTConfig_LeechHolyBoltBaal;
+var NTConfig_LeechWalkAround;
+var NTConfig_RunScriptAfterBaal;
+var NTConfig_UsePaliAura;
+var NTConfig_Blocker;
+var DebugInGame;
+var DebugAttacksInGame;
+var DebugToLogs;
+var DebugNTV;
+var DebugMisc;
+var LogHostiles;
+var channelName;
+var hostile_GetThenQuit;
+var twelveHourClock;
+var KillHostilePlayer;
+var NTConfig_CubingDelaysCows;
+var NTConfig_PsnW2;
+var NTConfig_ClearWSK;
+var NTConfig_TeleEachWave;
+var NTConfig_NihlathakExtension;
+var NTConfig_PindleskinExtension;
+var NTConfig_ShenkExtension;
+var NTConfig_OpenEvilUrn;
+var NTConfig_FTEvilUrnExtension;
+var NTConfig_Wave3;
+var NTConfig_TownBeforeDiablo;
+var NTConfig_MakeHelpTPBeforeThrone;
+var Diablo_TpUpMessage;
+var Diablo_KillDiabloMessage;
+var Diablo_NextGameMessage;
+var	Diablo_FreeSpaceMessage;
+var Baal_WSlvl3tpMSG;
+var NTConfig_CaveLevel1;
+var NTConfig_CaveLevel2;
+var NTConfig_ClearPlainsOfDespair;
+var NTConfig_ClearRiverOfFlames;
+var NTConfig_DNextGameSay;
+
+// Level Announce vars
+var NTConfig_Announcer;
+var NTConfig_LevelMin;
+var NTConfig_Output;
+var NTConfig_LogIt;

@@ -1,0 +1,33 @@
+function NTMain(){
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTBot/char_configs");
+
+	NT_LoadConfig();
+
+	me.maxgametime = 0;
+	
+	var screenFill = [
+	COLOR_2 + "ConfigCheck Loaded",
+	COLOR_2 + "By Default This Displays When Your Character Config Hasn't Been Edited",
+	"---------------------------------------------------------------------------------------------------",
+	COLOR_2 + "Detailed Guides For Etal Can Be Found At - www.ProjectEtal.com/wiki",
+	"---------------------------------------------------------------------------------------------------",
+	];
+	var _skillCheck = 0;
+	for(var i = 1; i < 5; i++) {
+		if(NTConfig_AttackSkill[i] == -1)
+			_skillCheck++;
+	}
+	if(_skillCheck > 0)
+		screenFill.push(COLOR_8 + "Carefull Buddy. Running Etal Without Spending The Proper Time Configuring It, Is Just Asking For Trouble.");
+	
+	while(me.ingame){
+		for(var i = 0; i < screenFill.length; i++) {
+			Print(screenFill[i]);
+		}
+	Delay(10100);
+	}
+}
+

@@ -1,0 +1,483 @@
+RegisterEvent(EVENT_SCRIPTMSG, HostileHandler);
+var _hostilepause = false;
+var Diablo_PreMessage = "";
+var _CSSealsOnly = false;
+var _PublicMode = true;
+function NTMain(){
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+
+	NTC_IncludeConfig("NTBot/char_configs");
+	NT_LoadConfig();
+
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+	if(me.areaid != 103){
+		if(!NTTM_TownMove("waypoint")) {
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+			return;
+		}
+		if(!NTM_TakeWaypoint(103)) {
+			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+			return;
+		}
+	}
+	NTTMGR_TownManager();
+	NTTM_TownMove("portalspot");
+
+	if(NTConfig_UseChatCommandPortal){
+		while(!NT_DiabloLeechMessageHandler()){
+			Delay(500);
+		}
+		for(var i = 0 ; i < 100 && me.areaid == 103 ; i++){
+			NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
+			Delay(500);
+		}
+	}
+	else{
+		myStartArea = me.areaid;
+		while(1){
+			NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
+			if (myStartArea != me.areaid) {
+				break;
+			}
+			Delay(500);
+		}
+	}
+	while(me.areaid == 0){
+		NTC_Delay(200);
+	}
+	NTP_DoPrecast(true, NTConfig_LeechBo);
+	NTCS_ClearEntrance();
+	NTCS_OpenSealsInt();
+	NTCS_KillDiablo();
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function NTCS_Say(msg){
+	if (NTConfig_PublicMode && msg && msg.length > 0){
+		Say (msg);
+		NTC_Delay(50);
+	}
+}
+
+function NTCS_GetRandomText(){
+	var s = "";
+	var i = 0;
+	while ((i++ < 5) || (s.length == 0))
+	s = GetLocaleString(Random(1069, 1295));
+	return s.length > 0 ? s : "Aww.";
+}
+
+function NTCS_KillSealBoss(monsterName){
+	for(var i = 0 ; i < 10 ; i++){
+		NTC_Delay(100);
+		if(NTA_KillMonster(monsterName)){
+			if (!_CSSealsOnly) NTA_ClearPosition(20, true, 2);
+			return true;
+		}
+	}
+	return false;
+}
+
+function NTCS_ClearEntrance(){
+	var pos;
+	if ((_CSSealsOnly == true) || (NTConfig_LeechFrom == "S")){
+		pos = new Array();
+	}
+	else if (CheckCollision(me.areaid, 7784, 5447, 1)){
+		pos = [
+		7794, 5540, 7794, 5515
+		,	7770, 5499, 7794, 5480, 7803, 5499, 7818, 5499, 7818, 5480, 7818, 5447, 7818, 5428
+		,	7803, 5421, 7794, 5403, 7784, 5421, 7770, 5428, 7770, 5447, 7770, 5480
+		,	7770, 5480, 7770, 5447, 7784, 5421
+		,	7770, 5414, 7770, 5392, 7770, 5363, 7770, 5341
+		,	7794, 5341
+		,	7818, 5341, 7818, 5392, 7818, 5363
+		,	7794, 5363
+		];
+	}
+	else{
+		pos = [
+		7794, 5540, 7794, 5515
+		,	7818, 5499, 7794, 5480, 7784, 5499, 7770, 5499, 7770, 5480, 7770, 5447, 7770, 5428
+		,	7784, 5421, 7794, 5403, 7803, 5421, 7818, 5428, 7818, 5447, 7818, 5480
+		,	7818, 5447, 7803, 5421
+		,	7818, 5414, 7818, 5392,  7818, 5363, 7818, 5341
+		,	7794, 5341
+		,	7770, 5341, 7770, 5392, 7770, 5363
+		,	7794, 5363
+		];
+	}
+	if(_PublicMode)
+		pos = pos.concat([7794, 5363, 7770, 5363, 7770, 5341, 7818, 5363, 7818, 5341]);
+
+	while (pos.length > 0){
+		NTM_MoveTo(me.areaid, pos.shift(), pos.shift());
+		NTA_ClearPosition(20, true, 2);
+	}
+	NTM_MoveTo(me.areaid, 7794, 5341);
+	if(_PublicMode){
+		NTM_MoveTo(me.areaid, 7794, 5341);
+		NTA_ClearPosition(20, true, 2);
+	}
+	else if ((_CSSealsOnly == true) || (NTConfig_LeechFrom == "S")){
+		NTM_MoveTo(me.areaid, 7792, 5292);
+		NTM_MoveTo(me.areaid, 7858, 5294);
+	}
+}
+
+function NTCS_KillDiablo(){
+	NTM_MoveTo(me.areaid, 7792, 5292);
+	NTP_DoPrecast(true, NTConfig_LeechBo);
+	if(NTConfig_IdInField){
+		NT_FieldID();
+	}
+	if(me.classid == NTC_CHAR_CLASS_ASSASSIN) {
+		if(NTConfig_UseTraps) {
+			var _attackPos2 = [7784,5290,7793,5284,7801,5289,7797,5299,7787,5299];
+			for(var i=0;i<5;i++) {
+				if(i == 0 || i == 2 || i == 3) // Added delays to prevent trap miscast
+				NTC_Delay(25);
+				if(NTConfig_ActBossTrapSet[i] > 0)
+				NTC_CastSkill(NTConfig_ActBossTrapSet[i], NTC_HAND_RIGHT, _attackPos2[i*2],_attackPos2[(i*2)+1]);
+			}
+		}
+	}
+	var count = 0;
+	while(!NTA_KillMonster(243)){
+		NTC_Delay(200);
+		if (count++ >= 30)	// hmm 6 seconds ?
+		break;
+	}
+	NTSI_PickItems();
+	NTM_MoveTo(me.areaid, 7792, 5292);
+}
+
+function NTCS_OpenSealError(id){
+	NTC_SendMsgToScript("NTBotGame.ntj", "NTCS_OpenSealsInt(" + id + ")");
+
+	var msg = "Unable to find seal : ";
+	switch (id){
+		case 392 : msg += GetLocaleString(2853); break;
+		case 394 : msg += GetLocaleString(2852); break;
+		case 396 : msg += GetLocaleString(2851); break;
+			default  : break;
+	}
+	msg += ". Aborting ...";
+	NTTM_CheckAct();
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function NTCS_OpenSealsInt(){
+	//[0,1,2]  //0=Venom(First) 1=DeSeis(Second) 2=Vizer(Third)
+	//[1,0,2]  //1=DeSeis(First) 0=Venom(Second) 2=Vizer(Third)
+	var _order = [2,1,0];  //<-----------------------------------Change here.//2=Vizer(Fist) 1=Deseis(Second) 0=Venom(Third)
+	var _RandomSeals = false; //Do Random Seals if your bored.
+	var unit, count = 0, i = 0;
+	if (_RandomSeals){
+		rand1 = Math.floor(Math.random()*_order.length);
+		rand2 = Math.floor(Math.random()*_order.length);
+		rand3 = Math.floor(Math.random()*_order.length);
+		var _n=0, _n2=0, _n3=0;
+		for (e = 0; e < _order.length; e++){
+			switch(e){
+				case 0: var _n = rand1;
+				case 1: rand2 = Math.floor(Math.random()*_order.length); if (rand2 != _n) _n2 = rand2;
+				case 2: rand3 = Math.floor(Math.random()*_order.length); if (rand3 != _n && rand3 != _n2) _n3 = rand3;
+			}
+		}
+		var _order = [_n,_n2,_n3];
+	}
+	for ( i = 0; i < _order.length; i++){
+		switch(_order[i]){
+			case 0:
+				unit = GetPresetUnits(me.areaid, NTC_UNIT_OBJECT, 392);
+				if(!unit) NTCS_SealsError(392);
+				if(unit[0].roomx*5 + unit[0].x == 7893)
+					count += NTCS_OpenSealVenomInt(1);
+				else
+					count += NTCS_OpenSealVenomInt(2);
+				break;
+			case 1:
+				unit = GetPresetUnits(me.areaid, NTC_UNIT_OBJECT, 394);
+				if(!unit) NTCS_SealsError(394);
+				if(unit[0].roomx*5 + unit[0].x == 7773)
+					count += NTCS_OpenSealDeSeisInt(1);
+				else
+					count += NTCS_OpenSealDeSeisInt(2);
+				break;
+			case 2:
+				unit = GetPresetUnits(me.areaid, NTC_UNIT_OBJECT, 396);
+				if(!unit) NTCS_SealsError(396);
+				if(unit[0].roomy*5 + unit[0].y == 5275)
+					count += NTCS_OpenSealVizierInt(1);
+				else
+					count += NTCS_OpenSealVizierInt(2);
+				break;
+		}
+	}
+	return count;
+}
+
+function NTCS_OpenSealInt(classid, x, y){
+	var retry = 0;
+	NTM_MoveTo(me.areaid, x, y);
+	if (!_CSSealsOnly) NTA_ClearPosition(20, true, 2);
+	var seal = NTC_FindUnit(NTC_UNIT_OBJECT, classid);
+	if(!seal) NTCS_OpenSealError(classid);
+	while ((retry++ < 100) && (seal.mode == 0)){
+		if(GetDistance(me, seal) > 2)
+			NTM_MoveTo(seal.areaid, seal.x + 4, seal.y);
+		//NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, seal);
+		NTC_Delay(50);
+		if (seal && seal.mode != 0) break;
+		NTC_Delay(500);
+		NTM_MoveTo(seal.areaid, seal.x -6, seal.y - 4);
+	}
+	return seal.mode > 0 ? 1 : 0;
+}
+
+function NTCS_OpenSealVizierInt(type){
+	var pos;
+	var count = 0;
+	var monsterName = GetLocaleString(2851);
+	if (_CSSealsOnly == false){
+		if (type == 1)
+			pos = [
+			7763, 5275, 7763, 5315, 7747, 5292, 7713, 5275, 7730, 5292, 7713, 5315, 7713, 5292
+			,	7684, 5292, 7677, 5315, 7650, 5315, 7669, 5292, 7677, 5275, 7650, 5275
+			];
+		else
+			pos = [
+			7763, 5275, 7763, 5315, 7747, 5295, 7713, 5275, 7730, 5295, 7713, 5315
+			,	7694, 5315, 7675, 5315, 7656, 5315
+			];
+		while (pos.length > 0){
+			NTM_MoveTo(me.areaid, pos.shift(), pos.shift());
+			NTA_ClearPosition(20, true, 2);
+		}
+	}
+	else{
+		NTM_MoveTo(7747, 5293);
+		NTM_MoveTo(7713, 5293);
+		NTM_MoveTo(7669, 5315);
+		//NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 396);
+	}
+	if (type == 1){
+		if(NTConfig_IdInField){
+			NT_FieldID();
+		}
+		count += NTCS_OpenSealInt(396, 7659, 5277);
+		NTM_MoveTo(me.areaid, 7669, 5292);
+		NTCS_KillSealBoss(monsterName);
+		NTSI_PickItems();
+		NTM_MoveTo(me.areaid, 7684, 5292);
+		NTM_MoveTo(me.areaid, 7654, 5310);
+		NTM_MoveTo(me.areaid, 7654, 5310);
+		count += NTCS_OpenSealInt(395, 7654, 5310);
+		NTA_ClearPosition(20, true, 2);
+		NTM_MoveTo(7684, 5293);
+	}
+	else{
+		if(NTConfig_IdInField){
+			NT_FieldID();
+		}
+		count += NTCS_OpenSealInt(396, 7651, 5310);
+		NTM_MoveTo(me.areaid, 7675, 5315);
+		NTCS_KillSealBoss(monsterName);
+		NTSI_PickItems();
+		NTM_MoveTo(me.areaid, 7656, 5295);
+		NTM_MoveTo(me.areaid, 7656, 5269);
+		NTM_MoveTo(me.areaid, 7656, 5295);
+		count += NTCS_OpenSealInt(395, 7650, 5276);
+		NTA_ClearPosition(20, true, 2);
+		NTM_MoveTo(7675, 5315);
+	}
+	NTM_MoveTo(7730, 5293);
+	return count;
+}
+
+function NTCS_OpenSealDeSeisInt(type){
+	var pos;
+	var count = 0;
+	var monsterName = GetLocaleString(2852);
+	if (_CSSealsOnly == false){
+		if (type == 1)
+			pos = [
+			7813, 5259, 7813, 5229, 7792, 5244, 7771, 5229
+			,	7771, 5215, 7771, 5193, 7792, 5193, 7813, 5193
+			,	7813, 5174, 7813, 5155, 7792, 5155, 7771, 5155
+			,	7767, 5162
+			];
+		else
+			pos = [
+			7813, 5259, 7792, 5244, 7771, 5229, 7771, 5244, 7813, 5229
+			,	7813, 5215, 7813, 5193, 7792, 5193, 7771, 5193
+			,	7771, 5174, 7771, 5155, 7792, 5155, 7813, 5155
+			];
+		while (pos.length > 0){
+			NTM_MoveTo(me.areaid, pos.shift(), pos.shift());
+			NTA_ClearPosition(20, true, 2);
+		}
+	}
+	else{
+		NTM_MoveTo(7792, 5229);
+		NTM_MoveTo(7792, 5193);
+		//NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 394);
+	}
+	if (type == 1){
+		if(NTConfig_IdInField){
+			NT_FieldID();
+		}
+		count += NTCS_OpenSealInt(394, 7769, 5158);
+		NTM_MoveTo(me.areaid, 7768, 5162);
+		NTM_MoveTo(me.areaid, 7771, 5188);
+		NTM_MoveTo(me.areaid, 7780, 5215);
+		NTCS_KillSealBoss(monsterName);
+		NTSI_PickItems();
+	}
+	else{
+		if(NTConfig_IdInField){
+			NT_FieldID();
+		}
+		count += NTCS_OpenSealInt(394, 7810, 5156);
+		NTM_MoveTo(me.areaid, 7771, 5155);
+		NTM_MoveTo(me.areaid, 7780, 5174);
+		NTCS_KillSealBoss(monsterName);
+		NTSI_PickItems();
+	}
+	if (_CSSealsOnly == false){
+		if (type == 1)
+			pos = [7771, 5229, 7792, 5244, 7771, 5259];
+		else
+			pos = [7813, 5229, 7792, 5244, 7771, 5259];
+		while (pos.length > 0){
+			NTM_MoveTo(me.areaid, pos.shift(), pos.shift());
+			NTA_ClearPosition(20, true, 2);
+		}
+	}
+	else{
+		NTM_MoveTo(7792, 5229);
+		NTM_MoveTo(7771, 5259);
+	}
+	return count;
+}
+
+function NTCS_OpenSealVenomInt(type){
+	var pos;
+	var count = 0;
+	var monsterName = GetLocaleString(2853);
+	if (_CSSealsOnly == false){
+		if (type == 1)
+			pos = [
+			7825, 5315, 7841, 5294, 7858, 5275, 7858, 5315, 7841, 5294, 7858, 5294
+			,	7882, 5294, 7893, 5315, 7903, 5294, 7933, 5294, 7915, 5270, 7903, 5294
+			,	7893, 5318
+			];
+		else
+			pos = [
+			7825, 5315, 7841, 5294, 7858, 5294, 7874, 5315, 7874, 5275
+			,	7885, 5275, 7905, 5275, 7933, 5275, 7933, 5294, 7993, 5315
+			,	7909, 5315
+			];
+		while (pos.length > 0){
+			NTM_MoveTo(me.areaid, pos.shift(), pos.shift());
+			NTA_ClearPosition(20, true, 2);
+		}
+	}
+	//else
+	//NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 392);
+	if (type == 1){
+		if(NTConfig_IdInField){
+			NT_FieldID();
+		}
+		count += NTCS_OpenSealInt(392, 7895, 5318);
+		NTM_MoveTo(me.areaid, 7900, 5294);
+		NTCS_KillSealBoss(monsterName);
+		NTSI_PickItems();
+		NTM_MoveTo(me.areaid, 7903, 5294);
+		count += NTCS_OpenSealInt(393, 7915, 5280);
+	}
+	else{
+		if(NTConfig_IdInField){
+			NT_FieldID();
+		}
+		count += NTCS_OpenSealInt(392, 7916, 5310);
+		NTM_MoveTo(me.areaid, 7933, 5294);
+		NTCS_KillSealBoss(monsterName);
+		NTSI_PickItems();
+		NTM_MoveTo(me.areaid, 7933, 5294);
+		count += NTCS_OpenSealInt(393, 7905, 5277);
+	}
+	if (_CSSealsOnly == false){
+		if (type == 1)
+			pos = [7858, 5294, 7841, 5294, 7825, 5275];
+		else
+			pos = [7874, 5275, 7858, 5294, 7825, 5275];
+		while (pos.length > 0){
+			NTM_MoveTo(me.areaid, pos.shift(), pos.shift());
+			NTA_ClearPosition(20, true, 2);
+		}
+	}
+	else
+	NTM_MoveTo(7825, 5275);
+	return count;
+}
+
+function NT_KillMonster(classid, retry){
+	if(arguments.length < 2)
+	retry = 0;
+	var _target;
+	if(NTConfig_AttackSkill[1] < 1)
+		return false;
+	_target = NTC_FindUnit(NTC_UNIT_MONSTER, classid, retry);
+	if(!_target)
+		return false;
+	if(_target.IsAttackable()){
+		var _attackcount = 0;
+		while(_attackcount < 300 && NTA_IsValidMonster(_target)){
+			if(NTA_Attack(_target, (_attackcount%30) == 0) < 2)
+			break;
+			_attackcount++;
+		}
+	}
+	return (_target.hp <= 0 || _target.mode == 0 || _target.mode == 12);
+}
+
+function HostileHandler(msg){
+	if(msg == "pause"){
+		if(_hostilepause){
+			Print("yc3Resuming...");
+			_hostilepause = false;
+		}
+		else {
+			Print("yc1Pausing to kill hostiles...");
+			_hostilepause = true;
+
+			ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+			ClickMap(NTC_CLICK_RUP, NTC_SHIFT_NONE, null);
+
+			while(_hostilepause)
+			NTC_Delay(250);
+		}
+	}
+}
+
+function NT_DiabloLeechMessageHandler(){
+	var _msg = NT_File("logs/messagecomands/"+me.charname+"-diablo.txt", 0);
+	if (_msg && _msg != Diablo_PreMessage){
+		Diablo_PreMessage = _msg;
+		if(_msg.substring(_msg.indexOf("/") + 1) == "takedtp"){
+			//Print(COLOR_2 + "retrieved take tp message diablo");
+			return true;
+		}
+	}
+	return false;
+}

@@ -1,0 +1,514 @@
+var NTConfig_SkeletonArmy;
+var NTConfig_MageArmy;
+var NTConfig_ReviveArmy;
+var NTConfig_ActiveSummon;
+var NTConfig_Golem;
+var NTConfig_Curse = [];
+var NTConfig_TeleStomp;
+var NTConfig_PoisonNovaDelay;
+
+function NT_LoadConfig()
+{
+	//-----------------------------------------------------------------------------------------------------
+	// If you have trouble configuring your bot, follow the links below:
+	//		Wiki:	http://www.ProjectEtal.com/wiki
+	//		Forums:	http://www.ProjectEtal.com
+	//			This (& all Etal) best viewed within Notepad++ & may appear garbled in other editors.
+	// 
+	// -----------------------------------------------------------------------------------------------------
+	NTConfig_Leader = "config me";						// Leaders name. (Don't set to yourself.)
+	NTConfig_PartyOnlyLeader = false;					// Party only with leader (NTConfig_Leader)? (If true, NTConfig_PublicMode MUST be set false in the general config section below).
+
+	NTConfig_Rushing = true;													//True to enable rushing (False if you enable questing to just do quests.)
+	
+	NTConfig_Questing = true;													//True to enable quests (False to disable ALL quests)
+		NTConfig_Quests = [														//Quests: "Cain", "Radament", "Tome", "Izual", "Forge", "Shenk", "Anya" | Comment out unwanted quests. Order does not matter.
+			"Cain",
+			"Radament", 
+			"Tome", 
+			"Izual", 
+			"Shenk", 
+			"Anya"						
+			];
+	
+	NTConfig_KillCouncils = false;	
+	NTConfig_ClearCS = false;	
+	NTConfig_Waypoints = false;													//True to enable waypoints at the end of the rush.
+
+	//------------------------------------------------------------------------------
+	// Speed Settings
+	//------------------------------------------------------------------------------
+	me.maxgametime = 1200; 								// Maximum game length in seconds (0 is infinite).
+	NTConfig_StartDelay = 0;							// Delay time in milliseconds to wait at start.
+	NTConfig_AreaDelay = 500;							// Delay time in milliseconds to wait on each area change.
+	NTConfig_SnagDelay = 500;							// Delay time in milliseconds (added to ping delay) to wait before each pickit call.
+	
+	//------------------------------------------------------------------------------
+	// Chicken settings
+	//------------------------------------------------------------------------------
+	NTConfig_SkipHealLife = 90;							// If you are over this percentage of life, you won't go to a healer.
+	NTConfig_SkipHealMana = 70;							// If you are over this percentage of mana, you won't go to a healer.
+					
+	NTConfig_LifeThresh = 85;							// Drink a health potion if under this percent of life.
+	NTConfig_LifeRejuvThresh = 45;						// Drink a rejuvenation potion if under this percent of life. (Will not use health potions under this %)
+	NTConfig_ManaThresh = 30;							// Drink a mana potion if under this percent of mana.
+	NTConfig_ManaRejuvThresh = 0;						// Drink a rejuvenation potion if under this percent of mana. (Will not use mana potions under this %)
+
+	NTConfig_LifeChicken = 20;							// This is your D2NT chicken life percent. If you go below this life total, exit game.
+	NTConfig_ManaChicken = 0;							// This is your D2NT chicken mana percent. If you go below this mana total, exit game.
+
+	// These chicken values are optional and can run alongside the traditional D2NT chicken or as a standalone chicken
+	// The Etal version comes with additional logging and will restart D2 instead of exitting the game for crash protection
+	// To disable, use 0
+	NTConfig_EtalLifeChicken = 0;						// This is your Etal chicken life percent. If you go below this life total, exit D2.
+	NTConfig_EtalManaChicken = 0;						// This is your Etal chicken mana percent. If you go below this mana total, exit D2.
+	
+	NTConfig_TPChicken = 60; 							// Under this % of health will attempt to tp to town and heal. (Set 0 to disable.)
+					
+	NTConfig_MercLifeThresh = 50;						// Give merc a health potion if under this percent of life.
+	NTConfig_MercRejuvThresh = 30;						// Give merc a rejuvenation potion if under this percent of life. (Will not use health potions under this %)
+	NTConfig_MercChicken = 0;							// This is your mercs chicken life percent. If he goes below this, exit game. (Set 0 to disable.)
+
+	//------------------------------------------------------------------------------
+	// Inventory settings
+	//------------------------------------------------------------------------------
+	NTConfig_FreeSpaceBeforeBoss = 2;					// If # of free columns is less than this, will town before killing bosses.
+	NTConfig_FreeSpace = 0;								// Number of free columns. If bot has less than this amount after id'ing, it will go to stash.
+
+	// These numbers correspond to your inventory. Set 0 to keep whatever is there, 1 to have the bot manage the slot.
+	NTConfig_Columns[0] = [0,0,0,0,0,0,0,0,0,0];
+	NTConfig_Columns[1] = [0,0,0,0,0,0,0,0,0,0];
+	NTConfig_Columns[2] = [0,0,0,0,0,0,0,0,0,0];
+	NTConfig_Columns[3] = [0,0,0,0,0,0,0,0,0,0];
+
+	NTConfig_MinGoldToStash = 100000;					// Maximum gold amount carried before going to stash
+
+	//----------------------------------------------------------------------------------------------
+	// Belt Settings
+	// 	 	Type of potion used in each belt column
+	// 		Available types : "hp" = health | "mp" = mana | "rv" = rejuv. Can use other potion types too.
+	// 		Keep equal types at adjacent columns. First HP then MP and then HP again is a bad choice.
+	// 		Keep HP and MP at the beginning of the belt (in case you want to use rejuv and other types).
+	// 		Rejuvenations MUST, I REPEAT MUST be at the end of the belt (last x columns).
+	// 		To use rejuvenations only, put "rv" in all columns.
+	//----------------------------------------------------------------------------------------------
+	NTConfig_BeltColType[0] = "hp";
+	NTConfig_BeltColType[1] = "hp";
+	NTConfig_BeltColType[2] = "mp";
+	NTConfig_BeltColType[3] = "rv";
+
+	//-----------------------------------------------------------------------------------
+	// Pickit (SnagIt) Configuration
+	// 		* Select one group only (normal / advance / extreme / Master)
+	//-----------------------------------------------------------------------------------
+	//NTConfig_NIPFilePath.push("normal/normal.nip");
+	//NTConfig_NIPFilePath.push("normal/magic_rare.nip");
+	//NTConfig_NIPFilePath.push("normal/set.nip");
+	//NTConfig_NIPFilePath.push("normal/unique.nip");  
+	//NTConfig_NIPFilePath.push("normal/craft.nip");  
+	//NTConfig_NIPFilePath.push("normal/key.nip");
+
+	//NTConfig_NIPFilePath.push("advance/normal.nip");
+	//NTConfig_NIPFilePath.push("advance/magic_rare.nip");
+	//NTConfig_NIPFilePath.push("advance/set.nip");
+	//NTConfig_NIPFilePath.push("advance/unique.nip");
+	//NTConfig_NIPFilePath.push("advance/craft.nip");
+	//NTConfig_NIPFilePath.push("advance/key.nip");
+
+	//NTConfig_NIPFilePath.push("extreme/normal.nip");
+	//NTConfig_NIPFilePath.push("extreme/magic_rare.nip");
+	//NTConfig_NIPFilePath.push("extreme/set.nip");
+	//NTConfig_NIPFilePath.push("extreme/unique.nip");
+	//NTConfig_NIPFilePath.push("extreme/craft.nip");
+	//NTConfig_NIPFilePath.push("extreme/key.nip");
+	
+	NTConfig_NIPFilePath.push("Master/Charms.nip");
+	NTConfig_NIPFilePath.push("Master/Crafted.nip");
+	NTConfig_NIPFilePath.push("Master/Cubed.nip");
+	NTConfig_NIPFilePath.push("Master/CustomAdditions.nip");
+	//NTConfig_NIPFilePath.push("Master/FAST.nip");
+	NTConfig_NIPFilePath.push("Master/Gold Potions Runes Gems Essences Keys Organs.nip");
+	NTConfig_NIPFilePath.push("Master/Magic.nip");
+	NTConfig_NIPFilePath.push("Master/Rare.nip");
+	NTConfig_NIPFilePath.push("Master/Set.nip");
+	NTConfig_NIPFilePath.push("Master/Unid.nip");
+	NTConfig_NIPFilePath.push("Master/Unique.nip");
+	NTConfig_NIPFilePath.push("Master/White.nip");
+	NTConfig_NIPFilePath.push("Master/Runeword.nip");
+
+	NTConfig_SnagRange = 40;							// Radius to check for dropped items. 40 is a good number here
+
+	//------------------------------------------------------------------------------
+	// Runeword configuration
+	//
+	// 		* Format: NTConfig_Runeword.push([base item classid, rune1 classid, rune2 classid....]);
+	//		* Use NTItemAlias.ntl to find classids
+	// 		* YOU MUST USE THE EXACT ORDER OF RUNES
+	// 		* Base item needs to be in the pickit, rest is picked auto.
+	// 		* To keep a runeword, include NTConfig_KeepRuneword.push("pickit syntax"); after NTConfig_Runeword.push
+	//------------------------------------------------------------------------------
+	
+	NTConfig_MakeRunewords = false;
+	
+	//NTConfig_Runeword.push([498, 616, 619, 618, 620]); 					// Sacred Targe, Tal, Thul, Ort, Amn SPIRIT
+		NTConfig_KeepRuneword.push("[name] == sacredtarge # [fcr] >= 35");
+	
+	//NTConfig_Runeword.push([447, 616, 619, 618, 620]); 					// Monarch, Tal, Thul, Ort, Amn SPIRIT
+		NTConfig_KeepRuneword.push("[name] == monarch # [fcr] >= 35");
+	
+	//NTConfig_Runeword.push([29, 616, 619, 618, 620]); 					// Crystal Sword, Tal, Thul, Ort, Amn SPIRIT
+		NTConfig_KeepRuneword.push("[name] == crystalsword # [fcr] >= 35");
+
+	//NTConfig_Runeword.push([254, 617, 612, 616, 621]); 					// Colossus Voulge, Ral, Tir, Tal, Sol
+		NTConfig_KeepRuneword.push("[name] == ColossusVoulge # [fcr] >= 35");
+	
+	//NTConfig_Runeword.push([255, 617, 612, 616, 621]); 					// Thresher, Ral, Tir, Tal, Sol
+		NTConfig_KeepRuneword.push("[name] == thresher # [fcr] >= 35");
+	
+	//NTConfig_Runeword.push([256, 617, 612, 616, 621]); 					// Cryptic Axe, Ral, Tir, Tal, Sol
+		NTConfig_KeepRuneword.push("[name] == crypticaxe # [fcr] >= 35");
+
+	//NTConfig_Runeword.push([21, 627, 635, 630, 619]); 					// Flail, Ko, Vex, Pul, Thul
+		NTConfig_KeepRuneword.push("[name] == flail # [fcr] >= 40");
+
+	//NTConfig_Runeword.push([21, 620, 617, 632, 633, 636]); 				// Flail, Amn, Ral, Mal, Ist, Ohm
+		NTConfig_KeepRuneword.push("[name] == flail # [IAS] >= 40"); 
+
+	//NTConfig_Runeword.push([29, 620, 617, 632, 633, 636]); 				// Crystal Sword, Amn, Ral, Mal, Ist, Ohm
+		NTConfig_KeepRuneword.push("[name] == crystalsword # [IAS] >= 40");
+
+	//------------------------------------------------------------------------------
+	// Cubing configuration
+	//------------------------------------------------------------------------------
+	NTConfig_Cubing = false;										// Enable Cubing?
+
+	//NTConfig_CubingItem.push([NTCU_GEM, 560]);					// Flawless Amethyst
+	//NTConfig_CubingItem.push([NTCU_GEM, 565]);					// Flawless Topaz
+	//NTConfig_CubingItem.push([NTCU_GEM, 570]);					// Flawless Saphire
+	//NTConfig_CubingItem.push([NTCU_GEM, 575]);					// Flawless Emerald
+	//NTConfig_CubingItem.push([NTCU_GEM, 580]);					// Flawless Ruby
+	//NTConfig_CubingItem.push([NTCU_GEM, 585]);					// Flawless Diamond
+	//NTConfig_CubingItem.push([NTCU_GEM, 600]);					// Flawless Skull
+
+	//NTConfig_CubingItem.push([NTCU_MAGIC, 420]);					// Magic Tiara
+	//NTConfig_CubingItem.push([NTCU_MAGIC, 421]);					// Magic Diadem
+	//NTConfig_CubingItem.push([NTCU_MAGIC, 285]);  				// Maiden Javelin - ilvl 71
+	//NTConfig_CubingItem.push([NTCU_MAGIC, 295]);  				// Ceremonial Javelin - ilvl 77
+	//NTConfig_CubingItem.push([NTCU_MAGIC, 305]);  				// Matriarchal Javelin - ilvl 80
+
+	//NTConfig_CubingItem.push([NTCU_MAGIC_CHARM, 603]);			// Magic Small Charm
+	//NTConfig_CubingItem.push([NTCU_MAGIC_CHARM, 605]);			// Magic Grand Charm
+
+	//NTConfig_CubingItem.push([NTCU_CRAFT_HITPOWER_GLOVES, 382]);	// Craft Heavy Bracers
+	//NTConfig_CubingItem.push([NTCU_CRAFT_HITPOWER_GLOVES, 452]);	// Craft Vambraces
+
+	//NTConfig_CubingItem.push([NTCU_CRAFT_BLOOD_HELM, 354]);		// Craft Blood Casque
+	//NTConfig_CubingItem.push([NTCU_CRAFT_BLOOD_HELM, 424]);		// Craft Blood Armet
+	//NTConfig_CubingItem.push([NTCU_CRAFT_BLOOD_BOOTS, 388]);		// Craft Blood Battle Boots
+	//NTConfig_CubingItem.push([NTCU_CRAFT_BLOOD_BOOTS, 458]);		// Craft Blood Mirrored Boots
+	//NTConfig_CubingItem.push([NTCU_CRAFT_BLOOD_GLOVES, 381]);		// Craft Blood Sharkskin Gloves
+	//NTConfig_CubingItem.push([NTCU_CRAFT_BLOOD_GLOVES, 451]);		// Craft Blood Vampirebone Gloves
+	//NTConfig_CubingItem.push([NTCU_CRAFT_BLOOD_BELT, 392]);		// Craft Blood Mesh Belt
+	//NTConfig_CubingItem.push([NTCU_CRAFT_BLOOD_BELT, 462]);		// Craft Blood Mithril Coil
+	//NTConfig_CubingItem.push([NTCU_CRAFT_BLOOD_AMULET, 520]);		// Craft Blood Amulet
+	//NTConfig_CubingItem.push([NTCU_CRAFT_BLOOD_RING, 522]);		// Craft Blood Ring
+
+	//NTConfig_CubingItem.push([NTCU_CRAFT_CASTER_AMULET, 520]);	// Craft Caster Amulet
+	//NTConfig_CubingItem.push([NTCU_CRAFT_CASTER_BOOTS, 385]);		// Craft Caster Demonhide Boots
+	//NTConfig_CubingItem.push([NTCU_CRAFT_CASTER_BOOTS, 455]);		// Craft Caster Wyrmhide Boots
+	//NTConfig_CubingItem.push([NTCU_CRAFT_CASTER_BELT, 461]);		// Craft Caster Vampirefang Belt
+	//NTConfig_CubingItem.push([NTCU_CRAFT_CASTER_BELT, 391]);		// Craft Caster Sharkskin Belt
+
+	//NTConfig_CubingItem.push([NTCU_CRAFT_SAFETY_SHIELD, 447]);	// Craft Monarch
+	//NTConfig_CubingItem.push([NTCU_CRAFT_SAFETY_AMULET, 520]);	// Craft Amulet
+
+	//NTConfig_CubingItem.push([NTCU_ESSENSE, 0]);
+
+	//NTConfig_CubingItem.push([NTCU_RUNE_THUL, 562]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_AMN, 557]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_SOL, 567]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_SHAEL, 577]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_DOL, 572]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_HEL, 582]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_IO, 563]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_LUM, 558]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_KO, 568]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_FAL, 578]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_LEM, 573]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_PUL, 583]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_UM, 564]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_MAL, 559]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_IST, 569]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_GUL, 579]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_VEX, 574]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_OHM, 584]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_LO, 565]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_SUR, 560]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_BER, 570]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_JAH, 580]);
+	//NTConfig_CubingItem.push([NTCU_RUNE_CHAM, 575]);
+
+	//***** Include the following, Primary item must be setted in item_configs folder *****
+
+	//NTConfig_CubingItem.push([NTCU_SOCKET_BODYARMOR, 436]);				// Socket Great Hauberk
+	//NTConfig_CubingItem.push([NTCU_SOCKET_BODYARMOR, 435]);				// Socket Boneweave
+	//NTConfig_CubingItem.push([NTCU_SOCKET_BODYARMOR, 443]);				// Socket Archon Plate
+	//NTConfig_CubingItem.push([NTCU_SOCKET_BODYARMOR, 438]);				// Socket Hellforge Plate
+	//NTConfig_CubingItem.push([NTCU_SOCKET_BODYARMOR, 439]);				// Socket Kraken Shell
+	//NTConfig_CubingItem.push([NTCU_SOCKET_BODYARMOR, 442]);				// Socket Sacred Armor
+
+	//NTConfig_CubingItem.push([NTCU_SOCKET_WEAPON, 254]);					// Socket Colossus Voulge
+	//NTConfig_CubingItem.push([NTCU_SOCKET_WEAPON, 255]);					// Socket Thresher
+	//NTConfig_CubingItem.push([NTCU_SOCKET_WEAPON, 256]);					// Socket Cryptic Axe
+	//NTConfig_CubingItem.push([NTCU_SOCKET_WEAPON, 257]);					// Socket Great Poleaxe
+	//NTConfig_CubingItem.push([NTCU_SOCKET_WEAPON, 258]);					// Socket Giant Thresher
+	//NTConfig_CubingItem.push([NTCU_SOCKET_WEAPON, 29]);					// Socket Crystal Sword
+
+	//NTConfig_CubingItem.push([NTCU_SOCKET_SHIELD, 447]);					// Socket Monarch
+
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_WEAPON, 148]);		// HONE SUNDAN : Exceptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_WEAPON, 157]);		// RIBCRACKER : Exceptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_WEAPON, 103]);		// SUICIDE BRANCH : Exceptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_WEAPON, 295]);		// TITANS'S REVENGE : Exceptional -> Elite
+
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_N_UNIQUE_ARMOR, 335]);			// BLOODFIST : Normal -> Exceptional
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 381]);			// BLOODFIST or GRAVEPALM: Exceptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_N_UNIQUE_ARMOR, 337]);			// MAGEFIST : Normal -> Exceptional
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 383]);			// MAGEFIST or LAVA GOUT : Exceptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_N_UNIQUE_ARMOR, 339]);			// HOTSPUR: Normal -> Exceptional
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 385]);			// HOTSPUR or INFERNOSTRIDE : Exeptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 386]);			// WATERWALK : Exeptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 389]);			// GORE RIDER : Exceptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 360]);			// SKIN OF THE VIPERMAGI : Exceptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 365]);			// SHAFTSTOP : Exeptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 420]);			// KIRA'S GUARDIAN : Exeptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 477]);			// ARREAT'S FACE : Exceptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 487]);			// HOMUNCULUS : Exceptional -> Elite
+	//NTConfig_CubingItem.push([NTCU_UPGRADE_E_UNIQUE_ARMOR, 481]);			// HERALD OF ZAKARUM : Exceptional -> Elite
+
+	//------------------------------------------------------------------------------
+	// Gamble Configuration
+	// 		* To specify what items to gamble, adjust the array with the desired item codes.
+	//------------------------------------------------------------------------------
+	NTConfig_Gamble = false;							// Enable gambling?
+	NTConfig_GambleStartGold = 2000000;					// Gold amount to start the gambling.
+	NTConfig_GambleStopGold = 300000;					// Gold amount to stop the gambling.
+			
+	NTConfig_GC = false;								// Enable gambling for craft amulet. This will keep one amulet for crafting on you when possible. Requires char lvl >= 88.
+	NTConfig_GCAmuGold = 300000;						// Gold amount to stop gambling for amulet to craft.
+				
+	NTConfig_GambleItem.push(520);						// Amulets
+	NTConfig_GambleItem.push(522);						// Rings
+	NTConfig_GambleItem.push(418);						// Circlets
+	NTConfig_GambleItem.push(419);						// Coronets
+	//NTConfig_GambleItem.push(334);					// Leather Gloves
+	//NTConfig_GambleItem.push(335);					// Heavy Gloves
+	//NTConfig_GambleItem.push(336);					// Chain Gloves
+	//NTConfig_GambleItem.push(337);					// Light Gauntlets
+	//NTConfig_GambleItem.push(338);					// Gauntlets
+	NTConfig_GambleItem.push(331);						// Kite Shield
+
+	//------------------------------------------------------------------------------
+	// General configuration
+	//------------------------------------------------------------------------------
+	NTConfig_PublicMode = false;						// Enables "Public" features (Partying, Tp'ing etc). (Cannot be true while NTConfig_PartyOnlyLeader is.)
+	NTConfig_CheckCloneDiablo = true;					// Set to true if you want to wait in game after "Diablo Walks the Earth" msg.
+	NTConfig_SoJWaitTime = 5;							// Time in minutes to wait for the next SoJ sale. Set to 0 to disable SoJ notifier.
+	NTConfig_FastPickit = false;						// This is a new option that causes far less crashes(maybe none).  Is independent of snag delay
+	NTConfig_UseMerc = false;							// Set true if you will use a mercenary, will revive merc at a reviver npc.
+	NTConfig_ResetEnigma = false;  						// Set true to reset enigma when tele bug exists. (Safe.)
+	NTConfig_QuitOnPing = 900;							// Ping threshold. (0 to disable.)
+	NTConfig_PingInterval = 10;							// If ping is greater than threshold for x seconds, exit game. (0 = Disabled,  x = Time Interval In Seconds.)
+	NTConfig_ClearPosition = false;						// Set true if you want to clear area after killing boss.
+	NTConfig_PrioritizeWeakerFoes = false;				// Enable to kill weaker foes with higher priority as well as clear areas of minions and other foes prior to killing bosses
+	NTConfig_PrioritizeWeakerFoesAreaDisable = [];		// Use IDs from D2NT\sdk\areas.txt to disable for specific areas, e.g. [124,83] would disable Nihlathak and Travincial
+	NTConfig_SwitchTele = false; 						// Use tab 2 for teleporting (higher fcr breakpoint in tab 2)? (Slight chance of breaking an eth cta spirit.)
+	NTConfig_PreBuffFade = false; 						// Stand in fire until fade is triggered? (Must have Last Wish / Treachery etc.)
+	NTConfig_StopIfStashInventoryFull = false;    		// Pauses bot when stash/inventory are full. (Helpful for HardCore players.) Must configure NTConfig_FreeRowsQuit below.
+	NTConfig_FreeRowsQuit = 2;							// If after stashing less than this number of inventory columns are free, bot will pause.
+	NTConfig_SkipRegularMonsters = false;				// If true will only kill Champions, Uniques and Bosses.
+	NTConfig_DropExtraRejuvs = false;					// When belt is full bot will either drop extra rejuvs when a new rejuv is found or drink them. (true to drop, false to drink).
+	NTConfig_TeleGrab = 0; 								// 0 = No, 1 = Yes. Changes pickit to run after each teleport (instead of after each clear call). (Recommended for aura stacking only with a NTConfig_SnagDelay of 0.) (Can cause complications (chickens etc) depending on system / setup.)
+	NTConfig_CheckPassword = false; 					// Check for game password, quit if none.
+	NTConfig_GoWestFromLut = false;						// If new game starts in act 2, use Warriv to return to act 1?
+	NTConfig_MinPots = 1;								// If less then this many (Health or Mana) potions, will return to town on checkselfsafe 0x01 is calls.
+	NTConfig_CheckPotsTown = 0;							// If less then this many (Health or Mana) potions, will shop them in normal town functions.  Set 0 to always shop them	
+	NTConfig_AutoMule = false;  							// Set to true to enable muling. Requires NTMule entry point.
+	NTConfig_FinishRun = false; 						// true will finish current game. Good for if running the leecher entry or if running main as leader.
+	NTConfig_MuleStash = 8; 							// Set this to the free block limit in your Stash. If less than this mule.
+	NTConfig_MuleInv = 2; 								// Set this to the free column limit in your Inventory. If less than this mule. Must be set to higher than NTConfig_FreeSpace
+ 	NTConfig_UseKeysForPlaceHolder = true;				// Set to true to keep a key in your inventory. (In the event that the bot has no space for ID scrolls, will sell the key instead of one of your items.)
+	NTConfig_PropsForEtal = 1; 							// Advertising etal at the end of public games.  set to 0 to disable.  Set to 1 or greater for the number of phrases spoken before exiting public games.  See D2NT\scripts\NTBot\char_configs\EtalPR.ntl for instructions on adding or removing phrases
+	NTConfig_MercStats = false;							// Prints Merc stats to Common Log with Char stats if true
+
+	//-------------------------------------------------------------------------------
+	// Advanced XML Item Logging
+	//-------------------------------------------------------------------------------
+	NTConfig_UseXMLItemlog = false; 					// Log kept, sold and ignored items in an XML log file?
+	NTConfig_IndependantLog = true;						// Create a seperate file for each character. Item Logfile is found in logs/Item Log/
+	NTConfig_LogSoldItems = false;  					// Logs items sold to item logfile?
+	NTConfig_LogIgnoredItems = false;					// Log ignored items to item logfile?
+	NTConfig_LogCraftedItems = false;					// Log crafted items to item logfile? 
+	NTConfig_LogItemQuality = 5;						// Quality of items logged is >= of value: (3 = White, 4 = Magic, 5 = Sets, 6 = Rares, 7 = Uniques, 8 = Crafted).
+
+	//-------------------------------------------------------------------------------
+	// General Log File Options
+	//-------------------------------------------------------------------------------
+	NTConfig_LogShrines = false;  						// Log shrines found by NTConfig_Shrines array?
+	NTConfig_LogCraftingString = false;					// Log the string of ingredients that goes into cube? 
+
+	//------------------------------------------------------------------------------
+	// Manager Log Options
+	//------------------------------------------------------------------------------
+	NTConfig_LogSoldItemQuality = 7;					// Quality of items logged is >= of value: (3 = White, 4 = Magic, 5 = Sets, 6 = Rares, 7 = Uniques, 8 = Crafted, 0 = Disabled).
+	NTConfig_CubeProcessToManager = 2;					// Logs the string of ingredients that goes into cube (0 = Don't Log, 1 = Log In Item Log, 2 = Log To Common Log).
+		
+	//-------------------------------------------------------------------------------
+	// Immunity Skipping
+	//-------------------------------------------------------------------------------
+	NTConfig_AreasToNotSkipImmunes = [131, 108];		// Add area ID's into the array seperated by "," for to disable immunity skipping within said area.
+
+	NTConfig_SkipSingle[0] = false;						//Skips all physical immunes.
+	NTConfig_SkipSingle[1] = false;						//Skips all magic immunes.
+	NTConfig_SkipSingle[2] = false;						//Skips all fire immunes.
+	NTConfig_SkipSingle[3] = false;						//Skips all lightning immunes.
+	NTConfig_SkipSingle[4] = false;						//Skips all cold immunes.
+	NTConfig_SkipSingle[5] = false;						//Skips all poison immunes.
+				                                        
+	NTConfig_SkipDual[0] = false;						//Skips all dual physical + magic immunes.
+	NTConfig_SkipDual[1] = false;						//Skips all dual physical + fire immunes.
+	NTConfig_SkipDual[2] = false;						//Skips all dual physical + lightning immunes.
+	NTConfig_SkipDual[3] = false;						//Skips all dual physical + cold immunes.
+	NTConfig_SkipDual[4] = false;						//Skips all dual physical + poison immunes.
+	NTConfig_SkipDual[5] = false;						//Skips all dual magic + fire immunes.
+	NTConfig_SkipDual[6] = false;						//Skips all dual magic + lightning immunes.
+	NTConfig_SkipDual[7] = false;						//Skips all dual magic + cold immunes.
+	NTConfig_SkipDual[8] = false;						//Skips all dual magic + poison immunes.
+	NTConfig_SkipDual[9] = false;						//Skips all dual fire + lightning immunes.
+	NTConfig_SkipDual[10] = false;						//Skips all dual fire + cold immunes.
+	NTConfig_SkipDual[11] = false;						//Skips all dual fire + poison immunes.
+	NTConfig_SkipDual[12] = false;						//Skips all dual lightning + cold immunes.
+	NTConfig_SkipDual[13] = false;						//Skips all dual lightning + poison immunes.
+	NTConfig_SkipDual[14] = false;						//Skips all dual cold + poison immunes.
+
+	//------------------------------------------------------------------------------
+	// ID Options & Other Town Configs
+	//------------------------------------------------------------------------------
+	NTConfig_IdInField = false;						// set to true to have bot id items in field.  MUST have a tome of id in inventory
+	NTConfig_FreeSpaceXY = [2, 4];					// free block if less bot will id.  Easiest way to explain this is [2,4] would be free space big enough to hold a thresher
+	NTConfig_AnnounceDroppedItems = false;			// anounce items that are being dropped.  NOTE does not work with items sold to vendor	
+	NTConfig_dropMessages = [						// randomly selected phrase used for NTConfig_AnnounceDroppedItems.  Add as many as you want following the provided format
+								"up for grabs ",
+								"dropping ",
+								"tossing ",
+								"free item on ground ",
+							];
+	
+	NTConfig_IdentAtCain = false;						// Identify @ Cain? (Quicker & will skip using cain if something in inventory is suppose to be kept unidentified. Will not log sold items.)
+	NTConfig_PocketChange = 500000;						// Amount of gold you want to keep on hand used for repairs. Make adjustments to this & repair % to keep equipment from breaking.
+	NTConfig_DontCainAct = [];							// List any act you don't want to use cain on seperated by ",".  Set to "0" to id in all acts.
+	NTConfig_Repair = "40";								// Set to how much durability you want to repair at, 40 is normal, 99 is as soon as you loose one point.
+	NTConfig_AlwaysUseCain = false;						// Always use cain to ID? (Will ID items which are set to keep unid if they are in the inventory when visiting Cain.)
+	NTConfig_DropCainItems = false;						// set to true to drop items/false sells them to vendor
+
+	//------------------------------------------------------------------------------
+	// DPS Meter Config
+	//------------------------------------------------------------------------------	
+	DPSMeter = false;									// This toggles the DPS Meter on / off.
+		miniDPSDisplay = false;							// Set true if you run a resolution below 800*600. (Formatting removed.)
+		DPSScanSpeed = 50; 								// Delay between each scan (in ms).
+		DPSDisplayRate = 1000; 							// Interval DPS is recalculated and displayed (in ms). (Default 1000.)
+		DPSScanHist = 2; 								// Scan history (in seconds) to average. (Default 2.)	
+		
+	//----------------------------------------------------------------------------------
+	//Open chest configs configs.  
+	//		* Chest ID's can be added to NTConfig_Chestids. Look for ID's in "Chest ID's.txt".
+	//----------------------------------------------------------------------------------
+	NTConfig_OpenChest = false;							// Open most super unique chests at the end of runs. (Chest ID settings below do not effect this.)
+	NTConfig_CheckChestid = false;						// Print chest ID's to screen as they're opened?
+	NTConfig_OpenChestsInAreaClearing = false;			// Open chests while using clear functions? (Uses NTConfig_Chestids.)  
+
+	// Remove area / chest ID's in the arrays below to open (all chests within removed area) / (specific chest). 
+	//		* Current area ID can be displayed ingame by pressing Num Pad "*".
+	//		* Nearby chest ID's can be displayed ingame by pressing Num Pad "2".
+	// 		* A partial list of chest id's can be found in your D2NT\scripts\NTBot\char_configs\Chest ID's.txt.  NOTE some of these are wrong.
+	
+	NTConfig_AreasToOpenChestClearing  = [];			// Enter areas for chests to be cleared within. (Areas seperated by commas.)
+
+	NTConfig_Chestids = [104, 105, 106, 107, 5, 6, 87, 143, 140, 141, 144, 146, 147, 148, 174, 175, 176, 177, 181, 183, 198,
+						240, 241, 242, 243, 329, 330, 331, 332, 333, 334, 335, 336, 354, 355, 356, 371, 387, 389, 390,        
+	 					391, 397, 405, 406, 407, 413, 420, 424, 425, 430, 431, 454, 455, 501, 502, 504, 505,
+						580, 581, 1, 3, 50, 51, 53, 79, 54, 55, 56, 57, 58, 20, 55, 139, 155, 159];
+
+	//------------------------------------------------------------------------------
+	// Shrine Grabber Settings
+	//------------------------------------------------------------------------------
+	
+	NTConfig_ShareExpShrine = false;					// Cleare around exp shrines and TP? (Will not grab experience shrines if true.)
+	NTConfig_Shrines = [0, 0, 0, 0, 0];					// Change 0's to the corresponding #'s found in /D2NT/sdk/shrines.txt (To add more shrines, seperate values with a comma.)
+	
+	//------------------------------------------------------------------------------
+	// Attack Configuration
+	// 		* Change the -1's to the corresponding #'s found in /D2NT/sdk/skills.txt
+	// 		* As of Jan 17th: -1 = Disabled, 0 = Normal Attack.
+	//------------------------------------------------------------------------------
+	NTConfig_AttackSkill[0] = -1;	// First skill. Set to -1 if you won't
+	NTConfig_AttackSkill[1] = -1;	// Primary skill to boss.
+	NTConfig_AttackSkill[2] = -1;	// Primary untimed skill to boss. Set to -1 if you won't
+	NTConfig_AttackSkill[3] = -1;	// Primary skill to others.
+	NTConfig_AttackSkill[4] = -1;	// Primary untimed skill to others. Set to -1 if you won't
+	NTConfig_AttackSkill[5] = -1;	// Secondary skill in case monster is immune to primary skill. Set to -1 if you won't
+	NTConfig_AttackSkill[6] = -1;	// Secondary untimed skill. Set to -1 if you won't
+
+	prewavespot = [15092, 5040];						// Pre-Wave standing (X,Y) coordinates. (For Baal Scripts.)	
+	NTConfig_PreWaveSpam = 0;							// Attack skill to spam between waves.  Set "0" to disable.
+	NecroPreAtt = [15099, 5028];						// (X,Y) coordinates to attack with NTConfig_PreWaveSpam. 
+
+	NTconfig_HighMaxAttack = true;						// Use HighMaxAttacks? (False = LowMaxAttacks.) High/Low are below.
+	NTConfig_HighMaxAttackAreas = [131];				// If above is set false (you're using LowMaxAttacks), add areas to bypass LowMaxAttacks and use HighMaxAttacks instead. (Recommended in Baal's Throne Room.)
+	
+	NTConfig_HighMaxAttacks = 300;						// Maximum number of attacks (HIGH) before skipping.
+	NTConfig_LowMaxAttacks = 15;						// Maximum number of attacks (LOW) before skipping.
+	
+	MonstersToAttackFirst = 							// Monster ID's to attack first. (Monsters which resurrect / spawn others are good choices.)
+	[58,59,60,61,62,101,102,103,104,190,191,
+	192,193,194,206,207,208,209,228,239,240,
+	241,278,279,280,281,282,283,303,312,480,
+	481,482,483,484,485,486,529];
+	
+	NTConfig_AttackingThis = false; // Used to say target monsters ID/Name - Primarily for Dev purposes
+
+	//------------------------------------------------------------------------------
+	// Check Safe Settings
+	//------------------------------------------------------------------------------
+	// Check Self Safe. Set to []; for none.
+	// 01=Potion. 02=Poison. 04=Amplify Damage. 08=Weaken. 10=Iron Maiden. 20=Decrepify. 40=Lower Resist. 80=Blood Mana.
+	// Use this format: ['01','02'] etc. Add as many or as few as you want.
+
+	NTConfig_CheckSelfSafe = [];
+
+	// Check Merc's Safe. Set to []; for none.
+	// 01=Death, 02=Poison, 04=Amplify Damage, 08=Weaken, 10=Iron Maiden, 20=Decrepify, 40=Lower Resist
+	// Use this format: ['01','02'] etc. Add as many or as few as you want.
+
+	NTConfig_CheckMercSafe = [];
+
+	//------------------------------------------------------------------------------
+	// Class Specific Settings
+	//------------------------------------------------------------------------------
+
+	NTConfig_Curse[0] = 91; 					// Curse to boss. Set to 0 if you won't
+	NTConfig_Curse[1] = 91; 					// Curse to others. Set to 0 if you won't
+	
+	NTConfig_TeleStomp = true;				// Teleport onto a boss or immune monster.
+	NTConfig_ActiveSummon = false;			// Summon between attacks.
+	NTConfig_Golem = "Clay";				// Desired golem. 0 or "None" or "Iron" for no golem summoning, 1 or "Clay" for Clay Golem, 2 or "Blood" for Blood Golem, 3 or "Fire" for Fire Golem.
+	NTConfig_SkeletonArmy = 15; 				// Skeleton army size. (Set 0 to disable.)
+	NTConfig_MageArmy = 9; 					// Skeleton Mage army size. (Set 0 to disable.)
+	NTConfig_ReviveArmy = 15; 				// Revive army size. (Set 0 to disable.)
+	
+	NTConfig_ExplodeCorpses = 74; 			// 0 = Don't Explode / 74 = Corpse Explosion / 83 = Poison Explosion
+	NTConfig_PoisonNovaDelay = 1500;		// Time in ms to wait before casting another Poison Nova.
+
+
+}

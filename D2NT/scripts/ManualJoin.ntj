@@ -1,0 +1,29 @@
+function NTMain()
+{
+	Delay(1000);
+
+	var _ingame = false;
+
+	while(1)
+	{
+		if(me.ingame)
+		{
+			if(!_ingame)
+			{
+				RunGC();
+
+				if(Load("NTBot/NTBotGame.ntj"))
+					_ingame = true;
+			}
+
+			Delay(1000);
+		}
+		else
+		{
+			if(_ingame)
+				_ingame = false;
+
+			Delay(500);
+		}
+	}
+}
