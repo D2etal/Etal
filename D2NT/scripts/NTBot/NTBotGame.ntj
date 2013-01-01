@@ -58,8 +58,9 @@ function NTMain()
 	// ubi21 Enigma reset end
 	////////////////////////////
 
-	if(NTConfig_StartDelay > 0);
+	if(NTConfig_StartDelay > 0) {
 		NTC_Delay(NTConfig_StartDelay);
+	}
 
 	GetPath(me.areaid, me.x, me.y, me.x, me.y, true);
 
