@@ -63,7 +63,7 @@ function NTMain()
 				while(!NTC_IsQuesterIn())
 					NTC_TPGuard(20);
 
-				while(!NTC_IsItemLooted("bks"))
+				while(NTC_IsQuesterIn())
 					NTC_TPGuard(20);					
 					
 				NTSI_PickItems();

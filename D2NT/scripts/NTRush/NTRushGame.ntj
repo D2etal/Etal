@@ -27,7 +27,7 @@ function NTMain()
 	NTC_IncludeConfig("NTRush/rush_configs");
 	Include("libs/common/NTExp.ntl");
 
-	Print(COLOR_4 + "[+] GVRushBot loaded [+]");
+	Print(COLOR_4 + "[+] RushBot loaded [+]");
 	
 	NT_LoadConfig();
 	NTE_InitializeStats();
@@ -35,7 +35,6 @@ function NTMain()
 	if(NTConfig_FreeSpace == 0)
 		Print(COLOR_2 + "Please don't forget to set NTConfig_FreeSpace in your character config to avoid your inv filling");
 
-	NT_ClearMessages(); // leech improvements
 
 	//var _time1 = NTU_timeStamp();
 	//Print ("Begin Parse: "+_time1);
@@ -50,8 +49,9 @@ function NTMain()
 	// ubi21 Enigma reset end
 	////////////////////////////
 
-	if(NTConfig_StartDelay > 0);
+	if(NTConfig_StartDelay > 0) {
 		NTC_Delay(NTConfig_StartDelay);
+	}
 
 	GetPath(me.areaid, me.x, me.y, me.x, me.y, true);
 

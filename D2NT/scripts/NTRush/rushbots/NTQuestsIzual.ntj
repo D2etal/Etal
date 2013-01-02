@@ -2,10 +2,10 @@ function NTMain()
 {
 	Include("libs/common/NTCommon.ntl");
 	NTC_IncludeLibs();
-	NTC_IncludeConfig("NTBot/char_configs");
+	NTC_IncludeConfig("NTRush/rush_configs");
 
 	NT_LoadConfig();
-	NTSI_LoadNIPFiles("NTRush/rush_configs");
+	NTSI_LoadNIPFiles("NTBot/item_configs");
 
 	NTA_Initialize();
 

@@ -1564,6 +1564,103 @@ function NTC_IsLastScript(scriptName) {
 	return NTConfig_Script[NTConfig_Script.length - 1] === scriptName;
 }
 
+function NTC_TPGuard(radius)
+{
+		NTA_ClearPosition(radius)
+		NTM_GetCloserInt(NTM_FindCorrectPortalInt(true, me.name))
+		NTC_Delay(500);
+}
+
+
+function NTC_IsQuesterIn(area, name)
+{
+	var _player;
+	var _myPartyId;
+	var _area;
+
+	_player = GetPlayerUnit();
+	_myPartyId = _player.partyid;
+
+	if(arguments.length < 1)
+		_area = me.areaid
+	if(arguments.length > 0)
+		_area = area;
+	
+	do
+	{
+		if(_player.areaid == _area && _myPartyId == _player.partyid)
+		{
+			if(!name)
+				return true;
+			else if(_player.name == name)
+				return true;
+		}
+
+		NTC_Delay(100);
+
+	} while(_player.GetNext());
+
+	return false;	
+}
+
+function NTC_IsQuesterOut(area)
+{
+	var _player;
+	var _myPartyId;
+
+	_player = GetPlayerUnit();
+	_myPartyId = _player.partyid;
+
+	if(arguments.length < 1)
+		_area = me.areaid;
+	else
+		_area = area;
+
+	do
+	{
+		if(_player.areaid == _area && _myPartyId == _player.partyid)
+			return false;
+
+		NTC_Delay(100);
+
+	} while(_player.GetNext());
+	
+	return true;	
+}
+
+function NTC_IsGroupInAct(act)
+{
+	var _player;
+	var _myPartyId;
+	var questeract;
+
+	_player = GetPlayerUnit();
+	_myPartyId = _player.partyid;
+
+	do
+	{
+
+		if(_player.areaid <= 39)
+			questeract = 1;
+		else if(_player.areaid >= 40 && _player.areaid <= 74)
+			questeract = 2;
+		else if(_player.areaid >= 75 && _player.areaid <= 102)
+			questeract = 3;
+		else if(_player.areaid >=103 && _player.areaid <= 108)
+			questeract = 4;
+		else
+			questeract = 5;
+
+		if(questeract == act && _myPartyId == _player.partyid && _player.name != me.charname)
+			return true;
+
+		NTC_Delay(100);
+
+	} while(_player.GetNext());
+
+	return false;	
+}
+
 function NTC_GetNextGame() {
 	function Pad(num) {
 		if (num < 10) {
@@ -1587,6 +1684,24 @@ function NTC_GetNextGame() {
 	result += Pad(number);
 
 	return result;
+}
+
+function NTC_IsItemLooted(itemcode)
+{
+	var _item;
+	
+	_item = NTC_FindUnit(NTC_UNIT_ITEM);
+
+	if(_item)
+	{
+		do
+		{
+			if(_item.code == itemcode)
+				return false;
+				
+		} while(_item.GetNext());	
+	}
+	return true;
 }
 
 // this is a simple info storage that returns the areaid from a wp id

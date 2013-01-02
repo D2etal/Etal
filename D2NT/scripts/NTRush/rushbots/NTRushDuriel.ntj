@@ -116,7 +116,7 @@ function NTMain()
 					
 			NTSI_PickItems();	
 			
-			Say("Duriels is dead! Get to act 2!");
+			Say("Duriels is dead! Come talk to Tyreal in the back of the tomb!");
 
 			NTM_MakeTP(true);	
 		}	
