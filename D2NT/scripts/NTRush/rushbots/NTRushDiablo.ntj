@@ -68,6 +68,23 @@ function NTMain() {
 	NTSI_PickItems();
 	Say("Diablo is dead! Get to act 5!");
 	NTM_UsePortal("BluePortal", 103, me.charname);
+	
+	if(!NTTM_TownMove("waypoint"))
+	{
+		NTC_SendMsgToScript("NTRushGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	while(!NTC_IsGroupInAct(5)) {
+		Delay(500);
+	}
+
+	if(!NTM_TakeWaypoint(109))
+	{
+		NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
 	NTC_SendMsgToScript("NTRushGame.ntj", "SCRIPT_END");
 }
 

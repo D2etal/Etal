@@ -106,6 +106,10 @@ function NTMain()
 			return;
 		}
 
+		while(!NTC_IsGroupInAct(2)) {
+			Delay(500);
+		}
+
 		if(!NTM_TakeWaypoint(40))
 		{
 			NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeWaypoint()");

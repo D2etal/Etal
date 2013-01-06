@@ -200,7 +200,11 @@ function NTMain()
 			NTC_SendMsgToScript("NTRushGame.ntj", "NTTM_TownMove()");
 			return;
 		}
-			
+
+		while(!NTC_IsGroupInAct(3)) {
+			Delay(500);
+		}
+
 		if(!NTM_TakeWaypoint(75))
 		{
 			NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeWaypoint()");
