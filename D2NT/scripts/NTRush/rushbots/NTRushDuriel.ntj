@@ -123,76 +123,75 @@ function NTMain()
 	
 		NTC_PutSkill(115, NTC_HAND_RIGHT)	
 			
-		if(!NTTM_TownMove("waypoint"))
-		{
-			NTC_SendMsgToScript("NTRushGame.ntj", "NTTM_TownMove()");
-			return;
-		}
-		
-		if(!NTM_TakeWaypoint(52))
-		{
-			NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeWaypoint()");
-			return;
-		}
-		
-		if(!NTM_MoveToStair(me.areaid, 51))
-		{
-			NTC_SendMsgToScript("NTRushGame.ntj", "NTM_MoveToStair()");
-			return;
-		}
-		
-		if(!NTM_TakeStair(51))
-		{
-			NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeStair()");
-			return;
-		}
-/* Pather cannot path to Harem stairway.  Manual tele movement required.
-
-		if(!NTM_MoveToStair(me.areaid, 50))
-		{
-			NTC_SendMsgToScript("NTRushGame.ntj", "NTM_MoveToStair()");
-			return;
-		}
-		
-	============Begin harem pathing fix============ */
-
-		var _harem = [10031, 5608, 10058, 5610, 10084, 5611, 10109, 5612, 10133, 5613, 10148, 5603, 10143, 5599];
-		for(i = 0; i < _harem.length; i += 2)
-		{
-			for(n = 0 ; n < 2 ; n++)
+		if (NTConfig_TpHarem) {
+			if(!NTTM_TownMove("waypoint"))
 			{
-				if(!NTM_TeleportTo(_harem[i]+Random(-n, n), _harem[i+1]+Random(-n, n)))
-				{
-					NTC_SendMsgToScript("NTRushGame.ntj", "NTM_MoveTo()");
-					return;
-				}
-				else
-					break;				
+				NTC_SendMsgToScript("NTRushGame.ntj", "NTTM_TownMove()");
+				return;
 			}
-		}
-		
-		if(!NTM_TakeStair(50))
-		{
-			NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeStair()");
-			return;
-		}	
-	/* ============End harem pathing fix============ */
-	
-		if(!NTM_MoveTo(me.areaid, 10022, 5046))
-		{
-			NTC_SendMsgToScript("NTRushGame.ntj", "NTM_MoveTo()");
-			return;
-		}
-		
-		NTM_MakeTP(true);
-		
-		if(me.classid =  NTC_CHAR_CLASS_PALADIN)
-			NTC_PutSkill(115, NTC_HAND_RIGHT);
+			
+			if(!NTM_TakeWaypoint(52))
+			{
+				NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeWaypoint()");
+				return;
+			}
+			
+			if(!NTM_MoveToStair(me.areaid, 51))
+			{
+				NTC_SendMsgToScript("NTRushGame.ntj", "NTM_MoveToStair()");
+				return;
+			}
+			
+			if(!NTM_TakeStair(51))
+			{
+				NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeStair()");
+				return;
+			}
+	/* Pather cannot path to Harem stairway.  Manual tele movement required.
 
-		NTC_PingDelay(100);
+			if(!NTM_MoveToStair(me.areaid, 50))
+			{
+				NTC_SendMsgToScript("NTRushGame.ntj", "NTM_MoveToStair()");
+				return;
+			}
+			
+		============Begin harem pathing fix============ */
+
+			var _harem = [10031, 5608, 10058, 5610, 10084, 5611, 10109, 5612, 10133, 5613, 10148, 5603, 10143, 5599];
+			for(i = 0; i < _harem.length; i += 2)
+			{
+				for(n = 0 ; n < 2 ; n++)
+				{
+					if(!NTM_TeleportTo(_harem[i]+Random(-n, n), _harem[i+1]+Random(-n, n)))
+					{
+						NTC_SendMsgToScript("NTRushGame.ntj", "NTM_MoveTo()");
+						return;
+					}
+					else
+						break;				
+				}
+			}
+			
+			if(!NTM_TakeStair(50))
+			{
+				NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeStair()");
+				return;
+			}	
+		/* ============End harem pathing fix============ */
 		
-		Say("Harem portal up for fast travel!");
-		
+			if(!NTM_MoveTo(me.areaid, 10022, 5046))
+			{
+				NTC_SendMsgToScript("NTRushGame.ntj", "NTM_MoveTo()");
+				return;
+			}
+			
+			NTM_MakeTP(true);
+
+			NTC_PingDelay(100);
+			
+			Say("Harem portal up for fast travel!");
+		}
+
 		if(me.classid =  NTC_CHAR_CLASS_PALADIN)
 			NTC_PutSkill(115, NTC_HAND_RIGHT);
 			

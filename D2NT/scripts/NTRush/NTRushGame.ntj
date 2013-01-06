@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "GVRushBot";
+var Rev = "ERusher v1.0";
 
 // Provalone Edit //
 //Include("libs/common/NTExp.ntl");
@@ -15,6 +15,8 @@ var SoJElapsedTime = 0;
 var InitLife;
 var Corpses = 0;
 var checkActOnce = false;
+var _sName = "";
+
 function D2NTStatus(where, time, message) { return SendCopyData('D2NT Manager', null, where << 16 | time, message); }
 function NTMain()
 {
@@ -26,21 +28,11 @@ function NTMain()
 	NTC_IncludeLibs();
 	NTC_IncludeConfig("NTRush/rush_configs");
 	Include("libs/common/NTExp.ntl");
-
-	Print(COLOR_4 + "[+] RushBot loaded [+]");
 	
 	NT_LoadConfig();
 	NTE_InitializeStats();
 
-	if(NTConfig_FreeSpace == 0)
-		Print(COLOR_2 + "Please don't forget to set NTConfig_FreeSpace in your character config to avoid your inv filling");
-
-
-	//var _time1 = NTU_timeStamp();
-	//Print ("Begin Parse: "+_time1);
 	NTSI_LoadNIPFiles("NTBot/item_configs");
-	//var _time2 = NTU_timeStamp();
-	//Print ("End Parse: "+_time2);
 
 	// ubi21 Enigma reset start
 	////////////////////////////
@@ -65,13 +57,6 @@ function NTMain()
 	}
 	// ubi21 Enigma reset end
 	////////////////////////////
-
-	if(NTConfig_CheckPassword && !me.gamepassword){
-		Print(COLOR_1 + "1No password found exiting game");//s
-		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "Exiting Game- No Password");
-		NTC_Delay(2000);
-		ExitGame();
-	}
 
 	Corpses = NTT_GetCorpses();
 	if (Corpses > 0 || InitLife < 10)
@@ -98,14 +83,14 @@ function NTMain()
 			GoWestFromLutGholein();
 		}
 
-		Load("NTBot/tools/NTToolsThread.ntj");
+		Load("NTRush/tools/NTRushTools.ntj");
 
 		RegisterEvent(EVENT_GAMEMSG, NT_GameMsgEvents);
 		RegisterEvent(EVENT_KEYDOWN, NT_KeyEvents);
 		RegisterEvent(EVENT_SCRIPTMSG, NT_ScriptMsgEvents);
 
 		Load("NTRush/rushbots/" + NTConfig_RushScript[CurScriptIndex]);
-		SetStatusText(Rev + " "+ NTConfig_RushScript[CurScriptIndex]);
+		SetStatusText(Rev + " Rushing "+ StripScriptName(NTConfig_RushScript[CurScriptIndex]));
 
 		Include("libs/common/NTSnagit.ntl");
 		NTSI_ClearIgnoredItems();
@@ -163,18 +148,17 @@ function NT_KeyEvents(keycode)
 	var _script;
 	switch(keycode) {
 		case Do_PauseBot:
-		_script = NTC_FindScript(NTConfig_RushScript[CurScriptIndex]);
+			_script = NTC_FindScript(NTConfig_RushScript[CurScriptIndex]);
 			if(_script) {
 				if(_script.running) {
 					_script.Stop();
-					NT_ClearMessages();
 					NTC_Delay(300);
 					ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
-					SetStatusText(COLOR_1 + Rev + "    Paused " + NTConfig_RushScript[CurScriptIndex]);
+					SetStatusText(COLOR_1 + Rev + "    Paused " + StripScriptName(NTConfig_RushScript[CurScriptIndex]));
 				}
 				else {
 					Load("NTRush/rushbots/" + NTConfig_RushScript[CurScriptIndex]);
-					SetStatusText(Rev + " " + NTConfig_RushScript[CurScriptIndex]);
+					SetStatusText(Rev + " Rushing "+ StripScriptName(NTConfig_RushScript[CurScriptIndex]));
 				}
 			}
 			break;
@@ -186,7 +170,7 @@ function NT_KeyEvents(keycode)
 				NT_ClearMessages();
 				NTC_Delay(300);
 				ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
-				SetStatusText(COLOR_11 + Rev + " Stopped " + NTConfig_RushScript[CurScriptIndex]);
+				SetStatusText(COLOR_1 + Rev + " Stopped " + StripScriptName(NTConfig_RushScript[CurScriptIndex]));
 				break;
 			}
 			else {
@@ -196,7 +180,7 @@ function NT_KeyEvents(keycode)
 					else
 						CurScriptIndex = 0;
 				}
-				SetStatusText(COLOR_14 + Rev + " Back to " + NTConfig_RushScript[CurScriptIndex]);
+				SetStatusText(COLOR_11 + Rev + " Back to " + StripScriptName(NTConfig_RushScript[CurScriptIndex]));
 			}
 			break;
 		case Do_NextScript:
@@ -205,13 +189,12 @@ function NT_KeyEvents(keycode)
 			if(_script.running) {
 				_script.Stop();
 				NT_ClearMessages();
-				SetStatusText(COLOR_11 + Rev + " Stopped " + NTConfig_RushScript[CurScriptIndex]);
-			}
-			else if(++CurScriptIndex < NTConfig_RushScript.length)
-				SetStatusText(COLOR_14 + Rev + " Skipped to " + NTConfig_RushScript[CurScriptIndex]);
-			else if(++CurScriptIndex >= NTConfig_RushScript.length) {
+				SetStatusText(COLOR_1 + Rev + " Stopped " + StripScriptName(NTConfig_RushScript[CurScriptIndex]));
+			} else if(++CurScriptIndex < NTConfig_RushScript.length) {
+				SetStatusText(COLOR_2 + Rev + " Skipped to " + StripScriptName(NTConfig_RushScript[CurScriptIndex]));
+			} else if(++CurScriptIndex >= NTConfig_RushScript.length) {
 				CurScriptIndex = 0;
-				SetStatusText(COLOR_2 + Rev + " Skipped to " + NTConfig_RushScript[CurScriptIndex]);
+				SetStatusText(COLOR_2 + Rev + " Skipped to " + StripScriptName(NTConfig_RushScript[CurScriptIndex]));
 			}
 			break;
 		case Do_DropItems:
@@ -277,10 +260,9 @@ function NT_ScriptMsgEvents(msg)
 		{
 			NTTM_CheckAct();
 			Load("NTRush/rushbots/" + NTConfig_RushScript[CurScriptIndex]);
-			SetStatusText(Rev + "   " + NTConfig_RushScript[CurScriptIndex]);
+			SetStatusText(Rev + "   " + StripScriptName(NTConfig_RushScript[CurScriptIndex]));
 			NTC_LogCurScript(NTConfig_RushScript[CurScriptIndex]);
-		}
-		else{
+		} else{
 			LastScript = true;
 		}
 
@@ -299,11 +281,11 @@ function NT_ScriptMsgEvents(msg)
 		{
 			NTTM_CheckAct();
 			Load("NTRush/rushbots/" + NTConfig_RushScript[CurScriptIndex]);
-			SetStatusText(Rev + "  "  + NTConfig_RushScript[CurScriptIndex]);
+			SetStatusText(Rev + "  "  + StripScriptName(NTConfig_RushScript[CurScriptIndex]));
 			NTC_LogCurScript(NTConfig_RushScript[CurScriptIndex]);
-		}
-		else
+		} else {
 			LastScript = true;
+		}
 		break;
 	}
 }
@@ -356,4 +338,65 @@ function NTC_PrintPossibleLeaders()
 		} while(_player.GetNext());
 	}
 	return false;
+}
+
+function StripScriptName(string) {
+	var script = string.toLowerCase();
+	
+	switch(script) {
+		case "ntquestscain.ntj":
+			return "Cain";
+		break;
+		case "ntrushandariel.ntj":
+			return "Andy";
+		break;
+		case "ntquestsradament.ntj":
+			return "Radament";
+		break;
+		case "ntrushcube.ntj":
+			return "Cube";
+		break;
+		case "ntrushvipertemple.ntj":
+			return "Ammy";
+		break;
+		case "ntrushmaggotlair.ntj":
+			return "Staff";
+		break;
+		case "ntrushsummoner.ntj":
+			return "Summoner";
+		break;
+		case "ntrushduriel.ntj":
+			return "Duriel";
+		break;
+		case "ntquestslamesenstome.ntj":
+			return "Tome";
+		break;
+		case "ntrushtravincal.ntj":
+			return "Travincal";
+		break;
+		case "ntrushmephisto.ntj":
+			return "Mephisto";
+		break;
+		case "ntquestsizual.ntj":
+			return "Izual";
+		break;
+		case "ntrushdiablo.ntj":
+			return "Diablo";
+		break;
+		case "ntquestsshenk.ntj":
+			return "Shenk";
+		break;
+		case "ntquestsanya":
+			return "Anya";
+		break;
+		case "ntrushancients.ntj":
+			return "Ancients";
+		break;
+		case "ntrushbaal.ntj":
+			return "Baal";
+		break;
+		case "ntwaypoints.ntj":
+			return "Waypoints";
+		break;
+	}
 }

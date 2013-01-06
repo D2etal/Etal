@@ -2,7 +2,27 @@
 // Now in order based on the char_config's themselves. Please stick to this so things are easier to track
 // Done by Tru - April 2012
 
-var NTConfig_Script = [];
+var NTConfig_Quests = [];
+var NTConfig_RushScript = [
+	"NTQuestsCain.ntj",
+	"NTRushAndariel.ntj", 
+	"NTQuestsRadament.ntj", 
+	"NTRushCube.ntj", 
+	"NTRushViperTemple.ntj", 
+	"NTRushMaggotLair.ntj", 
+	"NTRushSummoner.ntj", 
+	"NTRushDuriel.ntj", 
+	"NTQuestsLamEsensTome.ntj", 								
+	"NTRushTravincal.ntj",
+	"NTRushMephisto.ntj",
+	"NTQuestsIzual.ntj",
+	"NTRushDiablo.ntj", 		
+	"NTQuestsShenk.ntj",
+	"NTQuestsAnya.ntj",
+	"NTRushAncients.ntj",
+	"NTRushBaal.ntj",
+	"NTWaypoints.ntj",
+];
 
 // Class Specific Var's
 	var DebugAttacksInGame;
@@ -484,28 +504,6 @@ var NTConfig_Output;
 var NTConfig_LogIt;
 
 // Rusher Adds
-var NTConfig_Quests = [];
-var NTConfig_RushScript = [
-
-	"NTQuestsCain.ntj",
-	"NTRushAndariel.ntj", 
-	"NTQuestsRadament.ntj", 
-	"NTRushCube.ntj", 
-	"NTRushViperTemple.ntj", 
-	"NTRushMaggotLair.ntj", 
-	"NTRushSummoner.ntj", 
-	"NTRushDuriel.ntj", 
-	"NTQuestsLamEsensTome.ntj", 								
-	"NTRushTravincal.ntj",
-	"NTRushMephisto.ntj",
-	"NTQuestsIzual.ntj",
-	"NTRushDiablo.ntj", 		
-	"NTQuestsShenk.ntj",
-	"NTQuestsAnya.ntj",
-	"NTRushAncients.ntj",
-	"NTRushBaal.ntj",
-	"NTWaypoints.ntj",
-]
-
 var NTConfig_KillCouncils;	
 var NTConfig_ClearCS;	
+var NTConfig_TpHarem;

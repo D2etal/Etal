@@ -48,8 +48,11 @@ function NTMain() {
 		
 	Say("Diablo up! If you die stay dead!");
 
+	while(!NTC_IsQuesterIn()) {
+		Delay(500);
+	}
+
 	NTM_MoveTo(108, 7792, 5291);
-	NTTMGR_CheckSafe(NTConfig_CheckSelfSafe, NTConfig_CheckMercSafe);
 	Print(COLOR_8 + "Waiting for Diablo to spawn..");
 
 	for (i = 0; i < 200; i += 1) {

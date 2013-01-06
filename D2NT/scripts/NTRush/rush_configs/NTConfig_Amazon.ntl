@@ -22,6 +22,7 @@ function NT_LoadConfig()
 			"Anya"						
 			];
 	
+	NTConfig_TpHarem = false;
 	NTConfig_KillCouncils = false;	
 	NTConfig_ClearCS = false;	
 	NTConfig_Waypoints = false;													//True to enable waypoints at the end of the rush.
