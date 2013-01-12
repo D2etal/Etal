@@ -1,0 +1,85 @@
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(me.diff == 0) {
+		if(!NTTM_TownMove("waypoint")) {
+			NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+			return;
+		}
+
+		if(!NTM_TakeWaypoint(57)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+			return;
+		}
+
+		NTP_DoPrecast(true);		
+
+		if(!NTM_MoveToStair(me.areaid, 60)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_MoveToStair()");
+			return;
+		}
+
+		if(!NTM_TakeStair(60)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
+			return;
+		}
+
+		NTP_DoPrecast(true);
+
+		if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 354, -5, -5)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+			return;
+		}
+
+		NTA_ClearPosition(30);
+
+		NTSI_PickItems();
+
+		_Cube = NTC_FindUnit(NTC_UNIT_OBJECT, 354);
+
+		if(_Cube) {	
+			if(NTM_MoveTo(_Cube.areaid, _Cube.x+3, _Cube.y)) {
+				NTA_ClearPosition(30);
+				NTSI_PickItems();
+			}
+
+			if(NTC_OpenChest(_Cube)) {
+				NTC_PingDelay(100);
+				NTSI_PickItems();
+			}
+
+			NTA_ClearPosition(30);
+
+			NTSI_PickItems();
+		}
+
+		Say("Cube up!");
+
+		NTM_MakeTP();
+
+		while(!NTC_IsQuesterIn()) {
+			NTC_TPGuard(30);
+		}
+
+		NTSI_PickItems();
+
+		NTM_UsePortal("BluePortal", 40, me.charname);
+	
+		NTTMGR_TownManager();
+	}
+	NTC_SendMsgToScript("loader.ntj", "end");
+}

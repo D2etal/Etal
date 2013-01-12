@@ -1,0 +1,68 @@
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(111)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);	
+
+	if(!NTM_MoveTo(110, 3855, 5125)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+		return;
+	}
+
+	if(NTA_ClearPosition(20)) {
+		NTM_MoveTo(110, 3855, 5125);
+	}
+
+	Say("Shenk up! If you die stay dead!");
+
+	NTM_MakeTP();
+
+	while(!NTC_IsQuesterIn()) {
+		NTC_TPGuard(20);
+	}
+
+	if(!NTA_KillMonster(GetLocaleString(22435))) {
+		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
+		return;
+	}
+
+	NTA_ClearPosition();
+
+	NTSI_PickItems();
+
+	Say("Shenk is dead! Got talk to Larzark!");
+
+	if(!NTM_MoveTo(110, 3865, 5125)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+		return;
+	}
+
+	NTM_UsePortal("BluePortal", 109, me.charname);
+
+	NTC_SendMsgToScript("loader.ntj", "end");
+}

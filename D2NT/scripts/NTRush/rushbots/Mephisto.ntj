@@ -1,0 +1,142 @@
+function NTMain()
+{
+	var _chest, _councils, _unit;
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+	
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(101)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);
+
+	if(!NTM_MoveToStair(me.areaid, 102)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToStair()");
+		return;
+	}
+
+	if(!NTM_TakeStair(102)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
+		return;
+	}
+
+	NTP_DoPrecast(true);
+
+	if(!NTM_MoveTo(me.areaid, 17617, 8068)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+		return;
+	}
+
+	if(NTConfig_KillCouncils) {	
+		_unit = GetUnit(NTC_UNIT_MONSTER);
+		_councils = ["Bremm Sparkfist",  "Wyand Voidbringer", "Maffer Dragonhand", "Council Member"];
+
+		do {
+			for(i=0; i<_councils.length; i++) {
+				if(_unit.name == _councils[i]) {
+					if(GetDistance(me.x, me.y, _unit.x, _unit.y) < 35) {
+						NTA_KillMonster(_councils[i]);
+					}
+				}
+			}
+		} while(_unit.GetNext());
+	}
+
+	if(!NTM_MoveTo(me.areaid, 17589, 8068)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+		return;
+	}
+
+	Say("Mephisto up! If you die stay dead!");
+
+	NTM_MakeTP();
+
+	while(!NTC_IsQuesterIn()) {
+		NTC_Delay(500);
+	}
+
+	NTP_DoPrecast(true);
+
+	if(!NTM_MoveTo(me.areaid, 17564, 8069)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+		return;
+	}
+
+	NTC_Delay(100);
+	NTM_MoveTo(me.areaid, 17573, 8071);
+
+	if(!NTA_KillMonster(242)) {
+		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
+		return;
+	}
+
+	NTA_ClearPosition(25);
+
+	NTSI_PickItems();
+
+	Say("Mephisto is dead! Get to act 4!");
+
+	if(NTConfig_OpenChest) {
+		if(!NTM_MoveTo(me.areaid, 17520, 8063)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+			return;
+		}
+
+		_chest = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3260));
+
+		if(_chest) {
+			do {
+				if(_chest.x == 17513 && _chest.y == 8063) {
+					if(NTM_MoveTo(_chest.areaid, _chest.x+1, _chest.y)) {
+						if(NTC_OpenChest(_chest)) {
+							NTSI_PickItems();
+							break;
+						}
+					}
+				}
+			} while(_chest.GetNext());
+		}
+	}	
+
+	NTM_MoveTo(me.areaid, 17589, 8068);
+
+	NTM_UsePortal("BluePortal", 75, me.charname);
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	while(!NTC_IsGroupInAct(4)) {
+		Delay(500);
+	}
+
+	if(!NTM_TakeWaypoint(103)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTC_Delay(2000);
+
+	NTC_SendMsgToScript("loader.ntj", "end");
+}

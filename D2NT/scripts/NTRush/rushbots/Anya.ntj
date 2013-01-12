@@ -1,0 +1,101 @@
+function NTMain()
+{
+	var _Anya;
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(113)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);	
+
+	if(!NTM_MoveToStair(me.areaid, 114)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToObject()");
+		return;
+	}
+
+	if(!NTM_TakeStair(114)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
+		return;
+	}
+
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 460, -8, -8)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+
+	if(!NTA_KillMonster(GetLocaleString(22504))) {
+		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
+		return;
+	}
+
+	NTA_ClearPosition(40);
+
+	NTSI_PickItems();		
+
+	if(NTM_MoveToPresetUnit(me.areaid, 558)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+
+	NTA_ClearPosition(25);
+
+	NTSI_PickItems();
+
+	_Anya = NTC_FindUnit(NTC_UNIT_OBJECT, 558);
+
+	if(_Anya) {	
+		if(NTM_MoveTo(_Anya.areaid, _Anya.x+3, _Anya.y)) {
+			NTA_ClearPosition(25);
+			NTSI_PickItems();
+		}
+
+		NTC_OpenChest(_Anya);
+		NTC_Delay(100);
+		me.Cancel(0);
+		me.Cancel(0);
+	}
+
+	NTM_MakeTP();
+
+	Say("Anya up!");
+
+	while(NT_GetAnya()) {
+		NTC_TPGuard(25);
+	}
+
+	NTM_UsePortal("BluePortal", 109, me.charname);
+	
+	NTC_SendMsgToScript("loader.ntj", "end");
+}
+
+function NT_GetAnya()
+{
+	_Anya = NTC_FindUnit(NTC_UNIT_OBJECT, 558);
+
+	if(_Anya) {
+		return true;	
+	}
+	return false;
+}

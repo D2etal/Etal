@@ -1,0 +1,147 @@
+var Rev = "ERusher v1.0";
+var _actCheck = false;
+var firstCheck = true;
+var _leech = false;
+var scriptLoad = false;
+var finished = false;
+var _count = 0;
+var _paused = false;
+
+function NTMain() {
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+	Include("libs/common/NTColorConverter.ntl");
+
+	NT_LoadConfig();
+
+	if (!finished) {
+		RegisterEvent(EVENT_KEYDOWN, NT_KeyEvents);
+		RegisterEvent(EVENT_SCRIPTMSG, NT_ScriptMsgEvents);
+		Load("NTRush/rushbots/" + NTConfig_RushScript[_count] + ".ntj");
+		SetStatusText(Rev + " Rushing " + NTConfig_RushScript[_count]);
+
+		while (!finished) {
+			Delay(1000);
+		}
+	}
+
+	NTC_SendMsgToScript("NTRushGame.ntj", "end");
+}
+
+function NT_KeyEvents(keycode) {
+	var _script;
+	switch (keycode) {
+	case Do_PauseBot:
+		if (!_paused) {
+			_script = NTC_FindScript(NTConfig_RushScript[_count] + ".ntj");
+			if (_script) {
+				if (_script.running) {
+					_script.Stop();
+					NTC_Delay(300);
+					ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+					SetStatusText(COLOR_1 + Rev + "    Paused   " + NTConfig_RushScript[_count]);
+					_paused = true;
+				}
+			}
+		} else {
+			_paused = false;
+			Load("NTRush/rushbots/" + NTConfig_RushScript[_count] + ".ntj");
+			SetStatusText(Rev + " Rushing " + NTConfig_RushScript[_count]);
+		}
+		break;
+	case Do_PrevScript:
+		if (!_paused) {
+			_script = NTC_FindScript(NTConfig_RushScript[_count] + ".ntj");
+
+			if(_script.running) {
+				_script.Stop();
+				NTC_Delay(300);
+				ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+				SetStatusText(COLOR_1 + Rev + " Stopped " + NTConfig_RushScript[_count]);
+				break;
+			}
+		} else {
+			if(_count > 0) {
+				_count--;
+			} else {
+				Print(COLOR_9 + "No where to go back to from here!");
+			}
+			SetStatusText(COLOR_4 + Rev + " Back to " + NTConfig_RushScript[_count]);
+		}
+		break;
+	case Do_NextScript:
+		if (!_paused) {
+			_script = NTC_FindScript(NTConfig_RushScript[_count] + ".ntj");
+
+			if (_script.running) {
+				_script.Stop();
+				NTC_Delay(300);
+				ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+				SetStatusText(COLOR_1 + Rev + " Stopped " + NTConfig_RushScript[_count]);
+			}
+		} else {
+			if(_count < NTConfig_RushScript.length - 1) {
+				_count++;
+			} else {
+				Print(COLOR_9 + "No where to go forward to from here!");
+			}
+			SetStatusText(COLOR_2 + Rev + " Skip to " + NTConfig_RushScript[_count]);
+		}
+		break;
+	}
+}
+
+function NT_ScriptMsgEvents(msg) {
+	var _area, _script;
+
+	switch (msg) {
+	case "end":
+		if (_count < NTConfig_RushScript.length - 1) {
+			_count++;
+			NTTM_CheckAct();
+			Load("NTRush/rushbots/" + NTConfig_RushScript[_count] + ".ntj");
+			SetStatusText(Rev + "  Rushing  " + NTConfig_RushScript[_count]);
+			NTC_LogCurScript(NTConfig_RushScript[_count]);
+		} else {
+			_script = NTC_FindScript(NTConfig_RushScript[_count] + ".ntj");
+			if (_script.running) {
+				_script.Stop();
+			}
+			NTC_Delay(150);
+			ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+			finished = true;
+		}
+		break;
+	default:
+		Print(COLOR_1 + NTConfig_RushScript[_count] + " : " + msg + " failed");
+		_area = GetArea();
+		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + NTConfig_RushScript[_count] + " : " + msg + " failed (" + _area.name + ")");
+
+		if (_count < NTConfig_RushScript.length - 1) {
+			_count++;
+			NTTM_CheckAct();
+			Load("NTRush/rushbots/" + NTConfig_RushScript[_count] + ".ntj");
+			SetStatusText(Rev + "  Rushing  " + NTConfig_RushScript[_count]);
+			NTC_LogCurScript(NTConfig_RushScript[_count]);
+		} else {
+			_script = NTC_FindScript(NTConfig_RushScript[_count] + ".ntj");
+			if (_script.running) {
+				_script.Stop();
+			}
+			NTC_Delay(150);
+			ClickMap(NTC_CLICK_LUP, NTC_SHIFT_NONE, null);
+			finished = true;
+		}
+		break;
+	}
+}
+
+function GetScriptLength() {
+	var i,
+		num = 0;
+	for (i = 0; i < NTConfig_RushScript.length; i += 1) {
+		num++;
+	}
+	return num - 1;
+}

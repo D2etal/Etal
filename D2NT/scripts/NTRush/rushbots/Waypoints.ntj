@@ -1,0 +1,75 @@
+function NTMain()
+{
+	var i, _start, _wps,_wppos, _area, _prevarea;
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if (!NTTM_CheckAct(1)) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	_wps = [3, 4, 5, 6, 27, 29, 32, 35, 48, 42, 57, 43, 44, 52, 74, 46, 76, 77, 78, 79, 80, 81, 83, 101, 106, 107, 111, 112, 113, 115, 123, 117, 118, 129];
+
+	switch (me.act) {
+		case 1:
+			_start = 0;
+			break;
+		case 2:
+			_start = 8;
+			break;
+		case 3:
+			_start = 16;
+			break;
+		case 4:
+			_start = 24;
+			break;
+		case 5:
+			_start = 26;
+			break;
+	}
+
+	NTTMGR_TownManager();
+	NTTM_TownMove("waypoint");
+		
+	for(i = _start; i < _wps.length; i++) {
+		if(NTM_TakeWaypoint(_wps[i])) {
+			if(NTM_MakeTP()) {
+				_wppos = [me.x, me.y];
+				_area = GetArea();
+
+				Say(_area.name + " up!");
+
+				if(!me.GetState(51)) {
+					NTP_DoPrecast(true);
+				}
+
+				while(!NTC_IsQuesterIn()) {
+					NTC_TPGuard(40);
+				}
+
+				_prevarea = me.areaid;
+
+				NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+
+				NTM_TakeWaypoint(75);
+
+				NTTMGR_TownManager();
+					
+				NTTM_TownMove("waypoint");
+
+				while(!NTC_IsQuesterOut(_prevarea)) {
+					NTC_Delay(500);
+				}
+			}
+		}
+	}
+	NTC_SendMsgToScript("loader.ntj", "end");
+}

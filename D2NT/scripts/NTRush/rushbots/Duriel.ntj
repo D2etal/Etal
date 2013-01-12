@@ -1,0 +1,182 @@
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	var _tombs, _tileid, _harem;
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(46)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);
+
+	_tombs = GetRoom();
+
+	if(!_tombs) {
+		NTC_SendMsgToScript("loader.ntj", "GetRoom()");
+		return;
+	}
+
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_TILE, _tombs.correcttomb-28)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+
+	_tileunit = NTC_FindUnit(NTC_UNIT_TILE, _tombs.correcttomb-28);
+
+	if(!_tileunit) {
+		NTC_SendMsgToScript("loader.ntj", "NTC_FindUnit()");
+		return;
+	}
+
+	if(!NTM_TakeStair(_tileunit.subareaid)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
+		return;
+	}
+
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 152, -2, 2)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+
+	if(NTA_ClearPosition()) {
+		NTSI_PickItems();
+	} else {
+		NTC_PingDelay(1500);
+	}
+
+	NTA_ClearPosition(40);
+
+	NTSI_PickItems();
+		
+	_orifice = NTC_FindUnit(NTC_UNIT_OBJECT, 152);
+
+	if(_orifice) {
+		NTM_MoveTo(_orifice.areaid, _orifice.x-3, _orifice.y);
+
+		NTC_Delay(150);
+
+		Say("Duriel up! Bring the staff!");
+
+		NTM_MakeTP();
+
+		while(!NTC_IsQuesterIn()) {
+			NTC_TPGuard(20);
+		}
+
+		while(!NTC_FindUnit(NTC_UNIT_OBJECT, 100)) {
+			NTA_ClearPosition(20);
+			NTM_MoveTo(_orifice.areaid, _orifice.x-3, _orifice.y);
+				NTC_Delay(500);
+		}
+
+		if(!NTM_TakeUnit(NTC_UNIT_OBJECT, 100)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_TakeUnit()");
+			return;
+		}
+
+		if(NTC_FindUnit(NTC_UNIT_MONSTER, 211)) {
+			if(!NTA_KillMonster(211)) {
+				NTC_SendMsgToScript("loader.ntj", "NTA_KillBoss()");
+				return;
+			}
+		}
+
+		NTSI_PickItems();	
+		Say("Duriels is dead! Come talk to Tyreal in the back of the tomb!");
+		NTM_MakeTP(true);	
+	}
+	
+	NTC_PutSkill(115, NTC_HAND_RIGHT);	
+			
+	if (NTConfig_TpHarem) {
+		if(!NTTM_TownMove("waypoint")) {
+			NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+			return;
+		}
+
+		if(!NTM_TakeWaypoint(52)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+			return;
+		}
+
+		if(!NTM_MoveToStair(me.areaid, 51)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_MoveToStair()");
+			return;
+		}
+
+		if(!NTM_TakeStair(51)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
+			return;
+		}
+
+		_harem = [10031, 5608, 10058, 5610, 10084, 5611, 10109, 5612, 10133, 5613, 10148, 5603, 10143, 5599];
+
+		for(i = 0; i < _harem.length; i += 2) {
+			for(n = 0 ; n < 2 ; n++) {
+				if(!NTM_TeleportTo(_harem[i]+Random(-n, n), _harem[i+1]+Random(-n, n))) {
+					NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+					return;
+				}
+			}
+		}
+
+		if(!NTM_TakeStair(50)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
+			return;
+		}
+		
+		if(!NTM_MoveTo(me.areaid, 10022, 5046)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+			return;
+		}
+			
+		NTM_MakeTP(true);
+
+		NTC_PingDelay(100);
+			
+		Say("Harem portal up for fast travel!");
+	}
+
+	if(me.classid ==  NTC_CHAR_CLASS_PALADIN) {
+		NTC_PutSkill(115, NTC_HAND_RIGHT);
+	}
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	while(!NTC_IsGroupInAct(3)) {
+		Delay(500);
+	}
+
+	if(!NTM_TakeWaypoint(75)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTC_Delay(2000);
+
+	NTC_SendMsgToScript("loader.ntj", "end");
+}

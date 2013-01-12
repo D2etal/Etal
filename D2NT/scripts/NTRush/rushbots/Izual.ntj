@@ -1,0 +1,142 @@
+function NTMain()
+{
+	var _izzy;
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(106)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);
+
+	_izzy = GetPresetUnits(105, NTC_UNIT_MONSTER, 256);
+
+	NT_MoveSafeIzzy(me.areaid, _izzy[0].roomx*5+_izzy[0].x, _izzy[0].roomy*5+_izzy[0].y);
+
+	NTA_ClearPosition(10);
+
+	Say("Izzy up! If you die stay dead!");
+
+	NTM_MakeTP();
+
+	while(!NTC_IsQuesterIn()) {
+		NTC_TPGuard(20);
+	}
+
+	NTA_ClearPosition(20);
+
+	NTM_MoveTo(105, _izzy[0].roomx*5+_izzy[0].x, _izzy[0].roomy*5+_izzy[0].y, 0, true);
+
+	if(!NTA_KillMonster(256)) {
+		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
+		return;
+	}
+
+	NTSI_PickItems();
+
+	NTM_MakeTP();
+
+	Say("Izzy dead! Talk to Tyreal to get your skills!");
+
+	NTA_ClearPosition(10);
+
+	NTSI_PickItems();
+
+	NTM_UsePortal("BluePortal", 103, me.charname);
+
+	NTC_SendMsgToScript("loader.ntj", "end");
+}
+
+function NT_MoveSafeIzzy(areaid, x, y, retry, clearpath)
+{
+	var i, n, _teleport, _path, _izzy,
+		_retry = 0;
+
+	if(x == me.x && y == me.y) {
+		return true;
+	}
+
+	if(retry === undefined) {
+		retry = 3;
+	}
+
+	if(clearpath === undefined) {
+		clearpath = false;
+	}
+
+	if(NTC_InTown() || NTC_GetSkillLevel(54) < 1) {
+		_teleport = false;
+	} else {
+		_teleport = true;
+	}
+
+	_path = GetPath(areaid, me.x, me.y, x, y, _teleport);
+
+	if(!_path) {
+		return false;
+	}
+
+	for(i = 0 ; i < _path.length ; i++) {
+		for(n = 0 ; n < 2 ; n++) {
+			if(_teleport) {
+				if(NTM_TeleportTo(_path[i][0]+Random(-n, n), _path[i][1]+Random(-n, n))) {
+					break;
+				}
+			} else {
+				if(NTM_WalkTo(_path[i][0], _path[i][1])) {
+					break;
+				}
+			}
+		}
+
+		_izzy = GetPresetUnits(105, NTC_UNIT_MONSTER, 256);
+		if(GetDistance(me.x, me.y, _izzy[0].roomx*5+_izzy[0].x, _izzy[0].roomy*5+_izzy[0].y) <= 60) {
+			return true;
+		}
+
+		if(n < 2) {
+			if(clearpath) {
+				if(!NTA_ClearPosition(20, true, 2)) {
+					return false;
+				}
+
+				NTP_DoPrecast(false);
+
+				NTM_MoveTo(me.areaid, _path[i][0], _path[i][1], 1);
+			}
+		} else if(_retry < retry) {
+			_path = GetPath(areaid, me.x, me.y, x, y, _teleport);
+
+			if(!_path) {
+				return false;
+			}
+
+			i = -1;
+			_retry++;
+		} else {
+			return false;
+		}
+	}
+	return true;
+}

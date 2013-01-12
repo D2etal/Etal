@@ -138,7 +138,7 @@ function NTMain(){
 				}
 			}
 
-			if(NTConfig_PartyOnlyLeader){
+			if(NTConfig_Rusher != ""){
 				_player = GetPlayerUnit();
 
 				if(_player){

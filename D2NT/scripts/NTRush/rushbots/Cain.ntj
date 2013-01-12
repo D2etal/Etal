@@ -1,0 +1,162 @@
+function NTMain()
+{
+	var _unit, _treex, _treey,
+		_stoneArray = new Array(10);
+	
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct())
+	{
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+	
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(5)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);	
+
+	_unit = GetPresetUnits(me.areaid, 2);
+
+	for(i=0;i < _unit.length; i++) {
+		if(_unit[i].id == 30) {
+			_treex = _unit[i].roomx*5+_unit[i].x;
+			_treey = _unit[i].roomy*5+_unit[i].y;					
+		}
+	}
+
+	NTM_MoveTo(me.areaid, _treex, _treey);
+
+	NTA_ClearPosition(40);
+
+	NTM_MoveTo(me.areaid, _treex+2, _treey+2);
+
+	Say("Scroll up!");
+
+	NTM_MakeTP();
+
+	while(!NTC_IsQuesterIn()) {
+		NTC_TPGuard(20);
+	}
+
+	while(NTC_IsQuesterIn()) {
+		NTC_TPGuard(20);		
+	}
+
+	NTSI_PickItems();
+
+	NTM_UsePortal("BluePortal", 1, me.charname);
+
+	NTC_PutSkill(115, NTC_HAND_RIGHT);
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(4)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(false);
+
+	_unit = GetPresetUnits(me.areaid, 2);
+				
+	for(i=0;i < _unit.length; i++) {
+		if(_unit[i].id == 17) {
+			_stoneArray[0] = _unit[i].roomx*5+_unit[i].x;
+			_stoneArray[1] = _unit[i].roomy*5+_unit[i].y;					
+		} else if(_unit[i].id == 18) {
+			_stoneArray[2] = _unit[i].roomx*5+_unit[i].x;
+			_stoneArray[3] = _unit[i].roomy*5+_unit[i].y;					
+		} else if(_unit[i].id == 19) {
+			_stoneArray[4] = _unit[i].roomx*5+_unit[i].x;
+			_stoneArray[5] = _unit[i].roomy*5+_unit[i].y;					
+		} else if(_unit[i].id == 20) {
+			_stoneArray[6] = _unit[i].roomx*5+_unit[i].x;
+			_stoneArray[7] = _unit[i].roomy*5+_unit[i].y;					
+		} else if(_unit[i].id == 21) {
+			_stoneArray[8] = _unit[i].roomx*5+_unit[i].x;
+			_stoneArray[9] = _unit[i].roomy*5+_unit[i].y;					
+		}					
+	}
+
+	NTM_MoveTo(me.areaid, _stoneArray[0], _stoneArray[1]);				
+
+	NTA_ClearPosition();	
+
+	NTSI_PickItems();
+				
+	for(i=0;i<10;i+=2) {
+		NTM_MoveTo(me.areaid, _stoneArray[i], _stoneArray[i+1]);
+		NTA_ClearPosition();
+	}
+
+	Say("Stones up!");
+
+	NTM_MoveTo(me.areaid, _stoneArray[0]-2, _stoneArray[1]-2);
+
+	NTM_MakeTP();
+
+	while(!NTC_IsQuesterIn()) {
+		NTC_TPGuard(25);
+	}
+
+	while(!NTC_IsQuesterOut()) {
+		NTC_TPGuard(25);
+	}
+
+	NTSI_PickItems();						
+
+	while(!NTM_UsePortal("Portal", 38)) {
+		NTC_Delay(500);
+	}
+
+	NTM_MoveTo(me.areaid, 25134, 5143);
+
+	if(NTConfig_ClearPosition) {
+		NTA_ClearPosition();
+	}
+
+	NTM_MoveTo(me.areaid, 25134, 5143);
+
+	Say("Trist up!");
+
+	NTM_MakeTP();
+	
+	while(!NTC_IsQuesterIn()) {
+		NTC_TPGuard(25);
+	}
+
+	while(!NTC_IsQuesterOut()) {
+		NTC_TPGuard(25);			
+	}
+
+	NTSI_PickItems();	
+
+	NTM_UsePortal("BluePortal", 1, me.charname);
+
+	NTTMGR_TownManager();
+
+	NTC_SendMsgToScript("loader.ntj", "end");
+}

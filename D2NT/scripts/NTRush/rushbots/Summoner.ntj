@@ -1,0 +1,101 @@
+function NTMain()
+{
+	var _unit, _journalx, _journaly ;
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+	
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(74)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);
+		
+	_unit = GetPresetUnits(me.areaid, 2);
+		
+	for(i=0;i < _unit.length; i++) {
+		if(_unit[i].id == 357) {
+			_journalx = _unit[i].roomx*5+_unit[i].x;
+			_journaly = _unit[i].roomy*5+_unit[i].y;
+		}
+	}
+
+	if(_journalx < 25300) {
+		NTM_MoveTo(me.areaid, _journalx+55, _journaly);
+	}
+	if(_journaly < 5300) {
+		NTM_MoveTo(me.areaid, _journalx+15, _journaly+55);
+	}
+	if(_journalx > 25500) {
+		NTM_MoveTo(me.areaid, _journalx-40, _journaly+15);
+	}
+	if(_journaly > 5500) {
+		NTM_MoveTo(me.areaid, _journalx+15, _journaly-40);
+	}
+
+	for(i=0; i<5; i++) {
+		NTA_ClearPosition(20);
+	}
+
+	NTM_MakeTP();
+
+	Say("Summoner up! If you die stay dead!");
+	
+	while(!NTC_IsQuesterIn()) {
+		NTC_TPGuard(10);
+	}
+
+	if(!NTM_MoveToPresetUnit(me.areaid, 2, 357, 0, 0, true)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+
+	if(!NTA_KillMonster(250)) {
+		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
+		return;
+	}
+
+	Say("Summoner is dead! Get the altar!");
+
+	if(!NTM_MoveToPresetUnit(me.areaid, 2, 357, +10, +10)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+
+	while(!NTM_UsePortal("Portal", 46)) {
+		NTA_ClearPosition(40);
+		NTM_MoveTo(me.areaid, _journalx, _journaly);
+		NTC_Delay(500);
+	}
+
+	if(!NTM_MoveTo(me.areaid, me.x-17, me.y-21)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(40)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+	
+	NTC_SendMsgToScript("loader.ntj", "end");		
+}

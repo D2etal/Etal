@@ -1,0 +1,237 @@
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	var i,  _wave,  _starttick, _portal;
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(129)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);	
+		
+	for(i = 0 ; i < 2 ; i++) {
+		if(!NTM_MoveToStair(me.areaid, 130+i)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_MoveToStair()");
+			return;
+		}
+
+		if(!NTM_TakeStair(130+i)) {
+			NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
+			return;
+		}
+	}
+
+	NTM_MoveTo(me.areaid, 15116, 5068);
+		
+	NT_ClearThroneInt();
+
+	NTM_MoveTo(me.areaid, 15112, 5004, 1, true);
+		
+	Say("Throne up!");
+		
+	NTM_MakeTP();
+
+	NTC_PingDelay(1000);
+
+	while(1) {
+		if(me.classid == NTC_CHAR_CLASS_PALADIN || me.classid == NTC_CHAR_CLASS_BARBARIAN) {
+			NTM_MoveTo(me.areaid, 15092, 5028);
+		} else {
+			NTM_MoveTo(me.areaid, 15092, 5040);
+		}
+
+		if(me.GetState(2)) {
+			NTC_PutSkill(109, NTC_HAND_RIGHT);
+		}
+
+		for(i = 0 ; i < 6 ; i++) {
+			_wave = NT_ThroneCheckInt();
+			if(_wave > 0) {
+				break;
+			}
+			NTC_Delay(500);
+		}
+
+		_starttick = GetTickCount();
+
+		while(_wave == 0) {
+			if(!NT_ThronePreAttackInt()) {
+				NTC_Delay(200);
+			}
+
+			if(GetTickCount()-_starttick > 15000) {
+				NT_ClearThroneInt();
+				_starttick = GetTickCount();
+			}
+
+			_wave = NT_ThroneCheckInt();
+		}
+
+		switch(_wave) {
+			case 1:
+				NTA_ClearPosition(40, true, 1);
+				NTP_DoPrecast(true);
+				break;
+			case 3:
+				NTA_ClearPosition(40, true, 2);
+				NT_CheckHydraInt();
+				break;
+			case 4:
+				NTA_ClearPosition(40, true, 2);
+				break;
+			case 5:
+				NTA_ClearPosition(40, true);
+				break;
+			default:
+				NTA_ClearPosition(40, true, 1);
+				break;
+		}
+
+		if(_wave == 5) {
+			break;
+		}
+	}
+
+	NTM_MoveTo(me.areaid, 15092, 5010);
+
+	NTP_DoPrecast(true);
+
+	while(NTC_FindUnit(NTC_UNIT_MONSTER, 543)) {
+		NTC_Delay(500);
+	}
+
+	_portal = NTC_FindUnit(NTC_UNIT_OBJECT, 563);
+
+	if(!_portal) {
+		NTC_SendMsgToScript("loader.ntj", "NTC_FindUnit()");
+		return;
+	}
+
+	if(!NTM_UsePortal("Portal", 132, null, _portal)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_UsePortal()");
+		return;
+	}
+
+	NTM_MoveTo(me.areaid, 15138, 5916);
+
+	if(!NTA_KillMonster(544)) {
+		NTC_SendMsgToScript("loader.ntj", "NTA_KillBoss()");
+		return;
+	}
+
+	NTSI_PickItems();
+	NTC_PingDelay(200);
+
+	Say("Baal is dead! New Game if this is not hell!");
+	
+	NTC_SendMsgToScript("loader.ntj", "end");
+}
+
+// Internal function
+function NT_ClearThroneInt()
+{
+	var i,
+		_attackpos = [15112, 5068, 15075, 5065, 15114, 5045, 15114, 5012, 15095, 5024, 15078, 5013, 15092, 5040];
+
+	for(i = 0 ; i < _attackpos.length ; i += 2) {
+		NTM_MoveTo(me.areaid, _attackpos[i], _attackpos[i+1]);
+		NTA_ClearPosition(25, true, 2);
+	}
+}
+
+function NT_ThroneCheckInt()
+{
+	var _monster;
+
+	if(!NTC_FindUnit(NTC_UNIT_MONSTER, 543)) {
+		return 5;
+	}
+
+	_monster = NTC_FindUnit(NTC_UNIT_MONSTER);
+
+	if(_monster) {
+		do {
+			if(NTA_IsValidMonster(_monster)) {
+				if(_monster.classid == 23 || _monster.classid == 62) {
+					return 1;
+				}
+
+				if(_monster.classid == 105 || _monster.classid == 381) {
+					return 2;
+				}
+
+				if(_monster.classid == 557) {
+					return 3;
+				}
+
+				if(_monster.classid == 558) {
+					return 4;
+				}
+
+				if(_monster.classid == 571) {
+					return 5;
+				}
+			}
+		} while(_monster.GetNext());
+	}
+
+	return 0;
+}
+
+function NT_ThronePreAttackInt()
+{
+	if(me.classid == NTC_CHAR_CLASS_SORCERESS) {
+		if(NTConfig_AttackSkill[3] == 56 || NTConfig_AttackSkill[3] == 59) {
+			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 15092, 5028);
+		}
+	} else if(me.classid == NTC_CHAR_CLASS_PALADIN) {
+		if(NTConfig_AttackSkill[3] == 112) {
+			if(NTConfig_AttackSkill[4] > 0) {
+				NTC_PutSkill(NTConfig_AttackSkill[4], NTC_HAND_RIGHT);
+			}
+			return NTC_CastSkill(NTConfig_AttackSkill[3], 2);
+		}
+	}
+	return false;
+}
+
+function NT_CheckHydraInt()
+{
+	var _hydra1, _hydra2, _hydra3;
+
+	_hydra1 = NTC_FindUnit(NTC_UNIT_MONSTER, 351);
+	_hydra2 = NTC_FindUnit(NTC_UNIT_MONSTER, 352);
+	_hydra3 = NTC_FindUnit(NTC_UNIT_MONSTER, 353);
+
+	if((_hydra1 && _hydra1.GetStat(172) != 2 && _hydra1.GetState(105))
+		|| (_hydra2 && _hydra2.GetStat(172) != 2 && _hydra2.GetState(105))
+		|| (_hydra3 && _hydra3.GetStat(172) != 2 && _hydra3.GetState(105))) {
+		NTM_MoveTo(me.areaid, 15112, 5004);
+
+		if(me.GetState(2)) {
+			NTC_PutSkill(109, NTC_HAND_RIGHT);
+		}
+		NTC_PingDelay(3000);
+	}
+}

@@ -1,0 +1,94 @@
+function NTMain()
+{
+	var _Staff;
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(43)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);
+
+	for(i=0; i<3; i++) {		
+		if(!NTM_MoveToStair(me.areaid, 62+i)) { 
+			NTC_SendMsgToScript("loader.ntj", "NTM_MoveToStair()"); 
+			return; 
+		}
+
+		if(!NTM_TakeStair(62+i))  { 
+			NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()"); 
+			return; 
+		} 
+	}
+
+	NTA_ClearPosition(10);
+
+	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 356, -5, -5)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+
+	if(NTM_MoveToPresetUnit(me.areaid, 356)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+
+	for(i = 0; i < 2; i++) {
+		NTA_ClearPosition(15);
+		NTSI_PickItems();
+		NTC_PingDelay(100);
+	}
+
+	NTSI_PickItems();				
+
+	_Staff = NTC_FindUnit(NTC_UNIT_OBJECT, 356);
+		
+	if(_Staff) {	
+		if(NTM_MoveTo(_Staff.areaid, _Staff.x+3, _Staff.y+3)) {
+			NTA_ClearPosition(15);
+			NTSI_PickItems();
+		}
+		if(NTC_OpenChest(_Staff)) {
+			NTC_PingDelay(100);
+			NTSI_PickItems();
+		}
+	}
+
+	if(NTM_MoveTo(_Staff.areaid, _Staff.x+3, _Staff.y+3)) {
+		NTA_ClearPosition(15);
+		NTSI_PickItems();
+	}
+
+	NTA_ClearPosition(30);
+	NTM_MoveTo(_Staff.areaid, _Staff.x+3, _Staff.y+3);
+
+	Say("Staff up!");
+
+	NTM_MakeTP(true);
+
+	NTTMGR_TownManager();
+	
+	NTC_SendMsgToScript("loader.ntj", "end");
+}

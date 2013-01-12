@@ -10,7 +10,7 @@ function NTMain() {
 	NTConfig_DancingSorc = false;	
 
 	if(!NTTM_CheckAct()){
-		NTC_SendMsgToScript("NTRushGame.ntj", "NTTM_CheckAct()");
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
 		return;
 	}
 
@@ -18,12 +18,12 @@ function NTMain() {
 	Print(COLOR_8 + "Going to River of Flame");
 
 	if(!NTTM_TownMove("waypoint")){
-		NTC_SendMsgToScript("NTRushGame.ntj", "NTTM_TownMove()");
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
 		return;
 	}
 
 	if(!NTM_TakeWaypoint(107)){
-		NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeWaypoint()");
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
 		return;
 	}
 
@@ -32,14 +32,14 @@ function NTMain() {
 	Print(COLOR_8 + "Going to Chaos Sanctuary");
 
 	if (!NTM_MoveTo(108, 7790, 5544)) {
-		NTC_SendMsgToScript("NTRushGame.ntj", "NTM_MoveTo()");
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
 		return;
 	}
 
 	NTM_MoveTo(108, 7792, 5291);
 
 	if (!NT_OpenSealsInt()) {
-		NTC_SendMsgToScript("NTRushGame.ntj", "NT_OpenSealsInt()");
+		NTC_SendMsgToScript("loader.ntj", "NT_OpenSealsInt()");
 		return;
 	}
 
@@ -62,7 +62,7 @@ function NTMain() {
 		NTC_Delay(500);
 	}
 	if (!NTA_KillMonster(243)) {
-		NTC_SendMsgToScript("NTRushGame.ntj", "NTA_KillMonster()");
+		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
 		return;
 	}
 	NTSI_PickItems();
@@ -71,7 +71,7 @@ function NTMain() {
 	
 	if(!NTTM_TownMove("waypoint"))
 	{
-		NTC_SendMsgToScript("NTRushGame.ntj", "NTTM_TownMove()");
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
 		return;
 	}
 
@@ -81,16 +81,15 @@ function NTMain() {
 
 	if(!NTM_TakeWaypoint(109))
 	{
-		NTC_SendMsgToScript("NTRushGame.ntj", "NTM_TakeWaypoint()");
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
 		return;
 	}
 
-	NTC_SendMsgToScript("NTRushGame.ntj", "SCRIPT_END");
+	NTC_SendMsgToScript("loader.ntj", "end");
 }
 
 function NT_OpenSealsInt() {
-	var _unit;
-	var _result;
+	var _unit, _result;
 
 	_unit = GetPresetUnits(108, NTC_UNIT_OBJECT, 396);
 
@@ -129,15 +128,15 @@ function NT_OpenSealsInt() {
 }
 
 function NT_OpenVizierSealInt(type) {
-	var i;
+	var i, vx, vy;
 
 	if (NTConfig_ClearCS) {
 		if (type === 1) {
-			var vx = [7767,7756,7744,7747,7750,7741,7729,7720,7720,7721,7719,7712,7700,7687,7676, 7666];//   |||   |||
-			var vy = [5292,5284,5275,5290,5303,5310,5314,5312,5301,5288,5273,5292,5294,5294,5292, 5307];//      |||
+			vx = [7767,7756,7744,7747,7750,7741,7729,7720,7720,7721,7719,7712,7700,7687,7676, 7666];//	|||  |||
+			vy = [5292,5284,5275,5290,5303,5310,5314,5312,5301,5288,5273,5292,5294,5294,5292, 5307];//      |||
 		} else {
-			var vx = [7768,7755,7741,7733,7723,7714,7707,7680,7666, 7655];//   |||||||||
-			var vy = [5289,5295,5282,5291,5300,5282,5315,5310,5311, 5282];//   |||
+			vx = [7768,7755,7741,7733,7723,7714,7707,7680,7666, 7655];//   |||||||||
+			vy = [5289,5295,5282,5291,5300,5282,5315,5310,5311, 5282];//   |||
 		}
 		for (i = 0; i < vx.length; i += 1) {
 			NTM_MoveTo(108, vx[i], vy[i]);
@@ -156,17 +155,17 @@ function NT_OpenVizierSealInt(type) {
 }
 
 function NT_OpenDeSeisSealInt(type) {
-	var i, n;
+	var i, n, sx, sy;
 
 	if (NTConfig_ClearCS) {
 		if (type === 1) {
-			var sx = [7791,7783,7800,7809,7785,7773,7773,7776,7794,7811,7817,7815,7798]; // Shape of "2"
-			var sy = [5265,5256,5247,5232,5230,5222,5212,5194,5194,5193,5177,5157,5155];
+			sx = [7791,7783,7800,7809,7785,7773,7773,7776,7794,7811,7817,7815,7798]; // Shape of "2"
+			sy = [5265,5256,5247,5232,5230,5222,5212,5194,5194,5193,5177,5157,5155];
 		} else {
-			var sx = [7786,7801,7786,7787,7810,7811,7810,7790,7774,7773,7794]; // shape of an "S" or "5"
-			var sy = [5263,5249,5245,5227,5233,5215,5198,5194,5181,5156,5154];
+			sx = [7786,7801,7786,7787,7810,7811,7810,7790,7774,7773,7794]; // shape of an "S" or "5"
+			sy = [5263,5249,5245,5227,5233,5215,5198,5194,5181,5156,5154];
 		}
-		for (var i = 0; i < sx.length; i += 1) {
+		for (i = 0; i < sx.length; i += 1) {
 			NTM_MoveTo(108, sx[i], sy[i]);
 			NTCS_ClearPosition(30, type === 1 ? SealSort : SealSortB);
 		}
@@ -193,15 +192,16 @@ function NT_OpenDeSeisSealInt(type) {
 }
 
 function NT_OpenVenomSealInt(type) {
+	var i, IX, IY;
 	if (NTConfig_ClearCS) {
 		if (type === 1) {
-			var IX = [7825,7827,7834,7845,7855,7852,7875,7896,7917]; // shape of a "t"
-			var IY = [5293,5276,5291,5315,5301,5278,5293,5295,5291];
+			IX = [7825,7827,7834,7845,7855,7852,7875,7896,7917]; // shape of a "t"
+			IY = [5293,5276,5291,5315,5301,5278,5293,5295,5291];
 		} else {
-			var IX = [7822,7826,7832,7850,7868,7877,7891,7907,7927,7932]; // looks like a hook
-			var IY = [5297,5278,5307,5278,5297,5276,5276,5276,5279,5298];
+			IX = [7822,7826,7832,7850,7868,7877,7891,7907,7927,7932]; // looks like a hook
+			IY = [5297,5278,5307,5278,5297,5276,5276,5276,5279,5298];
 		}
-		for (var i = 0; i < IX.length; i += 1) {
+		for (i = 0; i < IX.length; i += 1) {
 			NTM_MoveTo(108, IX[i], IY[i]);
 			NTCS_ClearPosition(30, type === 1 ? SealSort : SealSortB);
 		}
@@ -223,7 +223,7 @@ function NT_OpenVenomSealInt(type) {
 }
 
 function NT_OpenSealInt(classid) {
-	var warn;
+	var warn, i, seal;
 	switch (classid) {
 	case 396:
 	case 394:
@@ -234,8 +234,6 @@ function NT_OpenSealInt(classid) {
 		warn = false;
 		break;
 	}
-
-	var i, seal;
 
 	for (i = 0; i < 5; i += 1) {
 		NTM_MoveToPresetUnit(108, 2, classid, classid === 394 ? 5 : 2, classid === 394 ? 5 : 0);
@@ -449,10 +447,13 @@ function NTCS_ClearPosition(range, sortFunc, spectype, classid) {
 	switch (arguments.length) {
 	case 0:
 		range = 20;
+		break;
 	case 1:
 		sortFunc = DistanceSort;
+		break;
 	case 2:
 		spectype = false;
+		break;
 	case 3:
 		classid = false;
 		break;

@@ -1,0 +1,105 @@
+function NTMain()
+{
+	var _rad, _chest, _chestx, _chesty, _radtp;
+
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	if(!NTTM_CheckAct())
+	{
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(48)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	NTP_DoPrecast(true);
+
+	if(!NTM_MoveToStair(me.areaid, 49)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToStair()");
+		return;
+	}
+
+	if(!NTM_TakeStair(49)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
+		return;
+	}
+
+	_chest = GetPresetUnits(me.areaid, NTC_UNIT_OBJECT, 355);
+	_chestx = _chest[0].roomx*5 + _chest[0].x;
+	_chesty = _chest[0].roomy*5 + _chest[0].y;
+				
+	if(_chestx %2 != 0) {
+		if(_chesty %2 != 0) {
+			_radtp = [_chestx - 4, _chesty + 46]; // top right
+		} else {
+		_radtp = [_chestx + 5, _chesty - 42]; // bottom left
+		}
+	}
+
+	if(_chestx %2 == 0) {
+		if(_chesty %2 != 0) {
+			_radtp = [_chestx - 45, _chesty + 10]; // bottom right
+		} else {
+			_radtp = [_chestx + 45, _chesty]; // top left
+		}
+	}
+
+	NTM_MoveTo(me.areaid, _radtp[0], _radtp[1]);
+
+	NTM_MakeTP();
+
+	Say("Radament up! If you die stay dead!");
+
+	while(!NTC_IsQuesterIn()) {				
+		NTC_TPGuard(15);
+	}
+
+	if(!NTA_KillMonster(229)) {
+		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
+		return;
+	}
+
+	NTA_ClearPosition();
+
+	if(NTA_KillMonster(229)) {
+		_rad = [me.x, me.y];
+	}
+
+	NTSI_PickItems();
+
+	Say("Radament dead! Come get your book of skill!");
+
+	NTA_ClearPosition(25);
+
+	NTSI_PickItems();
+
+	NTM_MoveTo(me.areaid, _rad[0], _rad[1]);
+
+	NTM_MakeTP();
+
+	//while(!NTC_IsItemLooted("ass"))
+	while(NTC_IsQuesterIn()) {
+		NTC_TPGuard(30);
+	}
+
+	NTM_UsePortal("BluePortal", 40, me.charname);
+	
+	NTC_SendMsgToScript("loader.ntj", "end");
+}

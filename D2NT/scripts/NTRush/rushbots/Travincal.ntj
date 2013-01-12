@@ -1,0 +1,110 @@
+function NTMain()
+{
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+	NTC_IncludeConfig("NTRush/rush_configs");
+
+	var i,_pretp, _waypoint, _deltax, _deltay,
+		_attackpos = [5800, 1554, 5799, 1534, 5799, 1526, 5797, 1514, 5795, 1490, 5787, 1491, 5797, 1514, 5781, 1514];
+
+	NT_LoadConfig();
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+
+	NT_FindDurance();
+
+	if(!NTTM_CheckAct()) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint")) {
+		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(83)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
+		return;
+	}
+
+	_waypoint = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(22526));
+
+	if(!_waypoint) {
+		NTC_SendMsgToScript("loader.ntj", "NTC_FindUnit()");
+		return;
+	}
+
+	_deltax = _waypoint.x - 5699;
+		
+	_deltay = _waypoint.y - 1584;
+
+	NTP_DoPrecast(true);
+
+	NT_FindDurance();
+
+	if(!NTM_MoveTo(me.areaid, _todurx-2, _todury-35)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+		return;
+	}
+
+	_pretp = [_todurx-2, _todury-35, me.x-30, me.y, me.x+60, me.y, me.x-30, me.y, _todurx-2, _todury-35];
+
+	for(i = 0 ; i < _pretp.length ; i += 2) {
+		NTM_MoveTo(me.areaid, _pretp[i], _pretp[i+1]);
+		NTA_ClearPosition(10);
+		NTC_PingDelay(200);
+	}
+		
+	Say("Council up! If you die stay dead!");
+
+	NTM_MakeTP();
+
+	while(!NTC_IsQuesterIn()) {
+		NTC_TPGuard(20);
+	}
+
+	NTP_DoPrecast(true);
+		
+	if(!NTM_MoveTo(me.areaid, 5780+_deltax, 1555+_deltay)) {
+		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
+		return;
+	}
+
+	for(i = 0 ; i < _attackpos.length ; i += 2) {
+		NTM_MoveTo(me.areaid, _attackpos[i]+_deltax, _attackpos[i+1]+_deltay);
+		NTA_ClearPosition(25);
+		NTC_PingDelay(200);
+	}
+
+	Say("Council is dead! Get to town and talk to Cain!");
+
+	while(!NTC_IsQuesterOut()) {
+		Delay(500);
+	}
+
+	NTSI_PickItems();
+		
+	NTM_MoveTo(me.areaid, _todurx-17, _todury+10);
+
+	NTM_MakeTP(true);
+	
+	NTC_SendMsgToScript("loader.ntj", "end");
+}
+
+function NT_FindDurance()
+{
+	var i, _unit;
+
+	_unit = GetPresetUnits(me.areaid, NTC_UNIT_TILE);
+
+	for(i = 0 ; i < _unit.length ; i++) {
+		if(_unit[i].id == 64) {
+			_todurx = (_unit[i].roomx*5+_unit[i].x);
+			_todury = (_unit[i].roomy*5+_unit[i].y);
+		}
+	}
+}
