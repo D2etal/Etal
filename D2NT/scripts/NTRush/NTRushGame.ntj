@@ -1,17 +1,7 @@
-var CurScriptIndex = 0;
-var LastScript = false;
 var Rev = "ERusher v1.0";
 
-var SoJNotify = false;
-var CloneDiabloString = GetLocaleString(11005);
-var SoJString = GetLocaleString(11004).substr(3);
-var CloneDiabloNotify = false;
-var SoJNotify = false;
-var SoJElapsedTime = 0;
 var InitLife;
 var Corpses = 0;
-var _sName = "";
-var _holdPauseCheck = "";
 var done = false;
 
 function D2NTStatus(where, time, message) { return SendCopyData('D2NT Manager', null, where << 16 | time, message); }
