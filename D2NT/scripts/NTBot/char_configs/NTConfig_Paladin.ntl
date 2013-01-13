@@ -647,7 +647,7 @@ function NT_LoadConfig()
 	NTConfig_DropExtraRejuvs = false;					// When belt is full bot will either drop extra rejuvs when a new rejuv is found or drink them. (true to drop, false to drink).
 	NTConfig_TeleGrab = 0; 								// 0 = No, 1 = Yes. Changes pickit to run after each teleport (instead of after each clear call). (Recommended for aura stacking only with a NTConfig_SnagDelay of 0.) (Can cause complications (chickens etc) depending on system / setup.)
 	NTConfig_CheckPassword = false; 						// Check for game password, quit if none.
-	NTConfig_GoWestFromLut = false;						// If new game starts in act 2, use Warriv to return to act 1?
+	NTConfig_GoWestFromLut = false;		 				// Use Warriv to go to A1 for town functions if starting in A2
 	NTConfig_MinPots = 1;								// If less then this many (Health or Mana) potions, will return to town on checkselfsafe 0x01 is calls.
 	NTConfig_CheckPotsTown = 0;							// If less then this many (Health or Mana) potions, will shop them in normal town functions.  Set 0 to always shop them
 	NTConfig_AutoMule = false; 							// Set to true to enable muling. Requires NTMule entry point.

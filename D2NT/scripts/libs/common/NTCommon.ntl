@@ -1109,39 +1109,19 @@ function Lootable(x, y, gid)
 
 function GoWestFromLutGholein(){
 	if(me.areaid == 40){
-		if(CheckForRogueScripts()){
-			_warriv = NTC_FindUnit(NTC_UNIT_NPC, 175, 5);
-			if(_warriv && GetDistance(me.x,me.y,_warriv.x,_warriv.y)<20){
-				NTM_MoveTo(me.areaid, _warriv.x, _warriv.y);
-				if(NTT_DoInteract(_warriv))
-				if(NTT_DoInteract(_warriv)){
-					for(var i = 0 ; i < 4 ; i++){
-						if((i % 4) == 0)
-							me.SelectNPCMenu(0x0D37);
-						NTC_Delay(500);
-					} me.Cancel(1);
-				}
+		_warriv = NTC_FindUnit(NTC_UNIT_NPC, 175, 5);
+		if(_warriv && GetDistance(me.x,me.y,_warriv.x,_warriv.y)<20){
+			NTM_MoveTo(me.areaid, _warriv.x, _warriv.y);
+			if(NTT_DoInteract(_warriv))
+			if(NTT_DoInteract(_warriv)){
+				for(var i = 0 ; i < 4 ; i++){
+					if((i % 4) == 0)
+						me.SelectNPCMenu(0x0D37);
+					NTC_Delay(500);
+				} me.Cancel(1);
 			}
 		}
 	} return;
-}
-
-function CheckForRogueScripts()
-{
-	UsingWarrivNow = false;
-	var ActOneScripts = ["NTBloodMoor.ntj", "NTColdPlains.ntj", "NTBurialGrounds.ntj","NTStonyField.ntj",
-						"NTUndergroundPassage.ntj", "NTDarkWood.ntj", "NTBlackMarsh.ntj", "NTTamoeHighland.ntj",
-						"NTOuterCloister.ntj", "NTBarracks.ntj", "NTJail.ntj", "NTInnerCloister.ntj",
-						"NTCatacombs.ntj", "NTMooMooFarm.ntj"]
-	var NTC_S = ActOneScripts;
-	for(n = 0 ; n < NTConfig_Script.length; n++){
-		if(NTConfig_Script[n] == (NTC_S[0] || NTC_S[1] || NTC_S[2] || NTC_S[3] || NTC_S[4] || NTC_S[5] || NTC_S[6] || NTC_S[7] || NTC_S[8] || NTC_S[9] || NTC_S[10] || NTC_S[11] || NTC_S[12])){
-			UsingWarrivNow = true;
-			return true;
-		}
-	}
-	if(UsingWarrivNow) { return true; }
-	else { return false; }
 }
 
 function NTC_CheckPlayer(leader){

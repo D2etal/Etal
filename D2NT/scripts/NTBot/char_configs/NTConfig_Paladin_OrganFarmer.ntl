@@ -646,7 +646,7 @@ function NT_LoadConfig()
 	NTConfig_TeleGrab = 0; 							// 0 = No, 1 = Yes. Look for items every teleport? (Recommended for aura stacking.)
 	NTConfig_CheckPassword = false; 					// quit if game is made without password 	obv set to false if you run un-passworded games
 	NTConfig_TreasureHunting = false;				// enable this to turn on the clue messages diffrent one every time you precast
-	NTConfig_GoWestFromLut = false;					// if new game starts in act 2 will use warriv to go to act 1
+	NTConfig_GoWestFromLut = false;		 				// Use Warriv to go to A1 for town functions if starting in A2
 	NTConfig_MinPots = 1;							// If less then this ammount of a pot type it will town when checkselfsafe 0x01 is called
 	NTConfig_CheckPotsTown = 0;						// If less then this many (Health or Mana) potions, will shop them in normal town functions.  Set 0 to always shop them
 	NTConfig_AutoMule = false; 						// set to true to enable muling. currently requires NTMule entry point.
