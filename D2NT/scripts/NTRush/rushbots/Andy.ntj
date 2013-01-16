@@ -1,7 +1,6 @@
-function NTMain()
-{
+function NTMain() {
 	var i, _clearpos,
-		_tileid = [18,18];
+		_tileid = [18, 18];
 
 	Include("libs/common/NTCommon.ntl");
 	NTC_IncludeLibs();
@@ -12,32 +11,32 @@ function NTMain()
 
 	NTA_Initialize();
 
-	if(!NTTM_CheckAct()) {
+	if (!NTTM_CheckAct()) {
 		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
 		return;
 	}
 
 	NTTMGR_TownManager();
 
-	if(!NTTM_TownMove("waypoint")) {
+	if (!NTTM_TownMove("waypoint")) {
 		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
 		return;
 	}
 
-	if(!NTM_TakeWaypoint(35)) {
+	if (!NTM_TakeWaypoint(35)) {
 		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
 		return;
 	}
 
 	NTP_DoPrecast(true);
 
-	for(i = 0 ; i < 2 ; i++) {
-		if(!NTM_MoveToStair(me.areaid, 36+i)) {
+	for (i = 0; i < 2; i++) {
+		if (!NTM_MoveToStair(me.areaid, 36 + i)) {
 			NTC_SendMsgToScript("loader.ntj", "NTM_MoveToStair()");
 			return;
 		}
 
-		if(!NTM_TakeStair(36+i)) {
+		if (!NTM_TakeStair(36 + i)) {
 			NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
 			return;
 		}
@@ -47,33 +46,33 @@ function NTMain()
 
 	_clearpos = [22593, 9639, 22594, 9618, 22594, 9618];
 
-	for(i = 0; i < _clearpos.length; i+=2) {
-		if(!NTM_MoveTo(me.areaid, _clearpos[i], _clearpos[i+1])) {
+	for (i = 0; i < _clearpos.length; i += 2) {
+		if (!NTM_MoveTo(me.areaid, _clearpos[i], _clearpos[i + 1])) {
 			NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
 			return;
-		}	
+		}
 		NTA_ClearPosition(20);
 		NTC_PingDelay(200);
 	}
-	
+
 	Say("Andariel up!");
 
 	NTM_MakeTP();
 
 	NTA_ClearPosition(20);
 
-	while(!NTC_IsQuesterIn()) {
+	while (!NTC_IsQuesterIn()) {
 		NTC_Delay(500);
 	}
 
 	NTP_DoPrecast(true);
 
-	if(!NTM_MoveTo(me.areaid, 22532, 9553)) {
+	if (!NTM_MoveTo(me.areaid, 22532, 9553)) {
 		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
 		return;
 	}
 
-	if(!NTA_KillMonster(156)) {
+	if (!NTA_KillMonster(156)) {
 		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
 		return;
 	}
@@ -82,28 +81,28 @@ function NTMain()
 
 	Say("Andariel is dead! Get to act 2!");
 
-	if(!NTM_MoveTo(me.areaid, 22595, 9617)) {
+	if (!NTM_MoveTo(me.areaid, 22595, 9617)) {
 		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
 		return;
 	}
 
 	NTM_UsePortal("BluePortal", 1, me.charname);
 
-	if(!NTTM_TownMove("waypoint")) {
+	if (!NTTM_TownMove("waypoint")) {
 		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
 		return;
 	}
 
-	while(!NTC_IsGroupInAct(2)) {
+	while (!NTC_IsGroupInAct(2)) {
 		Delay(500);
 	}
 
-	if(!NTM_TakeWaypoint(40)) {
+	if (!NTM_TakeWaypoint(40)) {
 		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
 		return;
 	}
 
 	NTC_Delay(2000);
 
-	NTC_SendMsgToScript("Loader.ntj", "end");
-}	
+	NTC_SendMsgToScript("loader.ntj", "end");
+}
