@@ -34,7 +34,7 @@ function NTMain() {
 	}
 	if(NTConfig_WeaponStack > 0){
 		Print("Stacking weapon aura " + NTConfig_WeaponStack + " times!");
-		for (var i = 0; i < NTConfig_StackAmmount; i++) {
+		for (var i = 0; i < NTConfig_WeaponStack; i++) {
 			me.ClickMercItem(4); Delay(500)
 			me.ClickItem(4); Delay(500)
 			me.ClickMercItem(4); Delay(500)
