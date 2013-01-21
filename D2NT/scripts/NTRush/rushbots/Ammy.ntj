@@ -50,7 +50,7 @@ function NTMain()
 		return; 
 	}
 
-	NTA_ClearPosition(10);
+	NTA_ClearPosition(30);
 		
 	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 149, +2, +2)) {
 		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");

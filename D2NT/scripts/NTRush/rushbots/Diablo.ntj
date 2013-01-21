@@ -469,7 +469,7 @@ function NTCS_ClearPosition(range, sortFunc, spectype, classid) {
 		if (target) {
 			do {
 				if (target.IsAttackable()) {
-					if ((me.classid === 1 || me.classid === 2 || me.classid === 6) && NTConfig_Dodge && GetDistance(me, target) < 7 && dodgeIDs.indexOf(target.classid) > -1) {
+					if ((me.classid === 1 || me.classid === 2 || me.classid === 6) && NTConfig_CSDodge && GetDistance(me, target) < 7 && dodgeIDs.indexOf(target.classid) > -1) {
 						NTA_Dodge(target, 15);
 						continue MainLoop;
 					}

@@ -308,3 +308,4 @@ var NTConfig_CaveLevel2;
 var NTConfig_ClearPlainsOfDespair;
 var NTConfig_ClearRiverOfFlames;
 var NTConfig_DNextGameSay;
+var NTConfig_CSDodge;

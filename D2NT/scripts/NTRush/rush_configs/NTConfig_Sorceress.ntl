@@ -32,7 +32,8 @@ function NT_LoadConfig()
 
 	NTConfig_TpHarem = false;
 	NTConfig_KillCouncils = false;
-	NTConfig_ClearCS = false;	
+	NTConfig_ClearCS = false;
+	NTConfig_CSDodge = false;
 
 	//------------------------------------------------------------------------------
 	// Speed Settings
