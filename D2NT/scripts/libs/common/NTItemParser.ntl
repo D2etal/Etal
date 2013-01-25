@@ -343,6 +343,12 @@ function NTIPCheckNipSyntax(line,f)
 		return false;
 	}
 
+	// if the line still contains a '/' then it has a malformed comment
+	if (line.indexOf("/") > 0) {
+		NTIPCheckNipSyntaxDisplay(line,f,"Malformed comment");
+		return false;
+	}
+	
 	// split the line into property, stat and quantity phrases
 	regexp = /#/;
 	phrase = line.split(regexp);
