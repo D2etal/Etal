@@ -1,0 +1,32 @@
+//##########CUBE SOCKETED##########
+[Name] == GreatHauberk && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 1100 && [Sockets] == 4						//Fortitude, Stone
+[Name] == Boneweave && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 1100 && [Sockets] == 4							//Fortitude, Stone
+[Name] == ArchonPlate && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 1100 && [Sockets] == 4						//Fortitude, Stone
+[Name] == KrakenShell && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 1100 && [Sockets] == 4						//Fortitude, Stone
+[Name] == HellforgePlate && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 1100 && [Sockets] == 4					//Fortitude, Stone
+[Name] == SacredArmor && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 1299 && ([Sockets] == 2 || [Sockets] == 4)	//Prudence, Fortitude, Stone
+[Name] == Monarch && [Quality] < Superior && [Flag] == Ethereal # [Defense] >= 320 && ([Sockets] == 3 || [Sockets] == 4)		//Dream, Sanctuary, Spirit, Phoenix
+
+//##########UPPED ITEMS##########
+[Name] == Sallet && [Quality] == Unique && [Flag] == Ethereal # [ItemMagicBonus] == 50																									//Ethereal TARNHELM Upped
+[Name] == HydraSkull && [Quality] == Unique && [Flag] == Ethereal # [ItemMagicBonus] == 50																								//Ethereal TARNHELM 2X Upped
+[Name] == SharkskinGloves && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20 && [MaxHP] == 40																		//BLOODFIST Upped
+[Name] == VampireboneGloves && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20 && [Defense] >= 85 && [MaxHP] == 40													//BLOODFIST 2X Upped
+[Name] == BattleGauntlets && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 30 && [FCR] == 20																			//MAGEFIST Upped
+[Name] == CrusaderGauntlets && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 30 && [Defense] >= 96																	//MAGEFIST 2X Upped
+[Name] == DemonhideBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20 && [FireResist] == 45																	//HOTSPUR Upped
+[Name] == WyrmhideBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20 && [Defense] >= 80																		//HOTSPUR 2X Upped
+[Name] == WyrmhideBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 20 && [Defense] >= 80																		//INFERNOSTRIDE Upped
+[Name] == ScarabshellBoots && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 100 && [MaxHP] >= 65 && [Defense] >= 200													//WATERWALK Upped
+[Name] == MyrmidonGreaves && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 195 && [Defense] >= 200																	//GORE RIDER Upped
+[Name] == Wyrmhide && [Quality] == Unique && [Flag] != Ethereal # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] == 140 && [MagicDamageReduction] == 13 && [Defense] >= 1000	//SKIN OF THE VIPERMAGI Upped
+[Name] == Boneweave && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 210 && [Defense] >= 2200																		//Ethereal SHAFTSTOP Upped
+[Name] == Diadem && [Quality] == Unique # [ColdResist]+[FireResist]+[LightResist]+[PoisonResist] >= 280																					//KIRA'S GUARDIAN Upped
+[Name] == GhostSpear && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 200																								//Ethereal HONE SUNDAN Upped
+[Name] == Stalagmite && [Quality] == Unique # [EnhancedDamage] >= 290																													//RIBCRACKER Upped
+[Name] == PolishedWand && [Quality] == Unique && [Flag] == Ethereal																														//Ethereal SUICIDE BRANCH Upped
+[Name] == MatriarchalJavelin && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDamage] >= 150 && [LifeLeech] >= 5																	//Ethereal TITAN'S REVENGE Upped
+[Name] == GuardianCrown && [Quality] == Unique # [EnhancedDefense] >= 190 && [LifeLeech] >= 3																							//ARREAT'S FACE Upped
+[Name] == BloodlordSkull && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 195 && [Defense] >= 400																	//HOMUNCULUS Upped
+[Name] == ZakarumShield && [Quality] == Unique && [Flag] != Ethereal # [EnhancedDefense] >= 190 && [Defense] >= 560																		//HERALD OF ZAKARUM Upped
+[Name] == ZakarumShield && [Quality] == Unique && [Flag] == Ethereal # [EnhancedDefense] >= 190 && [Defense] >= 800																		//Ethreal HERALD OF ZAKARUM Upped
