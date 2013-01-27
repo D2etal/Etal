@@ -1,7 +1,0 @@
-// Runes
-//[Name] == UmRune
-//[Name] == PulRune
-//[Name] >= IstRune && [Name] <= ZodRune
-//[Name] == TalRune # # [MaxQuantity] == 1
-//[Name] == ThulRune # # [MaxQuantity] == 1
-[Name] >= ElRune && [Name] <= ZodRune # # [MaxQuantity] == 2
