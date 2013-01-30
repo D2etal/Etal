@@ -1,0 +1,2592 @@
+var _NTT_BeltColNeeded = new Array(4);
+_NTT_BeltColNeeded[0] = 0;
+_NTT_BeltColNeeded[1] = 0;
+_NTT_BeltColNeeded[2] = 0;
+_NTT_BeltColNeeded[3] = 0;
+
+var _NTT_BeltSize = 0;
+
+var _NTT_OldItems;
+
+var _NTT_IgnoredItems = new Array(
+"leg", // wirt's leg
+"aqv", // Arrows quiver
+"cqv", // Bolts quiver
+"key", // Keys
+"tbk", // Tome of Town Portal
+"ibk", // Tome of Identify
+"tsc", // Scroll of Town Portal
+"isc", // Scroll of Identify
+"yps", // Antidote potion
+"vps", // Stamina potion
+"wms", // Thawing potion
+"gps", // Rancid Gas Pot
+"ops", // Oil Potion
+"gpm", // Choking Gas Pot
+"opm", // Exploding Pot
+"gpl", // Strangling Gas
+"opl", // Fulminating Pot
+"hp1","hp2","hp3","hp4","hp5", // Healing potions
+"mp1","mp2","mp3","mp4","mp5", // Mana potions
+"rvs","rvl"); // Rejuvenation potions
+
+// type : 1 = shop, 2 = ressurect, 3 = repair, 4 = potion, 5 = scrolls, 6 = gamble, 7 = ammo, 8 = healing
+
+
+function NTT_CheckNPC(npc, type)
+{
+	var _npcclassid;
+
+	if(typeof(npc) == "number")
+		_npcclassid = npc;
+	else
+		_npcclassid = npc.classid;
+
+	if(type == 1)
+	{
+		if(_npcclassid == 147 || _npcclassid == 148 || _npcclassid == 154 || _npcclassid == 177 ||
+			_npcclassid == 178 || _npcclassid == 199 || _npcclassid == 202 || _npcclassid == 252 ||
+			_npcclassid == 253 || _npcclassid == 254 || _npcclassid == 255 || _npcclassid == 257 ||
+			_npcclassid == 405 || _npcclassid == 511 || _npcclassid == 512 || _npcclassid == 513)
+			return true;
+		else
+			return false;
+	}
+
+	if(type == 2)
+	{
+		if(_npcclassid == 150 || _npcclassid == 198 || _npcclassid == 252 || _npcclassid == 367 || _npcclassid == 515)
+			return true;
+		else
+			return false;
+	}
+
+	if(type == 3)
+	{
+		if(_npcclassid == 154 || _npcclassid == 178 || _npcclassid == 253 || _npcclassid == 257 || _npcclassid == 511)
+			return true;
+		else
+			return false;
+	}
+
+	if(type == 4)
+	{
+		if(_npcclassid == 148 || _npcclassid == 177 || _npcclassid == 198 || _npcclassid == 202 ||
+			_npcclassid == 255 || _npcclassid == 405 || _npcclassid == 513)
+			return true;
+		else
+			return false;
+	}
+
+	if(type == 5)
+	{
+		if(_npcclassid == 148 || _npcclassid == 177 || _npcclassid == 255 || _npcclassid == 405 || _npcclassid == 513)
+			return true;
+		else
+			return false;
+	}
+
+	if(type == 6)
+	{
+		if(_npcclassid == 147 || _npcclassid == 199 || _npcclassid == 254 ||
+			_npcclassid == 405 || _npcclassid == 512 || _npcclassid == 514)
+			return true;
+		else
+			return false;
+	}
+
+	if(type == 7)
+	{
+		if(_npcclassid == 147 || _npcclassid == 154 || _npcclassid == 178 || _npcclassid == 199 || _npcclassid == 252 ||
+			_npcclassid == 253 || _npcclassid == 257 || _npcclassid == 511 || _npcclassid == 512)
+			return true;
+		else
+			return false;
+	}
+
+	if(type == 8)
+	{
+		if(_npcclassid == 148 || _npcclassid == 178 || _npcclassid == 255 || _npcclassid == 513)
+			return true;
+		else
+			return false;
+	}
+
+	return false;
+}
+
+// npc : NPC, stash or cube
+function NTT_DoInteract(npc)
+{
+	var _uiflag = 0x08;
+
+	if(!npc)
+		return false;
+
+	if(npc.classid == NTC_UNIT_STASH)
+		_uiflag = 0x19;
+	else if(npc.classid == NTC_UNIT_CUBE)
+		_uiflag = 0x1A;
+
+	if(GetUIState(_uiflag))
+		return true;
+
+	for(var i = 0 ; i < 40 ; i++)
+	{
+		if((i % 10) == 0)
+		{
+			if(npc.classid == NTC_UNIT_CUBE)
+				me.ClickItem(1, npc);
+			else
+			{
+				if (i > 20)
+					NTC_RemoveLag(npc, 700, 10);
+				else if (i > 10)
+					NTC_RemoveLag(npc);
+				if (me.classid === 1 && NTConfig_Telekinesis && _uiflag == 0x19 && NTC_GetSkillLevel(43) && GetDistance(me, npc) > 5 && GetDistance(me, npc) < 23){
+					if (i > 10)
+						NTM_MoveCloseInt(npc, Math.round(GetDistance(me, npc) / 2), false);
+					NTC_CastSkill(43, NTC_HAND_RIGHT, npc);
+				}
+                else
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, npc);
+			}
+		}
+
+		Delay((i < 10) ? 100 : 200);
+
+		if(GetUIState(_uiflag))
+		{
+			NTC_PingDelay(500);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// type	: 0 = shop, 1 = gamble
+function NTT_DoTrade(npc, type)
+{
+	if(!npc)
+		return false;
+
+	if(GetUIState(0x0C))
+		return true;
+
+	if(arguments.length < 2)
+		type = 0;
+
+	for(var i = 0 ; i < 20 ; i++)
+	{
+		if((i % 10) == 0)
+		{
+			if(NTT_CheckNPC(npc.classid, 3))
+				me.SelectNPCMenu(0x0D06);
+			else if(type == 1 && NTT_CheckNPC(npc.classid, 6))
+				me.SelectNPCMenu(0x0D46);
+			else
+				me.SelectNPCMenu(0x0D44);
+		}
+
+		NTC_Delay(200);
+
+		if(GetUIState(0x0C))
+		{
+			NTC_PingDelay(1000);
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function NTT_GetCorpses()
+{
+	var _corpse;
+	var corpsesFound = 0;
+
+	for(var i = 0 ; i < 4 ; i++)
+	{
+		_corpse = NTC_FindUnit(NTC_UNIT_PLAYER);
+
+		if(_corpse)
+		{
+			do
+			{
+				if(_corpse.name == me.name && _corpse.hpmax == 0)
+				{
+					corpsesFound++;
+					NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _corpse);
+
+					NTC_PingDelay(1000);
+
+					NTC_SwapWeapons(0);
+
+					break;
+				}
+			} while(_corpse.GetNext());
+		}
+	}
+	return corpsesFound;
+}
+
+function NTT_CheckMerc()
+{
+	if(NTConfig_UseMerc)
+	{
+		if(NTC_GetMerc())
+			return false;
+		else
+		{
+			if(NTC_MyGold() < me.GetMercCost())
+				return false;
+
+			return true;
+		}
+	}
+
+	return false;
+} 
+
+function NTT_ReviveMerc()
+{
+	var _mygold;
+
+	if(!NTT_CheckMerc())
+		return true;
+
+	if(!GetUIState(0x08))
+		return false;
+
+	_mygold = NTC_MyGold();
+
+	if(_mygold < me.GetMercCost())
+		return false;
+
+	for(var i = 0 ; i < 8 ; i++)
+	{
+		if((i % 4) == 0)
+			me.SelectNPCMenu(0x1507);
+
+		NTC_Delay(500);
+
+		if(_mygold > NTC_MyGold()) {
+			NTU_MercReviveLog();
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+function NTT_CheckRepair(repairpercent)
+{
+	var _max_dur;
+	var _percent;
+	var _items = me.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 1 && !(_items[i].itemflag&0x400000) && !_items[i].GetStat(152))
+		{
+			if(_items[i].itemtype == 42 || _items[i].itemtype == 43 || _items[i].itemtype == 44 || _items[i].itemtype == 87)
+				_percent = Math.floor((_items[i].GetStat(70)*100) / (GetBaseStat("weapons.txt", _items[i].classid, 45)+_items[i].GetStat(254)));
+			else
+			{
+				_max_dur = _items[i].GetStat(73);
+				if(_max_dur == 0)
+					continue;
+
+				_percent = Math.floor((_items[i].GetStat(72)*100) / (_max_dur*(_items[i].GetStat(75)/100 + 1)));
+			}
+
+			if(_percent <= repairpercent)
+				return true;
+		}
+	}
+
+	return false;
+}
+
+function NTT_RepairItems(npc)
+{
+	var _mygold;
+
+	if(!npc)
+		return false;
+
+	if(!GetUIState(0x0C))
+		return false;
+
+	_mygold = NTC_MyGold();
+
+	for(var i = 0 ; i < 8 ; i++)
+	{
+		if((i % 4) == 0)
+			me.Repair();
+
+		NTC_Delay(500);
+
+		if(_mygold > NTC_MyGold())
+			return true;
+	}
+
+	return false;
+}
+
+function NTT_CheckInventory()
+{
+	var x, y;
+	var _items;
+
+	_itemlist = new Array();
+	_ignorestring = _NTT_IgnoredItems.join();
+
+	if(!NTC_StashGoldFull() && NTC_MyGoldCarry() > NTConfig_MinGoldToStash)
+		return true;
+
+	_invspace = new Array(4);
+	_invspace[0] = new Array(10);
+	_invspace[1] = new Array(10);
+	_invspace[2] = new Array(10);
+	_invspace[3] = new Array(10);
+
+	for(y = 0 ; y < 4 ; y++)
+	{
+		for(x = 0 ; x < 10 ; x++)
+			_invspace[y][x] = 0;
+	}
+
+	_items = me.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0)
+		{
+			if(NTConfig_Columns[_items[i].y][_items[i].x] > 0)
+				_itemlist.push(_items[i].code);
+
+			for(y = 0 ; y < _items[i].ysize ; y++)
+			{
+				for(x = 0 ; x < _items[i].xsize ; x++)
+					_invspace[y+_items[i].y][x+_items[i].x] = 1;
+			}
+		}
+	}
+
+	_freecols = new Array(10);
+
+	for(x = 0 ; x < 10 ; x++)
+		_freecols[x] = 0; 
+
+	for(x = 0 ; x < 10 ; x++)
+	{
+		for(y = 0 ; y < 4 ; y++)
+		{
+			if(_invspace[y][x] == 1)
+			{
+				_freecols[x] = 1;
+				break;
+			}
+		}
+	}
+
+	_numfreecols = 0;
+
+	for(x = 0 ; x < 10 ; x++)
+	{ 
+		if(_freecols[x] == 0)
+			_numfreecols++;
+	}
+
+	if(NTConfig_FreeSpace > _numfreecols)
+	{
+		for(x = 0 ; x < _itemlist.length ; x++)
+		{
+			if(_ignorestring.indexOf(_itemlist[x]) != -1)
+				_itemlist.splice(x, 1);
+		}
+
+		if(_itemlist.length > 0)
+			return true;
+	}
+
+	return false;
+}
+
+function NTT_CheckStash()
+{
+	var x, y;
+	var _items;
+	var _StashHeight = (me.gametype == 0) ? 4 : 8;
+	var _stashspace = new Array(_StashHeight);
+
+	for(y = 0 ; y < _StashHeight ; y++)
+		_stashspace[y] = new Array(6); 
+
+	for(y = 0 ; y < _StashHeight ; y++)
+	{
+		for(x = 0 ; x < 6 ; x++)
+			_stashspace[y][x] = 0;
+	}
+
+	_items = me.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 4)
+		{
+			for(y = 0 ; y < _items[i].ysize ; y++)
+			{
+				for(x = 0 ; x < _items[i].xsize ; x++)
+					_stashspace[y+_items[i].y][x+_items[i].x] = 1;
+			}
+		}
+	}
+
+	for(y = 0 ; y < _StashHeight ; y++)
+	{
+		for(x = 0 ; x < 6 ; x++)
+		{
+			if(_stashspace[y][x] != 1)
+				return true;
+		}
+	}
+
+	return false;
+}
+
+/*function NTT_ManageStash(invitem) // default stash managing
+{
+	var i, x, y;
+	var _items;
+	var _stashall;
+	var StashHeight = (me.gametype == 0) ? 4 : 8;
+	var _ignorestring = _NTT_IgnoredItems.join();
+	var _ignoreitem;
+
+	if(!GetUIState(0x19))
+		return false;
+
+	if(arguments.length < 1)
+		_stashall = true;
+	else
+		_stashall = false;
+
+	if(!NTC_StashGoldFull() && NTC_MyGoldCarry() > NTConfig_MinGoldToStash)
+	{
+		var _mygold = NTC_MyGoldCarry();
+
+		Gold(3, _mygold);
+
+		for(i = 0 ; i < 2 ; i++)
+		{
+			NTC_Delay(500);
+
+			if(_mygold > NTC_MyGoldCarry())
+				break;
+		}
+	}
+
+	var _stashspace = new Array(StashHeight);
+
+	for(y = 0 ; y < StashHeight ; y++)
+		_stashspace[y] = new Array(6);
+
+	for(y = 0 ; y < StashHeight ; y++)
+	{
+		for(x = 0 ; x < 6 ; x++)
+			_stashspace[y][x] = 0;
+	}
+
+	_items = me.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 4)
+		{
+			for(y = 0 ; y < _items[i].ysize ; y++)
+			{
+				for(x = 0 ; x < _items[i].xsize ; x++)
+					_stashspace[y+_items[i].y][x+_items[i].x] = 1;
+			}
+		}
+	}
+
+	for(i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0 && (_stashall || (_items[i].x == invitem.x && _items[i].y == invitem.y)))
+		{
+			if(_stashall)
+			{
+				_ignoreitem = (NTConfig_Columns[_items[i].y][_items[i].x] == 0);
+
+				if(!_ignoreitem)
+				{
+					if( _ignorestring.indexOf(_items[i].code) != -1 || NTSI_CheckItem(_items[i])[0] <= 0 )
+						_ignoreitem = true;
+				}
+			} 
+			else
+				_ignoreitem = false;
+
+			if(!_ignoreitem)
+			{
+				_itemdone = false;
+
+				for(y = 0 ; y < StashHeight ; y++)
+				{
+					if(_itemdone)
+						break;
+
+					for(x = 0 ; x < 6 ; x++)
+					{
+						if(_itemdone)
+							break;
+
+						if(_stashspace[y][x] == 0)
+						{
+							if((x+_items[i].xsize-1) < 6 && (y+_items[i].ysize-1) < StashHeight)
+							{
+								var _havespace = true;
+
+								for(m = 0 ; m < _items[i].ysize ; m++)
+								{
+									for(n = 0 ; n < _items[i].xsize ; n++)
+									{
+										if(_stashspace[y+m][x+n] == 1)
+										{
+											_havespace = false;
+											m = 4;
+											break;
+										}
+									}
+								}
+
+								if(_havespace)
+								{
+									if(NTC_ItemToCursor(_items[i]))
+									{
+										for(n = 0 ; n < 80 ; n++)
+										{
+											if((n % 40) == 0)
+												me.ClickItem(0, x, y, 4);
+
+											NTC_Delay(100);
+
+											if(!me.itemoncursor)
+												break;
+										}
+
+										if(n < 80)
+										{
+											for(m = 0 ; m < _items[i].ysize ; m++)
+											{
+												for(n = 0 ; n < _items[i].xsize ; n++)
+													_stashspace[y+m][x+n] = 1;
+											}
+										}
+
+										NTC_PingDelay(200);
+									}
+
+									_itemdone = true;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if(!_stashall)
+				return true;
+		}
+	}
+
+	return true;
+}*/
+
+function NTT_ManageStash(invitem) //mmbot type stashing credit to idevil on elitepvp
+{
+    var i, x, y, z;
+    var _items;
+    var _stashall;
+    var StashHeight = (me.gametype == 0) ? 4 : 8;
+    var _ignorestring = _NTT_IgnoredItems.join();
+    var _ignoreitem;
+    if(!GetUIState(0x19))
+        return false;
+
+    if(arguments.length < 1)
+        _stashall = true;
+    else
+        _stashall = false;
+
+    //if(!NTC_StashGoldFull() && NTC_MyGoldCarry() > NTConfig_MinGoldToStash)
+	if(!NTC_StashGoldFull() && NTC_MyGoldCarry() > 0)
+    {
+        var _mygold = NTC_MyGoldCarry();
+
+        Gold(3, _mygold);
+
+        for(i = 0 ; i < 2 ; i++)
+        {
+            NTC_Delay(500);
+
+            if(_mygold > NTC_MyGoldCarry())
+                break;
+        }
+    }
+
+    var _stashspace = new Array(StashHeight);
+
+    for(y = 0 ; y < StashHeight ; y++)
+        _stashspace[y] = new Array(6);
+
+    for(y = 0 ; y < StashHeight ; y++)
+    {
+        for(x = 0 ; x < 6 ; x++)
+            _stashspace[y][x] = 0;
+    }
+
+    _items = me.GetItems();
+
+    if(!_items)
+        return false;
+
+    for(i = 0 ; i < _items.length ; i++)
+    {
+        if(_items[i].mode == 0 && _items[i].itemloc == 4)
+        {
+            for(y = 0 ; y < _items[i].ysize ; y++)
+            {
+                for(x = 0 ; x < _items[i].xsize ; x++)
+                    _stashspace[y+_items[i].y][x+_items[i].x] = 1;
+            }
+        }
+    }
+
+    for(i = 0 ; i < _items.length ; i++)
+    {
+        if(_items[i].mode == 0 && _items[i].itemloc == 0 && (_stashall || (_items[i].x == invitem.x && _items[i].y == invitem.y)))
+        {
+            if(_stashall)
+            {
+                _ignoreitem = (NTConfig_Columns[_items[i].y][_items[i].x] == 0);
+
+                if(!_ignoreitem)
+                {
+                    if(_ignorestring.indexOf(_items[i].code) != -1 || NTSI_CheckItem(_items[i])[0] <= 0 || NTSI_CheckItem(_items[i], -1)[0] == 3)
+                        _ignoreitem = true;
+                }
+            } 
+            else
+                _ignoreitem = false;
+
+            if(!_ignoreitem)
+            {
+                _itemdone = false;
+                for(z = 0 ; z < 3; z++)
+                {
+                    for(y = 0 ; y < StashHeight ; y++)
+                    {
+                        if(_itemdone)
+                            break;    
+    
+                        for(x = 0 ; x < (3 - _items[i].xsize) ; x++)
+                        {
+                            var xx = 2*z + x;
+                            if(_itemdone)
+                                break;
+
+                            if(_stashspace[y][xx] == 0)
+                            {
+                                if((xx+_items[i].xsize-1) < 6 && (y+_items[i].ysize-1) < StashHeight)
+                                {
+                                    var _havespace = true;
+
+                                    for(m = 0 ; m < _items[i].ysize ; m++)
+                                    {
+                                        for(n = 0 ; n < _items[i].xsize ; n++)
+                                        {
+                                            if(_stashspace[y+m][xx+n] == 1)
+                                            {
+                                                _havespace = false;
+                                                m = 4;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if(_havespace)
+                                    {
+                                        if(NTC_ItemToCursor(_items[i]))
+                                        {
+                                            for(n = 0 ; n < 80 ; n++)
+                                            {
+                                                if((n % 40) == 0)
+                                                    me.ClickItem(0, xx, y, 4);
+
+                                                NTC_Delay(100);
+
+                                                if(!me.itemoncursor)
+                                                    break;
+                                            }
+
+                                            if(n < 80)
+                                            {
+                                                for(m = 0 ; m < _items[i].ysize ; m++)
+                                                {
+                                                    for(n = 0 ; n < _items[i].xsize ; n++)
+                                                        _stashspace[y+m][xx+n] = 1;
+                                                }
+                                            }
+
+                                            NTC_PingDelay(200);
+                                        }
+
+                                        _itemdone = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(!_stashall)
+                return true;
+        }
+    }
+
+    return true;
+}
+
+// type	: id = 0, tp = 1
+function NTT_GetScroll(type)
+{
+	var _items;
+
+	if(arguments.length < 1)
+		type = 0;
+
+	if(type)
+		_items = me.GetItems(529);
+	else
+		_items = me.GetItems(530);
+
+	if(_items)
+	{
+		for(var i = 0 ; i < _items.length ; i++)
+		{
+			if(_items[i].mode == 0 && _items[i].itemloc == 0)
+				return _items[i];
+		}
+	}
+
+	return null;
+}
+
+// type	: id = 0, tp = 1
+function NTT_GetTome(type)
+{
+	var _items;
+
+	if(arguments.length < 1)
+		type = 0;
+
+	if(type)
+		_items = me.GetItems(518);
+	else
+		_items = me.GetItems(519);
+
+	if(_items)
+	{
+		for(var i = 0 ; i < _items.length ; i++)
+		{
+			if(_items[i].mode == 0 && _items[i].itemloc == 0)
+				return _items[i];
+		}
+	}
+
+	return null;
+}
+
+// type	: id = 0, tp = 1
+function NTT_FillTome(npc, type)
+{
+	var _tome;
+
+	if(arguments.length < 1)
+		return false;
+
+	if(arguments.length < 2)
+		type = 0;
+
+	_tome = NTT_GetTome(type);
+
+	if(_tome)
+	{
+		var _items;
+
+		if(_tome.GetStat(70) >= 20)
+			return true;
+
+		if(type)
+			_items = npc.GetItems(529);
+		else
+			_items = npc.GetItems(530);
+
+		if(_items && _items.length > 0)
+			return NTT_ShopItem(_items[0], npc, 3);
+	}
+
+	return false;
+}
+
+// type	: id = 0, tp = 1
+function NTT_BuyScrolls(npc, type, amount)
+{
+	var _items;
+	var _npckeys;
+	var _counter = 0;
+	var _keys = me.GetItems(543);
+
+	if(arguments.length < 1)
+		return false;
+
+	if(arguments.length < 2)
+		type = 0;
+
+	if(arguments.length < 3)
+		amount = 1;
+
+	if(amount == 0)
+		return false;
+
+	if(type) {
+		_items = npc.GetItems(529);
+	}
+	else {
+		_items = npc.GetItems(530);
+		if(!NTT_CheckSpace(1,1) && _keys.length > 0) {
+			Print("No Space for ID Scroll, Selling Keystack");
+			NTT_ShopItem(_keys[0], npc, 1);
+		}
+	}
+
+	if(_items && _items.length > 0)
+	{
+		for(var i = 0 ; i < amount ; i++)
+		{
+			if(NTT_ShopItem(_items[0], npc, 2))
+				_counter++;
+		}
+	}
+	return (_counter > 0);
+}
+
+function NTT_GetKey()
+{
+	var _items;
+
+	_items = me.GetItems(543);
+
+	if(_items)
+	{
+		for(var i = 0 ; i < _items.length ; i++)
+		{
+			if(_items[i].mode == 0 && _items[i].itemloc == 0)
+				return _items[i];
+		}
+	}
+
+	return null;
+}
+
+function NTT_FillKey(npc)
+{
+	var _key;
+	var _items;
+
+	if(arguments.length < 1)
+		return false;
+
+	_key = NTT_GetKey();
+
+	if(_key)
+	{
+		if(_key.GetStat(70) >= 12)
+			return true;
+
+		_items = npc.GetItems(543);
+
+		if(_items && _items.length > 0)
+			return NTT_ShopItem(_items[0], npc, 3);
+	}
+	else
+	{
+		_items = npc.GetItems(543);
+
+		if(_items && _items.length > 0)
+		{
+			return NTT_ShopItem(_items[0], npc, 3);
+		}
+	}
+
+	return false;
+}
+
+function NTT_CheckBelt()
+{
+	var _needpotions = false;
+
+	for(var i = 0 ; i < 4 ; i++)
+	{
+		_NTT_BeltColNeeded[i] = NTT_GetNeededPotionsColInt(NTConfig_BeltColType[i], i);
+
+		if(_NTT_BeltColNeeded[i] > 0 && NTConfig_BeltColType[i] != "rv")
+			_needpotions = true;
+	}
+
+	return _needpotions;
+}
+
+function NTT_FillBelt(npc)
+{
+	if(!npc)
+		return false;
+
+	if(!GetUIState(0x0C))
+		return false;
+
+	if(_NTT_BeltSize < 1)
+		_NTT_BeltSize = NTC_GetBeltSize();
+
+	if(_NTT_BeltColNeeded[3] == _NTT_BeltSize || _NTT_BeltColNeeded[2] == _NTT_BeltSize || _NTT_BeltColNeeded[1] == _NTT_BeltSize || _NTT_BeltColNeeded[0] == _NTT_BeltSize)
+		NTT_BuyPotionsSlowInt(npc);
+	else
+		NTT_BuyPotionsFastInt(npc);
+
+	return true;
+}
+
+function NTT_CheckHeal()
+{
+	var _merc;
+
+	if(parseInt(me.hp*100/me.hpmax) < NTConfig_SkipHealLife || parseInt(me.mp*100/me.mpmax) < NTConfig_SkipHealMana)
+		return true;
+
+	_merc = NTC_GetMerc();
+
+	if(_merc)
+	{
+		if(parseInt(_merc.hp*100/_merc.hpmax) < NTConfig_SkipHealLife)
+			return true;
+	}
+
+	return false;
+}
+
+function NTT_CheckSpace(itemX, itemY)
+{
+	var i, j, x, y;
+	var _items;
+
+	_invspace = new Array(4);
+	_invspace[0] = new Array(10);
+	_invspace[1] = new Array(10);
+	_invspace[2] = new Array(10);
+	_invspace[3] = new Array(10);
+
+	for(y = 0 ; y < 4 ; y++)
+	{
+		for(x = 0 ; x < 10 ; x++)
+			_invspace[y][x] = 0;
+	}
+
+	_items = me.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0)
+		{
+			for(y = 0 ; y < _items[i].ysize ; y++)
+			{
+				for(x = 0 ; x < _items[i].xsize ; x++)
+					_invspace[y+_items[i].y][x+_items[i].x] = 1;
+			}
+		}
+	}
+
+	for(i = 0 ; i < 5-itemY ; i++)
+	{
+		invloop2:
+
+		for(j = 0 ; j < 11-itemX ; j++)
+		{
+			for(y = 0 ; y < itemY ; y++)
+			{
+				for(x = 0 ; x < itemX ; x++)
+				{
+					if(_invspace[i+y][j+x])
+						continue invloop2;
+				}
+			}
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function NTT_CleanPotions()
+{
+	var _items = me.GetItems();
+
+	if(!_items)
+		return;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0 && (_items[i].itemtype == 76 || _items[i].itemtype == 77 || _items[i].itemtype == 78))
+		{
+			if(NTConfig_Columns[_items[i].y][_items[i].x] > 0)
+			{
+				SetUIState(0x01, true);
+
+				me.ClickItem(1, _items[i]);
+
+				NTC_PingDelay(500);
+			}
+		}
+	}
+
+	me.Cancel(1);
+}
+
+function NTT_ClearInventory()
+{
+	var _retval = true;
+	var _ignorestring = _NTT_IgnoredItems.join();
+	var _items;
+
+	_items = me.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0)
+		{
+			if(NTConfig_Columns[_items[i].y][_items[i].x] > 0)
+			{
+				if(_ignorestring.indexOf(_items[i].code) != -1 || NTSI_CheckItem(_items[i])[0] != 0)
+					continue;
+
+				SetUIState(0x01, true);
+
+				if(NTT_DropItem(_items[i]))
+					NTC_PingDelay(200);
+				else
+					_retval = false;
+			}
+		}
+	}
+
+	me.Cancel(1);
+
+	return _retval;
+}
+
+function NTT_DropItem(item)
+{
+	if(!item)
+		return false;
+
+	if(NTC_ItemToCursor(item))
+		return NTC_ClearCursor();
+
+	return false;
+}
+
+function NTT_ClearBelt()
+{
+	var i;
+	var _result, _needdrop;
+	var _items;
+
+	do
+	{
+		_items = me.GetItems();
+
+		if(!_items)
+		{
+			_result = false;
+			break;
+		}
+
+		_result = true;
+
+		for(i = 0 ; i < _items.length ; i++)
+		{
+			if(_items[i].mode == 2 && _items[i].x < 4)
+			{
+				_needdrop = false;
+
+				switch(_items[i].itemtype)
+				{
+				case 76:
+					if(NTConfig_BeltColType[_items[i].x] != "hp")
+						_needdrop = true;
+					break;
+				case 77:
+					if(NTConfig_BeltColType[_items[i].x] != "mp")
+						_needdrop = true;
+					break;
+				case 78:
+					if(NTConfig_BeltColType[_items[i].x] != "rv")
+						_needdrop = true;
+					break;
+				default:
+					_needdrop = true;
+					break;
+				}
+
+				if(_needdrop)
+				{
+					SetUIState(0x1F, true);
+
+					if(NTT_DropItem(_items[i]))
+						NTC_PingDelay(200);
+
+					_result = false;
+				}
+			}
+		}
+	} while(!_result);
+
+	me.Cancel(1);
+
+	return _result;
+}
+
+// mode	: 1 = sell, 2 = buy, 3 = shift buy
+function NTT_ShopItem(item, npc, mode)
+{
+	var _mygold = NTC_MyGold();
+	var _keys;
+	var _npckeys;
+
+	if(mode > 1)
+	{
+		if(item.GetItemCost(0, npc.classid) > _mygold)
+			return false;
+	}
+
+	if(mode > 1)
+	{
+		var _havespace = false;
+
+		if(item.classid == 529 || item.classid == 530)
+		{
+			var _book = (item.classid == 530) ? NTT_GetTome(0) : NTT_GetTome(1);
+
+			if(_book && _book.GetStat(70) < 20)
+				_havespace = true;
+		}
+		
+		if (!_havespace) {
+			if (NTT_CheckSpace(item.xsize, item.ysize) || item.classid == 526 || item.classid == 528 || item.itemtype === 9 || item.itemtype >= 76 && item.itemtype <= 78) { // potion shop on full inventory fix
+				_havespace = true;
+			}
+		}
+		
+		if(_havespace)
+		{
+			for(var i = 0 ; i < 40 ; i++)
+			{
+				if((i % 20) == 0)
+					me.ClickItem(mode > 2 ? 3 : 1, item);
+
+				NTC_Delay(100);
+
+				if(_mygold > NTC_MyGold())
+				{
+					NTC_PingDelay(500);
+					return true;
+				}
+			}
+		}
+	}
+	else
+	{
+		if(NTC_ItemToCursor(item))
+		{
+			for(var i = 0 ; i < 40 ; i++)
+			{
+				if((i % 20) == 0)
+					me.ClickItem(0, 8, 6, 1);
+
+				NTC_Delay(100);
+
+				if(!me.itemoncursor)
+				{
+					NTC_PingDelay(800);
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+function NTT_IdItem(scroll, uniditem)
+{
+	var i, _timer;
+
+	if(arguments.length < 1 || !scroll)
+		return false;
+
+	if(arguments.length < 2 || !uniditem)
+		return false;
+
+	if(uniditem.itemflag&0x10)
+		return true;
+
+	for(i = 0 ; i < 40 ; i++)
+	{
+		if((i % 20) == 0)
+			me.ClickItem(1, scroll);
+
+		NTC_Delay(100);
+
+		if(GetCursorType() == 6)
+			break;
+	}
+
+	if(i >= 40)
+		return false;
+
+	NTC_PingDelay(200);
+
+	for(i = 0 ; i < 40 ; i++)
+	{
+		if((i % 20) == 0)
+			me.ClickItem(0, uniditem);
+
+		NTC_Delay(100);
+
+		if(uniditem.itemflag&0x10)
+		{
+			NTC_PingDelay(200);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function NTT_CheckUnids()
+{
+	var _unidcount = 0;
+	var _items = me.GetItems();
+
+	if(!_items)
+		return _unidcount;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0 && !(_items[i].itemflag&0x10))
+			_unidcount++;
+	}
+
+	return _unidcount;
+}
+
+function NTT_GetUnidItems()
+{
+	var _uniditems = new Array();
+	var _items = me.GetItems();
+
+	if(!_items)
+		return _uniditems;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0 && !(_items[i].itemflag&0x10))
+			_uniditems.push(_items[i]);
+	}
+
+	return _uniditems;
+}
+
+function NTT_GambleIt(npc)
+{
+	var _items, _newitem, result;
+	var resultArray = new Array();
+
+	if(!npc)
+		return false;
+
+	if(!GetUIState(0x0C))
+		return false;
+
+	_items = npc.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(NTC_MyGold() < NTConfig_GambleStopGold)
+			return false;
+
+		if(NTT_IsItemInGambleArrayInt(_items[i].classid))
+		{
+			if(NTT_CheckSpace(_items[i].xsize, _items[i].ysize))
+			{
+				NTT_GetOldItemsInt();
+
+				if(NTT_ShopItem(_items[i], npc, 2))
+					_newitem = NTT_GetGambledItemInt();
+				else
+					return false;
+
+				if(_newitem)
+				{
+					while(!(_newitem.itemflag&0x10))
+						NTC_Delay(100);
+
+					resultArray = NTSI_CheckItem(_newitem); 
+					result = resultArray[0];	
+						
+					switch(result)
+					{
+					case 1:
+						if(NTConfig_UseXMLItemlog) {
+							if(NTConfig_IndependantLog) {
+								NTI_WriteILog(_newitem, me, 0, 12, true, npc.name);
+							} else {
+								NTI_WriteLog(_newitem, me, 0, 12, true, npc.name);
+							}
+						}
+						NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_2 + "Kept: " + NTC_ItemQualityToMGRColor[_newitem.quality] + _newitem.name.split("\n")[0]+ ";" + _newitem.itemdesc + "\n" + COLOR_2 + "iLvl: " + _newitem.itemlevel + "\n" + COLOR_2 + "Gambled: " + npc.name+ "\n" + COLOR_2 +resultArray[1]+", "+resultArray[2]);
+					case 2:
+						break;
+					default:
+						if(NTConfig_LogSoldItems && NTConfig_UseXMLItemlog) {
+							if(NTConfig_IndependantLog) {
+								NTI_WriteILog(_newitem, me, 0, 13, true, npc.name);
+							} else {
+								NTI_WriteLog(_newitem, me, 0, 13, true, npc.name);
+							}
+						}
+						if(NTConfig_LogSoldItemQuality != 0 && _newitem.quality >= NTConfig_LogSoldItemQuality) // 4 = magic, 5 = set, 6 = rare, 7 = unique, 8 = crafted
+							NTC_SendLogToOOG(NTC_LOG_ITEM, COLOR_1 + "Sold: " + NTC_ItemQualityToMGRColor[_newitem.quality] + _newitem.name.split("\n")[0]+ ";" + _newitem.itemdesc + "\n" + COLOR_2 + "iLvl: " + _newitem.itemlevel + "\n" + COLOR_2 + "Gambled: " + npc.name);
+						NTT_ShopItem(_newitem, npc, 1);
+						break;
+					}
+				}
+			} 
+		}
+	}
+
+	return true;
+}
+
+// Internal function
+function NTT_IsItemInGambleArrayInt(classid)
+{
+	for(var i = 0 ; i < NTConfig_GambleItem.length ; i++)
+	{
+		if(classid == NTConfig_GambleItem[i])
+			return true;
+	}
+
+	return false;
+}
+
+function NTT_GetPotionAtNPCInt(type, npc)
+{
+   var _items;
+
+   if(!type)
+      return null;
+
+   if(type == "hp" || type == "mp")
+   {
+      _items = npc.GetItems();
+
+      if(_items)
+      {
+         var n;
+         var i;
+
+         for(n = 5 ; n > 0 ; n--)
+         {
+            for(i = 0 ; i < _items.length ; i++)
+            {
+               if(_items[i].code == (type+n))
+                  return _items[i];
+            }
+         }
+      }
+   }
+   else
+   {
+      if(type == "rv")
+         return null;
+
+      _items = npc.GetItems(type);
+
+      if(_items && _items.length > 0)
+         return _items[0];
+   }
+
+   return null;
+}
+function NTT_BuyPotionsFastInt(npc)
+{
+	var i, n;
+	var _insert, _potion;
+	var _typearray = new Array();
+
+	for(i = 0 ; i < 4 ; i++)
+	{
+		if(_NTT_BeltColNeeded[i] > 0)
+		{
+			if(_typearray.length == 0)
+				_typearray.push(NTConfig_BeltColType[i]);
+			else
+			{
+				_insert = true;
+
+				for(n = 0 ; n < _typearray.length ; n++)
+				{
+					if(_typearray[n] == NTConfig_BeltColType[i])
+						_insert = false;
+				}
+
+				if(_insert)
+					_typearray.push(NTConfig_BeltColType[i]);
+			}
+		}
+	}
+
+	for(i = 0 ; i < _typearray.length ; i++)
+	{
+		if(_typearray[i] == "rv")
+			continue;
+
+		_potion = NTT_GetPotionAtNPCInt(_typearray[i], npc);
+
+		if(_potion)
+		{ 
+			if(NTT_ShopItem(_potion, npc, 3))
+				continue;
+			else
+				return false;
+		}
+		else
+			return false;
+	}
+
+	return true;
+}
+
+function NTT_BuyPotionsColInt(npc, col)
+{
+	var _numpotions;
+	var _potion;
+
+	if(col < 0 || col > 3)
+		return false;
+
+	if(NTConfig_BeltColType[col] == "rv")
+		return false;
+
+	_numpotions = _NTT_BeltColNeeded[col];
+
+	if(_numpotions == 0)
+		return false;
+
+	if(_numpotions > _NTT_BeltSize)
+		_numpotions = _NTT_BeltSize;
+
+	for(var _buyloop = 0 ; _buyloop < _numpotions ; _buyloop++)
+	{
+		_potion = NTT_GetPotionAtNPCInt(NTConfig_BeltColType[col], npc);
+
+		if(_potion)
+			NTT_ShopItem(_potion, npc, 2);
+		else
+			return false;
+	}
+	
+	return true;
+}
+
+function NTT_BuyPotionsSlowInt(npc)
+{
+	var _currentcol;
+
+	for(_currentcol = 0 ; _currentcol < 4 ; _currentcol++)
+	{
+		if(_NTT_BeltColNeeded[_currentcol] == _NTT_BeltSize)
+		{
+			NTT_BuyPotionsColInt(npc, _currentcol);
+			_NTT_BeltColNeeded[_currentcol] = 0;
+		}
+	}
+
+	for(_currentcol = 0 ; _currentcol < 4 ; _currentcol++)
+		NTT_BuyPotionsColInt(npc, _currentcol);
+
+	return true;
+}
+
+function NTT_GetNeededPotionsColInt(type, column)
+{
+	var _restartloop = true;
+	var _amountneeded = 0;
+	var _items;
+
+	if(!type || column > 3)
+		return false;
+
+	if(_NTT_BeltSize < 1)
+		_NTT_BeltSize = NTC_GetBeltSize();
+
+	potionloop:
+	do
+	{
+		_amountneeded = _NTT_BeltSize;
+
+		_items = me.GetItems();
+
+		if(!_items)
+			continue potionloop;
+
+		for(i = 0 ; i < _items.length ; i++)
+		{
+			if(_items[i].mode == 2)
+			{
+				if(NTT_PotInRightColInt(_items[i].x, column, _NTT_BeltSize))
+				{
+					var _potcode = _items[i].code;
+
+					if(_potcode.indexOf(type) != -1)
+						_amountneeded--;
+					else
+					{
+						if(_potcode.indexOf("rv") != -1)
+						{
+							if(_items[i].x < 4)
+							{
+								me.Cancel(1);
+								return 0;
+							}
+							else
+								_amountneeded--;
+						}
+						else
+						{
+							SetUIState(0x1F, true);
+
+							me.ClickItem(1, _items[i]);
+
+							NTC_PingDelay(500);
+							continue potionloop;
+						}
+					}
+				}
+			}
+		}
+
+		_restartloop = false;
+	} while(_restartloop);
+
+	me.Cancel(1);
+
+	return _amountneeded;
+}
+
+function NTT_PotInRightColInt(potx, column, beltsize)
+{
+	for(var i = 0 ; i < beltsize ; i++)
+	{
+		if(potx-i*4 == column)
+			return true;
+	}
+
+	return false;
+}
+function NTT_NeedPots(Town) {
+	if(arguments < 1) { Town = false; }
+	var potAmount = Town ? NTConfig_CheckPotsTown : NTConfig_MinPots;
+	if(potAmount == 0)
+		return false;
+	var _hp = [me.GetItems("hp1"),
+		   me.GetItems("hp2"),
+		   me.GetItems("hp3"),
+		   me.GetItems("hp4"),
+		   me.GetItems("hp5")];
+	var _mp = [me.GetItems("mp1"),
+		   me.GetItems("mp2"),
+		   me.GetItems("mp3"),
+		   me.GetItems("mp4"),
+		   me.GetItems("mp5")];
+	
+	var _healthPots = 0;
+	var _manaPots = 0;
+	for (var i = 0; i < _hp.length; ++i) {
+		_healthPots += _hp[i].length;
+		_manaPots += _mp[i].length;
+	}
+	
+	if((NTConfig_BeltColType[0] == "hp" || NTConfig_BeltColType[1] == "hp" || NTConfig_BeltColType[2] == "hp" || NTConfig_BeltColType[3] == "hp") && (_healthPots < potAmount))
+		return true;
+	//else 
+		//return false;
+	else if((NTConfig_BeltColType[0] == "mp" || NTConfig_BeltColType[1] == "mp" || NTConfig_BeltColType[2] == "mp" || NTConfig_BeltColType[3] == "mp") && (_manaPots < potAmount))
+		return true;
+	else 
+		return false;
+}
+function NTT_GetGambledItemInt()
+{
+	var i, n;
+	var _items;
+	var _founditem;
+
+	_items = me.GetItems();
+
+	if(!_items)
+		return null;
+
+	for(i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0)
+		{
+			_founditem = true;
+
+			for(n = 0 ; n < _NTT_OldItems.length ; n++)
+			{
+				if(_items[i].gid == _NTT_OldItems[n])
+				{
+					_founditem = false;
+					break;
+				}
+			}
+
+			if(_founditem)
+				return _items[i];
+		}
+	}
+
+	return null;
+}
+
+function NTT_GetOldItemsInt()
+{
+	var _items;
+
+	_NTT_OldItems = new Array();
+
+	_items = me.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0)
+			_NTT_OldItems.push(_items[i].gid);
+	}
+
+	return true;
+}
+
+function NTT_FillArrows(npc) {
+
+	var _arrows;
+	var _items;
+	var _weapon;
+	var _name;
+	var _bow =false;
+
+	if(arguments.length < 1) {
+		return false;
+	}
+	
+	_weapon = me.GetItems();
+
+	if(_weapon) {
+		for(var i = 0 ; i < _weapon.length ; i++) {
+			if(_weapon[i].mode == 1) {
+				switch(_weapon[i].classid) {
+					case 68:   //Short Bow
+					case 69:   //Hunter's Bow
+					case 70:   //Longbow
+					case 71:   //Composite Bow
+					case 72:   //Short Battle Bow
+					case 73:   //Long Battle Bow
+					case 74:   //short war bow
+					case 75:   //Long War Bow
+					case 161:  //Edge Bow
+					case 162:  //Razor Bow
+					case 163:  //Cedar Bow
+					case 164:  //Double Bow
+					case 165:  //Short Siege Bow
+					case 166:  //Large Siege Bow
+					case 167:  //Rune Bow
+					case 168:  //Gothic Bow
+					case 264:  //Spider Bow
+					case 265:  //Blade Bow
+					case 266:  //Shadow Bow
+					case 267:  //Great Bow
+					case 268:  //Diamond Bow
+					case 269:  //Crusader Bow
+					case 270:  //Ward Bow
+					case 271:  //Hydra Bow
+					case 281:  //Stag Bow
+					case 282:  //Reflex Bow
+					case 291:  //Ashwood Bow
+					case 292:  //Cermonial Bow
+					case 301:  //Matriarchal Bow
+					case 302:  //Grand Matron Bow
+						_bow = true;
+						_name = _weapon[i].name.split("\n")[0];
+						break;
+
+					default:
+						_bow = false;
+						_name = _weapon[i].name.split("\n")[0];
+						break;
+				}
+			}
+		}
+	}
+	/*
+	if(_weapon[i].classid == 526 || _weapon[i].classid == 528){
+		if(_weapon[i].GetStat(70) <= 350 && _weapon[i].mode == 1){
+			SetUIState(0x01, true);
+			NTC_PingDelay(200);
+			NTC_ItemToCursor(_weapon[i]);
+			NTC_PingDelay(200);
+			NTC_ClearCursor();
+			NTC_PingDelay(200);
+			me.Cancel(1);
+			break;   
+		}
+	}
+	*/
+	if(_bow) {
+ 		Print(COLOR_8 + "Buying Arrows for my " + _name);
+		Print(" ");
+		
+		_items = npc.GetItems(526);
+
+		if(_items && _items.length > 0) {
+			NTT_ShopItem(_items[0], npc, 2);
+			return true; // the true is not used, but the last return is false so....
+		}
+	} else {
+		Print(COLOR_8 + "Buying Bolts for my " + _name);
+		Print(" ");			
+		_items = npc.GetItems(528);
+
+		if(_items && _items.length > 0) {
+			NTT_ShopItem(_items[0], npc, 2);
+			return true;
+			
+		}
+	}
+	return false;
+}
+
+function NTT_TossAmmo() {
+	// make sure we are on primary weapon slot
+	NTC_SwapWeapons(0);
+
+	var ammo = me.GetItems();
+
+	if(ammo) {
+		for(var i = 0 ; i < ammo.length ; i++) {
+			if(ammo[i].classid == 526 || ammo[i].classid == 528) {
+				if(ammo[i].GetStat(70) <= 350 && ammo[i].mode == 1 && (ammo[i].itemloc == 4 || ammo[i].itemloc == 5)) {
+					// if we have full ammo we don't need to drop it so set _NTTMGR_BuyArrows false
+					if(ammo[i].GetStat(70) == 350) {
+						_NTTMGR_BuyArrows = false;
+						break;
+					}
+					SetUIState(0x01, true);
+					NTC_PingDelay(200);
+					NTC_ItemToCursor(ammo[i]);
+					NTC_PingDelay(200);
+					NTC_ClearCursor();
+					NTC_PingDelay(200);
+					me.Cancel(1);
+					break;   
+				}
+			}         
+		}
+	}
+} 
+
+// ubi21 Enigma reset start
+////////////////////////////
+function NTT_ResetEnigma()
+{
+	var i, n;
+	var _items;
+	
+	var _itemStillOnCursor;
+	var _holdMaxGameTime;
+	var _enigmaString = "";
+	
+	var _onBody = false;
+
+	_items = me.GetItems();	
+	_enigmaString = GetLocaleString(20539);
+
+	if(!_items)
+		return false;
+		
+	_holdMaxGameTime = me.maxgametime;
+
+	for(i = 0 ; i < _items.length ; i++)
+	{
+		_itemStillOnCursor = false; // Assume nothing on cursor		
+		
+		if(_items[i].mode == 1 && _items[i].itemloc == 3 && (_items[i].itemflag&0x4000000) && (_items[i].name.split("\n")[0] == _enigmaString))
+		{
+			if(_items[i].GetStat(72) == 0) { // 0 Durability Enigma
+				NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Enigma at 0 Durability.  Halting!***");	
+				Print(COLOR_1 + "***Enigma at 0 Durability.  Halting!***");
+				NTTM_CheckAct();
+				NTC_Delay(240000); // Wait 4 mins to prevent r/d 240000
+				ExitGame();	
+				return false;
+			}
+			
+			me.maxgametime = 0;
+			NTU_LogExitStatus("T");
+			
+			
+			SetUIState(0x01, true);
+
+			for(n = 0 ; n < 320 ; n++)
+			{
+				if((n % 40) == 0)
+					me.ClickItem(3);
+
+				NTC_Delay(100);
+
+				if(me.itemoncursor)
+				{
+					
+					_itemStillOnCursor = true; // Enigma on cursor
+					NTC_PingDelay(200);
+					break;
+				}
+			}
+
+			if(n >= 320)  // Failed to pick up Enigma from char.
+			{
+				me.maxgametime = _holdMaxGameTime;
+				NTU_LogExitStatus("F");
+				NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Unable to pick up Enigma.  Quiting!***");
+				Print(COLOR_1 + "***Unable to pick up Enigma.  Quiting!***");
+				SetUIState(0x01, false);
+				ExitGame();				
+				break;
+			}
+			
+			n = 0;
+			while(_itemStillOnCursor && n < 300) { // Try to put Enigma back on char for 30 seconds
+
+				if((n % 40) == 0)
+					me.ClickItem(3);
+
+				NTC_Delay(100);
+
+				if(!me.itemoncursor) {
+					_itemStillOnCursor = false;
+				}
+				
+				n++;
+			}
+			
+			if(_itemStillOnCursor) { // If this happens we will quit game, equip method will take over next game
+				me.maxgametime = _holdMaxGameTime;				
+				NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Unable to equip Enigma.  Quiting!***");
+				Print(COLOR_1 + "***Unable to equip Enigma.  Quiting!***");
+				if (GetUIState(0x01))
+					SetUIState(0x01, false); // Close inv window or game may crash on exit	
+				ExitGame();
+				return false;
+			}
+				
+
+			me.Cancel(1);
+			me.maxgametime = _holdMaxGameTime;
+			
+			NTC_Delay(100); // Wait min 500ms to ensure i/o has been cleared.
+			NTU_LogExitStatus("F");
+			
+			
+
+			return true;
+
+			break;
+		}
+	}
+
+	NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Unable to find Enigma.  Check NTConfig_ResetEnigma var in char config.***");
+	Print(COLOR_1 + "***Unable to find Enigma.  Check NTConfig_ResetEnigma var in char config.***");
+	NTC_TimeKeeper("!Unable to find Enigma.")
+	return false;
+}
+
+
+function NTT_PutBackEnigma() {
+	var _items;
+	var _itemStillOnCursor = true;
+	var i, n;
+	
+	
+	var _cursorItem;
+	
+	var _enigmaString = "";
+	
+	var _holdMaxGameTime;
+	
+	var _haveArmour = false; // Assume no armour
+	
+	if(!NTConfig_ResetEnigma) // We're not resetting, impossible for bot to drop.
+		return true;
+	
+	if(!me.itemoncursor) // Nothing on cursor
+		return true;
+	
+	_items = me.GetItems();	
+	
+	_enigmaString = GetLocaleString(20539);
+	
+	_cursorItem = me.GetCursorItem();
+	
+	if(_cursorItem.name.split("\n")[0] == _enigmaString && (_cursorItem.itemflag&0x4000000)) { // Enigma on cursor
+		if(!_items) {
+			// The only item on char is on the cursor.
+		}
+		else {	
+			for(i = 0 ; i < _items.length ; i++)
+			{
+				// Found equiped armour.  Why is Enigma on cursor?
+				if(_items[i].itemloc == 3 && _items[i].mode == 1) { 				
+					NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Enigma on cursor and armour already equiped.  Halting!***");
+					Print(COLOR_1 + "***Enigma on cursor and armour already equiped.  Halting!***");
+					return false;
+				}
+			}
+		}
+	}
+	else { // Item on cursor is not Enigma
+		return true;
+	}
+
+	// Lets try to equip back our armour
+	n = 0;
+	
+	_holdMaxGameTime = me.maxgametime;
+	me.maxgametime = 0;	
+	
+	NTC_Delay(500); // Wait min 500ms to ensure i/o has been cleared.
+	NTU_LogExitStatus("T");
+	
+	SetUIState(0x01, true);
+	
+	while(_itemStillOnCursor && n < 300) { // Try to put Enigma back on char for 30 seconds.
+		if((n % 40) == 0)
+			me.ClickItem(3);
+
+		NTC_Delay(100);
+
+		if(!me.itemoncursor) {				
+			_itemStillOnCursor = false;
+		}
+		
+		n++;
+	}	
+	
+	if(_itemStillOnCursor) {
+		if (GetUIState(0x01))
+			SetUIState(0x01, false); // Close inv window or game will crash on exit		
+		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Failed to equip Enigma.  Halting!***");
+		Print(COLOR_1 + "***Failed to equip Enigma.  Halting!***");
+		
+		return false;
+	}
+	
+	me.Cancel(1);
+	
+
+	me.maxgametime = _holdMaxGameTime;
+	
+	NTC_Delay(400); // Wait min 500ms to ensure i/o has been cleared.
+	NTU_LogExitStatus("F");		
+
+	
+	return true;
+}
+
+function NTT_LookForEnigma() {
+	var _groundItem;
+	var _cursorItem;
+	var _enigmaString = "";
+
+	if(!NTConfig_ResetEnigma) // We're not resetting, impossible for bot to drop.
+		return true;
+		
+	_enigmaString = GetLocaleString(20539);
+	
+    _groundItem = NTC_FindUnit(NTC_UNIT_ITEM);
+    if (_groundItem)
+    {
+        do
+        {			
+            if ((_groundItem.itemflag&0x4000000) && _groundItem.name.split("\n")[0] == _enigmaString)
+            {
+                if (GetDistance(me, _groundItem) > 7)
+                {
+					if(NTC_InTown()) {
+						if (!NTTM_TownMoveXY(_groundItem.x, _groundItem.y)) {
+							NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+							Print(COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+							return false;
+						}
+					}
+					else {
+						if (!NTM_WalkTo(_groundItem.x, _groundItem.y)) {
+							NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+							Print(COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+							return false;
+						}					
+					}
+                }
+				
+												
+				SetUIState(0x01, true);
+                for (i = 0; i < 300; i++) // Try 30 seconds to pickup
+                {
+                    if ((i % 5) == 0) {
+						// Fix stuck bug when cursor is over inv window.
+						// Move either to the left of right of the item to force cursor to the left side of screen when picking up
+						if(i%2 == 0) {
+							if(NTC_InTown()) {
+								if (!NTTM_TownMoveXY(_groundItem.x-1, _groundItem.y)) {
+									NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+									Print(COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+									return false;
+								}
+							}
+							else {
+								if (!NTM_WalkTo(_groundItem.x-1, _groundItem.y)) {
+									NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+									Print(COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+									return false;
+								}					
+							}					
+						}
+						else {
+							if(NTC_InTown()) {
+								if (!NTTM_TownMoveXY(_groundItem.x+1, _groundItem.y)) {
+									NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+									Print(COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+									return false;
+								}
+							}
+							else {
+								if (!NTM_WalkTo(_groundItem.x+1, _groundItem.y)) {
+									NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+									Print(COLOR_1 + "***Failed to move to Runeword on ground.  Halting!***");
+									return false;
+								}					
+							}						
+						}
+						
+                        NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _groundItem);
+						
+					}
+
+                    NTC_Delay(100);
+
+                    if (me.itemoncursor) // Picked up Enigma
+                    {
+                        NTC_PingDelay(200);
+					
+						return NTT_PutBackEnigma();
+                    }
+                }
+				if (GetUIState(0x01))
+					SetUIState(0x01, false);				
+            }
+        } while (_groundItem.GetNext());
+    }
+	
+	return true;
+
+}
+// ubi21 Enigma reset end
+////////////////////////////
+
+/////check space before baal start
+///////////////////////////////////////
+
+function NTT_CheckInventoryBeforeBoss()
+{
+	var x, y;
+	var _items;
+
+	_itemlist = new Array();
+	_ignorestring = _NTT_IgnoredItems.join();
+
+	_invspace = new Array(4);
+	_invspace[0] = new Array(10);
+	_invspace[1] = new Array(10);
+	_invspace[2] = new Array(10);
+	_invspace[3] = new Array(10);
+
+	for(y = 0 ; y < 4 ; y++)
+	{
+		for(x = 0 ; x < 10 ; x++)
+			_invspace[y][x] = 0;
+	}
+
+	_items = me.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0)
+		{
+			if(NTConfig_Columns[_items[i].y][_items[i].x] > 0)
+				_itemlist.push(_items[i].code);
+
+			for(y = 0 ; y < _items[i].ysize ; y++)
+			{
+				for(x = 0 ; x < _items[i].xsize ; x++)
+					_invspace[y+_items[i].y][x+_items[i].x] = 1;
+			}
+		}
+	}
+
+	_freecolss = new Array(10);
+
+	for(x = 0 ; x < 10 ; x++)
+		_freecolss[x] = 0; 
+
+	for(x = 0 ; x < 10 ; x++)
+	{
+		for(y = 0 ; y < 4 ; y++)
+		{
+			if(_invspace[y][x] == 1)
+			{
+				_freecolss[x] = 1;
+				break;
+			}
+		}
+	}
+
+	_numfreecolss = 0;
+
+	for(x = 0 ; x < 10 ; x++)
+	{ 
+		if(_freecolss[x] == 0)
+			_numfreecolss++;
+	}
+
+	if(NTConfig_FreeSpaceBeforeBoss > _numfreecolss)
+	{
+		for(x = 0 ; x < _itemlist.length ; x++)
+		{
+			if(_ignorestring.indexOf(_itemlist[x]) != -1)
+				_itemlist.splice(x, 1);
+		}
+
+		if(_itemlist.length > 0)
+			return true;
+	}
+
+	return false;
+}
+
+function NTT_CheckForFullStash()
+{
+	var x, y;
+	var _items;
+
+	_itemlist = new Array();
+	_ignorestring = _NTT_IgnoredItems.join();
+
+	_invspace = new Array(4);
+	_invspace[0] = new Array(10);
+	_invspace[1] = new Array(10);
+	_invspace[2] = new Array(10);
+	_invspace[3] = new Array(10);
+
+	for(y = 0 ; y < 4 ; y++)
+	{
+		for(x = 0 ; x < 10 ; x++)
+			_invspace[y][x] = 0;
+	}
+
+	_items = me.GetItems();
+
+	if(!_items)
+		return false;
+
+	for(var i = 0 ; i < _items.length ; i++)
+	{
+		if(_items[i].mode == 0 && _items[i].itemloc == 0)
+		{
+			if(NTConfig_Columns[_items[i].y][_items[i].x] > 0)
+				_itemlist.push(_items[i].code);
+
+			for(y = 0 ; y < _items[i].ysize ; y++)
+			{
+				for(x = 0 ; x < _items[i].xsize ; x++)
+					_invspace[y+_items[i].y][x+_items[i].x] = 1;
+			}
+		}
+	}
+
+	_freecolss = new Array(10);
+
+	for(x = 0 ; x < 10 ; x++)
+		_freecolss[x] = 0; 
+
+	for(x = 0 ; x < 10 ; x++)
+	{
+		for(y = 0 ; y < 4 ; y++)
+		{
+			if(_invspace[y][x] == 1)
+			{
+				_freecolss[x] = 1;
+				break;
+			}
+		}
+	}
+
+	_numfreecolss = 0;
+
+	for(x = 0 ; x < 10 ; x++)
+	{ 
+		if(_freecolss[x] == 0)
+			_numfreecolss++;
+	}
+
+	if(NTConfig_FreeRowsQuit > _numfreecolss)
+	{
+		for(x = 0 ; x < _itemlist.length ; x++)
+		{
+			if(_ignorestring.indexOf(_itemlist[x]) != -1)
+				_itemlist.splice(x, 1);
+		}
+
+		if(_itemlist.length > 0)
+			return true;
+	}
+
+	return false;
+}
+
+
+
+function NTT_CheckNeedTown(Hpshort, Mpshort){ // may want to add an arguement here and use this like the checksafe....or make it a character_config
+	if(NTT_CheckBeltHp(Hpshort) || NTT_CheckBeltMp(Mpshort) || NTT_CheckMerc() || NTTMGR_CheckScrolls(1) < 4)
+		NTTMGR_VisitTown(); 
+	return;
+}
+
+function NTT_CheckBeltHp(numshort)// arguement for how many potions short before returning true note is combined count of hp's and mp's
+{
+	if (arguments.length < 1)
+		numshort = 1;
+	var _needpotions = false; 	// really should change these to check how many total slots you have for each
+								// ^^ that way you can set it to check if you have 1 pot remaining etc
+	for(var i = 0 ; i < 4 ; i++)
+	{
+		_NTT_BeltColNeeded[i] = NTT_GetNeededPotionsColInt(NTConfig_BeltColType[i], i);
+
+		if(_NTT_BeltColNeeded[i] >= numshort && NTConfig_BeltColType[i] != "rv" && NTConfig_BeltColType[i] != "mp")
+			_needpotions = true;
+	}
+
+	return _needpotions;
+}
+
+function NTT_CheckBeltMp(numshort)// arguement for how many potions short before returning true note is combined count of hp's and mp's
+{
+	if (arguments.length < 1)
+		numshort = 1;
+
+	var _needpotions = false;
+
+	for(var i = 0 ; i < 4 ; i++)
+	{
+		_NTT_BeltColNeeded[i] = NTT_GetNeededPotionsColInt(NTConfig_BeltColType[i], i);
+
+		if(_NTT_BeltColNeeded[i] >= numshort && NTConfig_BeltColType[i] != "rv" && NTConfig_BeltColType[i] != "hp")
+			_needpotions = true;
+	}
+
+	return _needpotions;
+}
+
+// credit to korean here
+function NTT_VisitNpc(npc){  
+	if (GetUIState(0x08)){
+		return true;
+	}
+    for (var i = 0; i < 100; i++){
+		if (i > 40){
+            NTC_RemoveLag(npc);
+		}
+        if ((i % 5) == 0){
+            if (i > 0){
+                me.Cancel(0);
+			}
+            NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, npc);
+            while (me.mode != 5){
+                Delay(200);
+			}
+        }
+        Delay(200);
+        if (GetUIState(0x08)){
+            NTC_PingDelay(400);
+            return true;
+        }
+    }
+    return false;
+}
+
+function NTT_CheckFreeInventorySpace(PrintToScreen) { 
+	var i, x, y;
+	var itemsInventory;
+	
+	if(arguments.length == 0) { PrintToScreen = false; }
+		
+	var inventorySpace = new Array(4);
+
+	for(y = 0 ; y < 4 ; y++) {
+		inventorySpace[y] = new Array(10);
+	}
+
+	for(y = 0 ; y < 4 ; y++) {
+		for(x = 0 ; x < 10 ; x++) {
+			inventorySpace[y][x] = 0;
+		}
+	}
+
+	itemsInventory = me.GetItems();
+
+	if(!itemsInventory) {
+		return false;
+	}
+	var totalUsedSpace = 0;
+	var totalLockedSpace = 0;	
+	for(i = 0 ; i < itemsInventory.length ; i++) {
+	
+		if(itemsInventory[i].mode == 0 && itemsInventory[i].itemloc == 0) {
+			if(itemsInventory[i].classid == 603 && itemsInventory[i].quality == 7) { // id's where the anni is
+				
+				for(y = 0 ; y < itemsInventory[i].ysize ; y++) {
+					for(x = 0 ; x < itemsInventory[i].xsize ; x++)
+						inventorySpace[y+itemsInventory[i].y][x+itemsInventory[i].x] = 4;
+						totalUsedSpace++;
+				}
+			}
+			else if(itemsInventory[i].classid == 604 && itemsInventory[i].quality == 7) { // id's where the torch is
+				
+				for(y = 0 ; y < itemsInventory[i].ysize ; y++) {
+					for(x = 0 ; x < itemsInventory[i].xsize ; x++)
+						inventorySpace[y+itemsInventory[i].y][x+itemsInventory[i].x] = 3;
+						totalUsedSpace++;
+				}
+			}			
+			else if(itemsInventory[i].classid == 549) { // id's where the cube is
+				
+				for(y = 0 ; y < itemsInventory[i].ysize ; y++) {
+					for(x = 0 ; x < itemsInventory[i].xsize ; x++)
+						inventorySpace[y+itemsInventory[i].y][x+itemsInventory[i].x] = 2;
+						totalUsedSpace++;
+				}
+			} else { // this will be unlocked full
+				
+				for(y = 0 ; y < itemsInventory[i].ysize ; y++) {
+					for(x = 0 ; x < itemsInventory[i].xsize ; x++)
+						inventorySpace[y+itemsInventory[i].y][x+itemsInventory[i].x] = 1;
+						totalUsedSpace++;
+				}
+			}
+		}
+	}
+	for(y = 0 ; y < 4 ; y++) { // this will check for locked space that is empty
+	
+		for(x = 0 ; x < 10 ; x++) {
+			if(inventorySpace[y][x] == 0 && NTConfig_Columns[y][x] == 0) { // 0 == locked, 1 == not locked.
+				inventorySpace[y][x] = 6;
+			}
+			else if(inventorySpace[y][x] == 1 && NTConfig_Columns[y][x] == 0) { // 0 == locked, 1 == not locked.			
+				inventorySpace[y][x] = 5;
+			}
+			if(inventorySpace[y][x] >= 1 && NTConfig_Columns[y][x] == 0) { // 0 == locked, 1 == not locked.
+				totalLockedSpace++;
+			}			
+		}
+	}
+	var totalFreeSpace = 40 - totalUsedSpace;
+	if(PrintToScreen) { // this will be to build a printable layout of the stash
+		Print(" ");
+		Print(COLOR_14 + "INVENTORY: ");
+		for(y = 0 ; y < 4 ; y++) {
+			var printSpace = [];
+			for(x = 0 ; x < 10 ; x++) {
+				switch(inventorySpace[y][x]) {
+					case 0: // unlocked empty
+						printSpace.push(COLOR_2 + "O")
+						break;
+					case 1: // unlocked full
+						printSpace.push(COLOR_1 + "X")
+						break;
+					
+					case 2:
+						printSpace.push(COLOR_4 + "C")
+						break;
+					case 3: // where the torch is
+						printSpace.push(COLOR_4 + "T")
+						break;
+					case 4: // where the anni is
+						printSpace.push(COLOR_4 + "A")
+						break;
+					
+					case 5: // locked space that is full
+						printSpace.push(COLOR_1 + "L")
+						break;
+					case 6: // locked space that is empty
+						printSpace.push(COLOR_2 + "L")
+						break;
+				}
+				
+			}
+			Print(COLOR_4 + "|" + printSpace + COLOR_4 + "|");
+		}
+		Print(COLOR_14 + "Free Space = " + totalFreeSpace + ", Used Space = " + totalUsedSpace + ", Locked Space = " + totalLockedSpace);
+	}
+	return totalFreeSpace;
+}
+
+function NTT_CheckFreeStashSpace(PrintToScreen) { // this actually should be a function that returns all this when called.  Just make the 2 arrays global
+
+	var i, x, y;
+	var itemsStash;
+	var StashHeight = (me.gametype == 0) ? 4 : 8;
+	
+	if(arguments.length == 0) { PrintToScreen = false; }
+		
+	var _stashspace = new Array(StashHeight);
+
+	for(y = 0 ; y < StashHeight ; y++) {
+		_stashspace[y] = new Array(6);
+	}
+
+	for(y = 0 ; y < StashHeight ; y++) {
+	
+		for(x = 0 ; x < 6 ; x++) {
+			_stashspace[y][x] = 0;
+		}
+	}
+
+	itemsStash = me.GetItems();
+
+	if(!itemsStash) {
+		return false;
+	}
+	//var totalFreeSpace;
+	var totalUsedSpace = 0;
+	for(i = 0 ; i < itemsStash.length ; i++) {
+	
+		if(itemsStash[i].mode == 0 && itemsStash[i].itemloc == 4) {
+		
+			if(itemsStash[i].classid == 549) { // id's where the cube is
+				
+				for(y = 0 ; y < itemsStash[i].ysize ; y++) {
+					for(x = 0 ; x < itemsStash[i].xsize ; x++) {
+						_stashspace[y+itemsStash[i].y][x+itemsStash[i].x] = 2;
+						totalUsedSpace++
+					}
+				}
+			} else {
+				
+				for(y = 0 ; y < itemsStash[i].ysize ; y++) {
+					for(x = 0 ; x < itemsStash[i].xsize ; x++) {
+						_stashspace[y+itemsStash[i].y][x+itemsStash[i].x] = 1;
+						totalUsedSpace++						
+					}
+				}
+			}
+		}
+	}
+	var totalFreeSpace = (48 - totalUsedSpace);	
+	if(PrintToScreen) { // this will be to build a printable layout of the stash
+		Print(" ");
+		Print(COLOR_14 + "STASH: ");
+		for(y = 0 ; y < StashHeight ; y++) {
+			var printSpace = [];
+			for(x = 0 ; x < 6 ; x++) {
+				switch(_stashspace[y][x]) {
+					case 0:
+						printSpace.push(COLOR_2 + "O")
+						break;
+					case 1:
+						printSpace.push(COLOR_1 + "X")
+						break;
+					
+					case 2:
+						printSpace.push(COLOR_4 + "C")
+						break;
+				}
+				
+			}
+			Print(COLOR_4 + "|" + printSpace + COLOR_4 + "|");
+		}
+		Print(COLOR_14 + "Free Space = " + totalFreeSpace + ", Used Space = " + totalUsedSpace);		
+	}
+	return totalFreeSpace;
+}
