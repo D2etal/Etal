@@ -1,14 +1,17 @@
 // ====================================================================================================
 // v THIS IS THE JUNK YOU'LL WANT TO EDIT v
-// Frendless leech starter setting (set to run with op gotv channel bot by default there will be no help on changing this)
+// Friendless leech starter setting (set to run with op Etal channel bot by default)
 // ====================================================================================================
-var gamenames = ["EamPleGameWithouTTHENumbers-"]; 							// Game name to search for (CASE-SENSITIVE)
+var gamenames = ["ExampleGameWithoutTheNumbers-"]; 							// Game name to use
 
-var gamepasswords 	= ["ExAmPlePassword"];  	 						// Password for that game.
+var gamepasswords 	= ["ExAmPlePasswOrd"];  	 						// Password for that game (case sensitive)
 
-var maxRetriesPerGame 	= 3; 					// The # of times to try rejoining a *unique* game
-var maxRetries 		= 3; 					// The # of *different* games to try joining, if all attempts fail, bot will exit to character selection screen and rejoin lobby
-
+// ====================================================================================================
+// Filter and channel settings
+// ====================================================================================================
+var extrafilters	= ["New game ", " started by"];	// The 2nd filter should be whatever the bot manager says right after the game name
+													// If the 2nd filter is empty, the rest of the line is used as the game name
+var joinChannelInChat   = "op Etal";				// leave blank to not join a private channel
 
 // =============================================================================
 // UseCDKeyChangeTrick :
@@ -19,6 +22,8 @@ var maxRetries 		= 3; 					// The # of *different* games to try joining, if all 
 var UseCDKeyChangeTrick = false;
 
 // ====================================================================================================
+var maxRetriesPerGame 	= 3; 					// The # of times to try rejoining a *unique* game
+var maxRetries 		= 3; 					// The # of *different* games to try joining, if all attempts fail, bot will exit to character selection screen and rejoin lobby
 var gameMinLength      		= 180000;		// time in milliseconds, minimum game length, 180 seconds default (1 game/3 minutes)
 var unableToConnectRetry   	= 5;			// time in minutes to retry connecting on connection fail (real value is +/- 1 min)
 var realmDownRetry      	= 260;			// time in minutes to retry connecting on a realm down (default is 120 minutes)
@@ -45,10 +50,18 @@ var waitBeforeEnterChatMax   	= 2000;			// max how long to wait before entering 
 var waitInChatBeforeActionsMin  = 1000;			// min how long to wait before joining channel
 var waitInChatBeforeActionsMax  = 2000;			// max how long to wait before joining channel
 
+// =================================
 // DONT EDIT ANYTHING BELOW THIS
-var extrafilters	= ["New game ", " started by"];	// The 2nd filter should be whatever the bot manager says right after the game name
-													// If the 2nd filter is empty, the rest of the line is used as the game name
-var joinChannelInChat   = "op Etal";				// leave blank to not join a private channel
+// =================================
+
+//case insensitivity
+for (i = 0; i < gamenames.length; i++) {
+	gamenames[i] = gamenames[i].toLowerCase();
+}
+for (i = 0; i < extrafilters.length; i++) {
+	extrafilters[i] = extrafilters[i].toLowerCase();
+}
+joinChannelInChat   = joinChannelInChat.toLowerCase();
 
 // D2NT Manager Command
 const D2NT_MGR_LOADING = 1;
@@ -240,7 +253,7 @@ function locationAction(location)
 					{
 						for (var line = 0; line < lines.length; line++)
 						{
-							linewithname = lines[line];
+							linewithname = lines[line].toLowerCase();
 
 							for (var _filterindex = 0; _filterindex < extrafilters.length; _filterindex += 2)
 							{
