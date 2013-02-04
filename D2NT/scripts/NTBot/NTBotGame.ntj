@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "33";
+var Rev = "34";
 
 // Provalone Edit //
 //Include("libs/common/NTExp.ntl");
@@ -205,11 +205,6 @@ function NTMain()
 	// Provalone Edit
 	NTE_ComputeStats(false);
 	//
-	if(!leaderParty) {
-		Say("Running Etal Underground");
-		Delay(1000);
-		Say("A step above a step above");
-	}
 	if(NTConfig_PublicMode && NTConfig_PropsForEtal > 0) {
 		Include("NTBot/char_configs/EtalPR.ntl");
 		for(var i = 0 ; i < NTConfig_PropsForEtal ; i++) {
