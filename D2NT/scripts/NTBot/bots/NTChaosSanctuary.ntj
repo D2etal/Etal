@@ -76,7 +76,7 @@ function NTMain() {
 		return;
 	}
 	NTSI_PickItems();
-	PubSay(NTConfig_CS_NextGame + NTC_GetNextGame());
+	if (NTConfig_CS_NextGame != "") PubSay(NTConfig_CS_NextGame + NTC_GetNextGame());
 	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
 }
 
