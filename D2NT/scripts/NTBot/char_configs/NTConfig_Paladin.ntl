@@ -370,16 +370,16 @@ function NT_LoadConfig()
 	NTConfig_ManaThresh = 30;							// Drink a mana potion if under this percent of mana.
 	NTConfig_ManaRejuvThresh = 0;						// Drink a rejuvenation potion if under this percent of mana. (Will not use mana potions under this %)
 
-	NTConfig_LifeChicken = 20;							// This is your D2NT chicken life percent. If you go below this life total, exit game.
+	NTConfig_LifeChicken = 0;							// This is your D2NT chicken life percent. If you go below this life total, exit game.
 	NTConfig_ManaChicken = 0;							// This is your D2NT chicken mana percent. If you go below this mana total, exit game.
 
 	// These chicken values are optional and can run alongside the traditional D2NT chicken or as a standalone chicken
 	// The Etal version comes with additional logging and will restart D2 instead of exitting the game for crash protection
 	// To disable, use 0
-	NTConfig_EtalLifeChicken = 0;						// This is your Etal chicken life percent. If you go below this life total, exit D2.
+	NTConfig_EtalLifeChicken = 30;						// This is your Etal chicken life percent. If you go below this life total, exit D2.
 	NTConfig_EtalManaChicken = 0;						// This is your Etal chicken mana percent. If you go below this mana total, exit D2.
 
-	NTConfig_TPChicken = 60; 							// Under this % of health will attempt to tp to town and heal. (Set 0 to disable.)
+	NTConfig_TPChicken = 0; 							// Under this % of health will attempt to tp to town and heal. (Set 0 to disable.)
 	NTConfig_MercTPChicken = 0;						  	// Under this % of Merc health will attempt to tp to town and heal. (Set to 0 to disable.)
 
 	NTConfig_MercLifeThresh = 50;						// Give merc a health potion if under this percent of life.
@@ -390,7 +390,7 @@ function NT_LoadConfig()
 	// Inventory settings
 	//------------------------------------------------------------------------------
 	NTConfig_FreeSpaceBeforeBoss = 2;					// If # of free columns is less than this, will town before killing bosses.
-	NTConfig_FreeSpace = 0;								// Number of free columns. If bot has less than this amount after id'ing, it will go to stash.
+	NTConfig_FreeSpace = 1;								// Number of free columns. If bot has less than this amount after id'ing, it will go to stash.
 
 	// These numbers correspond to your inventory. Set 0 to keep whatever is there, 1 to have the bot manage the slot.
 	NTConfig_Columns[0] = [0,0,0,0,0,0,0,0,0,0];
@@ -725,7 +725,7 @@ function NT_LoadConfig()
 	NTConfig_IdentAtCain = false;						// Identify @ Cain? (Quicker & will skip using cain if something in inventory is suppose to be kept unidentified. Will not log sold items.)
 	NTConfig_PocketChange = 500000;						// Amount of gold you want to keep on hand used for repairs. Make adjustments to this & repair % to keep equipment from breaking.
 	NTConfig_DontCainAct = [];							// List any act you don't want to use cain on seperated by ",".  Set to "0" to id in all acts.
-	NTConfig_Repair = "40";								// Set to how much durability you want to repair at, 40 is normal, 99 is as soon as you loose one point.
+	NTConfig_Repair = "60";								// Set to how much durability you want to repair at, 40 is normal, 99 is as soon as you loose one point.
 	NTConfig_AlwaysUseCain = false;						// Always use cain to ID? (Will ID items which are set to keep unid if they are in the inventory when visiting Cain.)
 	NTConfig_DropCainItems = false;						// set to true to drop items/false sells them to vendor
 
@@ -782,7 +782,7 @@ function NT_LoadConfig()
 
 	prewavespot = [15092, 5028];						// Pre-Wave standing (X,Y) coordinates. (For Baal Scripts.)
 
-	NTconfig_HighMaxAttack = true;						// Use HighMaxAttacks? (False = LowMaxAttacks.) High/Low are below.
+	NTconfig_HighMaxAttack = false;						// Use HighMaxAttacks? (False = LowMaxAttacks.) High/Low are below.
 	NTConfig_HighMaxAttackAreas = [131];				// If above is set false (you're using LowMaxAttacks), add areas to bypass LowMaxAttacks and use HighMaxAttacks instead. (Recommended in Baal's Throne Room.)
 
 	NTConfig_HighMaxAttacks = 300;						// Maximum number of attacks (HIGH) before skipping.
@@ -803,13 +803,13 @@ function NT_LoadConfig()
 	// 01=Potion. 02=Poison. 04=Amplify Damage. 08=Weaken. 10=Iron Maiden. 20=Decrepify. 40=Lower Resist. 80=Blood Mana.
 	// Use this format: ['01','02'] etc. Add as many or as few as you want.
 
-	NTConfig_CheckSelfSafe = [];
+	NTConfig_CheckSelfSafe = ['01'];
 
 	// Check Merc's Safe. Set to []; for none.
 	// 01=Death, 02=Poison, 04=Amplify Damage, 08=Weaken, 10=Iron Maiden, 20=Decrepify, 40=Lower Resist
 	// Use this format: ['01','02'] etc. Add as many or as few as you want.
 
-	NTConfig_CheckMercSafe = [];
+	NTConfig_CheckMercSafe = ['01'];
 
 	//------------------------------------------------------------------------------
 	// Class Specific Settings

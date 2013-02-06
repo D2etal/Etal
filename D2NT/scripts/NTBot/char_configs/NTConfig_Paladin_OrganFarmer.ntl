@@ -370,16 +370,16 @@ function NT_LoadConfig()
 	NTConfig_ManaThresh = 30;		// Drink a normal potion if under this percent of mana.
 	NTConfig_ManaRejuvThresh = 0;	// Drink a rejuvenation potion if under this percent of mana.
 
-	NTConfig_LifeChicken = 20;							// This is your D2NT chicken life percent. If you go below this life total, exit game.
+	NTConfig_LifeChicken = 0;							// This is your D2NT chicken life percent. If you go below this life total, exit game.
 	NTConfig_ManaChicken = 0;							// This is your D2NT chicken mana percent. If you go below this mana total, exit game.
 
 	// These chicken values are optional and can run alongside the traditional D2NT chicken or as a standalone chicken
 	// The Etal version comes with additional logging and will restart D2 instead of exitting the game for crash protection
 	// To disable, use 0
-	NTConfig_EtalLifeChicken = 0;						// This is your Etal chicken life percent. If you go below this life total, exit D2.
+	NTConfig_EtalLifeChicken = 30;						// This is your Etal chicken life percent. If you go below this life total, exit D2.
 	NTConfig_EtalManaChicken = 0;						// This is your Etal chicken mana percent. If you go below this mana total, exit D2.
 
-	NTConfig_TPChicken = 60; 		// life percent for tp chicken set to zero if you don't want to use
+	NTConfig_TPChicken = 0; 		// life percent for tp chicken set to zero if you don't want to use
 	NTConfig_MercTPChicken = 0;						  	// Under this % of Merc health will attempt to tp to town and heal. (Set to 0 to disable.)
 
 	NTConfig_MercLifeThresh = 50;	// This is the threshold to use a life potion on your merc in percent.
@@ -390,7 +390,7 @@ function NT_LoadConfig()
 	// Inventory settings
 	//------------------------------------------------------------------------------
 	NTConfig_FreeSpaceBeforeBoss = 2;			// # of free columns you want if less than that it bot will town before killing bosses
-	NTConfig_FreeSpace = 0;				// Number of free columns. If the bot has less than this amount after id'ing it will go to stash
+	NTConfig_FreeSpace = 1;				// Number of free columns. If the bot has less than this amount after id'ing it will go to stash
 
 	// The numbers correspond to your inventory. Set 0 to keep whatever is there, 1 to stash it.
 	NTConfig_Columns[0] = [0,0,0,0,0,0,0,0,0,0];
@@ -723,7 +723,7 @@ function NT_LoadConfig()
 	NTConfig_IdentAtCain = false;						// Identify @ Cain? (Quicker & will skip using cain if something in inventory is suppose to be kept unidentified. Will not log sold items.)
 	NTConfig_PocketChange = 500000;						// Amount of gold you want to keep on hand used for repairs. Make adjustments to this & repair % to keep equipment from breaking.
 	NTConfig_DontCainAct = [];							// List any act you don't want to use cain on seperated by ",".  Set to "0" to id in all acts.
-	NTConfig_Repair = "40";								// Set to how much durability you want to repair at, 40 is normal, 99 is as soon as you loose one point.
+	NTConfig_Repair = "60";								// Set to how much durability you want to repair at, 40 is normal, 99 is as soon as you loose one point.
 	NTConfig_AlwaysUseCain = false;						// Always use cain to ID? (Will ID items which are set to keep unid if they are in the inventory when visiting Cain.)
 	NTConfig_DropCainItems = false;						// set to true to drop items/false sells them to vendor
 
@@ -782,7 +782,7 @@ function NT_LoadConfig()
 	NTConfig_AttackSkill[8] = -1;	// Tertiary aura. Set to -1 if you won't
 	prewavespot = [15092, 5028];		// x, y coord for place toon stands before waves crash.  This is for baal, walking baal, and for baalhelper scripts
 
-	NTconfig_HighMaxAttack = true;				// set to true to bypass lowmaxattacks and only use the high attack setting
+	NTconfig_HighMaxAttack = false;				// set to true to bypass lowmaxattacks and only use the high attack setting
 	NTConfig_HighMaxAttackAreas = [131];			// if above is set to false add area id's to use high max attacks on.  Highly recommend using in baal throne room
 
 	MonstersToAttackFirst = 					// add or subtract monster id's to attack first in a mob monsters that resurrect or spawn others are good choices here
@@ -803,13 +803,13 @@ function NT_LoadConfig()
 	// 01=Potion. 02=Poison. 04=Amplify Damage. 08=Weaken. 10=Iron Maiden. 20=Decrepify. 40=Lower Resist. 80=Blood Mana.
 	// Use this format: ['01','02'] etc. Add as many or as little as you want.
 
-	NTConfig_CheckSelfSafe = [];
+	NTConfig_CheckSelfSafe = ['01'];
 
 	// Check merc's safe. Set to []; if you wont.
 	// 01=Death, 02=Poison, 04=Amplify Damage, 08=Weaken, 10=Iron Maiden, 20=Decrepify, 40=Lower Resist
 	// Use this format: ['01','02'] etc. Add as many or as little as you want.
 
-	NTConfig_CheckMercSafe = [];
+	NTConfig_CheckMercSafe = ['01'];
 
 	//------------------------------------------------------------------------------
 	// Class Specific settings
