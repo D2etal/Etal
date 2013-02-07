@@ -446,7 +446,7 @@ function NTA_ClearPosition(range, pickitem, safelevel) {
 					} else if (!NTconfig_HighMaxAttack || !NTA_HighMaxAttackAreas()) {
 						if (_gid_goodattackcount[_minshamangid] > NTConfig_LowMaxAttacks) {
 							//NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "Skipped: " + _target.name + ", " + _gid_lastKnownHealth[_minshamangid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_minshamangid]);
-							//Print(COLOR_1 + "I can't hit him!!! -> skipped");
+							Print(COLOR_1 + "I can't hit him!!! -> skipped");
 							_skiplist.push(_minshamangid);
 						}
 					}
@@ -496,7 +496,7 @@ function NTA_ClearPosition(range, pickitem, safelevel) {
 					} else if (!NTconfig_HighMaxAttack || !NTA_HighMaxAttackAreas()) {
 						if (_gid_goodattackcount[_mingid] > NTConfig_LowMaxAttacks) {
 							//NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "Skipped: " + _target.name + ", " + _gid_lastKnownHealth[_minshamangid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_minshamangid]);
-							//Print(COLOR_1 + "I can't hit him!!! -> skipped");
+							Print(COLOR_1 + "I can't hit him!!! -> skipped");
 							_skiplist.push(_mingid);
 						}
 					}
@@ -714,7 +714,7 @@ function NTA_ClearRoom(pickitem, safelevel) {
 								_gid_goodattackcount[_minshamangid] = 1; 
 								_gid_lastKnownHealth[_minshamangid] = _target.hp; 
 							} else { 
-								Print(COLOR_1 + "Incrementing attack count: " + _target.name + ", " + _gid_lastKnownHealth[_minshamangid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_minshamangid]);
+								//Print(COLOR_1 + "Incrementing attack count: " + _target.name + ", " + _gid_lastKnownHealth[_minshamangid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_minshamangid]);
 								_gid_goodattackcount[_minshamangid]++; 
 								_gid_lastKnownHealth[_minshamangid] = _target.hp; 
 							}
@@ -762,7 +762,7 @@ function NTA_ClearRoom(pickitem, safelevel) {
 								_gid_goodattackcount[_mingid] = 1; 
 								_gid_lastKnownHealth[_mingid] = _target.hp; 
 							} else { 
-								Print(COLOR_1 + "Incrementing attack count: " + _target.name + ", " + _gid_lastKnownHealth[_mingid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_mingid]);
+								//Print(COLOR_1 + "Incrementing attack count: " + _target.name + ", " + _gid_lastKnownHealth[_mingid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_mingid]);
 								_gid_goodattackcount[_mingid]++; 
 								_gid_lastKnownHealth[_mingid] = _target.hp; 
 							}
