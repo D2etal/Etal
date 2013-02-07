@@ -792,7 +792,7 @@ function NT_LoadConfig()
 	481,482,483,484,485,486,529];
 
 	NTConfig_HighMaxAttacks = 300;				// set number of attacks to use
-	NTConfig_LowMaxAttacks = 15;					// set number of attacks before skipping
+	NTConfig_LowMaxAttacks = 20;					// set number of attacks before skipping
 
 	NTConfig_AttackingThis = false; // Used to say target monsters ID/Name - Primarily for Dev purposes
 

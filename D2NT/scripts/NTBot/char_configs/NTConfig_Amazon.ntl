@@ -777,7 +777,7 @@ function NT_LoadConfig()
 	NTConfig_HighMaxAttackAreas = [131];				// If above is set false (you're using LowMaxAttacks), add areas to bypass LowMaxAttacks and use HighMaxAttacks instead. (Recommended in Baal's Throne Room.)
 
 	NTConfig_HighMaxAttacks = 300;						// Maximum number of attacks (HIGH) before skipping.
-	NTConfig_LowMaxAttacks = 15;						// Maximum number of attacks (LOW) before skipping.
+	NTConfig_LowMaxAttacks = 20;						// Maximum number of attacks (LOW) before skipping.
 
 	MonstersToAttackFirst = 							// Monster ID's to attack first. (Monsters which resurrect / spawn others are good choices.)
 	[58,59,60,61,62,101,102,103,104,190,191,

@@ -391,7 +391,8 @@ function NTA_ClearPosition(range, pickitem, safelevel) {
 
 	for (var i = 0; i < _spectype.length; i++) {
 		_skiplist = new Array();
-		_gid_attackcount = new Array();
+		var	_gid_lastKnownHealth = new Array();
+		var	_gid_goodattackcount = new Array();
 
 		while (_attackcount < (i + 1) * 100) {
 			_minshamandistance = 100000;
@@ -424,14 +425,27 @@ function NTA_ClearPosition(range, pickitem, safelevel) {
 				_target = NTC_FindUnit(NTC_UNIT_MONSTER, _minshamangid);
 
 				if (_target) {
-					if (_gid_attackcount[_minshamangid] == undefined) { _gid_attackcount[_minshamangid] = 1; }
-					else { _gid_attackcount[_minshamangid]++; }
+					if (_gid_lastKnownHealth[_minshamangid] == undefined) {
+						_gid_lastKnownHealth[_minshamangid] = _target.hp; 
+					} else { 
+						if (_target.hp >= _gid_lastKnownHealth[_minshamangid]*0.98) {
+							if (_gid_goodattackcount[_minshamangid] == undefined) {
+								_gid_goodattackcount[_minshamangid] = 1; 
+								_gid_lastKnownHealth[_minshamangid] = _target.hp; 
+							} else { 
+								Print(COLOR_1 + "Incrementing attack count: " + _target.name + ", " + _gid_lastKnownHealth[_minshamangid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_minshamangid]);
+								_gid_goodattackcount[_minshamangid]++; 
+								_gid_lastKnownHealth[_minshamangid] = _target.hp; 
+							}
+						}
+					}
 					if (NTconfig_HighMaxAttack || NTA_HighMaxAttackAreas()) {
-						if (_gid_attackcount[_minshamangid] > NTConfig_HighMaxAttacks) {
+						if (_gid_goodattackcount[_minshamangid] > NTConfig_HighMaxAttacks) {
 							_skiplist.push(_minshamangid);
 						}
 					} else if (!NTconfig_HighMaxAttack || !NTA_HighMaxAttackAreas()) {
-						if (_gid_attackcount[_minshamangid] > NTConfig_LowMaxAttacks) {
+						if (_gid_goodattackcount[_minshamangid] > NTConfig_LowMaxAttacks) {
+							//NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "Skipped: " + _target.name + ", " + _gid_lastKnownHealth[_minshamangid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_minshamangid]);
 							Print(COLOR_1 + "I can't hit him!!! -> skipped");
 							_skiplist.push(_minshamangid);
 						}
@@ -460,14 +474,28 @@ function NTA_ClearPosition(range, pickitem, safelevel) {
 				_target = NTC_FindUnit(NTC_UNIT_MONSTER, _mingid);
 
 				if (_target) {
-					if (_gid_attackcount[_mingid] == undefined) { _gid_attackcount[_mingid] = 1; }
-					else { _gid_attackcount[_mingid]++; }
+				
+					if (_gid_lastKnownHealth[_mingid] == undefined) {
+						_gid_lastKnownHealth[_mingid] = _target.hp; 
+					} else { 
+						if (_target.hp >= _gid_lastKnownHealth[_mingid]*0.98) {
+							if (_gid_goodattackcount[_mingid] == undefined) {
+								_gid_goodattackcount[_mingid] = 1; 
+								_gid_lastKnownHealth[_mingid] = _target.hp; 
+							} else { 
+								Print(COLOR_1 + "Incrementing attack count: " + _target.name + ", " + _gid_lastKnownHealth[_mingid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_mingid]);
+								_gid_goodattackcount[_mingid]++; 
+								_gid_lastKnownHealth[_mingid] = _target.hp; 
+							}
+						}
+					}
 					if (NTconfig_HighMaxAttack || NTA_HighMaxAttackAreas()) {
-						if (_gid_attackcount[_mingid] > NTConfig_HighMaxAttacks) {
+						if (_gid_goodattackcount[_mingid] > NTConfig_HighMaxAttacks) {
 							_skiplist.push(_mingid);
 						}
 					} else if (!NTconfig_HighMaxAttack || !NTA_HighMaxAttackAreas()) {
-						if (_gid_attackcount[_mingid] > NTConfig_LowMaxAttacks) {
+						if (_gid_goodattackcount[_mingid] > NTConfig_LowMaxAttacks) {
+							//NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "Skipped: " + _target.name + ", " + _gid_lastKnownHealth[_minshamangid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_minshamangid]);
 							Print(COLOR_1 + "I can't hit him!!! -> skipped");
 							_skiplist.push(_mingid);
 						}
@@ -637,7 +665,8 @@ function NTA_ClearRoom(pickitem, safelevel) {
 
 	for (var i = 0; i < _spectype.length; i++) {
 		_skiplist = new Array();
-		_gid_attackcount = new Array();
+		var	_gid_lastKnownHealth = new Array();
+		var	_gid_goodattackcount = new Array();
 
 		while (_attackcount < (i + 1) * 100) {
 			_mindistance = 100000;
@@ -677,14 +706,27 @@ function NTA_ClearRoom(pickitem, safelevel) {
 				if (_target) {
 					_result = NTA_Attack(_target, (_attackcount % 30) == 0);
 
-					if (_gid_attackcount[_minshamangid] == undefined) _gid_attackcount[_minshamangid] = 1;
-					else _gid_attackcount[_minshamangid]++;
+					if (_gid_lastKnownHealth[_minshamangid] == undefined) {
+						_gid_lastKnownHealth[_minshamangid] = _target.hp; 
+					} else { 
+						if (_target.hp >= _gid_lastKnownHealth[_minshamangid]*0.98) {
+							if (_gid_goodattackcount[_minshamangid] == undefined) {
+								_gid_goodattackcount[_minshamangid] = 1; 
+								_gid_lastKnownHealth[_minshamangid] = _target.hp; 
+							} else { 
+								Print(COLOR_1 + "Incrementing attack count: " + _target.name + ", " + _gid_lastKnownHealth[_minshamangid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_minshamangid]);
+								_gid_goodattackcount[_minshamangid]++; 
+								_gid_lastKnownHealth[_minshamangid] = _target.hp; 
+							}
+						}
+					}					
 					if (NTconfig_HighMaxAttack || NTA_HighMaxAttackAreas()) {
-						if (_gid_attackcount[_minshamangid] > NTConfig_HighMaxAttacks) {
+						if (_gid_goodattackcount[_minshamangid] > NTConfig_HighMaxAttacks) {
 							_skiplist.push(_minshamangid);
 						}
 					} else if (!NTconfig_HighMaxAttack || !NTA_HighMaxAttackAreas()) {
-						if (_gid_attackcount[_minshamangid] > NTConfig_LowMaxAttacks) {
+						if (_gid_goodattackcount[_minshamangid] > NTConfig_LowMaxAttacks) {
+							//NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "Skipped: " + _target.name + ", " + _gid_lastKnownHealth[_minshamangid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_minshamangid]);
 							Print(COLOR_1 + "I can't hit him!!! -> skipped");
 							_skiplist.push(_minshamangid);
 						}
@@ -712,14 +754,27 @@ function NTA_ClearRoom(pickitem, safelevel) {
 				if (_target) {
 					_result = NTA_Attack(_target, (_attackcount % 30) == 0);
 
-					if (_gid_attackcount[_mingid] == undefined) _gid_attackcount[_mingid] = 1;
-					else _gid_attackcount[_mingid]++;
+					if (_gid_lastKnownHealth[_mingid] == undefined) {
+						_gid_lastKnownHealth[_mingid] = _target.hp; 
+					} else { 
+						if (_target.hp >= _gid_lastKnownHealth[_mingid]*0.98) {
+							if (_gid_goodattackcount[_mingid] == undefined) {
+								_gid_goodattackcount[_mingid] = 1; 
+								_gid_lastKnownHealth[_mingid] = _target.hp; 
+							} else { 
+								Print(COLOR_1 + "Incrementing attack count: " + _target.name + ", " + _gid_lastKnownHealth[_mingid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_mingid]);
+								_gid_goodattackcount[_mingid]++; 
+								_gid_lastKnownHealth[_mingid] = _target.hp; 
+							}
+						}
+					}
 					if (NTconfig_HighMaxAttack || NTA_HighMaxAttackAreas()) {
-						if (_gid_attackcount[_mingid] > NTConfig_HighMaxAttacks) {
+						if (_gid_goodattackcount[_mingid] > NTConfig_HighMaxAttacks) {
 							_skiplist.push(_mingid);
 						}
 					} else if (!NTconfig_HighMaxAttack || !NTA_HighMaxAttackAreas()) {
-						if (_gid_attackcount[_mingid] > NTConfig_LowMaxAttacks) {
+						if (_gid_goodattackcount[_mingid] > NTConfig_LowMaxAttacks) {
+							//NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "Skipped: " + _target.name + ", " + _gid_lastKnownHealth[_minshamangid] + ", " + _target.hp +  ", " + _gid_goodattackcount[_minshamangid]);
 							Print(COLOR_1 + "I can't hit him!!! -> skipped");
 							_skiplist.push(_mingid);
 						}
@@ -1591,3 +1646,5 @@ function NTA_HaveArrows() {
 	}
 	return haveCTA;
 }*/
+
+
