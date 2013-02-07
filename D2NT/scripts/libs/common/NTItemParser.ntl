@@ -34,7 +34,21 @@ function NTIPOpenFile(filepath)
     var _nipfile;
     var _line, _originalLine;
 	var _lineNumber = 0;
-
+	var errorCaught = false;
+	var item;
+	
+	var items = me.GetItems();
+	if (items) {
+		for(var i = 0 ; i < items.length ; i++) {
+			thisItem = items[i];
+			item = thisItem;
+		}
+	} else {
+		Print (COLOR_1 + "Fatal Error!  Character stash/inventory/body is all completely empty!");
+		Delay(20000);
+		return false;
+	}
+	
     _nipfile = FileOpen(filepath, 0);
 
     if(!_nipfile)
@@ -42,12 +56,27 @@ function NTIPOpenFile(filepath)
 
     while(!_nipfile.eof)
     {
+		var tempCheckList = new Array();
 		_lineNumber++;
 
 		_originalLine = _nipfile.ReadLine();
         _line = NTIPParseLineInt(_originalLine);
-
+		
         if(_line) {
+			tempCheckList.push(_line);
+			
+			try {
+				if(tempCheckList[0][0].length > 0) if (eval(tempCheckList[0][0]));
+				if(tempCheckList[0][1].length > 0) if (eval(tempCheckList[0][1]));
+				if(tempCheckList[0][2].length > 0) if (eval(tempCheckList[0][2]));
+			}
+			catch(err) {
+				Print (COLOR_1 + "Error in NIP, line ignored: " + filepath + ", line: " + _lineNumber);
+				errorCaught = true;
+				_line = "";
+			}
+		}
+		if(_line && _line != "") {
 			_line.push(filepath);
 			_line.push(_lineNumber);
             _NTIP_CheckList.push(_line);
@@ -56,6 +85,7 @@ function NTIPOpenFile(filepath)
 
     _nipfile.Close();
 
+	if (errorCaught) Print (COLOR_1 + "Please use the numpad + key to run the NipChecker!");
     return true;
 }
 
@@ -69,7 +99,7 @@ function NTIPCheckItem(item)
     {
 		resultArray[1] = _NTIP_CheckList[i][3];
 		resultArray[2] = _NTIP_CheckList[i][4];
-	
+
         if(_NTIP_CheckList[i][0].length > 0)
         {
             if(eval(_NTIP_CheckList[i][0]))
@@ -87,6 +117,7 @@ function NTIPCheckItem(item)
             if(eval(_NTIP_CheckList[i][1])) {return (NTIP_CheckQuantity(item,i,resultArray));}
             else if(!_identified && resultArray[0] == 0) {resultArray[0] = -1; return resultArray;}
         }
+		
     }
     return resultArray;
 }

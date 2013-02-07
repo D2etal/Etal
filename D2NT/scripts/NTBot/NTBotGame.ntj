@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "41";
+var Rev = "42";
 
 // Provalone Edit //
 //Include("libs/common/NTExp.ntl");
@@ -47,7 +47,10 @@ function NTMain()
 
 	//var _time1 = NTU_timeStamp();
 	//Print ("Begin Parse: "+_time1);
-	NTSI_LoadNIPFiles("NTBot/item_configs");
+	if (!NTSI_LoadNIPFiles("NTBot/item_configs")) {
+		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "Exiting Game- Either no inventory on character or invalid NIP filename/path in character configuration");
+		ExitGame();
+	}
 	//var _time2 = NTU_timeStamp();
 	//Print ("End Parse: "+_time2);
 
