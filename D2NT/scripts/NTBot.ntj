@@ -463,9 +463,11 @@ function locationAction(location)
 		locationTimeout(gameDoesNotExistTimeout, location);
 		break;
 	default:
-		sendEventToOOG(D2NT_MGR_PRINT_STATUS, "Please Wait...", 0);
-		for (ftjcount=0; ftjcount<=10 && !me.ingame; ftjcount++) {
-			Delay(1000)
+		if (lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_STATUS, "Please Wait...", 0);
+			for (ftjcount=0; ftjcount<=10 && !me.ingame; ftjcount++) {
+				Delay(1000)
+			}
 		}
 		break;
 	}
