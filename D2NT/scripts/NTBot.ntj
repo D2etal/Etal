@@ -183,6 +183,15 @@ function locationAction(location)
 			}
 		}
 	case 1:	// Lobby
+		//ftjcheck
+		if (ftjcount >= 10 && lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
+			ftjcount = 0;
+			inGameAt = 0;
+			lastGameStatus = 0;
+			setNextGameMake();
+			locationTimeout(ftjDelay*1000, location);
+		}
 		if(location.id == 1 && joinChatAfterGame)
 		{
 			Delay(Random(waitBeforeEnterChatMin, waitBeforeEnterChatMax));

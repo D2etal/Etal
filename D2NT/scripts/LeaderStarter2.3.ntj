@@ -85,6 +85,12 @@ var ftjDelay = 300;							// time to idle before trying if leecher failed to joi
 
 // DONT EDIT ANYTHING BELOW THIS
 
+// =============================================================================
+// Debug : set to true if you are experiencing problems with your JoinBot
+// it will log in your OOG the lobby chat actions
+// =============================================================================
+var Debug = true;
+
 // D2NT Manager Command
 const D2NT_MGR_LOADING = 1;
 const D2NT_MGR_READY = 2;
@@ -202,6 +208,15 @@ function locationAction(location)
 			}
 		}
 	case 1:	// Lobby
+		//ftjcheck
+		if (ftjcount >= 10 && lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
+			ftjcount = 0;
+			inGameAt = 0;
+			lastGameStatus = 0;
+			setNextGameMake();
+			locationTimeout(ftjDelay*1000, location);
+		}
 		if(location.id == 1 && joinChatAfterGame)
 		{
 			Delay(Random(waitBeforeEnterChatMin, waitBeforeEnterChatMax));
@@ -483,8 +498,10 @@ function locationAction(location)
 		for (ftjcount=0; ftjcount<=10 && !me.ingame; ftjcount++) {
 			Delay(1000)
 		}
+		DebugInOOG("Unhandled location : "+location.id);
 		break;
 	}
+	DebugInOOG("Location : "+location.id);
 }
 
 function sendEventToOOG(locationId, statusString, pendingTime)
@@ -673,4 +690,12 @@ function NT_File(path, mode, msg, delay) { //big thanks to all the koreans out t
     }
 
     return _msg;
+}
+
+function DebugInOOG(logString)
+{
+    if (Debug)
+        return SendCopyData("D2NT Manager", null, 9<<16, "-- Debug : " + logString);
+    else
+        return false;
 }
