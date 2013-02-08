@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "46";
+var Rev = "47";
 
 // Provalone Edit //
 //Include("libs/common/NTExp.ntl");
