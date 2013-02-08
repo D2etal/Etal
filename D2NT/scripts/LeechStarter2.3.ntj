@@ -16,15 +16,15 @@
 // =============================================================================
 // Leader Account settings
 // =============================================================================
-var leaderAccountName = "leader Account"; 
-var leaderName = "leader name";
+var leaderAccountName = "Haleyrawr"; 
+var leaderName = "haleysorcy";
 // =============================================================================
 
 // Leecher game entry delays use to stagger when leechers join game...
 // [characterName, delay in milliseconds]...just leave these as they are if you don't want to 
 // use them
 // =============================================================================
-var leecher1 = ["characterName", 100];
+var leecher1 = ["haleypally", 100];
 var leecher2 = ["characterName", 750];
 var leecher3 = ["characterName", 1250];
 var leecher4 = ["characterName", 2000];
@@ -36,17 +36,18 @@ var useFL = false;  				// set true if you wish your leecher to use /f l to join
 var useFLCount = 1;				// this is seperate from the above setting allows you to use /f l to join, but will only spam /f l the set number of times.  set to 0 to disable
 var delayFL = 3000;				// milliseconds before the bot will use the /f l command in loby
 var reEnterSameGame = false;		// set to false to keep the bot from using /f l to re enter same game also must be set to false if you don't want bot to re enter same game for txt joining
-var useTextFileJoin = false;  	// use txt file communication between leader and leecher to join games
+var useTextFileJoin = true;  	// use txt file communication between leader and leecher to join games
 var gameDoesNotExistDelay = 10;	// time to idle before trying if leader's game does not exist.  In seconds.
+var ftjDelay = 300;				// time to idle before trying if leecher failed to join.  In seconds.
 var tryLeaderGame1x = true;		// will only try to enter the game one time.  Good for when leader drops before leecher gets in.
 var retryLeaderGame = 0;			// nuber of times you would like to try joining leaders game.  Note tryLeaderGame1x = true bypasses this and the delay below
 var retryLeaderGameDelay = 10;	// time in seconds to delay between retrying to enter leaders game
-var fastJoin = false;				// this has preconfigured delays for easy switching.  Gets you leecher in game in about 3 seconds.  THIS MAY CAUSE JOIN PROBLEMS FOR SOME USERS!!!!!
+var fastJoin = true;				// this has preconfigured delays for easy switching.  Gets you leecher in game in about 3 seconds.  THIS MAY CAUSE JOIN PROBLEMS FOR SOME USERS!!!!!
 
 // =============================================================================
 // Game password (leave blank if none)
 // =============================================================================
-var gamepassword = "";
+var gamepassword = "1";
 
 // =============================================================================
 // UseCDKeyChangeTrick :
@@ -54,7 +55,7 @@ var gamepassword = "";
 //          in order to increment his number of runs (to switch CDKeys after xx runs)
 // if false, the follow bot will never change his CDKey
 // =============================================================================
-var UseCDKeyChangeTrick = false;
+var UseCDKeyChangeTrick = true;
 
 // =============================================================================
 // Debug : set to true if you are experiencing problems with your JoinBot
@@ -170,6 +171,7 @@ var inGameAt       = 0;
 var chatActionsDone   = false;
 var lastGameFailed     = false;
 var sayChatMsgAfterGame = false;
+var ftjcount = 0;
 
 Include("libs/controlInfo.ntl");
 Include("libs/common/NTColorConverter.ntl");
@@ -238,6 +240,8 @@ function NTMain()
         {
             if(_ingame)
             {
+
+			
 				My_ExitGame_Check(); // out of korean modded d2nt fixes white screen of death
 				_ingame = false;
                 sayChatMsgAfterGame = true;
@@ -258,6 +262,15 @@ function locationAction(location)
     {
     case 3: // Lobby Chat
         sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
+		//ftjcheck
+		if (ftjcount >= 10 && lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
+			ftjcount = 0;
+			inGameAt = 0;
+			lastGameStatus = 0;
+			setNextGameMake();
+			locationTimeout(ftjDelay*1000, location);
+		}
 		//LogPrintSimple(me.account + "MyAccountTest.txt", me.account + " / " + me.charname) // this is to check for 2nd account login
 		if (UseCDKeyChangeTrick && increaseGameCount) {
 			sendEventToOOG(D2NT_MGR_CREATE_GAME, location.name, 0);
@@ -464,7 +477,9 @@ function locationAction(location)
 
         lastGameMade = GetTickCount();
         lastGameStatus = 1; // pending creation
-        break;  case 5: // Join Game
+        break;  
+		
+	case 5: // Join Game
     if (game)
     {
 		if(retryLeaderGameCount > 0 && retryLeaderGameDelay > 0) {
@@ -501,6 +516,7 @@ function locationAction(location)
 		}
 		controlData.click(controlData.controls.lobby.join.button.joinGame);
 		RunGC(); // run garbage collector between each game
+		
         locationTimeout(5000, location);
         lastGameStatus = 1; // pending join
     }
@@ -510,7 +526,7 @@ function locationAction(location)
         me.Cancel(1);
         Delay(1000);
     }
-	
+
     break;
     case 6: // Ladder
         break;
@@ -668,6 +684,10 @@ function locationAction(location)
         locationTimeout(gameDoesNotExistTimeout, location);
         break;
     default:
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, "Please Wait...", 0);
+		for (ftjcount=0; ftjcount<=10 && !me.ingame; ftjcount++) {
+			Delay(1000)
+		}
         DebugInOOG("Unhandled location : "+location.id);
         break;
     }
@@ -706,7 +726,7 @@ function locationTimeout(time, location)
         sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name + " (" + parseInt((endtime-GetTickCount())/1000) + "s)", 0);
         Delay(500);
     }
-
+	
     return (controlData.getLocation().id != location.id);
 }
 
@@ -867,3 +887,4 @@ function NT_RetrievenextGame() { // to retrieve game and pw
 	return;
 }
 // so now we need to add code to get the next game and pw as well as check it against the last game
+
