@@ -89,7 +89,7 @@ var ftjDelay = 300;							// time to idle before trying if leader failed to join
 // Debug : set to true if you are experiencing problems with your JoinBot
 // it will log in your OOG the lobby chat actions
 // =============================================================================
-var Debug = true;
+var Debug = false;
 
 // D2NT Manager Command
 const D2NT_MGR_LOADING = 1;
