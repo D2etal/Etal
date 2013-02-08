@@ -67,7 +67,7 @@ var waitInChatBeforeActionsMin	= 2000;		// min how long to wait before joining c
 var waitInChatBeforeActionsMax	= 3000;		// max how long to wait before joining channel
 var waitBeforeNextLineChatMin	= 500;		// Minimum ammount of time to add after each text line	
 var waitBeforeNextLineChatMax	= 1500;		// Maximum ammount of time to add after each text line
-var ftjDelay = 300;							// time to idle before trying if leecher failed to join.  In seconds.
+var ftjDelay = 300;							// time to idle before trying if bot failed to join.  In seconds.
 
 // DONT EDIT ANYTHING BELOW THIS
 
