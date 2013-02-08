@@ -233,33 +233,37 @@ function MySI_MiniNTIPCheckItem(item, ntip) //taken from korean d2nt mod
     var _result     = 0;
     var _identified = item.itemflag & _NTIPAliasFlag["identified"];
     var _ntip       = NTIPParseLineInt(ntip);
-
-    if (_ntip)
-    {
-        if (_ntip[0].length > 0)
-        {
-            if (eval(_ntip[0]))
-            {
-                if (_ntip[1].length > 0)
-                {
-                    if (eval(_ntip[1]))
-                        return 1;
-                    else if (!_identified && _result == 0)
-                        _result = -1;
-                }
-                else
-                    return 1;
-            }
-        }
-        else if (_ntip[1].length > 0)
-        {
+	try {
+		if (_ntip)
+		{
+			if (_ntip[0].length > 0)
+			{
+				if (eval(_ntip[0]))
+				{
+					if (_ntip[1].length > 0)
+					{
+						if (eval(_ntip[1]))
+							return 1;
+						else if (!_identified && _result == 0)
+							_result = -1;
+					}
+					else
+						return 1;
+				}
+			}
+			else if (_ntip[1].length > 0)
+			{
             if (eval(_ntip[1]))
                 return 1;
             else if (!_identified && _result == 0)
                 _result = -1;
-        }
-    }
-
+			}
+		}
+	} catch(err) {
+		_result = 0;
+		SendCopyData("D2NT Manager", null, (D2NT_MGR_PRINT_LOG<<16), "MySI_MiniNTIPCheckItem: Bad NIP detected: " + _ntip[0] + " # " + _ntip[1]);
+		SendCopyData("D2NT Manager", null, (D2NT_MGR_PRINT_LOG<<16), "    Error: " + err);
+	}
     return _result;
 }
 

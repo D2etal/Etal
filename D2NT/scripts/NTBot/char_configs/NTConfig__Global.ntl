@@ -4,7 +4,6 @@
 var MultiBotter = false;
 var CountMyGold = false;
 
-var runtimeParse = false;
 var createCharConfigs = true; 	/*	Set true to create a character config clone based off the default config.									
 									Will then advise you to close and edit the new config once created.
 									Set false to disable character config auto creation & use default config.

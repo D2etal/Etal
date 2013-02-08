@@ -116,7 +116,7 @@ var waitBeforeEnterChatMin     = 1000;
 var waitBeforeEnterChatMax     = 2000;
 var waitInChatBeforeActionsMin = 2000;
 var waitInChatBeforeActionsMax = 3000;
-
+var ftjDelay 				   = 180;	// time to idle before trying if leecher failed to join.  In seconds.
 // Only for JoinBot (friend list delay, milliseconds)
 var LeaderOfflineDelay         = 30000;
 var LeaderInChatDelay          = 10000;
@@ -170,6 +170,7 @@ var _gamepassword = "";
 var _leaderOfflineTick = -LeaderOfflineDelay;
 var _leaderInChatTick = -LeaderInChatDelay;
 var _GameIsFullTick = -GameIsFullDelay;
+var ftjcount = 0;
 
 function NTMain()
 {
@@ -255,6 +256,15 @@ function locationAction(location)
     switch(location.id)
     {
     case 3: // Lobby Chat
+		//ftjcheck
+		if (ftjcount >= 10 && lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
+			ftjcount = 0;
+			inGameAt = 0;
+			lastGameStatus = 0;
+			setNextGameMake();
+			locationTimeout(ftjDelay*1000, location);
+		}
 		if(onMule) {
 			if(MuleNotification) {
 				SendCopyData("D2NT Manager", null, 9<<16, "Swapping to Main character!");
@@ -434,6 +444,15 @@ function locationAction(location)
         break;
 
     case 1:    // Lobby
+		//ftjcheck
+		if (ftjcount >= 10 && lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
+			ftjcount = 0;
+			inGameAt = 0;
+			lastGameStatus = 0;
+			setNextGameMake();
+			locationTimeout(ftjDelay*1000, location);
+		}
 		if(onMule) {
 			if(MuleNotification) {
 				SendCopyData("D2NT Manager", null, 9<<16, "Swapping to Main character!");
@@ -662,6 +681,12 @@ function locationAction(location)
         locationTimeout(gameDoesNotExistTimeout, location);
         break;
     default:
+		if (lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_STATUS, "Please Wait...", 0);
+			for (ftjcount=0; ftjcount<=10 && !me.ingame; ftjcount++) {
+				Delay(1000)
+			}
+		}
         DebugInOOG("Unhandled location : "+location.id);
         break;
     }

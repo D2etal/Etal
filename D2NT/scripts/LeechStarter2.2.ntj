@@ -35,6 +35,7 @@ var reEnterSameGame = false;		// set to false to keep the bot from using /f l to
 var useTextFileJoin = false;  	// use txt file communication between leader and leecher to join games.  False uses message sent from leader when in game
 var gameDoesNotExistDelay = 10;	// time to idle before trying if leader's game does not exist.  In seconds.
 var tryLeaderGame1x = false;		// will only try to enter the game one time.  Good for when leader drops before leecher gets in.
+var ftjDelay = 180;				// time to idle before trying if leecher failed to join.  In seconds.
 
 // =============================================================================
 // Game password (leave blank if none)
@@ -154,6 +155,7 @@ var _gamepassword = "";
 var _leaderOfflineTick = -LeaderOfflineDelay;
 var _leaderInChatTick = -LeaderInChatDelay;
 var _GameIsFullTick = -GameIsFullDelay;
+var ftjcount = 0;
 
 function NTMain()
 {
@@ -221,6 +223,15 @@ function locationAction(location)
     switch(location.id)
     {
     case 3: // Lobby Chat
+		//ftjcheck
+		if (ftjcount >= 10 && lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
+			ftjcount = 0;
+			inGameAt = 0;
+			lastGameStatus = 0;
+			setNextGameMake();
+			locationTimeout(ftjDelay*1000, location);
+		}
         sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
 		
 		//LogPrintSimple(me.account + "MyAccountTest.txt", me.account + " / " + me.charname) // this is to check for 2nd account login
@@ -393,6 +404,15 @@ function locationAction(location)
         break;
 
     case 1:    // Lobby
+		//ftjcheck
+		if (ftjcount >= 10 && lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
+			ftjcount = 0;
+			inGameAt = 0;
+			lastGameStatus = 0;
+			setNextGameMake();
+			locationTimeout(ftjDelay*1000, location);
+		}
         if(location.id == 1 && joinChatAfterGame)
         {
 			//LogPrintSimple(me.account + "MyAccountTest.txt", me.account + " / " + me.charname) // this is to check for 2nd account login            
@@ -620,7 +640,13 @@ function locationAction(location)
         locationTimeout(gameDoesNotExistTimeout, location);
         break;
     default:
-        DebugInOOG("Unhandled location : "+location.id);
+		if (lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_STATUS, "Please Wait...", 0);
+			for (ftjcount=0; ftjcount<=10 && !me.ingame; ftjcount++) {
+				Delay(1000)
+			}
+		}
+		DebugInOOG("Unhandled location : "+location.id);
         break;
     }
     DebugInOOG("Location : "+location.id);

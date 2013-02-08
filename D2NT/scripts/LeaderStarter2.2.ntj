@@ -80,6 +80,7 @@ var waitInChatBeforeActionsMin	= 2000;		// min how long to wait before joining c
 var waitInChatBeforeActionsMax	= 3000;		// max how long to wait before joining channel
 var waitBeforeNextLineChatMin	= 500;		// Minimum ammount of time to add after each text line	
 var waitBeforeNextLineChatMax	= 1500;		// Maximum ammount of time to add after each text line
+var ftjDelay = 180;							// time to idle before trying if leader failed to join.  In seconds.
 
 // DONT EDIT ANYTHING BELOW THIS
 
@@ -103,6 +104,7 @@ var lastGameFailed = false;
 var tempDelay = Random(waitBeforeNextLineChatMin, waitBeforeNextLineChatMax);
 var gameInfo = "";
 var bugignor = true;
+var ftjcount = 0;
 Include("libs/controlInfo.ntl");
 Include("libs/common/NTColorConverter.ntl");
 
@@ -170,6 +172,15 @@ function locationAction(location)
 	switch(location.id)
 	{
 	case 3: // Lobby Chat
+		//ftjcheck
+		if (ftjcount >= 10 && lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
+			ftjcount = 0;
+			inGameAt = 0;
+			lastGameStatus = 0;
+			setNextGameMake();
+			locationTimeout(ftjDelay*1000, location);
+		}
 		if(!chatActionsDone)
 		{
 			chatActionsDone = true;
@@ -190,6 +201,15 @@ function locationAction(location)
 			}
 		}
 	case 1:	// Lobby
+		//ftjcheck
+		if (ftjcount >= 10 && lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
+			ftjcount = 0;
+			inGameAt = 0;
+			lastGameStatus = 0;
+			setNextGameMake();
+			locationTimeout(ftjDelay*1000, location);
+		}
 		if(location.id == 1 && joinChatAfterGame)
 		{
 			Delay(Random(waitBeforeEnterChatMin, waitBeforeEnterChatMax));
@@ -465,6 +485,14 @@ function locationAction(location)
 		setNextGameMake();
 
 		locationTimeout(gameDoesNotExistTimeout, location);
+		break;
+	default:
+		if (lastGameStatus == 1) {
+			sendEventToOOG(D2NT_MGR_PRINT_STATUS, "Please Wait...", 0);
+			for (ftjcount=0; ftjcount<=10 && !me.ingame; ftjcount++) {
+				Delay(1000)
+			}
+		}
 		break;
 	}
 }

@@ -38,11 +38,11 @@ var delayFL = 3000;				// milliseconds before the bot will use the /f l command 
 var reEnterSameGame = false;		// set to false to keep the bot from using /f l to re enter same game also must be set to false if you don't want bot to re enter same game for txt joining
 var useTextFileJoin = false;  	// use txt file communication between leader and leecher to join games
 var gameDoesNotExistDelay = 10;	// time to idle before trying if leader's game does not exist.  In seconds.
-var ftjDelay = 300;				// time to idle before trying if leecher failed to join.  In seconds.
 var tryLeaderGame1x = false;		// will only try to enter the game one time.  Good for when leader drops before leecher gets in.
 var retryLeaderGame = 0;			// nuber of times you would like to try joining leaders game.  Note tryLeaderGame1x = true bypasses this and the delay below
 var retryLeaderGameDelay = 10;	// time in seconds to delay between retrying to enter leaders game
 var fastJoin = false;				// this has preconfigured delays for easy switching.  Gets you leecher in game in about 3 seconds.  THIS MAY CAUSE JOIN PROBLEMS FOR SOME USERS!!!!!
+var ftjDelay = 180;				// time to idle before trying if leecher failed to join.  In seconds.
 
 // =============================================================================
 // Game password (leave blank if none)
