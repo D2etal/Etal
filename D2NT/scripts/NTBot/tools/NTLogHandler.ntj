@@ -1,0 +1,79 @@
+// NTLogHandler.ntj
+//
+var TwelveHourClock = false;
+
+function NTMain() {
+	Include("libs/common/NTLogger.ntl");
+
+	RegisterEvent(EVENT_SCRIPTMSG, scriptMsgEvents);
+	
+	while(1) {
+		NTC_Delay(500);
+	}
+}
+
+// log msgs are of the format: scriptname, ticks, type, level, msg separated by NTLG_DELIM
+function scriptMsgEvents(msg) {
+    log = msg.split(NTLG_DELIM);
+    if (log.length != 5) {
+		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "NTLogHandler: invalid log message dropped");
+		return;
+	} 
+	scriptname = log[0];
+	time = timeStamp(parseInt(log[1]));
+	type = parseInt(log[2]);
+	level = parseInt(log[3]);
+	message = log[4];
+
+	switch(type) {
+		case NTLG_TYPE_LOG:
+			filename = "logs/Logger/" + me.account + "-" + me.charname + "-log.txt";
+			break;
+		case NTLG_TYPE_ITEM:
+			filename = "logs/Logger/" + me.account + "-" + me.charname + "-item.txt";
+			break;
+		case NTLG_TYPE_SHRINE:
+			filename = "logs/Logger/" + me.account + "-" + me.charname + "-shrine.txt";
+			break;
+		default:
+			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "NTLogHandler: invalid log message (type) dropped");
+	}
+
+	if (message == "") {
+		initLog(filename, scriptname, time);
+	} else {
+		logLine(filename, scriptname, time, level, message);
+	}
+}
+
+function logLine(filename, scriptname, time, level, message) {
+	file = FileOpen(filename, 2);
+	file.WriteLine(time + ": " + scriptname + ": " + level + ": " + message);
+	file.Close();
+}
+
+function initLog(filename, scriptname, time) {
+	file = FileOpen(filename, 1);
+	file.WriteLine(time + ": " + scriptname + ": " + "Initialized");
+	file.Close();
+}
+
+function timeStamp(ticks) {
+	var time    = new Date(ticks);
+	var hour   = time.getHours();
+	var minute = time.getMinutes();
+	var second = time.getSeconds();
+	var millisecond = time.getMilliseconds();
+	var DoN = "";
+	if (TwelveHourClock) {
+		var DoN = "AM";
+		if (hour > 11) { DoN = "PM"; }
+		if (hour > 12) { hour = hour - 12; }
+		if (hour == 0) { hour = 12; }
+	}
+	if (hour < 10) { hour = "0" + hour; }
+	if (minute < 10) { minute = "0" + minute; }
+	if (second < 10) { second = "0" + second; }
+	var timeString = hour +	':' +  minute + ':' + second + '.' + millisecond + " " + DoN;
+	return timeString;
+}	

@@ -1,0 +1,68 @@
+Include("libs/common/NTCommon.ntl");
+var _NTLG_LogList = new Array();
+
+// Logger Message Types
+const NTLG_TYPE_LOG = 0;
+const NTLG_TYPE_ITEM = 1;
+const NTLG_TYPE_SHRINE = 2;
+
+// Message Levels
+const NTLG_LEVEL_DEBUG = 0;
+const NTLG_LEVEL_INFO = 1;
+const NTLG_LEVEL_WARN = 2;
+const NTLG_LEVEL_ERROR = 3;
+const NTLG_LEVEL_ITEM_KEEP = 10;
+const NTLG_LEVEL_ITEM_SOLD = 11;
+const NTLG_LEVEL_ITEM_DROP = 12;
+const NTLG_LEVEL_ITEM_CRAFT = 13;
+const NTLG_LEVEL_ITEM_RUNE = 14;
+const NTLG_LEVEL_SHRINE = 20;
+
+// Delimeter - log msgs are of the format: scriptname, ticks, type, level, msg separated by NTLG_DELIM
+const NTLG_DELIM = "%"
+
+// Log Queue size to never exceed
+const NTLG_LOGLIMIT = 1000;
+
+function NTLG_Log (scriptname, type, level, msg) {
+	ticks = GetTickCount();
+	if (arguments.length == 3)
+		msg = "";
+	NTLG_LogEvent(scriptname, ticks, type, level, msg);
+}
+
+function NTLG_LogEvent(scriptname, ticks, type, level, msg) {
+	logged = NTC_SendMsgToScript("NTLogHandler.ntj", scriptname + NTLG_DELIM + ticks + NTLG_DELIM + type + NTLG_DELIM + level + NTLG_DELIM + msg);
+	if (!logged) NTLG_QueueLogEvent(scriptname, ticks, type, level, msg);
+}
+
+function NTLG_FlushLogQueue() {
+	if (_NTLG_LogList.length > NTLG_LOGLIMIT) {
+		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "NTLG_FlushLogQueue: log length exceeds limit, dropping "+ _NTLG_LogList.length +" messages");
+		_NTLG_LogList = new Array();
+	}
+	_logList = _NTLG_LogList;
+	_NTLG_LogList = new Array();
+	for(i = 0 ; i < _logList.length ; i++) {
+		scriptname = _logList[i].pop();
+		ticks = _logList[i].pop();
+		type = _logList[i].pop();
+		level = _logList[i].pop();
+		msg = _logList[i].pop();
+		NTLG_LogEvent(scriptname, ticks, type, level, msg);
+	}
+}
+
+function NTLG_QueueLogEvent(scriptname, ticks, type, level, msg) {
+	var _entry = new Array();
+	_entry.push(msg);
+	_entry.push(level);
+	_entry.push(type);
+	_entry.push(ticks);
+	_entry.push(scriptname);
+	_NTLG_LogList.push(_entry);
+		
+}
+
+
+
