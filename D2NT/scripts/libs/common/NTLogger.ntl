@@ -1,33 +1,48 @@
+var NTConfig_LoggingEnabled = false;
+var NTConfig_TwelveHourClock = false;
+var NTConfig_maxLogSize = 10000000;
+var NTConfig_Log_Level = 1;
+var NTConfig_Item_Level = 1;
+
 Include("libs/common/NTCommon.ntl");
 var _NTLG_LogList = new Array();
 
 // Logger Message Types
 const NTLG_TYPE_LOG = 0;
 const NTLG_TYPE_ITEM = 1;
-const NTLG_TYPE_SHRINE = 2;
 
 // Message Levels
 const NTLG_LEVEL_DEBUG = 0;
 const NTLG_LEVEL_INFO = 1;
 const NTLG_LEVEL_WARN = 2;
 const NTLG_LEVEL_ERROR = 3;
-const NTLG_LEVEL_ITEM_KEEP = 10;
-const NTLG_LEVEL_ITEM_SOLD = 11;
-const NTLG_LEVEL_ITEM_DROP = 12;
-const NTLG_LEVEL_ITEM_CRAFT = 13;
-const NTLG_LEVEL_ITEM_RUNE = 14;
-const NTLG_LEVEL_SHRINE = 20;
+const NTLG_LEVEL_ITEM_WHITE = 0;
+const NTLG_LEVEL_ITEM_MAGIC = 1;
+const NTLG_LEVEL_ITEM_RARE = 2;
+const NTLG_LEVEL_ITEM_CRAFT = 3;
+const NTLG_LEVEL_ITEM_UNIQUE = 4;
 
 // Delimeter - log msgs are of the format: scriptname, ticks, type, level, msg separated by NTLG_DELIM
 const NTLG_DELIM = "%"
+const NTLG_DELIM_REPLACE = "percent"
 
 // Log Queue size to never exceed
 const NTLG_LOGLIMIT = 1000;
 
 function NTLG_Log (scriptname, type, level, msg) {
+	if (arguments.length > 4) {
+		sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "NTLG: log message dropped, too many arguments", 0);
+		return;
+	}
 	ticks = GetTickCount();
-	if (arguments.length == 3)
-		msg = "";
+	if (arguments.length == 3) msg = "";
+	regex = new RegExp(NTLG_DELIM, "g");
+	msg = msg.replace(regex, NTLG_DELIM_REPLACE);
+	while (msg.length > 39) {
+		msgTrunc = msg.substr(0,39);
+		msg = msg.substr(39);
+		NTLG_LogEvent(scriptname, ticks, type, level, msgTrunc);
+	}
 	NTLG_LogEvent(scriptname, ticks, type, level, msg);
 }
 
@@ -61,7 +76,6 @@ function NTLG_QueueLogEvent(scriptname, ticks, type, level, msg) {
 	_entry.push(ticks);
 	_entry.push(scriptname);
 	_NTLG_LogList.push(_entry);
-		
 }
 
 

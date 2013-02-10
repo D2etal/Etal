@@ -1,14 +1,12 @@
 // NTLogHandler.ntj
-//
-var TwelveHourClock = false;
 
 function NTMain() {
 	Include("libs/common/NTLogger.ntl");
-
-	RegisterEvent(EVENT_SCRIPTMSG, scriptMsgEvents);
-	
+	if (NTConfig_LoggingEnabled) {
+		RegisterEvent(EVENT_SCRIPTMSG, scriptMsgEvents);
+	}
 	while(1) {
-		NTC_Delay(500);
+		NTC_Delay(700);
 	}
 }
 
@@ -27,18 +25,16 @@ function scriptMsgEvents(msg) {
 
 	switch(type) {
 		case NTLG_TYPE_LOG:
+			if (level < NTConfig_Log_Level) return;
 			filename = "logs/Logger/" + me.account + "-" + me.charname + "-log.txt";
 			break;
 		case NTLG_TYPE_ITEM:
+			if (level < NTConfig_Item_Level) return;
 			filename = "logs/Logger/" + me.account + "-" + me.charname + "-item.txt";
-			break;
-		case NTLG_TYPE_SHRINE:
-			filename = "logs/Logger/" + me.account + "-" + me.charname + "-shrine.txt";
 			break;
 		default:
 			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "NTLogHandler: invalid log message (type) dropped");
 	}
-
 	if (message == "") {
 		initLog(filename, scriptname, time);
 	} else {
@@ -53,8 +49,13 @@ function logLine(filename, scriptname, time, level, message) {
 }
 
 function initLog(filename, scriptname, time) {
-	file = FileOpen(filename, 1);
-	file.WriteLine(time + ": " + scriptname + ": " + "Initialized");
+	file = FileOpen(filename, 2);
+	if (file.size > NTConfig_maxLogSize) {
+		file.Close();
+		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "NTLogHandler: Log Initialized: " + filename);
+		file = FileOpen(filename, 1);
+		file.WriteLine(time + ": " + scriptname + ": " + "Initialized");	
+	}
 	file.Close();
 }
 
@@ -65,7 +66,7 @@ function timeStamp(ticks) {
 	var second = time.getSeconds();
 	var millisecond = time.getMilliseconds();
 	var DoN = "";
-	if (TwelveHourClock) {
+	if (NTConfig_TwelveHourClock) {
 		var DoN = "AM";
 		if (hour > 11) { DoN = "PM"; }
 		if (hour > 12) { hour = hour - 12; }

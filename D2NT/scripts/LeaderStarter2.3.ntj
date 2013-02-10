@@ -114,6 +114,7 @@ var bugignor = true;
 var ftjcount = 0;
 Include("libs/controlInfo.ntl");
 Include("libs/common/NTColorConverter.ntl");
+Include("libs/common/NTLogger.ntl");
 
 var controlData = new controlInfo();
 
@@ -127,6 +128,7 @@ function NTMain()
 	controlData.textDelay = textDelay;
 	controlData.clickDelayRandom = clickDelayRandom;
 	controlData.textDelayRandom = textDelayRandom;
+	NTLG_Log("NTBot.ntj", NTLG_TYPE_LOG, NTLG_LEVEL_INFO);
 	while(1)
 	{
 		if(me.ingame)
@@ -143,17 +145,21 @@ function NTMain()
 					_ingame = true;
 					NT_File("logs/messagecomands/"+me.charname+"-nextgame.txt", 1, me.gamename + "/" + me.gamepassword); // for leader to print game/pw to txt	 	
 
-					if(me.playtype > 0)
+					if(me.playtype > 0) {
+						NTLG_Log("NTBot.ntj", NTLG_TYPE_LOG, NTLG_LEVEL_INFO, "In Game[IP:" + me.gameserverip.split(".")[3] + "]");
 						sendEventToOOG(D2NT_MGR_INGAME, "In Game[IP:" + me.gameserverip.split(".")[3] + "]", 0);
-						
-					else
+
+					} else {
+						NTLG_Log("NTBot.ntj", NTLG_TYPE_LOG, NTLG_LEVEL_INFO, "In Game");
 						sendEventToOOG(D2NT_MGR_INGAME, "In Game", 0);
+					}
 						Say("/f m in_new_game " + me.gamename);  // this is for leechers to join only after leader is in game
 					lastGameStatus = 2; // in game successful
 				}
 			}
 
 			Delay(1000);
+			NTLG_FlushLogQueue();
 		}
 		else
 		{
