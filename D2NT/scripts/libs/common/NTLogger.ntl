@@ -1,7 +1,7 @@
-var NTConfig_LoggingEnabled = false;
+﻿var NTConfig_LoggingEnabled = false;
 var NTConfig_TwelveHourClock = false;
 var NTConfig_maxLogSize = 10000000;
-var NTConfig_Log_Level = 1;
+var NTConfig_Log_Level = 0;
 var NTConfig_Item_Level = 1;
 
 Include("libs/common/NTCommon.ntl");
@@ -29,32 +29,49 @@ const NTLG_DELIM_REPLACE = "percent"
 // Log Queue size to never exceed
 const NTLG_LOGLIMIT = 1000;
 
+// Internal send to script buffer size
+const maxbufferlength = 63;
+
 function NTLG_Log (scriptname, type, level, msg) {
 	if (arguments.length > 4) {
 		sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "NTLG: log message dropped, too many arguments", 0);
 		return;
 	}
 	ticks = GetTickCount();
+	msg = scriptname + ": " + msg;
 	if (arguments.length == 3) msg = "";
 	regex = new RegExp(NTLG_DELIM, "g");
 	msg = msg.replace(regex, NTLG_DELIM_REPLACE);
-	while (msg.length > 39) {
-		msgTrunc = msg.substr(0,39);
-		msg = msg.substr(39);
+	maxmsglength = maxbufferlength - (3 * String(NTLG_DELIM).length) - String(ticks).length - String(type).length - String(level).length;
+	while (msg.length > maxmsglength) {
+		msgTrunc = msg.substr(0,maxmsglength);
+		msgTrunc = msgTrunc.replace(/^\s+|\s+$/g, "");
+		msg = msg.substr(maxmsglength);
 		NTLG_LogEvent(scriptname, ticks, type, level, msgTrunc);
 	}
+	msg = msg.replace(/^\s+|\s+$/g, "");
 	NTLG_LogEvent(scriptname, ticks, type, level, msg);
 }
 
 function NTLG_LogEvent(scriptname, ticks, type, level, msg) {
-	logged = NTC_SendMsgToScript("NTLogHandler.ntj", scriptname + NTLG_DELIM + ticks + NTLG_DELIM + type + NTLG_DELIM + level + NTLG_DELIM + msg);
+	logged = NTC_SendMsgToScript("NTLogHandler.ntj", ticks + NTLG_DELIM + type + NTLG_DELIM + level + NTLG_DELIM + msg);
 	if (!logged) NTLG_QueueLogEvent(scriptname, ticks, type, level, msg);
+}
+
+function NTLG_QueueLogEvent(scriptname, ticks, type, level, msg) {
+	var _entry = new Array();
+	_entry.push(msg);
+	_entry.push(level);
+	_entry.push(type);
+	_entry.push(ticks);
+	_entry.push(scriptname);
+	_NTLG_LogList.push(_entry);
 }
 
 function NTLG_FlushLogQueue() {
 	if (_NTLG_LogList.length > NTLG_LOGLIMIT) {
-		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "NTLG_FlushLogQueue: log length exceeds limit, dropping "+ _NTLG_LogList.length +" messages");
-		_NTLG_LogList = new Array();
+		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "NTLG_FlushLogQueue: buffered length exceeds limit, flushing "+ _NTLG_LogList.length +" messages");
+		NTLG_EmergencyFlushLogQueue();
 	}
 	_logList = _NTLG_LogList;
 	_NTLG_LogList = new Array();
@@ -68,15 +85,62 @@ function NTLG_FlushLogQueue() {
 	}
 }
 
-function NTLG_QueueLogEvent(scriptname, ticks, type, level, msg) {
-	var _entry = new Array();
-	_entry.push(msg);
-	_entry.push(level);
-	_entry.push(type);
-	_entry.push(ticks);
-	_entry.push(scriptname);
-	_NTLG_LogList.push(_entry);
+function NTLG_EmergencyFlushLogQueue() {
+	_logList = _NTLG_LogList;
+	_NTLG_LogList = new Array();
+	for(i = 0 ; i < _logList.length ; i++) {
+		scriptname = _logList[i].pop();
+		ticks = _logList[i].pop();
+		type = _logList[i].pop();
+		level = _logList[i].pop();
+		msg = _logList[i].pop();
+		time = NTLG_TimeStamp(parseInt(log[1]));
+		NTLG_Logline("logs/Logger/flush-"+ticks+".txt", time, type, level, msg);
+	}
 }
 
+function NTLG_LogLine(filename, time, level, message) {
+	file = FileOpen(filename, 2);
+	file.WriteLine(time + ": " + level + ": " + message);
+	file.Close();
+}
 
+function NTLG_TimeStamp(ticks) {
+	var currentSmallTicks = GetTickCount();
+	var tickDiff = currentSmallTicks - ticks;
+	var time = new Date();
+	var currentBigTicks = time.getTime();
+	var adjustedTime = currentBigTicks - tickDiff;
+	time.setTime(adjustedTime);
+	var hour   = time.getHours();
+	var minute = time.getMinutes();
+	var second = time.getSeconds();
+	var millisecond = time.getMilliseconds();
+	if (NTConfig_TwelveHourClock) {
+		var DoN = "AM";
+		if (hour > 11) { DoN = "PM"; }
+		if (hour > 12) { hour = hour - 12; }
+		if (hour == 0) { hour = 12; }
+	}
+	if (hour < 10) { hour = "0" + hour; }
+	if (minute < 10) { minute = "0" + minute; }
+	if (second < 10) { second = "0" + second; }
+	if (String(millisecond).length == 2) { millisecond = millisecond + "0"; }
+	if (String(millisecond).length == 1) { millisecond = millisecond + "00"; }
+	if (NTConfig_TwelveHourClock)
+		timeString = hour +	':' +  minute + ':' + second + '.' + millisecond + " " + DoN;
+	else
+		timeString = hour +	':' +  minute + ':' + second + '.' + millisecond;
+	return timeString;
+}
 
+function InitLog(filename, time) {
+	file = FileOpen(filename, 2);
+	if (file.size > NTConfig_maxLogSize) {
+		file.Close();
+		SendCopyData("D2NT Manager", null, 9<<16, COLOR_1 + "NTLogHandler: Log Initialized: " + filename);
+		file = FileOpen(filename, 1);
+		file.WriteLine(time + ": " + "Initialized");	
+	}
+	file.Close();
+}
