@@ -1,0 +1,419 @@
+Include("NTRush/funcs/File.ntl");
+
+var Scripts = {};
+
+var Config = {
+	Load: function (override) {
+		var _short, _perm, _default, _made,
+			_locate = "NTRush/rush_configs/",
+			_created = false;
+
+		if (override === undefined) {
+			override = false;
+		}
+
+		switch (me.classid) {
+		case 0: // Zon
+			_short = "Amazon.ntl";
+			_perm = "Amazon_" + me.name + ".ntl";
+			break;
+		case 1: //Sorc
+			_short = "Sorceress.ntl";
+			_perm = "Sorceress_" + me.name + ".ntl";
+			break;
+		case 2: //Necro
+			_short = "Necromancer.ntl";
+			_perm = "Necromancer_" + me.name + ".ntl";
+			break;
+		case 3: //Pali
+			_short = "Paladin.ntl";
+			_perm = "Paladin_" + me.name + ".ntl";
+			break;
+		case 4: //Barb
+			_short = "Barbarian.ntl";
+			_perm = "Barbarian_" + me.name + ".ntl";
+			break;
+		case 5: //Druid
+			_short = "Druid.ntl";
+			_perm = "Druid_" + me.name + ".ntl";
+			break;
+		case 6: //Sin
+			_short = "Assassin.ntl";
+			_perm = "Assassin_" + me.name + ".ntl";
+			break;
+		}
+
+		if (!override) {
+			if (!File.Exists(_locate + _perm)) {
+				_default = FileOpen(_locate + _short, 0);
+				_made = FileOpen(_locate + _perm, 1);
+				while (!_default.eof) {
+					_made.WriteLine(_default.ReadLine());
+				}
+				_made.Close();
+				_default.Close();
+				_created = true;
+			}
+
+			if (_created) {
+				while (me.ingame) {
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "================> " + COLOR_2 + "Auto Character Config Creation Complete" + COLOR_14 + "<================");
+					Print(COLOR_14 + "===========================================================");
+					Print(COLOR_14 + "=============>   " + COLOR_2 + "Press Stop on Manager & Edit Character Config" + COLOR_14 + "   <=============");
+					Print(COLOR_14 + "===========================================================");
+					Delay(Random(8000, 11000));
+				}
+			}
+
+			try {
+				Include(_locate + _perm);
+			} catch (e) {
+				Print(COLOR_3 + "Failed to load char config");
+			}
+
+			try {
+				NT_LoadConfig();
+			} catch (e1) {
+				Print(COLOR_3 + "Error found in char config");
+			}
+		}
+
+		if (override) {
+			try {
+				Include(_locate + "RushLeech.ntl");
+			} catch (e2) {
+				Print(COLOR_3 + "Failed to load leech char config");
+			}
+
+			try {
+				NT_LoadConfig();
+			} catch (e3) {
+				Print(COLOR_3 + "Error found in leech char config");
+			}
+		}
+	}
+};
+
+// Rusher Adds
+var NTConfig_KillCouncils;	
+var NTConfig_ClearCS;	
+var NTConfig_TpHarem;
+var NTConfig_RushScript = [];
+var NTConfig_Rusher = "";
+var NTConfig_Bumper = "";
+
+// Class Specific Var's
+	var DebugAttacksInGame;
+	// Assassin
+		var NTConfig_UseTraps;
+		var NTConfig_UseFade;
+		var NTConfig_UseBOS;
+		var NTConfig_UseCloakOfShadows;
+		var NTConfig_UseBladeShield;
+		var NTConfig_MinTrapRange;
+		var NTConfig_MinBossTrapRange;
+		var NTConfig_NumTraps;
+		var NTConfig_NumBossTrap;
+		var NTConfig_UseShadow;
+		var NTConfig_Venom;
+
+	// Barbarian
+		var NTConfig_UseFindItem;
+		var NTConfig_BuyPotsIfLackOfMana;
+		var NTConfig_FindItemRange;
+		var BarbSwitch;
+
+	// Druid
+		var NTConfig_CastRaven;
+		var DruidPreAtt = [];
+		var NTConfig_CastPast;
+		var NTConfig_NadoDist;
+
+	// Necromancer
+		var NTConfig_SkeletonArmy;
+		var NTConfig_MageArmy;
+		var NTConfig_ReviveArmy;
+		var NTConfig_ActiveSummon;
+		var NTConfig_Golem;
+		var NTConfig_Curse = [];
+		var NTConfig_TeleStomp;
+		var NTConfig_PoisonNovaDelay;
+		var NTConfig_SaferSummons;
+		var NecroPreAtt = [];
+
+	// Paladin
+		var NTConfig_UseRedemptionHP;
+		var NTConfig_UseRedemptionMP;
+		var NTConfig_OnlySmiteStationary;
+
+	// Sorceress
+		var NTConfig_ChainLightOnLightImmunes;
+		var NTConfig_Telekinesis;
+		var NTConfig_DancingSorc;
+		var NTConfig_AttackJump;
+		var NTConfig_BounceRange;
+		var NTConfig_DanceStartHp;
+		var NTConfig_DanceStartMp;
+		var NTConfig_CastStatic;
+		var NTConfig_SwitchCastSorc;
+		var NTConfig_StaticBossesOnly;
+		var NTConfig_StaticBossesSelect = [];
+		var KBLSpamPos = [];
+
+// Speed Settings
+	var NTConfig_StartDelay;
+	var NTConfig_AreaDelay;
+	var NTConfig_SnagDelay;
+
+// Chicken
+	var NTConfig_SkipHealLife;
+	var NTConfig_SkipHealMana;
+	var NTConfig_LifeThresh;
+	var NTConfig_LifeRejuvThresh;
+	var NTConfig_ManaThresh;
+	var NTConfig_ManaRejuvThresh;
+	var NTConfig_LifeChicken;
+	var NTConfig_ManaChicken;
+	var NTConfig_EtalLifeChicken;
+	var NTConfig_EtalManaChicken;
+	var NTConfig_TPChicken;
+	var NTConfig_MercTPChicken;
+	var NTConfig_MercLifeThresh;
+	var NTConfig_MercRejuvThresh;
+	var NTConfig_MercChicken;
+
+// Inventory
+	var NTConfig_FreeSpaceBeforeBoss;
+	var NTConfig_FreeSpace;
+	var NTConfig_Columns = new Array(4);
+	NTConfig_Columns[0] = new Array(10);
+	NTConfig_Columns[1] = new Array(10);
+	NTConfig_Columns[2] = new Array(10);
+	NTConfig_Columns[3] = new Array(10);
+	var NTConfig_MinGoldToStash;
+
+// Belt
+	var NTConfig_BeltColType = new Array(4);
+
+// Pickit
+	var NTConfig_SnagRange;
+	var NTConfig_NIPFilePath = [];
+
+// General Config
+	var NTConfig_PublicMode;
+	var NTConfig_CheckCloneDiablo;
+	var NTConfig_SoJWaitTime;
+	var NTConfig_FastPickit;
+	var NTConfig_UseMerc;
+	var NTConfig_ResetEnigma;
+	var NTConfig_QuitOnPing;
+	var NTConfig_PingInterval;
+	var NTConfig_ClearPosition;
+	var NTConfig_PrioritizeWeakerFoes;
+	var NTConfig_PrioritizeWeakerFoesAreaDisable = [];
+	var NTConfig_SwitchTele;
+	var NTConfig_PreBuffFade;
+	var NTConfig_StopIfStashInventoryFull;
+	var NTConfig_FreeRowsQuit;
+	var NTConfig_SkipRegularMonsters;
+	var NTConfig_DropExtraRejuvs;
+	var NTConfig_TeleGrab;
+	var NTConfig_CheckPassword;
+	var NTConfig_GoWestFromLut;
+	var NTConfig_MinPots;
+	var NTConfig_CheckPotsTown;
+	var NTConfig_AutoMule;
+	var NTConfig_FinishRun;
+	var NTConfig_MuleStash;
+	var NTConfig_MuleInv;
+ 	var NTConfig_UseKeysForPlaceHolder;
+	var NTConfig_PropsForEtal;
+	var NTConfig_MercStats;
+	var NTConfig_VoyageToMissingWps;
+
+// Immunity Skipping
+	var NTConfig_AreasToNotSkipImmunes = [];
+	var NTConfig_SkipSingle = [];
+	var NTConfig_SkipDual = [];
+
+// Attack Config
+	var NTConfig_AttackSkill = new Array(10);
+	var prewavespot = [];
+	var NTConfig_PreWaveSpam;
+	var NTconfig_HighMaxAttack;
+	var NTConfig_HighMaxAttackAreas = [];
+	var NTConfig_HighMaxAttacks;
+	var NTConfig_LowMaxAttacks;
+	var MonstersToAttackFirst = [];
+	var NTConfig_AttackingThis;
+	var NTConfig_CheckSelfSafe = new Array();
+	var NTConfig_CheckMercSafe = new Array();
+
+// Cubing and Runeword
+	var NTConfig_Cubing;
+	var NTConfig_MakeRunewords;
+	var NTConfig_Gamble;
+
+// XML Logging
+	var NTConfig_UseXMLItemlog;
+	var NTConfig_IndependantLog;
+	var NTConfig_LogSoldItems;
+	var NTConfig_LogIgnoredItems;
+	var NTConfig_LogCraftedItems;
+	var NTConfig_LogItemQuality;
+
+// General Logging
+	var NTConfig_LogShrines;
+	var NTConfig_LogCraftingString;
+
+// Manager Logging
+	var NTConfig_LogSoldItemQuality;
+	var NTConfig_CubeProcessToManager;
+
+// Identify Options
+	var NTConfig_IdInField;
+	var NTConfig_FreeSpaceXY = [];
+	var NTConfig_AnnounceDroppedItems;
+	var NTConfig_dropMessages = [];
+	var NTConfig_IdentAtCain;
+	var NTConfig_PocketChange;
+	var NTConfig_DontCainAct = [];
+	var NTConfig_Repair;
+	var NTConfig_AlwaysUseCain;
+	var NTConfig_DropCainItems;
+
+// Open Chest
+	var NTConfig_OpenChest;
+	var NTConfig_OpenChests;
+	var NTConfig_CheckChestid;
+	var NTConfig_OpenChestsInAreaClearing;
+	var NTConfig_AreasToOpenChestClearing = [];
+	var NTConfig_DontOpenChestAreas = [];
+	var NTConfig_Chestids = [];
+	var NTConfig_OpenChestsInArea;
+
+// NTConfig_Global Variables
+	var Do_PauseBot;
+	var Do_PrevScript;
+	var Do_NextScript;
+	var Do_DropItems;
+	var Do_DevTools;
+	var Do_CoordLog;
+	var Do_HotKeyList;
+	var Do_InvTxtLog;
+	var Do_CursorILvL;
+	var Do_CheckSpace;
+	var CheckStashSpace;
+	var CheckInvSpace;
+	var Do_StatsLog;
+	var Do_PrintCoord;
+	var Do_NipCheck;
+	var Do_CheckBPs;
+	var Do_ExitGame;
+
+// not sure why needed
+	var NTConfig_OpenHallsSuperChests;	// Needs removed after a few commits
+
+// Runewords
+	var NTConfig_MakeRunewords;
+	var NTConfig_Runeword = [];
+	var NTConfig_KeepRuneword = [];
+
+// Cubing
+	var NTConfig_Cubing;
+	var NTConfig_CubingItem = [];
+
+// Gambling
+	var NTConfig_Gamble;
+	var NTConfig_GambleStartGold;
+	var NTConfig_GambleStopGold;
+	var NTConfig_GC;
+	var NTConfig_GCAmuGold;
+	var NTConfig_GambleItem = [];
+
+// XML Logging
+	var NTConfig_UseXMLItemlog;
+	var NTConfig_IndependantLog;
+	var NTConfig_LogSoldItems;
+	var NTConfig_LogIgnoredItems;
+	var NTConfig_LogCraftedItems;
+	var NTConfig_LogItemQuality;
+
+// General Logging
+	var NTConfig_LogShrines;
+	var NTConfig_LogCraftingString;
+
+// Manager Logging
+	var NTConfig_LogSoldItemQuality;
+	var NTConfig_CubeProcessToManager;
+
+// Identify Options
+	var NTConfig_IdInField;
+	var NTConfig_FreeSpaceXY = [];
+	var NTConfig_AnnounceDroppedItems;
+	var NTConfig_dropMessages = [];
+	var NTConfig_IdentAtCain;
+	var NTConfig_PocketChange;
+	var NTConfig_DontCainAct = [];
+	var NTConfig_Repair;
+	var NTConfig_AlwaysUseCain;
+	var NTConfig_DropCainItems;
+
+// Open Chest
+	var NTConfig_OpenChest;
+	var NTConfig_OpenChests;
+	var NTConfig_CheckChestid;
+	var NTConfig_OpenChestsInAreaClearing;
+	var NTConfig_AreasToOpenChestClearing = [];
+	var NTConfig_DontOpenChestAreas = [];
+	var NTConfig_Chestids = [];
+	var NTConfig_OpenChestsInArea;
+
+// Shrine Grabber
+	var NTConfig_ShareExpShrine;
+	var NTConfig_Shrines = [];
+
+// Unknown variables
+	var	NTConfig_KillBaalWalking;
+	var _walkfightertp;
+	var NTConfig_RunScriptAfterDiablo;
+	var NTConfig_LeechKillBaal;
+	var NTConfig_LeechHolyBoltBaal;
+	var NTConfig_LeechWalkAround;
+	var NTConfig_RunScriptAfterBaal;
+	var NTConfig_UsePaliAura;
+	var NTConfig_Blocker;
+	var DebugInGame;
+	var DebugAttacksInGame;
+	var DebugToLogs;
+	var DebugNTV;
+	var DebugMisc;
+	var LogHostiles;
+	var channelName;
+	var hostile_GetThenQuit;
+	var twelveHourClock;
+	var KillHostilePlayer;
+	var NTConfig_CubingDelaysCows;
+	var NTConfig_PsnW2;
+	var NTConfig_ClearWSK;
+	var NTConfig_TeleEachWave;
+	var NTConfig_NihlathakExtension;
+	var NTConfig_PindleskinExtension;
+	var NTConfig_ShenkExtension;
+	var NTConfig_OpenEvilUrn;
+	var NTConfig_FTEvilUrnExtension;
+	var NTConfig_Wave3;
+	var NTConfig_TownBeforeDiablo;
+	var NTConfig_MakeHelpTPBeforeThrone;
+	var Diablo_TpUpMessage;
+	var Diablo_KillDiabloMessage;
+	var Diablo_NextGameMessage;
+	var Diablo_FreeSpaceMessage;
+	var Baal_WSlvl3tpMSG;
+	var NTConfig_CaveLevel1;
+	var NTConfig_CaveLevel2;
+	var NTConfig_ClearPlainsOfDespair;
+	var NTConfig_ClearRiverOfFlames;
+	var NTConfig_DNextGameSay;
+	var NTConfig_CSDodge;

@@ -1,0 +1,70 @@
+var Rev = "ERusher v1.1";
+var etal = this;
+Include("NTRush/funcs/Message.ntl");
+
+var Loader = {
+	scriptlist: [],
+
+	Check: function () {
+		return SendCopyData("D2NT Manager", null, (9 << 16) | 0, "Loader file loaded...");
+	},
+
+	Run: function () {
+		this.Build();
+		this.Load();
+	},
+
+	Build: function () {
+		var _script, _sub,
+			_check = false;
+
+		_script = GetScript();
+		if (_script) {
+			do {
+				_sub = _script.name;
+				this.scriptlist.push(_sub.split(".")[0]);
+				if (_check) {
+					File.Log("NTRush/scriptlist_push.txt", _sub.split(".")[0]);
+				}
+			} while (_script.GetNext());
+		}
+	},
+
+	Load: function () {
+		var i, towned;
+
+		if (this.scriptlist.length < 1) {
+			Print(COLOR_8 + "scriptlist object is empty");
+		}
+
+ScriptLoop:
+		for (i in Scripts) {
+			if (Scripts.hasOwnProperty(i) && this.scriptlist.indexOf(i) > -1 && Scripts[i]) {
+				Include("NTRush/rushbots/" + i + ".ntj");
+
+				if (typeof (etal[i]) === "function") {
+					if (i !== "Command") {
+						try {
+							towned = NTTM_CheckAct();
+						} catch (e1) {
+							Print(COLOR_8 + "Failed to go to town.");
+						}
+					}
+
+					if (towned) {
+						try {
+							Config.Load();
+							SetStatusText(Rev + " Running " + i);
+							NTTMGR_TownManager();
+							etal[i]();
+						} catch (e) {
+							Print(COLOR_8 + "Failed to run script");
+						}
+					}
+				} else {
+					Print(COLOR_8 + "Error in script, skipping;");
+				}
+			}
+		}
+	}
+};

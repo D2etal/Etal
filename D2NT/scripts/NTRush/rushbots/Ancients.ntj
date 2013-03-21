@@ -1,55 +1,36 @@
-function NTMain()
+function Ancients()
 {
 	var _Altar, _Korlic, _Talic, _Madawc ;
 
-	Include("libs/common/NTCommon.ntl");
-	NTC_IncludeLibs();
-	NTC_IncludeConfig("NTRush/rush_configs");
-
-	NT_LoadConfig();
-	NTSI_LoadNIPFiles("NTBot/item_configs");
-
 	NTA_Initialize();
 
-	if(!NTTM_CheckAct()) {
-		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
-		return;
+	if (!NTTM_TownMove("waypoint")) {
+		return false;
 	}
 
-	NTTMGR_TownManager();
-
-	if(!NTTM_TownMove("waypoint")) {
-		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
-		return;
-	}
-
-	if(!NTM_TakeWaypoint(118)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
-		return;
+	if (!NTM_TakeWaypoint(118)) {
+		return false;
 	}
 
 	NTP_DoPrecast(true);
 
-	if(!NTM_MoveToStair(me.areaid, 120)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToStair()");
-		return;
+	if (!NTM_MoveToStair(me.areaid, 120)) {
+		return false;
 	}
 
-	if(!NTM_TakeStair(120)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
-		return;
+	if (!NTM_TakeStair(120)) {
+		return false;
 	}
 		
-	if(!NTM_MoveTo(me.areaid, 10057, 12645)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
-		return;
+	if (!NTM_MoveTo(me.areaid, 10057, 12645)) {
+		return false;
 	}
 		
-	Say("Ancients up! If you die stay dead!");
+	Say(Messages.ancientsup);
 			
 	NTM_MakeTP();
 			
-	while(!NTC_IsQuesterIn()) {
+	while (!NTC_IsQuesterIn()) {
 		NTC_Delay(500);
 	}
 
@@ -59,8 +40,8 @@ function NTMain()
 
 	_Altar = NTC_FindUnit(NTC_UNIT_OBJECT, 546);
 
-	if(_Altar) {
-		if(NTM_MoveTo(_Altar.areaid, _Altar.x+3, _Altar.y+3)) {
+	if (_Altar) {
+		if (NTM_MoveTo(_Altar.areaid, _Altar.x+3, _Altar.y+3)) {
 			NTC_OpenChest(_Altar);
 			me.Cancel(0);
 			NTC_Delay(100);
@@ -72,19 +53,18 @@ function NTMain()
 	_Talic = NTC_FindUnit(NTC_UNIT_OBJECT, 475);
 	_Madawc = NTC_FindUnit(NTC_UNIT_OBJECT, 476);
 
-	while(_Korlic.mode == 4 || _Talic.mode == 4 || _Madawc.mode == 4) {
+	while (_Korlic.mode == 4 || _Talic.mode == 4 || _Madawc.mode == 4) {
 		NTA_ClearPosition(40);
 		NTC_PingDelay(200);
 	}	
 		
-	if(!NTM_MoveTo(me.areaid, 10057, 12645)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
-		return;
+	if (!NTM_MoveTo(me.areaid, 10057, 12645)) {
+		return false;
 	}
 
-	Say("Ancients dead! Get back to town!");
+	Say(Messages.ancientsdown);
 
 	NTM_MakeTP(true);
 
-	NTC_SendMsgToScript("loader.ntj", "end");	
+	return true;
 }

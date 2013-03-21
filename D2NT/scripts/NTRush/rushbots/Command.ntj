@@ -1,0 +1,179 @@
+var _masterlock = false;
+var _master = "";
+var trigger = ".";
+var comm = this;
+var _locate = "NTRush/rushbots/";
+
+function Command() {
+	var _busy = false,
+		_end = false;
+
+	Config.Load();
+	NTA_Initialize();
+	IncludeFuncs();
+
+	NTTMGR_TownManager();
+
+	SetStatusText(Rev + "Awaiting master");
+
+	RegisterEvent(EVENT_GAMEMSG,
+		function (msg, type) {
+			var _sender, _command,
+				_split = msg.split(":");
+
+			if (type === 0 && msg.indexOf(trigger) !== -1) {
+				_sender = _split[0].substring(3, _split[0].length - 3);
+				_command = msg.toLowerCase().split(trigger)[1];
+
+				if (_sender === me.name) {
+					return;
+				}
+
+				switch (_masterlock) {
+				case false: // no master atm
+					if (_command !== "master") {
+						Say("Master has not been set yet");
+					} else if (_command === "master") {
+						_master = _sender;
+						_masterlock = true;
+						Say("Master is now set to " + _master);
+					}
+					break;
+				case true:
+					if (_busy) {
+						return Say("Busy at the moment");
+					}
+					if (_sender !== _master) {
+						return Say("You are not my master " + _sender);
+					}
+					if (checkCommand(_command)) {
+						_busy = true;
+						SetStatusText(Rev + " Running " + _command);
+						NTTMGR_TownManager();
+						switch (_command) {
+						case "cain":
+							Cain();
+							break;
+						case "andy":
+							Andy();
+							break;
+						case "radament":
+							Radament();
+							break;
+						case "cube":
+							Cube();
+							break;
+						case "staff":
+							Staff();
+							break;
+						case "ammy":
+							Ammy();
+							break;
+						case "summoner":
+							Summoner();
+							break;
+						case "duriel":
+							Duriel();
+							break;
+						case "tome":
+							Tome();
+							break;
+						case "travincal":
+							Travincal();
+							break;
+						case "mephisto":
+							Mephisto();
+							break;
+						case "izual":
+							Izual();
+							break;
+						case "diablo":
+							Diablo();
+							break;
+						case "shenk":
+							Shenk();
+							break;
+						case "anya":
+							Anya();
+							break;
+						case "ancients":
+							Ancients();
+							break;
+						case "baal":
+							Baal();
+							break;
+						case "waypoints":
+							Waypoints();
+							break;
+						case "end":
+							_end = true;
+							break;
+						case "list":
+							commandList();
+							break;
+						}
+						_busy = false;
+						SetStatusText(Rev + "Awaiting command");
+					}
+					break;
+				}
+			} else if (type === 4 && _masterlock) {
+				if (msg.indexOf(_master) !== -1 && (msg.indexOf("weaken") !== -1 || msg.indexOf("timeout") !== -1)) {
+					_end = true;
+				}
+			}
+		}
+		);
+
+	while (!_end) {
+		Delay(500);
+	}
+	ExitGame();
+}
+
+function checkCommand(comm) {
+	var i,
+		possibles = ["cain", "andy", "radament", "cube", "staff", "ammy", "summoner", "duriel", "tome", "travincal", "mephisto", "izual", "diablo", "shenk", "anya", "ancients", "baal", "waypoints", "end", "list"];
+
+	for (i = 0; i < possibles.length; i += 1) {
+		if (possibles[i] === comm) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function IncludeFuncs() {
+	Include(_locate + "Cain.ntj");
+	Include(_locate + "Andy.ntj");
+	Include(_locate + "Radament.ntj");
+	Include(_locate + "Cube.ntj");
+	Include(_locate + "Staff.ntj");
+	Include(_locate + "Ammy.ntj");
+	Include(_locate + "Summoner.ntj");
+	Include(_locate + "Duriel.ntj");
+	Include(_locate + "Tome.ntj");
+	Include(_locate + "Travincal.ntj");
+	Include(_locate + "Mephisto.ntj");
+	Include(_locate + "Izual.ntj");
+	Include(_locate + "Diablo.ntj");
+	Include(_locate + "Shenk.ntj");
+	Include(_locate + "Anya.ntj");
+	Include(_locate + "Ancients.ntj");
+	Include(_locate + "Baal.ntj");
+	Include(_locate + "Waypoints.ntj");
+}
+
+function commandList() {
+	var comms = ["cain, ", "andy, ", "radament, ", "cube, ", "staff, ", "ammy, ", "summoner, ", "duriel, ", "tome, ", "travincal, ", "mephisto, ", "izual, ", "diablo, ", "shenk, ", "anya, ", "ancients, ", "baal, ", "waypoints, ", "end, ", "list"];
+
+	Say("Available commands for the master are the trigger and any of the following ");
+	Delay(1000);
+	Say(comms[0] + comms[1] + comms[2] + comms[3] + comms[4]);
+	Delay(1000);
+	Say(comms[5] + comms[6] + comms[7] + comms[8] + comms[9]);
+	Delay(1000);
+	Say(comms[10] + comms[11] + comms[12] + comms[13] + comms[14]);
+	Delay(1000);
+	Say(comms[15] + comms[16] + comms[17] + comms[18] + comms[19]);
+}

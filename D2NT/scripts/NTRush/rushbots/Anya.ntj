@@ -1,62 +1,41 @@
-function NTMain()
+function Anya()
 {
 	var _Anya;
 
-	Include("libs/common/NTCommon.ntl");
-	NTC_IncludeLibs();
-	NTC_IncludeConfig("NTRush/rush_configs");
-
-	NT_LoadConfig();
-	NTSI_LoadNIPFiles("NTBot/item_configs");
-
 	NTA_Initialize();
 
-	if(!NTTM_CheckAct()) {
-		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
-		return;
+	if (!NTTM_TownMove("waypoint")) {
+		return false;
 	}
 
-	NTTMGR_TownManager();
-
-	if(!NTTM_TownMove("waypoint")) {
-		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
-		return;
-	}
-
-	if(!NTM_TakeWaypoint(113)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
-		return;
+	if (!NTM_TakeWaypoint(113)) {
+		return false;
 	}
 
 	NTP_DoPrecast(true);	
 
-	if(!NTM_MoveToStair(me.areaid, 114)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToObject()");
-		return;
+	if (!NTM_MoveToStair(me.areaid, 114)) {
+		return false;
 	}
 
-	if(!NTM_TakeStair(114)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
-		return;
+	if (!NTM_TakeStair(114)) {
+		return false;
 	}
 
-	if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 460, -8, -8)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
-		return;
+	if (!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 460, -8, -8)) {
+		return false;
 	}
 
-	if(!NTA_KillMonster(GetLocaleString(22504))) {
-		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
-		return;
+	if (!NTA_KillMonster(GetLocaleString(22504))) {
+		return false;
 	}
 
 	NTA_ClearPosition(40);
 
 	NTSI_PickItems();		
 
-	if(NTM_MoveToPresetUnit(me.areaid, 558)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_MoveToPresetUnit()");
-		return;
+	if (NTM_MoveToPresetUnit(me.areaid, 558)) {
+		return false;
 	}
 
 	NTA_ClearPosition(25);
@@ -65,8 +44,8 @@ function NTMain()
 
 	_Anya = NTC_FindUnit(NTC_UNIT_OBJECT, 558);
 
-	if(_Anya) {	
-		if(NTM_MoveTo(_Anya.areaid, _Anya.x+3, _Anya.y)) {
+	if (_Anya) {	
+		if (NTM_MoveTo(_Anya.areaid, _Anya.x+3, _Anya.y)) {
 			NTA_ClearPosition(25);
 			NTSI_PickItems();
 		}
@@ -79,22 +58,23 @@ function NTMain()
 
 	NTM_MakeTP();
 
-	Say("Anya up!");
+	Say(Messages.anyaup);
 
-	while(NT_GetAnya()) {
+	while (NT_GetAnya()) {
 		NTC_TPGuard(25);
 	}
 
+	Say(Messages.anyadown);
+
 	NTM_UsePortal("BluePortal", 109, me.charname);
 	
-	NTC_SendMsgToScript("loader.ntj", "end");
+	return true;
 }
 
-function NT_GetAnya()
-{
+function NT_GetAnya() {
 	_Anya = NTC_FindUnit(NTC_UNIT_OBJECT, 558);
 
-	if(_Anya) {
+	if (_Anya) {
 		return true;	
 	}
 	return false;

@@ -2,18 +2,10 @@ function NTMain()
 {
 	var i, _start, _wps,_wppos, _area, _prevarea;
 
-	Include("libs/common/NTCommon.ntl");
-	NTC_IncludeLibs();
-	NTC_IncludeConfig("NTRush/rush_configs");
-
-	NT_LoadConfig();
-	NTSI_LoadNIPFiles("NTBot/item_configs");
-
 	NTA_Initialize();
 
 	if (!NTTM_CheckAct(1)) {
-		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
-		return;
+		return false;
 	}
 
 	_wps = [3, 4, 5, 6, 27, 29, 32, 35, 48, 42, 57, 43, 44, 52, 74, 46, 76, 77, 78, 79, 80, 81, 83, 101, 106, 107, 111, 112, 113, 115, 123, 117, 118, 129];
@@ -36,22 +28,21 @@ function NTMain()
 			break;
 	}
 
-	NTTMGR_TownManager();
 	NTTM_TownMove("waypoint");
 		
-	for(i = _start; i < _wps.length; i++) {
-		if(NTM_TakeWaypoint(_wps[i])) {
-			if(NTM_MakeTP()) {
+	for (i = _start; i < _wps.length; i += 1) {
+		if (NTM_TakeWaypoint(_wps[i])) {
+			if (NTM_MakeTP()) {
 				_wppos = [me.x, me.y];
 				_area = GetArea();
 
-				Say(_area.name + " up!");
+				Say(Messages.waypoint + _area.name);
 
-				if(!me.GetState(51)) {
+				if (!me.GetState(51)) {
 					NTP_DoPrecast(true);
 				}
 
-				while(!NTC_IsQuesterIn()) {
+				while (!NTC_IsQuesterIn()) {
 					NTC_TPGuard(40);
 				}
 
@@ -65,11 +56,11 @@ function NTMain()
 					
 				NTTM_TownMove("waypoint");
 
-				while(!NTC_IsQuesterOut(_prevarea)) {
+				while (!NTC_IsQuesterOut(_prevarea)) {
 					NTC_Delay(500);
 				}
 			}
 		}
 	}
-	NTC_SendMsgToScript("loader.ntj", "end");
+	return true;
 }

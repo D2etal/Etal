@@ -1,0 +1,77 @@
+var InitLife;
+var Corpses = 0;
+
+function NTMain() {
+	Delay(1000);
+
+	InitLife = me.hp;
+
+	Include("NTRush/funcs/Script.ntl");
+	Include("NTRush/funcs/File.ntl");
+	Include("libs/common/NTCommon.ntl");
+	Include("libs/common/NTColorConverter.ntl");
+	Include("NTRush/funcs/Loader.ntl");
+	Include("NTRush/funcs/Config.ntl");
+
+	Config.Load();
+	NTC_IncludeLibs();
+
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	// ubi21 Enigma reset start
+	////////////////////////////
+	NTU_LogExitStatus("F");
+
+	// ubi21 Enigma reset end
+	////////////////////////////
+
+	if (NTConfig_StartDelay > 0) {
+		NTC_Delay(NTConfig_StartDelay);
+	}
+
+	GetPath(me.areaid, me.x, me.y, me.x, me.y, true);
+
+	SetUIState(0x0A, true);
+
+	if (!NTT_PutBackEnigma()) {
+		NTC_Delay(240000);
+		ExitGame();
+	}
+
+	Corpses = NTT_GetCorpses();
+	if (Corpses > 0 || InitLife < 10) {
+		NTU_DeathLog(Corpses, InitLife);
+	}
+
+	NTT_ClearInventory();
+	NTT_ClearBelt();
+
+	if (!NTT_LookForEnigma()) {
+		if (GetUIState(0x01)) {
+			SetUIState(0x01, false);
+		}
+		NTC_Delay(240000);
+		ExitGame();
+	}
+
+	if (!Script.Loaded("RushTools.ntj")) {
+		Load("NTRush/rush_tools/RushTools.ntj");
+		Print(COLOR_3 + "Tools loaded");
+	}
+
+	Include("libs/common/NTSnagit.ntl");
+	NTSI_ClearIgnoredItems();
+
+	if (Scripts.Command) {
+		Include("NTRush/rushbots/Command.ntj");
+		Command();
+	} else {
+		Loader.Run(); // left off here
+	}
+
+	ExitGame();
+}
+
+function D2NTStatus(where, time, message) { 
+	return SendCopyData('D2NT Manager', null, where << 16 | time, message);
+}

@@ -1,59 +1,39 @@
-function NTMain() {
-	Include("libs/common/NTCommon.ntl");
-	NTC_IncludeLibs();
-	NTC_IncludeConfig("NTRush/rush_configs");
-	NT_LoadConfig();
-	NTSI_LoadNIPFiles("NTBot/item_configs");
+function Diablo()
+{
 	NTA_Initialize();
-	Print(COLOR_3 + "Starting Diablo Script");
 	
-	NTConfig_DancingSorc = false;	
+	NTConfig_DancingSorc = false;
 
-	if(!NTTM_CheckAct()){
-		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
-		return;
+	if (!NTTM_TownMove("waypoint")) {
+		return false;
 	}
 
-	NTTMGR_TownManager();
-	Print(COLOR_8 + "Going to River of Flame");
-
-	if(!NTTM_TownMove("waypoint")){
-		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
-		return;
+	if (!NTM_TakeWaypoint(107)) {
+		return false;
 	}
 
-	if(!NTM_TakeWaypoint(107)){
-		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
-		return;
-	}
-
-	Print(COLOR_5 + "Precasting");
 	NTP_DoPrecast(true);
-	Print(COLOR_8 + "Going to Chaos Sanctuary");
 
 	if (!NTM_MoveTo(108, 7790, 5544)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
-		return;
+		return false;
 	}
 
 	NTM_MoveTo(108, 7792, 5291);
 
 	if (!NT_OpenSealsInt()) {
-		NTC_SendMsgToScript("loader.ntj", "NT_OpenSealsInt()");
-		return;
+		return false;
 	}
 
 	NTM_MoveTo(108, 7760, 5267);
 	NTM_MakeTP();
 		
-	Say("Diablo up! If you die stay dead!");
+	Say(Messages.diabloup);
 
-	while(!NTC_IsQuesterIn()) {
+	while (!NTC_IsQuesterIn()) {
 		Delay(500);
 	}
 
 	NTM_MoveTo(108, 7792, 5291);
-	Print(COLOR_8 + "Waiting for Diablo to spawn..");
 
 	for (i = 0; i < 200; i += 1) {
 		if (GetUnit(NTC_UNIT_MONSTER, 243)) {
@@ -61,31 +41,30 @@ function NTMain() {
 		}
 		NTC_Delay(500);
 	}
+
 	if (!NTA_KillMonster(243)) {
-		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
-		return;
-	}
-	NTSI_PickItems();
-	Say("Diablo is dead! Get to act 5!");
-	NTM_UsePortal("BluePortal", 103, me.charname);
-	
-	if(!NTTM_TownMove("waypoint"))
-	{
-		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
-		return;
+		return false;
 	}
 
-	while(!NTC_IsGroupInAct(5)) {
+	NTSI_PickItems();
+	
+	Say(Messages.diablodown);
+	
+	NTM_UsePortal("BluePortal", 103, me.charname);
+	
+	if (!NTTM_TownMove("waypoint")) {
+		return false;
+	}
+
+	while (!NTC_IsGroupInAct(5)) {
 		Delay(500);
 	}
 
-	if(!NTM_TakeWaypoint(109))
-	{
-		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
-		return;
+	if (!NTM_TakeWaypoint(109)) {
+		return false;
 	}
 
-	NTC_SendMsgToScript("loader.ntj", "end");
+	return true;
 }
 
 function NT_OpenSealsInt() {

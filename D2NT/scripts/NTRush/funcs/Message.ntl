@@ -1,0 +1,65 @@
+var Messages =  {
+	cainscroll: "Tp up for scroll to cairn stones.",
+	cainstones: "Tp up for the stones to tristam.",
+	caintristup: "Go to town and wait for tp at cain.",
+	cainup: "Tp for cain in trist is up.",
+	cainfreed: "Get to town and talk to akara.",
+	andyup: "Andariel tp up. Come for quest.",
+	andydown: "Andariel is dead. Talk to warriv and get to act 2.",
+	radamentup: "Tp up for Radament. Get in here.",
+	radamentdown: "Get to town and talk to Atma to complete the quest.",
+	cubeup: "Tp up for the cube. Come and get em. If you miss it you will find it in Trav.",
+	staffup: "Tp up for the staff.",
+	ammyup: "Tp up for the ammy.",
+	summonerup: "Tp up for summoner. Get in here.",
+	summonerdown: "Summoner dead. Open the portal to the canyon.",
+	durychamber: "Tp up for Duriels tomb. Bring the staff. Place staff and return to town.",
+	durydown: "Tp up, come talk to Tyreal.",
+	palacetp: "Tp up at palace for fast travel.",
+	tomeup: "Tp up for the tome. Come get it.",
+	travup: "Tp up for the council. Stay put, if you die, stay dead.",
+	travdown: "Council has been eliminated. Back to town.",
+	missedcube: "If you missed your cube in act 2, come get it.",
+	mephup: "Tp for Meph is up. Enter and stay put.",
+	mephdown: "Meph is dead. Get thru the portal to act 4.",
+	izzyup: "Tp up for Izual. Get in here.",
+	izzydown: "Izual has been murdered. Back to town.",
+	diabloup: "Tp up for Diablo. Get in here and hide for a second.",
+	diablodown: "The big lizzard is dead. Get to act 5.",
+	shenkup: "Portal for Shenk is up.",
+	shenkdown: "Socket quest has been finished. Back to town.",
+	anyaup: "Anya is up and ready for her potion. Talk to Malah and thaw her out.",
+	anyadown: "Get back to town and get you some immunities.",
+	ancientsup: "Come for ancients.",
+	ancientsdown: "The ancients have been retired. Return to town.",
+	baalup: "Baals throne is up. Xp in here.",
+	wavesdown: "Going to kill Baal now. Follow through portal.",
+	endgame: "This rush has been completed. If getting waypoints, hang out.",
+	waypoint: "Portal up for "
+};
+
+var Rules = {
+	Normal: {
+		First: "Set first line here",
+		Second: "Second line here",
+		Third: "Third line here",
+		Fourth: "Fourth line here",
+		Fifth: "Fifth line here"
+	},
+
+	Nightmare: {
+		First:  "Set first line here",
+		Second: "Second line here",
+		Third: "Third line here",
+		Fourth: "Fourth line here",
+		Fifth: "Fifth line here"
+	},
+
+	Hell: {
+		First:  "Set first line here",
+		Second: "Second line here",
+		Third: "Third line here",
+		Fourth: "Fourth line here",
+		Fifth: "Fifth line here"
+	}
+};

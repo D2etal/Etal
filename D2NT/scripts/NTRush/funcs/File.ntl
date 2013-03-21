@@ -1,0 +1,167 @@
+var File = {
+	Check: function () {
+		return SendCopyData("D2NT Manager", null, (9 << 16) | 0, "File file loaded...");
+	},
+
+	Exists: function (path) {
+		var _file = FileOpen(path, 0);
+		if (!_file) { return false; }
+
+		if (_file) {
+			_file.Close();
+			return true;
+		}
+		return true;
+	},
+
+	OverWrite: function (path, msg) {
+		var _file;
+
+		_file = FileOpen(path, 1);
+			if (_file) {
+				_file.WriteLine(msg);
+			}
+		_file.Close();
+		return true;
+	},
+
+	Create: function (path) {
+		var _file, _fileCheck;
+
+		_fileCheck = FileOpen(path, 0);
+
+		if (_fileCheck) {
+			this.LogError("libs", "Already have this file " + path);
+			_fileCheck.Close();
+			return false;
+		}
+
+		if (!_fileCheck) {
+			_file = FileOpen(path, 1);
+
+			_file.Close();
+		}
+		return true;
+	},
+/*
+	LogError: function (type, msg) {
+		var h, m, s, date, _msg, _time, _fHandle, _log;
+
+		switch (type) {
+		case "script":
+			_log = sLog;
+			break;
+		case "error":
+			_log = eLog;
+			break;
+		case "inventory":
+			_log = iLog;
+			break;
+		case "gamename":
+			_log = gLog;
+			break;
+		case "mule":
+			_log = mLog;
+			break;
+		case "area":
+			_log = aLog;
+			break;
+		case "cubing":
+			_log = cLog;
+			break;
+		case "tracker":
+			_log = tLog;
+			break;
+		}
+
+		date = new Date();
+		h = date.getHours();
+		m = date.getMinutes();
+		s = date.getSeconds();
+
+		_time = (h > 12 ? (h - 12) : h) + ":" + m + ":" + s + (h > 12 ? "pm" : "am");
+		_msg = me.name + ": (" + _time + ") " + msg;
+
+		_fHandle = FileOpen("logs/" + _log + "/" + me.name + "_" + type + ".txt", 2);
+		if (_fHandle) {
+			_fHandle.WriteLine(_msg);
+			_fHandle.Close();
+		}
+		return true;
+	},
+*/
+	Copy: function (path, oldFile, newFile) {
+		var _old, _new;
+		_old = FileOpen(path + oldFile, 0);
+
+		if (arguments.length < 3) {
+			this.LogError("libs", "Not enough arguments passed to carry out this function!");
+		}
+
+		if (!_old) {
+			this.LogError("libs", "Failed to copy " + path + "! No original file found!");
+			return false;
+		}
+
+		if (_old) {
+			_new = FileOpen(path + newFile, 1);
+			while (!_old.eof) {
+				_new.WriteLine(_old.ReadLine());
+			}
+
+			_new.Close();
+			_old.Close();
+		}
+		return true;
+	},
+
+	Log: function (path, msg) {
+		var _create, _file,
+			_fileCheck = FileOpen(path, 0);
+
+		_create = false;
+
+		if (!_fileCheck) {
+			_create = true;
+		} else if (_fileCheck) {
+			_fileCheck.Close();
+		}
+
+		switch (_create) {
+		case true:
+			_file = FileOpen(path, 1);
+			if (_file) {
+				_file.WriteLine(msg);
+			}
+			_file.Close();
+			return true;
+		case false:
+			_file = FileOpen(path, 2);
+			if (_file) {
+				_file.WriteLine(msg);
+			}
+			_file.Close();
+			return true;
+		}
+		return false;
+	},
+
+	Read: function (path) {
+		var _fHandle, _created,
+			_msg = "";
+
+		_fHandle = FileOpen(path, 0);
+		if (!_fHandle) { 
+			_fHandle = FileOpen(path, 1); 
+			_created = true;
+		}
+
+		if (_fHandle && !_created) {
+			while (!_fHandle.eof) {
+				_msg = _fHandle.ReadLine();
+			}
+		}
+		_fHandle.Close()
+		return _msg
+	}
+};

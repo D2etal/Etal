@@ -1,0 +1,62 @@
+var Script = {
+	Check: function () {
+		return SendCopyData("D2NT Manager", null, (9 << 16) | 0, "Script file loaded...");
+	},
+
+	Loaded: function (scriptname) {
+		var _script, _check;
+
+		_script = GetScript();
+		if (_script) {
+			do {
+				_check = _script.name.toLowerCase();
+
+				if (_check === scriptname) {
+					if (_script.running) {
+						return true;
+					}
+				}
+			} while (_script.GetNext());
+		}
+
+		return false;
+	},
+
+	Unload: function (scriptname) {
+		var _script = this.Find(scriptname);
+
+		if (_script) {
+			return _script.Stop();
+		}
+
+		return false;
+	},
+
+	Find: function (scriptname) {
+		var _script, _scriptpath;
+
+		_script = GetScript();
+
+		if (_script) {
+			do {
+				_scriptpath = _script.name.toLowerCase();
+
+				if (_scriptpath === scriptname) {
+					return _script;
+				}
+
+			} while (_script.GetNext());
+		}
+
+		return null;
+	},
+
+	SendMsg: function (scriptname, msg) {
+		var _script = this.Find(scriptname);
+		if (_script) {
+			return _script.Send(msg);
+		}
+
+		return false;
+	}
+};

@@ -1,0 +1,21 @@
+This is and was GVRushBot.
+
+I am not aware of who first created it but kudos to them.
+Updated by Diabolic@ProjectEtal.com
+
+It has now had the overhaul I have been meaning to give it for quite some time.
+
+So I have changed the char configs around.
+Now all you have to do is set the lines for Scripts.whetever to true to run them or false to not run them.
+
+Please note that if you run the Scripts.Command it will never load another script but they can all be ran from a command.
+A list of commands can be obtained from the bot by typing .list in chat. Make sure to set the master first by typing .master. That will set and lock the master to the char that typed it. 
+If you dont like having the period as the trigger you can change it to w/e you want at the top of the script located in NTRush/rushbots/Command.ntj.
+
+All scripts now load and act as functions because they are now functions instead of scripts. Feel free to poke around and pm me with anything you might see as a useful add.
+
+I will be adding in some things along the way like act rushing and game rushing for the command script.
+ofcourse the rushee script will be next and the starters. One starter for leader and already made toons, and another starter for those that just want to build socket accounts(ie.. Creates accounts of chars and rushes to act 5 shenk done).
+
+Feel free to pm me with adds you would like to see. If useful enough It will make it in to the rusher. Do not pm for support. That is what the Help request forum is for.
+Thanks and enjoy.

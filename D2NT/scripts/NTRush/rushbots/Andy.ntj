@@ -1,44 +1,25 @@
-function NTMain() {
-	var i, _clearpos,
-		_tileid = [18, 18];
-
-	Include("libs/common/NTCommon.ntl");
-	NTC_IncludeLibs();
-	NTC_IncludeConfig("NTRush/rush_configs");
-
-	NT_LoadConfig();
-	NTSI_LoadNIPFiles("NTBot/item_configs");
+function Andy() {
+	var i, _clearpos;
 
 	NTA_Initialize();
 
-	if (!NTTM_CheckAct()) {
-		NTC_SendMsgToScript("loader.ntj", "NTTM_CheckAct()");
-		return;
-	}
-
-	NTTMGR_TownManager();
-
 	if (!NTTM_TownMove("waypoint")) {
-		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
-		return;
+		return false;
 	}
 
 	if (!NTM_TakeWaypoint(35)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
-		return;
+		return false;
 	}
 
 	NTP_DoPrecast(true);
 
 	for (i = 0; i < 2; i++) {
 		if (!NTM_MoveToStair(me.areaid, 36 + i)) {
-			NTC_SendMsgToScript("loader.ntj", "NTM_MoveToStair()");
-			return;
+			return false;
 		}
 
 		if (!NTM_TakeStair(36 + i)) {
-			NTC_SendMsgToScript("loader.ntj", "NTM_TakeStair()");
-			return;
+			return false;
 		}
 	}
 
@@ -48,14 +29,13 @@ function NTMain() {
 
 	for (i = 0; i < _clearpos.length; i += 2) {
 		if (!NTM_MoveTo(me.areaid, _clearpos[i], _clearpos[i + 1])) {
-			NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
-			return;
+			return false;
 		}
 		NTA_ClearPosition(20);
 		NTC_PingDelay(200);
 	}
 
-	Say("Andariel up!");
+	Say(Messages.andyup);
 
 	NTM_MakeTP();
 
@@ -68,29 +48,25 @@ function NTMain() {
 	NTP_DoPrecast(true);
 
 	if (!NTM_MoveTo(me.areaid, 22532, 9553)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
-		return;
+		return false;
 	}
 
 	if (!NTA_KillMonster(156)) {
-		NTC_SendMsgToScript("loader.ntj", "NTA_KillMonster()");
-		return;
+		return false;
 	}
 
 	NTSI_PickItems();
 
-	Say("Andariel is dead! Get to act 2!");
+	Say(Messages.andydown);
 
 	if (!NTM_MoveTo(me.areaid, 22595, 9617)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_MoveTo()");
-		return;
+		return false;
 	}
 
 	NTM_UsePortal("BluePortal", 1, me.charname);
 
 	if (!NTTM_TownMove("waypoint")) {
-		NTC_SendMsgToScript("loader.ntj", "NTTM_TownMove()");
-		return;
+		return false;
 	}
 
 	while (!NTC_IsGroupInAct(2)) {
@@ -98,11 +74,8 @@ function NTMain() {
 	}
 
 	if (!NTM_TakeWaypoint(40)) {
-		NTC_SendMsgToScript("loader.ntj", "NTM_TakeWaypoint()");
-		return;
+		return false;
 	}
 
-	NTC_Delay(2000);
-
-	NTC_SendMsgToScript("loader.ntj", "end");
+	return true;
 }
