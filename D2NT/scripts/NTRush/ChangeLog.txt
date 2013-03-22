@@ -1,0 +1,10 @@
+Changelog
+
+Changes on 3/22/13(rev 58):
+	1. Now loads OverWatch.ntj when ingame instead of NTRushGame
+	2. Swapped to loader based system (inspired by kolbots loader and mbots sequencer
+	3. Scripts are now ran as functions. Instead of loading scripts you just call the function
+	4. Char config setup has been changed(need to recreate char configs)
+	5. Added functions for script handling, file handling
+	6. Added a message and rules system for rushing
+	7. Changed the way that the char configs are loaded(added try/catch)
