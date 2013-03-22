@@ -12,7 +12,7 @@ function NTMain()
 			{
 				RunGC();
 
-				if(Load("NTRush/NTRushGame.ntj"))
+				if(Load("NTRush/OverWatch.ntj"))
 					_ingame = true;
 			}
 
