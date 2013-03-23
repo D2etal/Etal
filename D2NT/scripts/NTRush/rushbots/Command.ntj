@@ -3,6 +3,10 @@ var _master = "";
 var trigger = ".";
 var comm = this;
 var _locate = "NTRush/rushbots/";
+var run = this;
+var Rev = "ERusher v1.1";
+
+Include("NTRush/funcs/Loader.ntl");
 
 function Command() {
 	var _busy = false,
@@ -111,6 +115,24 @@ function Command() {
 						case "list":
 							commandList();
 							break;
+						case "rushone":
+							RushAct(1);
+							break;
+						case "rushtwo":
+							RushAct(2);
+							break;
+						case "rushthree":
+							RushAct(3);
+							break;
+						case "rushfour":
+							RushAct(4);
+							break;
+						case "rushfive":
+							RushAct(5);
+							break;
+						case "rushall":
+							Loader.Run();
+							break;
 						}
 						_busy = false;
 						SetStatusText(Rev + "Awaiting command");
@@ -133,7 +155,7 @@ function Command() {
 
 function checkCommand(comm) {
 	var i,
-		possibles = ["cain", "andy", "radament", "cube", "staff", "ammy", "summoner", "duriel", "tome", "travincal", "mephisto", "izual", "diablo", "shenk", "anya", "ancients", "baal", "waypoints", "end", "list"];
+		possibles = ["cain", "andy", "radament", "cube", "staff", "ammy", "summoner", "duriel", "tome", "travincal", "mephisto", "izual", "diablo", "shenk", "anya", "ancients", "baal", "waypoints", "end", "list", "rushone", "rushtwo", "rushthree", "rushfour", "rushfive", "rushall"];
 
 	for (i = 0; i < possibles.length; i += 1) {
 		if (possibles[i] === comm) {
@@ -141,6 +163,68 @@ function checkCommand(comm) {
 		}
 	}
 	return false;
+}
+
+function RushAct(act) {
+	var i, n, towned,
+		_act1 = ["Cain", "Andy"],
+		_act2 = ["Radament", "Cube", "Ammy", "Staff", "Summoner", "Duriel"],
+		_act3 = ["Tome", "Travincal", "Mephisto"],
+		_act4 = ["Izual", "Diablo"],
+		_act5 = ["Shenk", "Anya", "Ancients", "Baal"],
+		_actRuns = [];
+
+	switch (act) {
+		case 1:
+			for (n = 0; n < _act1.length; n += 1) {
+				_actRuns.push(_act1[n]);
+			}
+			break;
+		case 2:
+			for (n = 0; n < _act2.length; n += 1) {
+				_actRuns.push(_act2[n]);
+			}
+			break;
+		case 3:
+			for (n = 0; n < _act3.length; n += 1) {
+				_actRuns.push(_act3[n]);
+			}
+			break;
+		case 4:
+			for (n = 0; n < _act4length; n += 1) {
+				_actRuns.push(_act4[n]);
+			}
+			break;
+		case 5:
+			for (n = 0; n < _act5.length; n += 1) {
+				_actRuns.push(_act5[n]);
+			}
+			break;
+	}
+
+RunLoop:
+	for (i = 0; i < _actRuns.length; i += 1) {
+		if (Scripts.hasOwnProperty(i) && Scripts[i]) {
+			if (typeof run[i] === "function") {
+				try {
+					towned = NTTM_CheckAct();
+				} catch (e1) {
+					Print(COLOR_8 + "Failed to go to town.");
+				}
+			}
+
+			if (towned) {
+				try {
+					Config.Load();
+					SetStatusText(Rev + " Running " + i);
+					NTTMGR_TownManager();
+					run[i]();
+				} catch (e) {
+					Print(COLOR_8 + "Failed to run script");
+				}
+			}
+		}
+	}
 }
 
 function IncludeFuncs() {
@@ -165,7 +249,7 @@ function IncludeFuncs() {
 }
 
 function commandList() {
-	var comms = ["cain, ", "andy, ", "radament, ", "cube, ", "staff, ", "ammy, ", "summoner, ", "duriel, ", "tome, ", "travincal, ", "mephisto, ", "izual, ", "diablo, ", "shenk, ", "anya, ", "ancients, ", "baal, ", "waypoints, ", "end, ", "list"];
+	var comms = ["cain, ", "andy, ", "radament, ", "cube, ", "staff, ", "ammy, ", "summoner, ", "duriel, ", "tome, ", "travincal, ", "mephisto, ", "izual, ", "diablo, ", "shenk, ", "anya, ", "ancients, ", "baal, ", "waypoints, ", "end, ", "list, ", "rushone, ", "rushtwo, ", "rushthree, ", "rushfour, ", "rushfive, ", "rushall"];
 
 	Say("Available commands for the master are the trigger and any of the following ");
 	Delay(1000);
@@ -176,4 +260,6 @@ function commandList() {
 	Say(comms[10] + comms[11] + comms[12] + comms[13] + comms[14]);
 	Delay(1000);
 	Say(comms[15] + comms[16] + comms[17] + comms[18] + comms[19]);
+	Delay(1000);
+	Say(comms[20] + comms[21] + comms[22] + comms[23] + comms[24] + comms[25]);
 }

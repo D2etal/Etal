@@ -1,5 +1,8 @@
 var InitLife;
 var Corpses = 0;
+var _autopilot = false;
+var _continued = false;
+var _failed = false;
 
 function NTMain() {
 	Delay(1000);
@@ -12,7 +15,9 @@ function NTMain() {
 	Include("libs/common/NTColorConverter.ntl");
 	Include("NTRush/funcs/Loader.ntl");
 	Include("NTRush/funcs/Config.ntl");
+	Include("NTRush/funcs/Tracker.ntl");
 
+	Connect();
 	Config.Load();
 	NTC_IncludeLibs();
 
@@ -32,6 +37,21 @@ function NTMain() {
 	GetPath(me.areaid, me.x, me.y, me.x, me.y, true);
 
 	SetUIState(0x0A, true);
+
+	RegisterEvent(EVENT_GAMEMSG,
+		function (msg, type) {
+			if (type === 0) {
+				if (msg.indexOf("quest failed") !== -1) {
+					Say("Rush Failed");
+					ExitGame();
+				}
+			} else if (type === 4) {
+				if (msg.toLowerCase().indexOf("failed") !== -1) {
+					_failed = true;
+				}
+			}
+		}
+		);
 
 	if (!NTT_PutBackEnigma()) {
 		NTC_Delay(240000);
@@ -65,13 +85,30 @@ function NTMain() {
 	if (Scripts.Command) {
 		Include("NTRush/rushbots/Command.ntj");
 		Command();
-	} else {
+	} else if (Tracker.Get("done")) {
 		Loader.Run(); // left off here
+	} else {
+		Loader.RunFailed();
 	}
+
+	if (_failed) {
+		Say("Rush Failed");
+		ExitGame();
+	}
+
+	Tracker.UpdateStats("done", true);
 
 	ExitGame();
 }
 
-function D2NTStatus(where, time, message) { 
+function Connect() {
+	Tracker.UpdateStats("game", me.gamename);
+	if (me.gamepassword !== undefined) {
+		Tracker.UpdateStats("gamepass", me.gamepassword);
+	}
+	Tracker.UpdateStats("ingame", true);
+}
+
+function D2NTStatus(where, time, message) {
 	return SendCopyData('D2NT Manager', null, where << 16 | time, message);
 }

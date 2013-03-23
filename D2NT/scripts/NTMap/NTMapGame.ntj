@@ -3,13 +3,14 @@ function NTMain()
 	Delay(1000);
 
 	Include("libs/common/NTCommon.ntl");
-	NTC_IncludeConfig("NTMap/char_configs");
+	Include("NTMap/char_configs/NTConfig.ntl");
+	Include("NTMap/char_configs/Default_Config.ntl");
 
 	var _count = 0;
 	var _LifeMax, _ManaMax;
 	var _player, _mypartyid;
 
-	NT_LoadConfig("NTMap/char_configs");
+	NT_LoadConfig();
 
 	SetStatusText("NTMap 1.2.1 - " + me.gameserverip);
 

@@ -1,0 +1,13 @@
+function NT_LoadConfig()
+{
+	NTConfig_LifeChicken = 20;	// This is your chicken life percent. If you go below this life total, exit game.
+	NTConfig_ManaChicken = 0;	// This is your chicken mana percent. If you go below this mana total, exit game.
+
+	NTConfig_AutoParty = false;
+
+	me.quitonhostile = false;
+
+	me.revealautomap = true;
+	me.showenemyonautomap = true;
+	me.showmissileonautomap = true;
+}

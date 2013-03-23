@@ -1,0 +1,111 @@
+Include("NTRush/funcs/File.ntl");
+Include("NTRush/funcs/Json.ntl");
+
+var Tracker =  {
+	Create: function () {
+		var obj, string;
+
+		obj = {
+			Game: "",
+			GamePass: "",
+			InGame: false,
+			Rusher: "",
+			Status: "Andy",
+			Done: true
+		};
+
+		string = JSON.stringify(obj);
+		File.OverWrite("NTRush/Tracker/" + me.account + ".ntl", string);
+
+		return obj;
+	},
+
+	GetObj: function () {
+		var obj, string;
+
+		if (!File.Exists("NTRush/Tracker/" + me.account + ".ntl")) {
+			this.Create();
+		}
+
+		string = File.Read("NTRush/Tracker/" + me.account+ ".ntl");
+
+		try {
+			obj = JSON.parse(string);
+		} catch (e4) {
+			obj = this.Create();
+		}
+
+		if (obj) {
+			return obj;
+		}
+
+		return {Game: "", GamePass: "", InGame: false, Rusher: "", Status: "", Done: false};
+	},
+
+	Get: function (ret) {
+		var obj = this.GetObj();
+
+		switch (ret) {
+			case "game":
+				return obj.Game;
+
+			case "gamepass":
+				return obj.GamePass;
+
+			case "ingame":
+				return obj.InGame;
+
+			case "rusher":
+				return obj.Rusher;
+
+			case "status":
+				return obj.Status;
+
+			case "done":
+				return obj.Done;
+		}
+	},
+
+	GetStats: function () {
+		var obj = this.GetObj();
+
+		return {Game: obj.Game, GamePass: obj.GamePass, InGame: obj.InGame, Rusher: obj.Rusher, Status: obj.Status, Done: obj.Done};
+	},
+
+	UpdateStats: function (arg, value) {
+		var obj, string;
+
+		obj = this.GetObj();
+
+		switch (arg) {
+		case "game":
+			obj.Game = value;
+
+			break;
+		case "gamepass":
+			obj.GamePass = value;
+
+			break;
+		case "ingame":
+			obj.InGame = value;
+
+			break;
+		case "rusher":
+			obj.Rusher = value;
+
+			break;
+		case "status":
+			obj.Status = value;
+
+			break;
+		case "done":
+			obj.Done = value;
+
+			break;
+		}
+
+		string = JSON.stringify(obj);
+
+		File.OverWrite("NTRush/Tracker/" + me.account + ".ntl", string);
+	}
+};

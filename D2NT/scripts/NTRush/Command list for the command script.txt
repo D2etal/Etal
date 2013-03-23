@@ -1,0 +1,35 @@
+First off, all commands must be given with the trigger
+Default trigger is ".", but can be changed in the command script at the top where it says var trigger = "."
+
+Commands:
+	master // sets toon who gives the command to be the master(only one who can give commands)
+			   // if master is not set the following commands are not usable. Must set master first
+
+	cain ////////////////////////////////////////////////////////////
+	andy
+	radament
+	cube
+	staff
+	ammy
+	summoner
+	duriel
+	tome /////////////////////////////// These all run the scripts
+	travincal
+	mephisto
+	izual
+	diablo
+	shenk
+	anya
+	ancients
+	baal
+	waypoints //////////////////////////////////////////////////////
+
+	rushone // rushes act 1 //////////////////////////////////////////
+	rushtwo // rushes act 2
+	rushthree // rushes act 3 ///////////////// Only rushes the runs you have set to run in your char config of the rushing toon
+	rushfour // rushes act 4 // Example: If Scripts.Cain is set to false in your char config it will not run cain
+	rushfive // rushes act 5
+	rushall // runs Loader.Run and rushes entire game ///////////////////////////
+	
+	list // will say the commands ingame
+	end // tells rusher to exit game

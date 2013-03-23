@@ -1,6 +1,7 @@
 var Rev = "ERusher v1.1";
 var etal = this;
 Include("NTRush/funcs/Message.ntl");
+Include("NTRush/funcs/Tracker.ntl");
 
 var Loader = {
 	scriptlist: [],
@@ -14,24 +15,40 @@ var Loader = {
 		this.Load();
 	},
 
-	Build: function () {
-		var _script, _sub,
+	RunFailed: function () {
+		this.Build(true);
+		this.Load();
+	},
+
+	Build: function (failed) {
+		var _script, _sub, _trig,
 			_check = false;
 
 		_script = GetScript();
 		if (_script) {
 			do {
 				_sub = _script.name;
-				this.scriptlist.push(_sub.split(".")[0]);
-				if (_check) {
-					File.Log("NTRush/scriptlist_push.txt", _sub.split(".")[0]);
+				if (Scripts.hasOwnProperty(_sub.split(".")[0])) {
+					if (failed) {
+						if (_sub.split(".")[0] === Tracker.Get("status")) {
+							_trig = true;
+						}
+						if (_trig) {
+							this.scriptlist.push(_sub.split(".")[0]);
+						}
+					} else {
+						this.scriptlist.push(_sub.split(".")[0]);
+						if (_check) {
+							File.Log("NTRush/scriptlist_push.txt", _sub.split(".")[0]);
+						}
+					}
 				}
 			} while (_script.GetNext());
 		}
 	},
 
 	Load: function () {
-		var i, towned;
+		var i, _stat, towned;
 
 		if (this.scriptlist.length < 1) {
 			Print(COLOR_8 + "scriptlist object is empty");
@@ -54,15 +71,26 @@ ScriptLoop:
 					if (towned) {
 						try {
 							Config.Load();
+							Tracker.UpdateStats("status", i);
 							SetStatusText(Rev + " Running " + i);
 							NTTMGR_TownManager();
-							etal[i]();
+							if (etal[i]()) {
+								_stat = true;
+							}
 						} catch (e) {
+							_stat = false;
 							Print(COLOR_8 + "Failed to run script");
 						}
 					}
 				} else {
+					_stat = false;
 					Print(COLOR_8 + "Error in script, skipping;");
+				}
+
+				if (!_stat) {
+					Tracker.UpdateStats("done", false);
+					Print(COLOR_4 + "rush failed");
+					break;
 				}
 			}
 		}
