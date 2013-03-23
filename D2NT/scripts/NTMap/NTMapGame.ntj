@@ -1,16 +1,24 @@
+Include("NTRush/funcs/File.ntl");
+
 function NTMain()
 {
 	Delay(1000);
 
 	Include("libs/common/NTCommon.ntl");
-	Include("NTMap/char_configs/NTConfig.ntl");
-	Include("NTMap/char_configs/Default_Config.ntl");
+	IncludeConfig();
 
 	var _count = 0;
 	var _LifeMax, _ManaMax;
 	var _player, _mypartyid;
 
-	NT_LoadConfig();
+	try {
+		NT_LoadConfig();
+	} catch (e) {
+		while (1) {
+			Print(COLOR_3 + "Failed to load char config");
+			Delay(10001);
+		}
+	}
 
 	SetStatusText("NTMap 1.2.1 - " + me.gameserverip);
 
@@ -133,3 +141,41 @@ function NT_KeyEvents(keycode)
 		break;
 	}
 }
+
+function IncludeConfig() {
+	var _class = "";
+	switch (me.classid) {
+		case 0: // zon
+		_class = "NTConfig_Amazon";
+		break;
+	case 1: // sorc
+		_class = "NTConfig_Sorceress";
+		break;
+	case 2: // necro
+		_class = "NTConfig_Necromancer";
+		break;
+	case 3: // pali
+		_class = "NTConfig_Paladin";
+		break;
+	case 4: // barb
+		_class = "NTConfig_Barbarian";
+		break;
+	case 5: // druid
+		_class = "NTConfig_Druid";
+		break;
+	case 6: // sin
+		_class = "NTConfig_Assassin";
+		break;
+	}
+
+	Include("NTMap/char_configs/NTConfig.ntl");
+	if (File.Exists("NTMap/char_configs/" + _class + "_" + me.name + ".ntl")) {
+		Include("NTMap/char_configs/" + _class + "_" + me.name + ".ntl");
+	} else {
+		Include("NTMap/char_configs/Default_Config.ntl");
+	}
+}
+		
+		
+		
+		
