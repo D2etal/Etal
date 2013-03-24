@@ -4,6 +4,8 @@ var _autopilot = false;
 var _continued = false;
 var _failed = false;
 
+var NTConfig_AutoRush = false;
+
 function NTMain() {
 	Delay(1000);
 
@@ -40,14 +42,16 @@ function NTMain() {
 
 	RegisterEvent(EVENT_GAMEMSG,
 		function (msg, type) {
-			if (type === 0) {
-				if (msg.indexOf("quest failed") !== -1) {
-					Say("Rush Failed");
-					ExitGame();
-				}
-			} else if (type === 4) {
-				if (msg.toLowerCase().indexOf("failed") !== -1) {
-					_failed = true;
+			if (NTConfig_AutoRush) {
+				if (type === 0) {
+					if (msg.indexOf("quest failed") !== -1) {
+						Say("Rush Failed");
+						ExitGame();
+					}
+				} else if (type === 4) {
+					if (msg.toLowerCase().indexOf("failed") !== -1) {
+						_failed = true;
+					}
 				}
 			}
 		}

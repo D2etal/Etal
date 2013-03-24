@@ -1,6 +1,7 @@
 var Rev = "ERusher v1.1";
 var etal = this;
 Include("NTRush/funcs/Message.ntl");
+Include("NTRush/funcs/File.ntl");
 Include("NTRush/funcs/Tracker.ntl");
 
 var Loader = {
@@ -71,27 +72,24 @@ ScriptLoop:
 					if (towned) {
 						try {
 							Config.Load();
-							Tracker.UpdateStats("status", i);
+							//Tracker.UpdateStats("status", i);
 							SetStatusText(Rev + " Running " + i);
 							NTTMGR_TownManager();
-							if (etal[i]()) {
-								_stat = true;
-							}
+							etal[i]();
+							_stat = true;
 						} catch (e) {
-							_stat = false;
-							Print(COLOR_8 + "Failed to run script");
+							Print(COLOR_8 + "Failed to run " + i + " script");
 						}
 					}
 				} else {
-					_stat = false;
-					Print(COLOR_8 + "Error in script, skipping;");
+					Print(COLOR_8 + "Error in script " + i + ", skipping");
 				}
 
-				if (!_stat) {
-					Tracker.UpdateStats("done", false);
-					Print(COLOR_4 + "rush failed");
-					break;
-				}
+				//if (!_stat) {
+					//Tracker.UpdateStats("done", false);
+					//Print(COLOR_4 + "rush failed");
+					//break;
+				//}
 			}
 		}
 	}
