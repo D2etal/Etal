@@ -24,6 +24,7 @@ var Messages =  {
 	mephdown: "Meph is dead. Get thru the portal to act 4.",
 	izzyup: "Tp up for Izual. Get in here.",
 	izzydown: "Izual has been murdered. Back to town.",
+	forgeup: "Forge is clear come on in. ",
 	diabloup: "Tp up for Diablo. Get in here and hide for a second.",
 	diablodown: "The big lizzard is dead. Get to act 5.",
 	shenkup: "Portal for Shenk is up.",
@@ -40,26 +41,26 @@ var Messages =  {
 
 var Rules = {
 	Normal: {
-		First: "Set first line here",
-		Second: "Second line here",
-		Third: "Third line here",
-		Fourth: "Fourth line here",
-		Fifth: "Fifth line here"
+		First: "Set these to what you want",
+		Second: "They can be located in",
+		Third: "NTRush/funcs/Message.ntl",
+		Fourth: "",
+		Fifth: ""
 	},
 
 	Nightmare: {
-		First:  "Set first line here",
-		Second: "Second line here",
-		Third: "Third line here",
-		Fourth: "Fourth line here",
-		Fifth: "Fifth line here"
+		First: "Set these to what you want",
+		Second: "They can be located in",
+		Third: "NTRush/funcs/Message.ntl",
+		Fourth: "",
+		Fifth: ""
 	},
 
 	Hell: {
-		First:  "Set first line here",
-		Second: "Second line here",
-		Third: "Third line here",
-		Fourth: "Fourth line here",
-		Fifth: "Fifth line here"
+		First: "Set these to what you want",
+		Second: "They can be located in",
+		Third: "NTRush/funcs/Message.ntl",
+		Fourth: "",
+		Fifth: ""
 	}
 };

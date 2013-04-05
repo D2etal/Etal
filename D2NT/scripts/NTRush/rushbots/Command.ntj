@@ -1,7 +1,6 @@
 var _masterlock = false;
-var _master = "";
-var trigger = ".";
-var comm = this;
+var _master = ""; // if set here will not accept ingame command for master
+var trigger = "."; // trigger used for commands
 var _locate = "NTRush/rushbots/";
 var run = this;
 var Rev = "ERusher v1.1";
@@ -10,6 +9,7 @@ Include("NTRush/funcs/Loader.ntl");
 
 function Command() {
 	var _busy = false,
+		_set = false;
 		_end = false;
 
 	Config.Load();
@@ -91,6 +91,9 @@ function Command() {
 						case "izual":
 							Izual();
 							break;
+						case "hephasto":
+							Hephasto();
+							break;
 						case "diablo":
 							Diablo();
 							break;
@@ -148,6 +151,11 @@ function Command() {
 		);
 
 	while (!_end) {
+		if (_master !== "" && !_set) {
+			_masterlock = true;
+			_set = true;
+			SetStatusText(Rev + "Awaiting command");
+		}
 		Delay(500);
 	}
 	ExitGame();
@@ -155,7 +163,7 @@ function Command() {
 
 function checkCommand(comm) {
 	var i,
-		possibles = ["cain", "andy", "radament", "cube", "staff", "ammy", "summoner", "duriel", "tome", "travincal", "mephisto", "izual", "diablo", "shenk", "anya", "ancients", "baal", "waypoints", "end", "list", "rushone", "rushtwo", "rushthree", "rushfour", "rushfive", "rushall"];
+		possibles = ["cain", "andy", "radament", "cube", "staff", "ammy", "summoner", "duriel", "tome", "travincal", "mephisto", "izual", "hephasto", "diablo", "shenk", "anya", "ancients", "baal", "waypoints", "end", "list", "rushone", "rushtwo", "rushthree", "rushfour", "rushfive", "rushall"];
 
 	for (i = 0; i < possibles.length; i += 1) {
 		if (possibles[i] === comm) {
@@ -170,7 +178,7 @@ function RushAct(act) {
 		_act1 = ["Cain", "Andy"],
 		_act2 = ["Radament", "Cube", "Ammy", "Staff", "Summoner", "Duriel"],
 		_act3 = ["Tome", "Travincal", "Mephisto"],
-		_act4 = ["Izual", "Diablo"],
+		_act4 = ["Izual", "Hephasto", "Diablo"],
 		_act5 = ["Shenk", "Anya", "Ancients", "Baal"],
 		_actRuns = [];
 
@@ -240,6 +248,7 @@ function IncludeFuncs() {
 	Include(_locate + "Travincal.ntj");
 	Include(_locate + "Mephisto.ntj");
 	Include(_locate + "Izual.ntj");
+	Include(_locate + "Haphasto.ntj");
 	Include(_locate + "Diablo.ntj");
 	Include(_locate + "Shenk.ntj");
 	Include(_locate + "Anya.ntj");
@@ -249,7 +258,11 @@ function IncludeFuncs() {
 }
 
 function commandList() {
-	var comms = ["cain, ", "andy, ", "radament, ", "cube, ", "staff, ", "ammy, ", "summoner, ", "duriel, ", "tome, ", "travincal, ", "mephisto, ", "izual, ", "diablo, ", "shenk, ", "anya, ", "ancients, ", "baal, ", "waypoints, ", "end, ", "list, ", "rushone, ", "rushtwo, ", "rushthree, ", "rushfour, ", "rushfive, ", "rushall"];
+	var comms = ["cain, ", "andy, ", "radament, ", "cube, ", "staff, ", // said in first line
+		"ammy, ", "summoner, ", "duriel, ", "tome, ", "travincal, ", // said in second line
+		"mephisto, ", "izual, ", "hephasto, ", "diablo, ", "shenk, ", // said in third line
+		"anya, ", "ancients, ", "baal, ", "waypoints, ", "end, ", "list, ", // said in forth line
+		"rushone, ", "rushtwo, ", "rushthree, ", "rushfour, ", "rushfive, ", "rushall"]; // said in last line
 
 	Say("Available commands for the master are the trigger and any of the following ");
 	Delay(1000);
@@ -259,7 +272,7 @@ function commandList() {
 	Delay(1000);
 	Say(comms[10] + comms[11] + comms[12] + comms[13] + comms[14]);
 	Delay(1000);
-	Say(comms[15] + comms[16] + comms[17] + comms[18] + comms[19]);
+	Say(comms[15] + comms[16] + comms[17] + comms[18] + comms[19] + comms[20]);
 	Delay(1000);
-	Say(comms[20] + comms[21] + comms[22] + comms[23] + comms[24] + comms[25]);
+	Say(comms[21] + comms[22] + comms[23] + comms[24] + comms[25] + comms[26]);
 }
