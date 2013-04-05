@@ -8,7 +8,7 @@ function NTP_DoPrecastCTA(refresh, castbo)
 
 	if(me.classid == NTC_CHAR_CLASS_BARBARIAN || NTC_InTown())
 		return false;
-
+		
 	if(refresh || !me.GetState(32) || !me.GetState(51))
 	{
 		if(NTP_BOSwitch())
@@ -142,6 +142,9 @@ function NTP_DoPrecast(refresh, castbo)
 			}
 		}
 		
+		if(NTC_GetSkillLevel(73))
+			NTC_CastSkill(73, NTC_HAND_LEFT); // Necro Poison dagger
+
 		NTP_DoPrecastCTA(refresh, castbo);
 
 		if(refresh || !me.GetState(14))

@@ -130,6 +130,9 @@ function NTA_Initialize() {
 			case 64: // Frozen Orb
 				_NTA_SkillRange[i] = 15;
 				break;
+			case 73: // Poison Dagger
+				_NTA_SkillRange[i] = 2;
+				break;
 			case 84: // Bone Spear
 				_NTA_SkillRange[i] = 15;
 				break;
