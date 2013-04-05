@@ -1,4 +1,4 @@
-function NTMain()
+function Cain()
 {
 	var _unit, _treex, _treey,
 		_stoneArray = new Array(10);
