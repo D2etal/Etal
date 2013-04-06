@@ -197,12 +197,6 @@ function NT_KeyEvents(keycode)
 				OpeningChatRLogs();
 			}
 			break;
-		case Key_NextArea:
-			//NTAT_AutoForward();
-			break;
-		case Key_LastArea:
-			//NTAT_AutoBackward();
-			break;
 		case Key_GoToTown:
 			HeadingHome();
 			break;

@@ -24,7 +24,7 @@ var MGConfig_ShowMissile;
 var MGConfig_EstRun;
 
 var NTConfig_HostileHandler;
-var RunFromHostiles;
+var RunFromHostiles = true;
 var KillHostiler = false;
 var TauntHostile = false;
 
@@ -51,8 +51,6 @@ var Key_KeyCodeCheck;
 var Key_LoadChatR;
 	var ChatREnabled = false;
 var Key_ItemInfos;
-var Key_NextArea;
-var Key_LastArea;
 var Key_GoToTown;
 var Key_AntiIdle;
 	var MGAntiIdle = false;

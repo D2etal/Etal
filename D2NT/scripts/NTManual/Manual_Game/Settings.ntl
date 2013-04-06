@@ -19,12 +19,9 @@ function MG_LoadConfig()
 	MGConfig_ShowMissile = true;
 
 	NTConfig_HostileHandler = false; // true will make you quit when hostiled, false won't
-		RunFromHostiles = false;
 
 	Key_HotKeyInfo = 45;			// Insert
 	Key_ExitGame = 46;				// Del
-	Key_NextArea = 33;				// Pg Up CURRENTLY NOT IMPLEMENTED
-	Key_LastArea = 34;				// Pg Dn CURRENTLY NOT IMPLEMENTED
 	Key_GoToTown = 36;				// Home
 	Key_DoPrecast = 110;			// .
 	Key_PrintRes = 97;				// 1
