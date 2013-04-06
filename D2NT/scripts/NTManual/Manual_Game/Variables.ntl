@@ -15,6 +15,8 @@ var MGConfig_LifeChicken;
 var MGConfig_FriendsOnly;
 	var MG_SafeList;
 var MGConfig_ManaChicken;
+var MGConfig_CheckStuff;
+	var MGConfig_BeltColType = new Array(4);
 var MGConfig_RunFromHostile;
 var MGConfig_ShowEnemy;
 var MGConfig_ShowMap;
@@ -62,3 +64,5 @@ Include("NTManual/Manual_Game/Settings.ntl");
 Include("NTManual/Manual_Game/ChatCalls.ntl");
 Include("NTManual/Manual_Game/ChatFunctions.ntl");
 Include("NTManual/Manual_Game/KeycodeFunctions.ntl");
+Include("NTManual/Manual_Game/Towning.ntl");
+

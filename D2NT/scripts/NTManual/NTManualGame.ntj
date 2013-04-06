@@ -1,4 +1,5 @@
-var Rev = "0.801B";
+var Rev = "0.820";
+var warncount;
 
 function NTMain()
 {
@@ -20,6 +21,8 @@ function NTMain()
 
 	SetStatusText("Manual Game " + COLOR_8 + Rev + COLOR_4 + " - " + Online);
 	Print(COLOR_4 + "NTManualGame " + COLOR_8 + Rev + COLOR_4 + " Loaded");
+	Delay(Random(800,1200));
+	Print(COLOR_4 + "Please note that you " + COLOR_1 + "MUST" + COLOR_4 + " use the " + COLOR_2 + "Delete" + COLOR_4 + " key to Exit Game!");
 	var _count = 0;
 
 	while(1)
@@ -27,6 +30,7 @@ function NTMain()
 		ChickenStuff(); Refresh(); MG_AntiIdle();
 		if(_count++ > 10) {
 			if(MGConfig_AutoParty) { MG_PartyUp(); }
+			if(MGConfig_CheckStuff) { Town_CheckStuff(MG_HPs, MG_MPs, MG_TPs, MG_IDs); }
 			_count = 0;
 		}
 	}
@@ -221,12 +225,11 @@ function NT_KeyEvents(keycode)
 			}
 			break;
 		case 17:
-			_area = GetArea();
-			Print(COLOR_8 + " X=" + me.x + ", Y=" + me.y);
-			Print(COLOR_8 + "  In AreaID " + me.areaid + " , " + _area.name);
+			//_area = GetArea();
+			//Print(COLOR_8 + " X=" + me.x + ", Y=" + me.y);
+			//Print(COLOR_8 + "  In AreaID " + me.areaid + " , " + _area.name);
 			break;
 		case 48:
-			NTU_TLInventory();
 			break;
 		default:
 			if(CheckKeyNumber)

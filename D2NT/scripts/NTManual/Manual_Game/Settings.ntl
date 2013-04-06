@@ -1,10 +1,17 @@
 function MG_LoadConfig()
 {
-	MGConfig_LifeChicken = -1;	// This is your chicken life percent. If you go below this life total, exit game.
-	MGConfig_ManaChicken = -1;	// This is your chicken mana percent. If you go below this mana total, exit game.
-	MGConfig_ChickenWarn = true; // This will warn you to heal before exiting town if you'll chicken
-	MGConfig_AutoParty = true; // true will auto party with people who join, false won't
-	MGConfig_FriendsOnly = false; // true will auto party the people in your MG_SafeList only!
+	MGConfig_LifeChicken = -1; 		// This is your chicken life percent. If you go below this life total, exit game.
+	MGConfig_ManaChicken = -1; 		// This is your chicken mana percent. If you go below this mana total, exit game.
+	MGConfig_ChickenWarn = true; 	// This will warn you to heal before exiting town if you'll chicken
+
+	MGConfig_CheckStuff = false; 	// Gives a warning when low on pots/scrolls
+		MG_HPs = 3;					// This many HP potions to at least have
+		MG_MPs = 3;					// This many MP potions to at least have
+		MG_TPs = 3;					// This many TP scrolls to at least have
+		MG_IDs = 3;					// This many ID scrolls to at least have
+
+	MGConfig_AutoParty = true; 		// true will auto party with people who join, false won't
+	MGConfig_FriendsOnly = false; 	// true will auto party the people in your MG_SafeList only!
 	MG_SafeList = ["CharName1", "CharName2", "CharName3", "YouGetItRight?"];
 
 	MGConfig_ShowMap = true;
@@ -16,8 +23,8 @@ function MG_LoadConfig()
 
 	Key_HotKeyInfo = 45;			// Insert
 	Key_ExitGame = 46;				// Del
-	Key_NextArea = 33;				// Pg Up
-	Key_LastArea = 34;				// Pg Dn
+	Key_NextArea = 33;				// Pg Up CURRENTLY NOT IMPLEMENTED
+	Key_LastArea = 34;				// Pg Dn CURRENTLY NOT IMPLEMENTED
 	Key_GoToTown = 36;				// Home
 	Key_DoPrecast = 110;			// .
 	Key_PrintRes = 97;				// 1
