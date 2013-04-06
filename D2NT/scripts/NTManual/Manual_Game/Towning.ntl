@@ -1,0 +1,106 @@
+function Town_CheckStuff(Hpshort, Mpshort, TPshort, IDshort)
+{
+	if(Town_CheckHPs(Hpshort)) {
+		Print(COLOR_1 + "Getting low on Health Potions!")
+	}
+	if(Town_CheckMPs(Mpshort)) {
+		Print(COLOR_3 + "Getting low on Mana Potions!")
+	}
+	if(Town_CheckScrolls(1) < TPshort) {
+		Print(COLOR_4 + "Getting low on TP scrolls!")
+	}
+	if(Town_CheckScrolls(0) < IDshort) {
+		Print(COLOR_4 + "Getting low on ID scrolls!")
+	}
+	return;
+}
+
+function Town_CheckHPs(numshort)
+{
+	var i;
+	var _hppots = 0;
+	var _items;
+		_items = me.GetItems();
+	for(i = 0 ; i < _items.length ; i++) {
+		if(_items[i].mode == 2 && (_items[i].classid > 586 && _items[i].classid < 592)) {
+			_hppots++; 
+		}
+	}
+	if(_hppots < numshort)
+		return true;
+	else
+		return false;
+}
+
+function Town_CheckMPs(numshort)
+{
+	var i;
+	var _mppots = 0;
+	var _items;
+		_items = me.GetItems();
+	for(i = 0 ; i < _items.length ; i++) {
+		if(_items[i].mode == 2 && (_items[i].classid > 591 && _items[i].classid < 597)) {
+			_mppots++; 
+		}
+	}
+	if(_mppots < numshort)
+		return true;
+	else
+		return false;
+}
+
+function Town_GetNeededPotionsColInt(type, column)
+{
+	var _restartloop = true;
+	var _amountneeded = 0;
+	var _items;
+
+	if(!type || column > 3)
+		return false;
+
+	if(_NTT_BeltSize < 1)
+		_NTT_BeltSize = NTC_GetBeltSize();
+
+	potionloop:
+	do {
+		_amountneeded = _NTT_BeltSize;
+		_items = me.GetItems();
+		if(!_items)
+			continue potionloop;
+		for(i = 0 ; i < _items.length ; i++) {
+			if(_items[i].mode == 2) {
+				if(NTT_PotInRightColInt(_items[i].x, column, _NTT_BeltSize)) {
+					var _potcode = _items[i].code;
+					if(_potcode.indexOf(type) != -1)
+						_amountneeded--;
+					else {
+						if(_potcode.indexOf("rv") != -1) {
+							if(_items[i].x < 4) {
+								return 0;
+							}
+							else
+								_amountneeded--;
+						}
+						else {
+							SetUIState(0x1F, true);
+							me.ClickItem(1, _items[i]);
+							NTC_PingDelay(500);
+							continue potionloop;
+						}
+					}
+				}
+			}
+		}
+		_restartloop = false;
+	} while(_restartloop);
+	return _amountneeded;
+}
+
+function Town_CheckScrolls(scrolltype)
+{
+	var _tome = NTT_GetTome(scrolltype);
+	if(_tome)
+		return _tome.GetStat(70);
+	
+	return 0;
+}
