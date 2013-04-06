@@ -1,1 +1,10 @@
-Simply copy paste the ignorelist file into your diablo 2 directory generally C:\Program Files (x86)\Diablo II or C:\Program Files\Diablo II and it should block alot of the spam
+Simply copy and paste the ignorelist file into your Diablo 2 install directory. 
+
+Windows Vista and 7 64-bit systems should be: C:\Program Files (x86)\Diablo II
+Windows XP (as well as Vista and 7 32-bit) should be: C:\Program Files\Diablo II
+
+This ignorelist has over 2,000 lines to block quite a bit of spam and bot advertisements.
+
+Updated by Tru on 6 April, 2013.
+
+www.ProjectEtal.com
