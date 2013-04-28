@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "71";
+var Rev = "72";
 
 // Provalone Edit //
 //Include("libs/common/NTExp.ntl");
@@ -316,7 +316,27 @@ function NT_GameMsgEvents(msg, type)
 		}
 		// add in something here that if leader recieves a message indexOf("entered") it will send the join game message.  make sure it is something specific to entered battlenet message
 	}
-
+	else if(type == 2 && NTConfig_ShowWhispersInCommon)
+	{
+		if(msg.indexOf(" (*") != -1 && msg.indexOf("): ") != -1 && msg.indexOf("Sent to ") != -1)
+		{
+			// You sent a whisper
+			msg = "You: (*" + msg.split("(*")[1];
+			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + msg);
+		}
+		else if( msg.indexOf(" (*") != -1 && msg.indexOf("): ") != -1 && msg.indexOf("From ") != -1)
+		{
+			// You received a whisper
+			msg = "Whisper: (*" + msg.split("(*")[1];
+			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + msg);
+		}
+		else if( msg.indexOf("whispers: ") != -1)
+		{
+			// You received a direct whisper
+			msg = "Whisper: (*" + msg.split("whispers: ")[0] + "): " + msg.split("whispers: ")[1];
+			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + msg);
+		}
+	}
 }
 
 function NT_KeyEvents(keycode)

@@ -660,6 +660,8 @@ function NT_LoadConfig()
 	NTConfig_MercStats = false;							// Prints Merc stats to Common Log with Char stats if true
 	NTConfig_VoyageToMissingWps = true; 					// when missing a wp setting this to true will have the bot path to and grab the missing wp
 
+	NTConfig_ShowWhispersInCommon = false;			// Displays whispers you send and receive in the Common Log on your ETAL Manager.
+	
 	//-------------------------------------------------------------------------------
 	// Advanced XML Item Logging
 	//-------------------------------------------------------------------------------
