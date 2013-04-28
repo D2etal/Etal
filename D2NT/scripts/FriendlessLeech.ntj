@@ -5,13 +5,14 @@
 // v THIS IS THE JUNK YOU'LL WANT TO EDIT v
 // Friendless leech starter setting (set to run with op Etal channel bot by default)
 // ====================================================================================================
-var gamenames = ["ExampleGameWithoutTheNumbers-"]; 			// Game name to use
 
+var gamenames = ["ExampleGameWithoutTheNumbers-"]; 			// Game name to use
 var gamepasswords 	= ["ExAmPlePasswOrd"];  	 			// Password for that game (case sensitive)
 
 // ====================================================================================================
 // Filter and channel settings
 // ====================================================================================================
+
 var extrafilters	= ["New game ", " started by"];	// The 2nd filter should be whatever the bot manager says right after the game name
 													// If the 2nd filter is empty, the rest of the line is used as the game name
 var joinChannelInChat   = "op Etal";				// leave blank to not join a private channel

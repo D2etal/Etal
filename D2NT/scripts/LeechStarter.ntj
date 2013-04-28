@@ -20,7 +20,7 @@ var leaderAccountName = "leader Account";
 var leaderName = "leader name";
 
 // =============================================================================
-// Leecher game entry delays use to stagger when leechers join game...
+// Leecher game entry delays use to stagger when leechers join game
 // [characterName, delay in milliseconds] - leave these as-is to not use them
 // =============================================================================
 

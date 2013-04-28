@@ -9,7 +9,7 @@
 // Version of the LeaderStarter remains at 2.3!
 
 ///////////////////////////////////////////////////
-//        characters in your game setting: 		 //		
+//        characters in your game setting:	
 ///////////////////////////////////////////////////
 
 var characterdiff        =  "99"; 	//use this to keep those pesky spam bots out of the f'ing game
@@ -17,7 +17,7 @@ var characterdiff        =  "99"; 	//use this to keep those pesky spam bots out 
 var maxNumberOfPlayersss = "8";		//use this to set the maximum number of players allowed in your game
 
 ///////////////////////////////////////
-//        Channel Settings: 		 //	 These control what if any channel you join
+//        Channel Settings: 		 	 These control what if any channel you join
 ///////////////////////////////////////
 
 var joinChatAfterGame			= false;			 // join chat after leaving a game
@@ -25,7 +25,7 @@ var joinRandomChannel			= false;			 // if this is true, will join a random chann
 var joinChannelInChat			= "set a channel";	 // Channel you want your bot to join, leave blank to not join a private channel
 
 ///////////////////////////////////////
-//        Message Settings: 		 //		// These controll what your bot sais to the leechers will also send a log incommand to a channel bot
+//        Message Settings: 		 	  These control what your bot sais to the leechers will also send a log incommand to a channel bot
 ///////////////////////////////////////
 
 var chatMessageOnJoin		= "set a login command here";	// Chat Message to say Login command for channel bot will only be sent once
