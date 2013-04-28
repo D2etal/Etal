@@ -1,25 +1,29 @@
-// credit for this goes to D2od who knows way more than I do 
-// revised on 1-2-11 by stairbuilder  Credit for mod goes to Justin.Killen and I was pointed to it by fellgar
-// will now join game only when leader sends message from game.  must use NTLeaderStarter2 with this or will not join game
 // commented out the /f l line, but can be uncommented if you wich
 // added white screen of death fix and also some print txt for testing 2-17-11 stairbuilder
 // added stagger leech joining 9-25-11 by stair
 // added single /f l try to enter games for switching keys and missing the game join message 9-25-11 by stair
 // added a while loop and manager print if a bad cd key is used or bad account or password stair 9-25-11
 // added gameDoesNotExistDelay and txt file joining.  Must use updated leader entry point for the txt joining
-// not doing all this ^^^ for an ego trip, just so I know what I have added to this one, lmao
+// added 3 new config options tryLeaderGame1x, retryLeaderGame, tryLeaderGame1x 12-22-2011
+// changed where the game count increase is called to right when bot enters chat instead of waiting for game name.  Saves a second or 2 credit for this goes to stib 1-21-12
+// fixed /f l delay to only apply after the first /f l 1-21-12
+// added fastJoin option.  read comments next to setting below 1/22/12
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Renamed from LeechStarter2.3 to LeechStarter on 4/27/2013 by Tru
+// Version of the LeechStarter remains at 2.3!
 
 // =============================================================================
 // Leader Account settings
 // =============================================================================
+
 var leaderAccountName = "leader Account"; 
 var leaderName = "leader name";
+
+// =============================================================================
+// Leecher game entry delays use to stagger when leechers join game...
+// [characterName, delay in milliseconds] - leave these as-is to not use them
 // =============================================================================
 
-// Leecher game entry delays use to stagger when leechers join game...
-// [characterName, delay in milliseconds]...just leave these as they are if you don't want to 
-// use them
-// =============================================================================
 var leecher1 = ["characterName", 100];
 var leecher2 = ["characterName", 750];
 var leecher3 = ["characterName", 1250];
@@ -28,18 +32,23 @@ var leecher4 = ["characterName", 2000];
 //==============================================================================
 // join options
 //==============================================================================
+
 var useFL = false;  				// set true if you wish your leecher to use /f l to join games.  useFL MUST be set to 0 for this to work
-var useFLCount = 1;				// this is seperate from the above setting allows you to use /f l to join, but will only spam /f l the set number of times.  set to 0 to disable
-var delayFL = 3000;				// milliseconds before the bot will use the /f l command in loby
+var useFLCount = 1;					// this is seperate from the above setting allows you to use /f l to join, but will only spam /f l the set number of times.  set to 0 to disable
+var delayFL = 3000;					// milliseconds before the bot will use the /f l command in loby
 var reEnterSameGame = false;		// set to false to keep the bot from using /f l to re enter same game also must be set to false if you don't want bot to re enter same game for txt joining
-var useTextFileJoin = false;  	// use txt file communication between leader and leecher to join games.  False uses message sent from leader when in game
-var gameDoesNotExistDelay = 10;	// time to idle before trying if leader's game does not exist.  In seconds.
+var useTextFileJoin = false;  		// use txt file communication between leader and leecher to join games
+var gameDoesNotExistDelay = 10;		// time to idle before trying if leader's game does not exist.  In seconds.
 var tryLeaderGame1x = false;		// will only try to enter the game one time.  Good for when leader drops before leecher gets in.
-var ftjDelay = 180;				// time to idle before trying if leecher failed to join.  In seconds.
+var retryLeaderGame = 0;			// nuber of times you would like to try joining leaders game.  Note tryLeaderGame1x = true bypasses this and the delay below
+var retryLeaderGameDelay = 10;		// time in seconds to delay between retrying to enter leaders game
+var fastJoin = false;				// this has preconfigured delays for easy switching.  Gets you leecher in game in about 3 seconds.  THIS MAY CAUSE JOIN PROBLEMS FOR SOME USERS!!!!!
+var ftjDelay = 180;					// time to idle before trying if leecher failed to join.  In seconds.
 
 // =============================================================================
 // Game password (leave blank if none)
 // =============================================================================
+
 var gamepassword = "";
 
 // =============================================================================
@@ -48,68 +57,83 @@ var gamepassword = "";
 //          in order to increment his number of runs (to switch CDKeys after xx runs)
 // if false, the follow bot will never change his CDKey
 // =============================================================================
+
 var UseCDKeyChangeTrick = true;
 
 // =============================================================================
 // Debug : set to true if you are experiencing problems with your JoinBot
 // it will log in your OOG the lobby chat actions
 // =============================================================================
+
 var Debug = false;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Lobby chat settings :
 ////////////////////////////////////////////////////////////////////////////////
 
-// Set to true to join the chat after each game (needed for JoinBot)
-var joinChatAfterGame    = true;
-
-// Message said when you first enter the chat
-var firstJoinMessage     = "";
-
-// Message said after each game
-var chatMessageAfterGame = "";
-
-// if this is true, will join a random channel, otherwise it will use the channel below..
-var joinRandomChannel    = false;
-// Name of the channel you want to join (leave blank if you want to stay in the default channel)
-var joinChannelInChat    = "";
-
+var joinChatAfterGame    = true;	// Set to true to join the chat after each game (needed for JoinBot)
+var firstJoinMessage     = "";		// Message said when you first enter the chat
+var chatMessageAfterGame = "";		// Message said after each game
+var joinRandomChannel    = false; 	// if this is true, will join a random channel, otherwise it will use the channel below..
+var joinChannelInChat    = "";		// Name of the channel you want to join (leave blank if you want to stay in the default channel)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Delays:
 ////////////////////////////////////////////////////////////////////////////////
-
 // Minimum game length, waits in the lobby if last game was too short
 // I recommend to keep a value > 300000 (milliseconds) to avoid bnet temporary ban
-var gameMinLength        = 420000;
+var gameMinLength    		  = 420000; // Milliseconds
 
-// realm delays (minutes)
-var unableToConnectRetry       = 20;
-var realmDownRetry             = 480;
-var disconnectedRetry          = 5;
-var cdkeyInUseRetry            = 5;
+// Realm Delays
+var unableToConnectRetry      = 20;		// Minutes
+var realmDownRetry            = 480;	// Minutes
+var disconnectedRetry         = 5;		// Minutes
+var cdkeyInUseRetry           = 5;		// Minutes
 
-// interface delays (milliseconds)
-var connectingToBnetTimeout    = 20000;
-var characterScreenTimeout     = 10000;
-var pleaseWaitTimeout          = 10000;
-var createGameThreshold        = 10000;
-var createGameThresholdRandom  = 1000;
-var createGameTimeout          = 15000;
-var waitInLineTimeout          = 15000;
-var characterSelectDelay       = 1000;
-var loginDelay                 = 1000;
-var clickDelay                 = 500;
-var textDelay                  = 500;
-var clickDelayRandom           = 500;
-var textDelayRandom            = 500;
-var gameDoesNotExistDelayMin   = 600000; // this not for leech configuration. Look for gameDoesNotExistDelay above
-var gameDoesNotExistDelayMax   = 900000; // this not for leech configuration. Look for gameDoesNotExistDelay above
-var gameDoesNotExistTimeout    = 30000;
-var waitBeforeEnterChatMin     = 1000;
-var waitBeforeEnterChatMax     = 2000;
-var waitInChatBeforeActionsMin = 2000;
-var waitInChatBeforeActionsMax = 3000;
+if(fastJoin) { 
+	// interface delays (milliseconds)
+	var connectingToBnetTimeout    = 20000;
+	var characterScreenTimeout     = 10000;
+	var pleaseWaitTimeout          = 10000;
+	var createGameThreshold        = 10000;
+	var createGameThresholdRandom  = 1000;
+	var createGameTimeout          = 15000;
+	var waitInLineTimeout          = 15000;
+	var characterSelectDelay       = 1000;
+	var loginDelay                 = 1000;
+	var clickDelay                 = 0;
+	var textDelay                  = 0;
+	var clickDelayRandom           = 0;
+	var textDelayRandom            = 0;
+	var gameDoesNotExistDelayMin   = 600000; // this not for leech configuration. Look for gameDoesNotExistDelay above
+	var gameDoesNotExistDelayMax   = 900000; // this not for leech configuration. Look for gameDoesNotExistDelay above
+	var gameDoesNotExistTimeout    = 30000;
+	var waitBeforeEnterChatMin     = 1000;
+	var waitBeforeEnterChatMax     = 2000;
+	var waitInChatBeforeActionsMin = 2000;
+	var waitInChatBeforeActionsMax = 3000;
+} else {
+	var connectingToBnetTimeout    = 20000;
+	var characterScreenTimeout     = 10000;
+	var pleaseWaitTimeout          = 10000;
+	var createGameThreshold        = 10000;
+	var createGameThresholdRandom  = 1000;
+	var createGameTimeout          = 15000;
+	var waitInLineTimeout          = 15000;
+	var characterSelectDelay       = 1000;
+	var loginDelay                 = 1000;
+	var clickDelay                 = 500;
+	var textDelay                  = 500;
+	var clickDelayRandom           = 500;
+	var textDelayRandom            = 500;
+	var gameDoesNotExistDelayMin   = 600000; // this not for leech configuration. Look for gameDoesNotExistDelay above
+	var gameDoesNotExistDelayMax   = 900000; // this not for leech configuration. Look for gameDoesNotExistDelay above
+	var gameDoesNotExistTimeout    = 30000;
+	var waitBeforeEnterChatMin     = 1000;
+	var waitBeforeEnterChatMax     = 2000;
+	var waitInChatBeforeActionsMin = 2000;
+	var waitInChatBeforeActionsMax = 3000;
+}
 
 // Only for JoinBot (friend list delay, milliseconds)
 var LeaderOfflineDelay         = 30000;
@@ -141,12 +165,16 @@ var inGameAt       = 0;
 var chatActionsDone   = false;
 var lastGameFailed     = false;
 var sayChatMsgAfterGame = false;
+var ftjcount = 0;
 
 Include("libs/controlInfo.ntl");
 Include("libs/common/NTColorConverter.ntl");
 
 var controlData = new controlInfo();
 
+var increaseGameCount = true;
+var firstTimeFl = true;
+var retryLeaderGameCount = 0;
 var lastGame = "";
 var retryFL = 0;
 var game = '';
@@ -155,7 +183,6 @@ var _gamepassword = "";
 var _leaderOfflineTick = -LeaderOfflineDelay;
 var _leaderInChatTick = -LeaderInChatDelay;
 var _GameIsFullTick = -GameIsFullDelay;
-var ftjcount = 0;
 
 function NTMain()
 {
@@ -187,7 +214,10 @@ function NTMain()
 									
 					retryFL = 0; // sets the counter back to 0 upon game entry.
 					_ingame = true;
-
+					retryLeaderGameCount = 0;
+					firstTimeFl = true;
+					increaseGameCount = true;
+					
                     if(me.playtype > 0)
                         sendEventToOOG(D2NT_MGR_INGAME, "In Game[IP:" + me.gameserverip.split(".")[3] + "]", 0);
                     else
@@ -204,6 +234,8 @@ function NTMain()
         {
             if(_ingame)
             {
+
+			
 				My_ExitGame_Check(); // out of korean modded d2nt fixes white screen of death
 				_ingame = false;
                 sayChatMsgAfterGame = true;
@@ -223,6 +255,7 @@ function locationAction(location)
     switch(location.id)
     {
     case 3: // Lobby Chat
+        sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
 		//ftjcheck
 		if (ftjcount >= 10 && lastGameStatus == 1) {
 			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
@@ -232,13 +265,15 @@ function locationAction(location)
 			setNextGameMake();
 			locationTimeout(ftjDelay*1000, location);
 		}
-        sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
-		
 		//LogPrintSimple(me.account + "MyAccountTest.txt", me.account + " / " + me.charname) // this is to check for 2nd account login
-
+		if (UseCDKeyChangeTrick && increaseGameCount) {
+			sendEventToOOG(D2NT_MGR_CREATE_GAME, location.name, 0);
+			increaseGameCount = false;
+			Delay(1000);
+		}
         if(!chatActionsDone)
         {  
-            Delay(Random(waitInChatBeforeActionsMin, waitInChatBeforeActionsMax));
+			Delay(Random(waitInChatBeforeActionsMin, waitInChatBeforeActionsMax));
 
             if(joinRandomChannel || joinChannelInChat != "")
             {
@@ -276,12 +311,22 @@ function locationAction(location)
 					Delay(500);			
 					DebugInOOG('Locating the leader : '+leaderAccountName);
 					if(useFLCount > 0 && retryFL < useFLCount) {
-						Delay(delayFL);
+						
+						if(!firstTimeFl) {
+							Delay(delayFL);
+						} else {
+							firstTimeFl = false;
+						}
+					
 						Say('/f l');
 						retryFL++;
 					}
 					else if(useFL) {
-						Delay(delayFL);
+						if(!firstTimeFl) {
+							Delay(delayFL);
+						} else {
+							firstTimeFl = false;
+						}
 						Say('/f l');
 					}
 					
@@ -386,16 +431,6 @@ function locationAction(location)
 		}
 		if (game!="")
 		{
-			if (UseCDKeyChangeTrick)
-			{
-				// increasing the number of runs in the OOG (for CDKey switch)
-				// Problem : the gamename/gamepassword set in your OOG will be typed in the lobbyChat
-				// this may output a red message in the lobby chat if you have a password set (not a real problem)
-				// I recommend to set a gamename like "Run" and no gamepassword in your OOG. -> this will output "Run-01", "Run-02", etc in lobby chat before joining games
-				sendEventToOOG(D2NT_MGR_CREATE_GAME, location.name, 0);
-				Delay(1000);
-			}
-
 			DebugInOOG('Leader is in the game "' + game + '"');
 			controlData.click(controlData.controls.lobby.button.join);
 			Delay(100);
@@ -404,21 +439,14 @@ function locationAction(location)
         break;
 
     case 1:    // Lobby
-		//ftjcheck
-		if (ftjcount >= 10 && lastGameStatus == 1) {
-			sendEventToOOG(D2NT_MGR_PRINT_LOG, COLOR_1 + "FTJ detected...........Idling", 0);
-			ftjcount = 0;
-			inGameAt = 0;
-			lastGameStatus = 0;
-			setNextGameMake();
-			locationTimeout(ftjDelay*1000, location);
-		}
-        if(location.id == 1 && joinChatAfterGame)
+		if(location.id == 1 && joinChatAfterGame)
         {
 			//LogPrintSimple(me.account + "MyAccountTest.txt", me.account + " / " + me.charname) // this is to check for 2nd account login            
 			Delay(Random(waitBeforeEnterChatMin, waitBeforeEnterChatMax));
             controlData.click(controlData.controls.lobby.button.enterChat);
-            break;
+
+			break;
+			
         }
         break;
 
@@ -443,11 +471,14 @@ function locationAction(location)
 
         lastGameMade = GetTickCount();
         lastGameStatus = 1; // pending creation
-        break;
-
-  case 5: // Join Game
+        break;  
+		
+	case 5: // Join Game
     if (game)
     {
+		if(retryLeaderGameCount > 0 && retryLeaderGameDelay > 0) {
+			Delay(retryLeaderGameDelay * 1000);
+		}
 		controlData.setText( controlData.controls.lobby.join.editBox.gameName, game);
         Delay (100);
         controlData.setText( controlData.controls.lobby.join.editBox.password, gamepassword);
@@ -467,12 +498,19 @@ function locationAction(location)
 		else{
 			Delay(100);
 		}
-		if(tryLeaderGame1x) {	
+		if(tryLeaderGame1x && retryLeaderGame <= 0) {	
 			NT_File("logs/messagecomands/"+me.charname+"-lastgame.txt", 1, game); // writes current game for comparing to new game to join next time in lobby	
 			game = "";
-		}                
+		}
+		if(retryLeaderGame > 0 && !tryLeaderGame1x && retryLeaderGameCount < retryLeaderGame) { // increases the leadergamecount
+			retryLeaderGameCount++;
+		}
+		if(retryLeaderGame > 0 && !tryLeaderGame1x && retryLeaderGameCount >= retryLeaderGame) { // sets game name to "" because we have made as many attempts as configured to join
+			game = "";
+		}
 		controlData.click(controlData.controls.lobby.join.button.joinGame);
 		RunGC(); // run garbage collector between each game
+		
         locationTimeout(5000, location);
         lastGameStatus = 1; // pending join
     }
@@ -482,8 +520,8 @@ function locationAction(location)
         me.Cancel(1);
         Delay(1000);
     }
-    break;
 
+    break;
     case 6: // Ladder
         break;
 
@@ -646,7 +684,7 @@ function locationAction(location)
 				Delay(1000)
 			}
 		}
-		DebugInOOG("Unhandled location : "+location.id);
+        DebugInOOG("Unhandled location : "+location.id);
         break;
     }
     DebugInOOG("Location : "+location.id);
@@ -684,7 +722,7 @@ function locationTimeout(time, location)
         sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name + " (" + parseInt((endtime-GetTickCount())/1000) + "s)", 0);
         Delay(500);
     }
-
+	
     return (controlData.getLocation().id != location.id);
 }
 
@@ -845,3 +883,4 @@ function NT_RetrievenextGame() { // to retrieve game and pw
 	return;
 }
 // so now we need to add code to get the next game and pw as well as check it against the last game
+

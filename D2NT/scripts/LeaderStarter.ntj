@@ -1,49 +1,49 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 // added a line that sends whisper game name for leechers when in game revised by stairbuilder on 1-2-11 //
 // added fix for white screen of death credit to korean modders revised by stairbuilder on 2-17-11       //
 // added fix for creation button sticking revised by stairbuilder on 2-17-11 							 //
 // added sending game name and pw to txt file for leecher text file joining 9-25-11     				 //
-//////////// for use with NTLeechStarter2.ntj 	///////////////////////////////////////////////////////////
+// added a while loop and manager print if a bad cd key is used or bad account or password stair 9-25-11 //
+// added txt file joining and added game count over 99 mod 12-1-12										 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-// added a while loop and manager print if a bad cd key is used or bad account or password stair 9-25-11
-// added print game to txt file for leechers using txt file joining
-// added game count over 99 mod 12-1-12
-// not doing all this ^^^ for an ego trip, just so I know what I have added to this one, lmao
-
-
+// Renamed from LeaderStarter2.3 to LeaderStarter on 4/27/2013 by Tru
+// Version of the LeaderStarter remains at 2.3!
 
 ///////////////////////////////////////////////////
 //        characters in your game setting: 		 //		
 ///////////////////////////////////////////////////
+
 var characterdiff        =  "99"; 	//use this to keep those pesky spam bots out of the f'ing game
 									//note you must manually hit the check box the first time for this to work
 var maxNumberOfPlayersss = "8";		//use this to set the maximum number of players allowed in your game
 
 ///////////////////////////////////////
-//        Channel Settings: 		 //		/ /These controll what if any channel you join
+//        Channel Settings: 		 //	 These control what if any channel you join
 ///////////////////////////////////////
+
 var joinChatAfterGame			= false;			 // join chat after leaving a game
-var joinRandomChannel			= false;		 // if this is true, will join a random channel, otherwise it will use the channel below..
-var joinChannelInChat			= "set a channel";		 // Channel you want your bot to join, leave blank to not join a private channel
+var joinRandomChannel			= false;			 // if this is true, will join a random channel, otherwise it will use the channel below..
+var joinChannelInChat			= "set a channel";	 // Channel you want your bot to join, leave blank to not join a private channel
 
 ///////////////////////////////////////
 //        Message Settings: 		 //		// These controll what your bot sais to the leechers will also send a log incommand to a channel bot
 ///////////////////////////////////////
-var chatMessageOnJoin			= "set a login command here";	// Chat Message to say Login command for channel bot will only be sent once
-var chatMessageAfterGame1		= "configure me";	// Optional chat message Line #1 to say after each game on Channel
-var chatMessageAfterGame2		= "in your ntbot.ntj file";		// Optional chat message Line #2 to say after each game on Channel
-var chatMessageAfterGame3		= "in the scripts folder";		// Optional chat message Line #3 to say after each game on Channel
-var chatMessageAfterGame4		= "these lines can be blank if you dont need them all";		// Optional chat message Line #4 to say after each game on Channel
-var chatMessageAfterGame5		= "dont forget to set your channel as well";	// Optional chat message Line #5 to say after each game on Channel
+
+var chatMessageOnJoin		= "set a login command here";	// Chat Message to say Login command for channel bot will only be sent once
+var chatMessageAfterGame1	= "configure me";				// Optional chat message Line #1 to say after each game on Channel
+var chatMessageAfterGame2	= "in your ntbot.ntj file";		// Optional chat message Line #2 to say after each game on Channel
+var chatMessageAfterGame3	= "in the scripts folder";		// Optional chat message Line #3 to say after each game on Channel
+var chatMessageAfterGame4	= "these can stay blank!";		// Optional chat message Line #4 to say after each game on Channel
+var chatMessageAfterGame5	= "SET A CHANNEL";				// Optional chat message Line #5 to say after each game on Channel
 
 ///////////////////////////////////////		// These will let you send a message with a game name password and time to your leechers
 //      Game Message Settings:       //		// var saygamename must be true for any of these to work
 ///////////////////////////////////////		// You cant NOT have a - in you game name it will bug it out
-var saygamename 			= false;						// Must be true for any of the game message settings to work
-var nextgamemessage			= "next game should be";	// This will come befor your next game name eg "New game is"
-var saypassword 			= true;						// This will togle if the bot says your game pw
-var saytime 				= true;						// This will togle if the bot says how much time till creation
-var timemessage 			= "in about";				// This will come after your pw and befor the time eg. "in about" xx seconds say time MUST be true for this to be used
+
+var saygamename 		= false;					// Must be true for any of the game message settings to work
+var nextgamemessage		= "next game should be";	// This will come befor your next game name eg "New game is"
+var saypassword 		= true;						// This will togle if the bot says your game pw
+var saytime 			= true;						// This will togle if the bot says how much time till creation
+var timemessage 		= "in about";				// This will come after your pw and befor the time eg. "in about" xx seconds say time MUST be true for this to be used
 
 //////////////////////////////////////
 //       Minimum Game Length:       //
@@ -51,32 +51,32 @@ var timemessage 			= "in about";				// This will come after your pw and befor th
 
 var gameMinLength		= 180000;	// time in milliseconds, minimum game length, 180 seconds default (1 game/3 minutes)
 
-////////////////////////////////////////
-//        Connection Settings:        //
-////////////////////////////////////////
+// ====================================================================================================
+// All of the delays for actions from bot start until in-game are below! Read the notes!!!
+// ====================================================================================================
 
-var unableToConnectRetry	= 15;		// time in minutes to retry connecting on connection fail (real value is +/- 1 min)
-var realmDownRetry		= 900;		// time in minutes to retry connecting on a realm down (default is 300 minutes)
-var disconnectedRetry		= 5;		// time in minutes to retry on a disconnection (usually ip ban related)
-var cdkeyInUseRetry		= 5;		// time in minutes to retry on a cdkey in use error message (set to 0 to stop)
-var connectingToBnetTimeout	= 20000;	// time in milliseconds to wait for a login to time out and click cancel and retry
-var characterScreenTimeout	= 10000;	// time in milliseconds to wait for character screen to appear
-var pleaseWaitTimeout		= 10000;	// time in milliseconds to wait for a please wait popup
-var createGameThreshold		= 10000;		// time in milliseconds to wait between making games
+var unableToConnectRetry		= 15;		// time in minutes to retry connecting on connection fail (real value is +/- 1 min)
+var realmDownRetry				= 900;		// time in minutes to retry connecting on a realm down (default is 300 minutes)
+var disconnectedRetry			= 5;		// time in minutes to retry on a disconnection (usually ip ban related)
+var cdkeyInUseRetry				= 5;		// time in minutes to retry on a cdkey in use error message (set to 0 to stop)
+var connectingToBnetTimeout		= 20000;	// time in milliseconds to wait for a login to time out and click cancel and retry
+var characterScreenTimeout		= 10000;	// time in milliseconds to wait for character screen to appear
+var pleaseWaitTimeout			= 10000;	// time in milliseconds to wait for a please wait popup
+var createGameThreshold			= 10000;	// time in milliseconds to wait between making games
 var createGameThresholdRandom	= 1000;		// time in milliseconds to randomly add +/- to the game create time
-var createGameTimeout		= 44000;	// time in milliseconds to register a failed to create game
-var waitInLineTimeout		= 60000;	// time in milliseconds to wait in lines for a create game (60 second default)
-var characterSelectDelay	= 1000;		// time in milliseconds to wait before selecting a character on the char screen
-var loginDelay			= 1000;		// time in milliseconds to wait before submitting login information
-var clickDelay			= 500;		// wait X milliseconds before next action after a click event
-var textDelay			= 500;		// wait X milliseconds before next action after inserting text into a textbox
-var clickDelayRandom		= 500;		// random amount of time to add to a click
-var textDelayRandom		= 500;		// random amount of time to add to a text set
+var createGameTimeout			= 44000;	// time in milliseconds to register a failed to create game
+var waitInLineTimeout			= 60000;	// time in milliseconds to wait in lines for a create game (60 second default)
+var characterSelectDelay		= 1000;		// time in milliseconds to wait before selecting a character on the char screen
+var loginDelay					= 1000;		// time in milliseconds to wait before submitting login information
+var clickDelay					= 500;		// wait X milliseconds before next action after a click event
+var textDelay					= 500;		// wait X milliseconds before next action after inserting text into a textbox
+var clickDelayRandom			= 500;		// random amount of time to add to a click
+var textDelayRandom				= 500;		// random amount of time to add to a text set
 var gameDoesNotExistDelayMin	= 600000;	// how long to wait when a Game Does Not Exist occurs - minimum - default 10 minutes
 var gameDoesNotExistDelayMax	= 900000;	// how long to wait when a Game Does Not Exist occurs - maximum - default 15 minutes
-var gameDoesNotExistTimeout	= 30000;	// how long to wait for the dialog to disappear (default 30 seconds, don't change this)
-var waitBeforeEnterChatMin	= 1000;		// min how long to wait before entering chat
-var waitBeforeEnterChatMax	= 2000;		// max how long to wait before entering chat
+var gameDoesNotExistTimeout		= 30000;	// how long to wait for the dialog to disappear (default 30 seconds, don't change this)
+var waitBeforeEnterChatMin		= 1000;		// min how long to wait before entering chat
+var waitBeforeEnterChatMax		= 2000;		// max how long to wait before entering chat
 var waitInChatBeforeActionsMin	= 2000;		// min how long to wait before joining channel
 var waitInChatBeforeActionsMax	= 3000;		// max how long to wait before joining channel
 var waitBeforeNextLineChatMin	= 500;		// Minimum ammount of time to add after each text line	

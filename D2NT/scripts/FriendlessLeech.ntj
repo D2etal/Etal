@@ -1,10 +1,13 @@
+// Renamed from BetterFriendlessLeech to FriendlessLeech on 4/27/2013 by Tru
+////////////////////////////////////////////////////////////////////////////////////
+
 // ====================================================================================================
 // v THIS IS THE JUNK YOU'LL WANT TO EDIT v
 // Friendless leech starter setting (set to run with op Etal channel bot by default)
 // ====================================================================================================
-var gamenames = ["ExampleGameWithoutTheNumbers-"]; 							// Game name to use
+var gamenames = ["ExampleGameWithoutTheNumbers-"]; 			// Game name to use
 
-var gamepasswords 	= ["ExAmPlePasswOrd"];  	 						// Password for that game (case sensitive)
+var gamepasswords 	= ["ExAmPlePasswOrd"];  	 			// Password for that game (case sensitive)
 
 // ====================================================================================================
 // Filter and channel settings
@@ -22,29 +25,31 @@ var joinChannelInChat   = "op Etal";				// leave blank to not join a private cha
 var UseCDKeyChangeTrick = false;
 
 // ====================================================================================================
-var maxRetriesPerGame 	= 3; 					// The # of times to try rejoining a *unique* game
-var maxRetries 		= 3; 					// The # of *different* games to try joining, if all attempts fail, bot will exit to character selection screen and rejoin lobby
-var gameMinLength      		= 180000;		// time in milliseconds, minimum game length, 180 seconds default (1 game/3 minutes)
-var unableToConnectRetry   	= 5;			// time in minutes to retry connecting on connection fail (real value is +/- 1 min)
-var realmDownRetry      	= 260;			// time in minutes to retry connecting on a realm down (default is 120 minutes)
-var disconnectedRetry      	= 5;			// time in minutes to retry on a disconnection (usually ip ban related)
-var cdkeyInUseRetry      	= 1;			// time in minutes to retry on a cdkey in use error message (set to 0 to stop)
+// All of the delays for actions from bot start until in-game are below! Read the notes!!!
+// ====================================================================================================
+var maxRetriesPerGame 			= 3; 			// The # of times to try rejoining a *unique* game
+var maxRetries 					= 3; 			// The # of *different* games to try joining, if all attempts fail, bot will exit to character selection screen and rejoin lobby
+var gameMinLength      			= 180000;		// time in milliseconds, minimum game length, 180 seconds default (1 game/3 minutes)
+var unableToConnectRetry   		= 5;			// time in minutes to retry connecting on connection fail (real value is +/- 1 min)
+var realmDownRetry      		= 260;			// time in minutes to retry connecting on a realm down (default is 120 minutes)
+var disconnectedRetry      		= 5;			// time in minutes to retry on a disconnection (usually ip ban related)
+var cdkeyInUseRetry      		= 1;			// time in minutes to retry on a cdkey in use error message (set to 0 to stop)
 var connectingToBnetTimeout  	= 20000;		// time in milliseconds to wait for a login to time out and click cancel and retry
 var characterScreenTimeout   	= 5000;			// time in milliseconds to wait for character screen to appear
-var pleaseWaitTimeout     	= 2000;			// time in milliseconds to wait for a please wait popup
+var pleaseWaitTimeout     		= 2000;			// time in milliseconds to wait for a please wait popup
 var createGameThreshold      	= 2000;			// time in milliseconds to wait between making games
 var createGameThresholdRandom   = 500;			// time in milliseconds to randomly add +/- to the game create time
-var createGameTimeout      	= 15000;		// time in milliseconds to register a failed to create game
-var waitInLineTimeout      	= 60000;		// time in milliseconds to wait in lines for a create game (60 second default)
-var characterSelectDelay	= 1000;			// time in milliseconds to wait before selecting a character on the char screen
-var loginDelay			= 1000;			// time in milliseconds to wait before submitting login information
-var clickDelay			= 500;			// wait X milliseconds before next action after a click event
-var textDelay			= 500;			// wait X milliseconds before next action after inserting text into a textbox
-var clickDelayRandom		= 500;			// random amount of time to add to a click
-var textDelayRandom      	= 500;			// random amount of time to add to a text set
+var createGameTimeout      		= 15000;		// time in milliseconds to register a failed to create game
+var waitInLineTimeout      		= 60000;		// time in milliseconds to wait in lines for a create game (60 second default)
+var characterSelectDelay		= 1000;			// time in milliseconds to wait before selecting a character on the char screen
+var loginDelay					= 1000;			// time in milliseconds to wait before submitting login information
+var clickDelay					= 500;			// wait X milliseconds before next action after a click event
+var textDelay					= 500;			// wait X milliseconds before next action after inserting text into a textbox
+var clickDelayRandom			= 500;			// random amount of time to add to a click
+var textDelayRandom      		= 500;			// random amount of time to add to a text set
 var gameDoesNotExistDelayMin	= 1000;			// how long to wait when a Game Does Not Exist occurs - minimum - default 10 minutes
 var gameDoesNotExistDelayMax	= 2000;			// how long to wait when a Game Does Not Exist occurs - maximum - default 15 minutes
-var gameDoesNotExistTimeout	= 50;			// how long to wait for the dialog to disappear (default 30 seconds, don't change this)
+var gameDoesNotExistTimeout		= 50;			// how long to wait for the dialog to disappear (default 30 seconds, don't change this)
 var waitBeforeEnterChatMin   	= 1000;			// min how long to wait before entering chat
 var waitBeforeEnterChatMax   	= 2000;			// max how long to wait before entering chat
 var waitInChatBeforeActionsMin  = 1000;			// min how long to wait before joining channel
