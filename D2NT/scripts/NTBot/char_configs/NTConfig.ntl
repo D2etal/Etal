@@ -355,6 +355,10 @@ var NTConfig_Script = [];
 	var NTConfig_PropsForEtal;
 	var NTConfig_MercStats;
 	var NTConfig_VoyageToMissingWps;
+	var NTConfig_ChatRecording;
+	var NTConfig_WhisperToManager;
+	var NTConfig_WhisperToTab;
+
 // XML Logging
 	var NTConfig_UseXMLItemlog;
 	var NTConfig_IndependantLog;

@@ -649,7 +649,9 @@ function NT_LoadConfig()
 	NTConfig_MercStats = false;							// Prints Merc stats to Common Log with Char stats if true
 	NTConfig_VoyageToMissingWps = true; 					// when missing a wp setting this to true will have the bot path to and grab the missing wp
 
-	NTConfig_ShowWhispersInCommon = false;		// Displays whispers you send and receive in the Common Log on your ETAL Manager.
+	NTConfig_ChatRecording = false;		// Logs all in game chat to a .txt file in D2NT/scripts/logs/ChatR folder
+	NTConfig_WhisperToManager = false;		// Logs whispers from in-game to your manager
+	NTConfig_WhisperToTab = "common";		// Choose which tab whispers go to, either "common" or "item"
 	
 	//-------------------------------------------------------------------------------
 	// Advanced XML Item Logging
