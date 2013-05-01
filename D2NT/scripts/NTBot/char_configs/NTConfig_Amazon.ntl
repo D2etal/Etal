@@ -809,5 +809,8 @@ function NT_LoadConfig()
 	//------------------------------------------------------------------------------
 	// Class Specific Settings
 	//------------------------------------------------------------------------------
+	
+	NTConfig_FarCastAma = false;		// Set to true to use FarCasting, look at the ReadMe.txt in trunk/extras/farcast/ folder
+	NTConfig_FCRange = 24;				// The range for your FarCastomg. 25 is good, but you can modify it.
 }
 

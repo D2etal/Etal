@@ -1,0 +1,12 @@
+This is only needed if you wish to use farcast
+(Otherwise don't worry about it.)
+
+Installation
+1. Copy/Paste the entire data folder into your diablo 2 folder.
+2. Open your manager and check the Direct txt box.
+
+
+Etal can now use farcast on your amazon (currently the only supported class)
+
+Give Feedback:
+http://www.ProjectEtal.com

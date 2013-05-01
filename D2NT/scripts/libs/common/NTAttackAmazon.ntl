@@ -144,8 +144,8 @@ function NTA_AmazonCastSkillInt(index, target, primaryIndex) {
 
 			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
 		}
-
-		return NTC_CastSkill(NTConfig_AttackSkill[index], NTC_HAND_LEFT, target);
+		if(!NTConfig_FarCastAma) { return NTC_CastSkill(NTConfig_AttackSkill[index], NTC_HAND_LEFT, target); }
+		else if(NTConfig_FarCastAma) { return NTC_CastSkill(NTConfig_AttackSkill[index], 2, target); }
 	}
 
 	secondarySkill = NTA_GetAttackType(target, primaryIndex + 1, 81, 81, 81);
@@ -157,7 +157,8 @@ function NTA_AmazonCastSkillInt(index, target, primaryIndex) {
 			if (_pos) NTM_MoveTo(target.areaid, _pos[0], _pos[1], 0, false, false);
 		}
 
-		return NTC_CastSkill(NTConfig_AttackSkill[secondarySkill], _NTA_SkillHand[secondarySkill], target);
+		if(!NTConfig_FarCastAma) { return NTC_CastSkill(NTConfig_AttackSkill[secondarySkill], _NTA_SkillHand[secondarySkill], target); }
+		else if(NTConfig_FarCastAma) { return NTC_CastSkill(NTConfig_AttackSkill[secondarySkill], 2, target); }
 	}
 
 	for (var i = 0; i < 25; i++) {

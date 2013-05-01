@@ -6,6 +6,9 @@ var NTConfig_Script = [];
 
 // Class Specific Var's
 	var DebugAttacksInGame;
+	// Amazon
+		var NTConfig_FarCastAma;
+		var NTConfig_FCRange;
 	// Assassin
 		var NTConfig_UseTraps;
 		var NTConfig_UseFade;
