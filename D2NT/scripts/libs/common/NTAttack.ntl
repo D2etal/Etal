@@ -89,7 +89,7 @@ function NTA_Initialize() {
 				break;
 			case 24: //Charged Strike
 				if(!NTConfig_FarCastAma) { _NTA_SkillRange[i] = 3; }
-				else if(NTConfig_FarCastAma) { _NTA_SkilleRange[i] = NTConfig_FCRange; }
+				else if(NTConfig_FarCastAma) { _NTA_SkillRange[i] = NTConfig_FCRange; }
 				break;
 			case 25: //Plague jav
 				_NTA_SkillRange[i] = 10;
