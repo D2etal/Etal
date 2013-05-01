@@ -23,6 +23,9 @@ var MGConfig_ShowMap;
 var MGConfig_ShowMissile;
 var MGConfig_EstRun;
 
+var MGConfig_PickAuto;
+var MGConfig_PickItems;
+
 var NTConfig_HostileHandler;
 var RunFromHostiles = true;
 var KillHostiler = false;
@@ -52,6 +55,7 @@ var Key_LoadChatR;
 	var ChatREnabled = false;
 var Key_ItemInfos;
 var Key_GoToTown;
+var Key_PickItems;
 var Key_AntiIdle;
 	var MGAntiIdle = false;
 var Key_GameStats;

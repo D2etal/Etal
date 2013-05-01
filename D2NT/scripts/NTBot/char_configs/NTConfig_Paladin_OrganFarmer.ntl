@@ -340,12 +340,6 @@ function NT_LoadConfig()
 	//NTConfig_Script.push("TLInventory.ntj"); 					// Add this line to your NT Config to run it
 		NTConfig_TLInventory_SkipEquipped   = true;        		// true = just log stash and inventory
 
-	//NTConfig_Script.push("NTManual.ntj");						// run this script to play manually with some enhancements including auto potting etc
-		NTConfig_PickitOn = false; 								// this will run the pickit as well set to false if you don't want to use it
-		NTConfig_ShowEnemies = false; 							//set to true to show enemies on map
-		NTConfig_RevealMap = false; 								// set to true to reveal map
-		NTConfig_CheckStuff = false; 							// set to true to print a warning when you have used 3 or more mp or hp pots, or if merc is dead, or if you have less than 4 tp scrolls remaining
-
 	NTConfig_HostileHandler = true;					// true to use the new hostile handler
 		RunFromHostiles = true;						// true to leave game when hostiled
 		KillHostiler = true;						// true to kill the hostile player

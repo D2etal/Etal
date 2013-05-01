@@ -10,6 +10,10 @@ function MG_LoadConfig()
 		MG_TPs = 3;					// This many TP scrolls to at least have
 		MG_IDs = 3;					// This many ID scrolls to at least have
 
+	// Pickit stuff... DO NOT FORGET TO SET YOUR PICKIT FILES UP AT THE BOTTOM OF THIS FILE
+	MGConfig_PickItems = true;		// This will turn on/off item picking
+	MGConfig_PickAuto = false;		// This will turn on/off automatic item picking
+
 	MGConfig_AutoParty = true; 		// true will auto party with people who join, false won't
 	MGConfig_FriendsOnly = false; 	// true will auto party the people in your MG_SafeList only!
 	MG_SafeList = ["CharName1", "CharName2", "CharName3", "YouGetItRight?"];
@@ -42,7 +46,49 @@ function MG_LoadConfig()
 	Key_AntiIdle = 120;				// F9 - Turn on AntiIdle for extended AFK's
 	Key_ItemInfos = 122;			// F11 - Turn on ItemInfo, for information regarding Runewords, runes, gems, crafting
 	Key_LoadChatR = 123;			// F12 - Load ChatRecorder, to log all in game chat
+	Key_PickItems = 17;				// Ctrl - pick items based on your standard item configs!
+		NTConfig_SnagRange = 40;		// Rnage for picking items!
 	Key_KeyCodeCheck = 19;			// Pause/Break - to turn on/off in game keycode checking - will print key and code for key you press
 
 	Key_Credits = 0;				// Set this key to check the credits (Currently empty)
+}
+
+function MG_PickitLoad()
+{
+	// Only select one group to use out of normal/advance/extreme/master \\
+	
+	//NTConfig_NIPFilePath.push("normal/normal.nip");
+	//NTConfig_NIPFilePath.push("normal/magic_rare.nip");
+	//NTConfig_NIPFilePath.push("normal/set.nip");
+	//NTConfig_NIPFilePath.push("normal/unique.nip");
+	//NTConfig_NIPFilePath.push("normal/craft.nip");
+	//NTConfig_NIPFilePath.push("normal/key.nip");
+
+	//NTConfig_NIPFilePath.push("advance/normal.nip");
+	//NTConfig_NIPFilePath.push("advance/magic_rare.nip");
+	//NTConfig_NIPFilePath.push("advance/set.nip");
+	//NTConfig_NIPFilePath.push("advance/unique.nip");
+	//NTConfig_NIPFilePath.push("advance/craft.nip");
+	//NTConfig_NIPFilePath.push("advance/key.nip");
+
+	//NTConfig_NIPFilePath.push("extreme/normal.nip");
+	//NTConfig_NIPFilePath.push("extreme/magic_rare.nip");
+	//NTConfig_NIPFilePath.push("extreme/set.nip");
+	//NTConfig_NIPFilePath.push("extreme/unique.nip");
+	//NTConfig_NIPFilePath.push("extreme/craft.nip");
+	//NTConfig_NIPFilePath.push("extreme/key.nip");
+
+	//NTConfig_NIPFilePath.push("Master/Charms.nip");
+	//NTConfig_NIPFilePath.push("Master/Crafted.nip");
+	//NTConfig_NIPFilePath.push("Master/Cubed.nip");
+	//NTConfig_NIPFilePath.push("Master/CustomAdditions.nip");
+	//NTConfig_NIPFilePath.push("Master/FAST.nip");
+	//NTConfig_NIPFilePath.push("Master/Gold Potions Runes Gems Essences Keys Organs.nip");
+	//NTConfig_NIPFilePath.push("Master/Magic.nip");
+	//NTConfig_NIPFilePath.push("Master/Rare.nip");
+	//NTConfig_NIPFilePath.push("Master/Set.nip");
+	//NTConfig_NIPFilePath.push("Master/Unid.nip");
+	//NTConfig_NIPFilePath.push("Master/Unique.nip");
+	//NTConfig_NIPFilePath.push("Master/White.nip");
+	//NTConfig_NIPFilePath.push("Master/Runeword.nip");
 }

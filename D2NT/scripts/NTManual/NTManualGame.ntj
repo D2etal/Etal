@@ -15,6 +15,14 @@ function NTMain()
 
 	if(NTConfig_HostileHandler)
 		Load("NTBot/tools/NTHostHandler.ntj");
+		
+	if(MGConfig_PickItems){
+		MG_PickitLoad();
+		if (!NTSI_LoadNIPFiles("NTBot/item_configs")) {
+			MG_LogToOOG(NTC_LOG_COMMON, COLOR_1 + "Error loading NIPFiles");
+		}
+		
+	}
 
 	RegisterEvent(EVENT_KEYDOWN, NT_KeyEvents);
 	RegisterEvent(EVENT_GAMEMSG, MG_GameMsgEvent);
@@ -33,6 +41,7 @@ function NTMain()
 			if(MGConfig_CheckStuff) { Town_CheckStuff(MG_HPs, MG_MPs, MG_TPs, MG_IDs); }
 			_count = 0;
 		}
+		if(MGConfig_PickAuto) { Delay(400); NTSI_PickItems(); }
 	}
 }
 
@@ -218,11 +227,14 @@ function NT_KeyEvents(keycode)
 				if(me.gameserverip) Say("Going AFK, may be a while!");
 			}
 			break;
-		case 17:
+		case Key_PickItems:
+			NTSI_PickItems();
+			break;
+		//case 17:
 			//_area = GetArea();
 			//Print(COLOR_8 + " X=" + me.x + ", Y=" + me.y);
 			//Print(COLOR_8 + "  In AreaID " + me.areaid + " , " + _area.name);
-			break;
+			//break;
 		case 48:
 			break;
 		default:

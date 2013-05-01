@@ -344,12 +344,6 @@ function NT_LoadConfig()
 	//NTConfig_Script.push("TLInventory.ntj"); 			// Logs items to text file. (Alternatively, you can use NumPad "5" while ingame.)
 		NTConfig_TLInventory_SkipEquipped   = true;     // Skip logging what you have equipped (useful for logging mules).
 
-	//NTConfig_Script.push("NTManual.ntj");				// Manual play with some enhancements (auto potting etc).
-		NTConfig_PickitOn = false; 						// Manual play with pickit.
-		NTConfig_ShowEnemies = false; 					// Manual play with enemies on minimap
-		NTConfig_RevealMap = false; 					// Manual play with maphack
-		NTConfig_CheckStuff = false; 					// Gives warning when low on pots, scrolls or merc is dead.
-
 	NTConfig_HostileHandler = true;					// true to use the new hostile handler
 		RunFromHostiles = true;						// true to leave game when hostiled
 		KillHostiler = true;						// true to kill the hostile player
