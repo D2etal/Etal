@@ -1506,6 +1506,9 @@ function NTA_RangedNormal() {
 
 	if (_weapon) {
 		for (var i = 0; i < _weapon.length; i++) {
+			if(_range){
+                break;
+			}
 			if (_weapon[i].mode == 1 && (_weapon[i].itemloc == 4 || _weapon[i].itemloc == 5)) {
 				switch (_weapon[i].classid) {
 					//Bows
