@@ -27,35 +27,35 @@ function MG_Credits()
 
 function Do_KeyHotList()
 {
-	MercOnOrNo = (!NTConfig_MercStats) ? "" : " (+Merc)";
+	var MercOnOrNo = (!NTConfig_MercStats) ? "" : " (+Merc)";
 
 	var HotKeys = COLOR_8 + "Manual Game HotKeys" + ";";
 	HotKeys += COLOR_1 + "---------------------------------------------------" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_EnemyOnMap) + "]" + COLOR_4 + " Turn On/Off Enemies On Map" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_MissileOnMap) + "]" + COLOR_4 + " Turn On/Off Missiles On Map" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_AutoParty) + "]" + COLOR_4 + " Turn On/Off Auto-Party" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_DoPrecast) + "]" + COLOR_4 + "  Initiate a precast!" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_PrintRes) + "]" + COLOR_4 + " Print Resistances On Screen" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_PrintFCRPlus) + "]" + COLOR_4 + " Print FCR/FHR/IAS/%DR/%MDR" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_PrintAbsorbs) + "]" + COLOR_4 + " Print Your Elemental Absorbs" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_PrintBPs) + "]" + COLOR_4 + " Print Your Current Char Breakpoints" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_PrintChicken) + "]" + COLOR_4 + " Print Your HP/MP Chicken Values" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_PrintStats) + "]" + COLOR_4 + " Print Your Stats To Screen" + MercOnOrNo + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_StashCheck) + "]" + COLOR_4 + " Commence Stash Space Checking" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_InvCheck) + "]" + COLOR_4 + " Commence Inventory Space Checking" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_GameStats) + "]" + COLOR_4 + " Print Current Game Stats to Manager" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_HotKeyInfo) + "]" + COLOR_4 + " Send This Info To Manager" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_ExitGame) + "]" + COLOR_4 + " Exit Current Game" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_KeyCodeCheck) + "]" + COLOR_4 + " Turn On/Off KeyCode Checking" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_LoadChatR) + "]" + COLOR_4 + " Turn On/Off Chat Recording" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_ItemInfos) + "]" + COLOR_4 + " Turn On/Off Item Info" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_AntiIdle) + "]" + COLOR_4 + " Turn On/Off AntiIdle for AFK's" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_GoToTown) + "]" + COLOR_4 + " Make/Take TP to town" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_NextArea) + "]" + COLOR_4 + " Auto-Tele to Next Area" + "\n";
-	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_LastArea) + "]" + COLOR_4 + " Auto-Tele to Last Area" + "\n";
-	if(Key_Credits > 0) HotKeys += COLOR_2 + "[" + WhichHotKey(Key_Credits) + "]" + COLOR_4 + " Send NTMap Credits to Manager" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_EnemyOnMap) + 	"]" + COLOR_4 + " Turn On/Off Enemies On Map" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_MissileOnMap) + 	"]" + COLOR_4 + " Turn On/Off Missiles On Map" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_AutoParty) + 	"]" + COLOR_4 + " Turn On/Off Auto-Party" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_DoPrecast) + 	"]" + COLOR_4 + "  Initiate a precast!" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_PrintRes) + 		"]" + COLOR_4 + " Print Resistances On Screen" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_PrintFCRPlus) + 	"]" + COLOR_4 + " Print FCR/FHR/IAS/%DR/%MDR" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_PrintAbsorbs) + 	"]" + COLOR_4 + " Print Your Elemental Absorbs" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_PrintBPs) + 		"]" + COLOR_4 + " Print Your Current Char Breakpoints" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_PrintChicken) + 	"]" + COLOR_4 + " Print Your HP/MP Chicken Values" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_PrintStats) + 	"]" + COLOR_4 + " Print Your Stats To Screen" + MercOnOrNo + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_StashCheck) + 	"]" + COLOR_4 + " Commence Stash Space Checking" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_InvCheck) + 		"]" + COLOR_4 + " Commence Inventory Space Checking" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_GameStats) + 	"]" + COLOR_4 + " Print Current Game Stats to Manager" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_HotKeyInfo) + 	"]" + COLOR_4 + " Send This Info To Manager" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_ExitGame) + 		"]" + COLOR_4 + " Exit Current Game" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_KeyCodeCheck) + 	"]" + COLOR_4 + " Turn On/Off KeyCode Checking" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_LoadChatR) + 	"]" + COLOR_4 + " Turn On/Off Chat Recording" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_ItemInfos) + 	"]" + COLOR_4 + " Turn On/Off Item Info" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_AntiIdle) + 		"]" + COLOR_4 + " Turn On/Off AntiIdle for AFK's" + "\n";
+	HotKeys += COLOR_2 + "[" + WhatHotKey(Key_GoToTown) + 		"]" + COLOR_4 + " Make/Take TP to town" + "\n";
+	//HotKeys += COLOR_2 + "[" + WhatHotKey(Key_NextArea) + 		"]" + COLOR_4 + " Auto-Tele to Next Area" + "\n";
+	//HotKeys += COLOR_2 + "[" + WhatHotKey(Key_LastArea) + 		"]" + COLOR_4 + " Auto-Tele to Last Area" + "\n";
+	if(Key_Credits > 0) { HotKeys += COLOR_2 + "[" + WhatHotKey(Key_Credits) + "]" + COLOR_4 + " Send NTMap Credits to Manager" + "\n"; }
 	HotKeys += COLOR_1 + "---------------------------------------------------";
-	NTC_SendLogToOOG(NTC_LOG_COMMON, HotKeys);
+	MG_LogToOOG(NTC_LOG_COMMON, HotKeys);
 }
 
 function HeadingHome()
@@ -180,7 +180,7 @@ function MG_CheckFreeInventorySpace(PrintToScreen) {
 		InvMangPrint += COLOR_1 + "--------------------------------------";
 		if(InvChecking == "Mgr") {
 			Print(COLOR_4 + "Inventory check sent to Manager CommonLog!");
-			NTC_SendLogToOOG(NTC_LOG_COMMON, InvMangPrint);
+			MG_LogToOOG(NTC_LOG_COMMON, InvMangPrint);
 		}
 	}
 	return totalFreeSpace;
@@ -264,7 +264,7 @@ function MG_CheckFreeStashSpace(PrintToScreen) {
 		StashMangPrint += COLOR_1 + "--------------------------------------";
 		if(StashChecking == "Mgr") {
 			Print(COLOR_4 + "Stash check sent to Manager CommonLog!");
-			NTC_SendLogToOOG(NTC_LOG_COMMON, StashMangPrint);
+			MG_LogToOOG(NTC_LOG_COMMON, StashMangPrint);
 		}
 	}
 	return totalFreeSpace;
@@ -341,4 +341,102 @@ function MG_AntiIdle()
 		}
 		Delay(Random(2000,5000));
 	}
+}
+
+function WhatHotKey(ThisKey)
+{
+	switch(ThisKey) {
+		case 8: ThisKey = "Backspace"; break;
+		case 9: ThisKey = "Tab"; break;
+		case 13: ThisKey = "Enter"; break;
+		case 16: ThisKey = "Shift"; break;
+		case 17: ThisKey = "Ctrl"; break;
+		case 18: ThisKey = "Alt"; break;
+		case 19: ThisKey = "Pause"; break;
+		case 20: ThisKey = "Caps Lock"; break;
+		case 27: ThisKey = "Esc"; break;
+		case 33: ThisKey = "Pg Up"; break;
+		case 34: ThisKey = "Pg Dn"; break;
+		case 35: ThisKey = "End"; break;
+		case 36: ThisKey = "Home"; break;
+		case 45: ThisKey = "Ins"; break;
+		case 46: ThisKey = "Del"; break;
+		case 48: ThisKey = "0"; break;
+		case 49: ThisKey = "1"; break;
+		case 50: ThisKey = "2"; break;
+		case 51: ThisKey = "3"; break;
+		case 52: ThisKey = "4"; break;
+		case 53: ThisKey = "5"; break;
+		case 54: ThisKey = "6"; break;
+		case 55: ThisKey = "7"; break;
+		case 56: ThisKey = "8"; break;
+		case 57: ThisKey = "9"; break;
+		case 65: ThisKey = "A"; break;
+		case 66: ThisKey = "B"; break;
+		case 67: ThisKey = "C"; break;
+		case 68: ThisKey = "D"; break;
+		case 69: ThisKey = "E"; break;
+		case 70: ThisKey = "F"; break;
+		case 71: ThisKey = "G"; break;
+		case 72: ThisKey = "H"; break;
+		case 73: ThisKey = "I"; break;
+		case 74: ThisKey = "J"; break;
+		case 75: ThisKey = "K"; break;
+		case 76: ThisKey = "L"; break;
+		case 77: ThisKey = "M"; break;
+		case 78: ThisKey = "N"; break;
+		case 79: ThisKey = "O"; break;
+		case 80: ThisKey = "P"; break;
+		case 81: ThisKey = "Q"; break;
+		case 82: ThisKey = "R"; break;
+		case 83: ThisKey = "S"; break;
+		case 84: ThisKey = "T"; break;
+		case 85: ThisKey = "U"; break;
+		case 86: ThisKey = "V"; break;
+		case 87: ThisKey = "W"; break;
+		case 88: ThisKey = "X"; break;
+		case 89: ThisKey = "Y"; break;
+		case 90: ThisKey = "Z"; break;
+		case 96: ThisKey = "Num 0"; break;
+		case 97: ThisKey = "Num 1"; break;
+		case 98: ThisKey = "Num 2"; break;
+		case 99: ThisKey = "Num 3"; break;
+		case 100: ThisKey = "Num 4"; break;
+		case 101: ThisKey = "Num 5"; break;
+		case 102: ThisKey = "Num 6"; break;
+		case 103: ThisKey = "Num 7"; break;
+		case 104: ThisKey = "Num 8"; break;
+		case 105: ThisKey = "Num 9"; break;
+		case 106: ThisKey = "Num *"; break;
+		case 107: ThisKey = "Num +"; break;
+		case 109: ThisKey = "Num -"; break;
+		case 110: ThisKey = "Num ."; break;
+		case 111: ThisKey = "Num /"; break;
+		case 112: ThisKey = "F1"; break;
+		case 113: ThisKey = "F2"; break;
+		case 114: ThisKey = "F3"; break;
+		case 115: ThisKey = "F4"; break;
+		case 116: ThisKey = "F5"; break;
+		case 117: ThisKey = "F6"; break;
+		case 118: ThisKey = "F7"; break;
+		case 119: ThisKey = "F8"; break;
+		case 120: ThisKey = "F9"; break;
+		case 121: ThisKey = "F10"; break;
+		case 122: ThisKey = "F11"; break;
+		case 123: ThisKey = "F12"; break;
+		case 144: ThisKey = "Num Lock"; break;
+		case 145: ThisKey = "Scroll Lock"; break;
+		case 186: ThisKey = "Semi-Colon"; break;
+		case 187: ThisKey = "="; break;
+		case 188: ThisKey = "Comma"; break;
+		case 189: ThisKey = "-"; break;
+		case 190: ThisKey = "Period"; break;
+		case 191: ThisKey = "/"; break;
+		case 192: ThisKey = "~"; break;
+		case 219: ThisKey = "["; break;
+		case 220: ThisKey = "BackSlash"; break;
+		case 221: ThisKey = "]"; break;
+		case 222: ThisKey = "'"; break;
+		default: break;
+	} return ThisKey;
 }

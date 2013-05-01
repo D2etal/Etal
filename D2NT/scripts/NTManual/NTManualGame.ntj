@@ -1,4 +1,4 @@
-var Rev = "0.825";
+var Rev = "0.827";
 var warncount;
 
 function NTMain()
@@ -227,7 +227,7 @@ function NT_KeyEvents(keycode)
 			break;
 		default:
 			if(CheckKeyNumber)
-				Print(COLOR_2 + WhichHotKey(keycode) + " / " + keycode);
+				Print(COLOR_2 + WhatHotKey(keycode) + " / " + keycode);
 			break;
 	}
 }
@@ -323,7 +323,7 @@ function PrintChicken(type)
 	else { MangMsg += COLOR_9 + "\n  Too many to list."; }
 	MangMsg += COLOR_1 + "\n -------------------------------------------";
 
-	NTC_SendLogToOOG(NTC_LOG_COMMON, MangMsg);
+	MG_LogToOOG(NTC_LOG_COMMON, MangMsg);
 	return;
 }
 
@@ -436,7 +436,13 @@ function MG_ComputeStats(chickenFlag) {
         XPMangMsg += COLOR_4 + "\n Game IP: " + COLOR_2 + Online;
 		XPMangMsg += COLOR_4 + GoldenInfo;
 		XPMangMsg += COLOR_1 + "\n --------------------------------------------------";
-		NTC_SendLogToOOG(NTC_LOG_COMMON, XPMangMsg);
+		MG_LogToOOG(NTC_LOG_COMMON, XPMangMsg);
 	}
 	return;
+}
+
+function MG_LogToOOG(type, logString)
+{ 
+	Delay(100);
+	return SendCopyData("D2NT Manager", null, 9<<16|type, logString);
 }
