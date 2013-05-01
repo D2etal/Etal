@@ -29,7 +29,7 @@ function Do_KeyHotList()
 {
 	MercOnOrNo = (!NTConfig_MercStats) ? "" : " (+Merc)";
 
-	HotKeys = COLOR_8 + "Manual Game HotKeys" + ";";
+	var HotKeys = COLOR_8 + "Manual Game HotKeys" + ";";
 	HotKeys += COLOR_1 + "---------------------------------------------------" + "\n";
 	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_EnemyOnMap) + "]" + COLOR_4 + " Turn On/Off Enemies On Map" + "\n";
 	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_MissileOnMap) + "]" + COLOR_4 + " Turn On/Off Missiles On Map" + "\n";
@@ -294,6 +294,7 @@ function MG_AntiIdle()
 			vwxyz = Random(0,4);
 			Say(AntiIdleActPreMsg[vwxyz] + AntiIdleAct[qrstu-1]);
 			if(!NTTM_CheckAct(qrstu)){
+				Say("I guess I'm not going to " + AntiIdleAct[qrstu-1]);
 				NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
 				return;
 			}

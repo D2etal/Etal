@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "72";
+var Rev = "73";
 
 // Provalone Edit //
 //Include("libs/common/NTExp.ntl");
@@ -124,6 +124,8 @@ function NTMain()
 		if(DPSMeter)
 			Load("NTBot/tools/DPS.ntj");
 
+		Load("NTBot/tools/ChatR.ntj");
+
 		RegisterEvent(EVENT_GAMEMSG, NT_GameMsgEvents);
 		RegisterEvent(EVENT_KEYDOWN, NT_KeyEvents);
 		RegisterEvent(EVENT_SCRIPTMSG, NT_ScriptMsgEvents);
@@ -207,7 +209,7 @@ function NTMain()
 			// soj addon end
 		}
 	}
-
+	if(NTConfig_ChatRecording){ ClosingChatRLogs(); }
 	// Provalone Edit
 	NTE_ComputeStats(false);
 	//
@@ -315,27 +317,6 @@ function NT_GameMsgEvents(msg, type)
 			NT_File("logs/messagecomands/"+me.charname+"-trav.txt", 1, "takettp")
 		}
 		// add in something here that if leader recieves a message indexOf("entered") it will send the join game message.  make sure it is something specific to entered battlenet message
-	}
-	else if(type == 2 && NTConfig_ShowWhispersInCommon)
-	{
-		if(msg.indexOf(" (*") != -1 && msg.indexOf("): ") != -1 && msg.indexOf("Sent to ") != -1)
-		{
-			// You sent a whisper
-			msg = "You: (*" + msg.split("(*")[1];
-			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + msg);
-		}
-		else if( msg.indexOf(" (*") != -1 && msg.indexOf("): ") != -1 && msg.indexOf("From ") != -1)
-		{
-			// You received a whisper
-			msg = "Whisper: (*" + msg.split("(*")[1];
-			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + msg);
-		}
-		else if( msg.indexOf("whispers: ") != -1)
-		{
-			// You received a direct whisper
-			msg = "Whisper: (*" + msg.split("whispers: ")[0] + "): " + msg.split("whispers: ")[1];
-			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + msg);
-		}
 	}
 }
 

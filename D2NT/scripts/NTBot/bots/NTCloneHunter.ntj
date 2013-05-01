@@ -72,6 +72,7 @@ function NT_CHAntiIdle()
 			vwxyz = Random(0,4);
 			Say(AntiIdleActPreMsg[vwxyz] + AntiIdleAct[qrstu-1]);
 			if(!NTTM_CheckAct(qrstu)){
+				Say("I guess I'm not going to " + AntiIdleAct[qrstu-1]);
 				NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
 				return;
 			}

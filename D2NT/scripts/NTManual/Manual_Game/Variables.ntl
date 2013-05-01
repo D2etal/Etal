@@ -56,11 +56,12 @@ var Key_AntiIdle;
 	var MGAntiIdle = false;
 var Key_GameStats;
 
-var NTConfig_Telekinesis = false;
+// Adding NTConfig inclusion to avoid errors.
+Include("NTBot/char_configs/NTConfig.ntl");
+//
 
 Include("NTManual/Manual_Game/Settings.ntl");
 Include("NTManual/Manual_Game/ChatCalls.ntl");
 Include("NTManual/Manual_Game/ChatFunctions.ntl");
 Include("NTManual/Manual_Game/KeycodeFunctions.ntl");
 Include("NTManual/Manual_Game/Towning.ntl");
-
