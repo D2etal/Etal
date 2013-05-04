@@ -11,9 +11,7 @@ var CurAcct = (!me.account) ? "Offline" : me.account;
 var CurGame = (!me.gamename) ? "Single Player" : me.gamename;
 var CurPass = (!me.gamepassword) ? "" : me.gamepassword;
 var CurRealm = (me.realm == "USWest") ? "US West" : (me.realm == "USEast") ? "US East" : (me.realm == "Asia") ? "Asia" : (me.realm == "Europe") ? "Europe" : "Offline";
-var TheTime = MyTime();
 var TLoop = true;
-var Today = new Date().toLocaleFormat("%d %b");
 
 function NTMain()
 {
@@ -116,30 +114,77 @@ function ChatReading(msg, type)
 			}
 			break;
 		case 2:
-			if(msg.indexOf(" whispers:") != -1) {
-				var WhispFrom = msg.split(" whispers:")[0].replace(/ÿc(.)/g, "");
-				var FromMsg = msg.split(" whispers: ")[1].replace(/ÿc(.)/g, "");
+			// Received a whisper (via /w *, /w, or /f m)
+			if(msg.indexOf(" (*") != -1 && msg.indexOf("): ") != -1 && msg.indexOf("From ") != -1){
+				var WhisperFrom = msg.split("(*")[1].split(")")[0];
+				var WhisperMsg	= msg.split("): ")[1];
 				if(LogAll){
 					ChatLog = FileOpen(ChatRLog, 2);
-						ChatLog.WriteLine(WhispFrom + " whispers: " + FromMsg);
+					ChatLog.WriteLine(WhisperFrom + " whispers: " + WhisperMsg);
 					ChatLog.Close(); Delay(Random(100,200));
 				}
 				if(NTConfig_WhisperToManager){
-					if(FromMsg.length > 45) NTManagerSend(MyTab, COLOR_2 + WhispFrom + " whispers: (Hover)" + ";" + COLOR_2 + FromMsg);
-					else if(FromMsg.length < 46) NTManagerSend(MyTab, COLOR_2 + WhispFrom + " whispers: " + FromMsg);
+					if(WhisperMsg.length <= 45){
+						NTManagerSend(MyTab, COLOR_2 + WhisperFrom + " whispers: " + WhisperMsg);
+					}
+					else{
+						NTManagerSend(MyTab, COLOR_2 + WhisperFrom + " whispers: (Hover)" + ";" + COLOR_2 + WhisperMsg);
+					}
 				}
 			}
-			else if(msg.indexOf("You whispered to ") != -1) {
-				var WhispTo1 = msg.split(": ")[0].replace(/ÿc(.)/g, "");
-				var WhispTo2 = msg.split(": ")[1].replace(/ÿc(.)/g, "");
+			// Received a direct in-game whisper (via @charname)
+			else if(msg.indexOf(" whispers: ") != -1){
+				var WhisperFrom = msg.split(" whispers: ")[0].replace(/ÿc(.)/g, ""); // still need this here since name is on the far left
+				var WhisperMsg	= msg.split(" whispers: ")[1];
 				if(LogAll){
 					ChatLog = FileOpen(ChatRLog, 2);
-						ChatLog.WriteLine(WhispTo1 + WhispTo2);
+					ChatLog.WriteLine(WhisperFrom + " whispers: " + WhisperMsg);
 					ChatLog.Close(); Delay(Random(200,400));
 				}
 				if(NTConfig_WhisperToManager){
-					if(FromMsg.length > 45) NTManagerSend(MyTab, COLOR_2 + WhispTo1 + " whispers: (Hover)" + ";" + COLOR_2 + WhispTo2);
-					else if(FromMsg.length < 46) NTManagerSend(MyTab, COLOR_2 + WhispTo1 + " whispers: " + WhispTo2);
+					if(WhisperMsg.length <= 45){
+						NTManagerSend(MyTab, COLOR_2 + WhisperFrom + " whispers: " + WhisperMsg);
+					}
+					else{
+						NTManagerSend(MyTab, COLOR_2 + WhisperFrom + " whispers: (Hover)" + ";" + COLOR_2 + WhisperMsg);
+					}
+				}
+			}
+			// Sent a whisper (via /w *, /w, or /f m)
+			else if(msg.indexOf(" (*") != -1 && msg.indexOf("): ") != -1 && msg.indexOf("Sent to ") != -1){
+				var WhisperTo = msg.split("(*")[1].split(")")[0];
+				var WhisperMsg = msg.split("): ")[1];
+				if(LogAll){
+					ChatLog = FileOpen(ChatRLog, 2);
+					ChatLog.WriteLine("You whispered to: " + WhisperTo + ": " + WhisperMsg);
+					ChatLog.Close(); Delay(Random(200,400));
+				}
+			
+				if(NTConfig_WhisperToManager){
+					if(WhisperMsg.length <= 45){
+						NTManagerSend(MyTab, COLOR_2 + "You whispered " + WhisperTo + ": " + WhisperMsg);
+					}
+					else{
+						NTManagerSend(MyTab, COLOR_2 + "You whispered " + WhisperTo + ": (Hover)" + ";" + COLOR_2 + WhisperMsg);
+					}
+				}
+			}
+			// Send a direct in-game whisper (via @charname)
+			else if(msg.indexOf("You whispered to ") != -1){
+				var WhisperTo = msg.split("You whispered to ")[1].split(": ")[0];
+				var WhisperMsg = msg.split(": ")[1];
+				if(LogAll){
+					ChatLog = FileOpen(ChatRLog, 2);
+					ChatLog.WriteLine("You whispered to: " + WhisperTo + ": " + WhisperMsg);
+					ChatLog.Close(); Delay(Random(200,400));
+				}
+				if(NTConfig_WhisperToManager){
+					if(WhisperMsg.length <= 45){
+						NTManagerSend(MyTab, COLOR_2 + "You whispered " + WhisperTo + ": " + WhisperMsg);
+					}
+					else{
+						NTManagerSend(MyTab, COLOR_2 + "You whispered " + WhisperTo + ": (Hover)" + ";" + COLOR_2 + WhisperMsg);
+					}
 				}
 			}
 			else if(msg.indexOf(" has ") != -1 && LogAll) {
