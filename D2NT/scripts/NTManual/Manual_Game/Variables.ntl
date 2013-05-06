@@ -52,7 +52,6 @@ var Key_Credits;
 var Key_KeyCodeCheck;
 	var CheckKeyNumber = false;
 var Key_LoadChatR;
-	var ChatREnabled = false;
 var Key_ItemInfos;
 var Key_GoToTown;
 var Key_PickItems;
@@ -62,6 +61,7 @@ var Key_GameStats;
 
 // Adding NTConfig inclusion to avoid errors.
 Include("NTBot/char_configs/NTConfig.ntl");
+Include("NTBot/tools/ChatR.ntj");
 //
 
 Include("NTManual/Manual_Game/Settings.ntl");

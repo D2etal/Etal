@@ -1,4 +1,4 @@
-var Rev = "0.827";
+var Rev = "0.9";
 var warncount;
 
 function NTMain()
@@ -7,7 +7,7 @@ function NTMain()
 	NTC_IncludeLibs();
 
 	Include("NTManual/Manual_Game/Variables.ntl");
-	MG_LoadConfig();
+	MG_LoadConfig(me.charname);
 	CheckMap();
 
 	_checkPlayerTotal();
@@ -160,7 +160,7 @@ function NT_KeyEvents(keycode)
 		case Key_ExitGame:
 			Print(COLOR_4 + "Calculating stats for game!");
 			MG_ComputeStats(false);
-			if(ChatREnabled) ClosingChatRLogs();
+			if(NTConfig_ChatRecording) ClosingChatRLogs();
 			if(ItemSInfo) ItemSInfo = false;
 			ExitGame();
 			break;
@@ -180,13 +180,13 @@ function NT_KeyEvents(keycode)
 			}
 			break;
 		case Key_LoadChatR:
-			if(ChatREnabled) {
-				ChatREnabled = false;
+			if(NTConfig_ChatRecording) {
+				NTConfig_ChatRecording = false;
 				Print(COLOR_4 + "Chat Recorder : " + COLOR_1 + "OFF");
 				ClosingChatRLogs();
 			}
 			else {
-				ChatREnabled = true;
+				NTConfig_ChatRecording = true;
 				Print(COLOR_4 + "Chat Recorder : " + COLOR_2 + "ON");
 				OpeningChatRLogs();
 			}
