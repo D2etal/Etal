@@ -32,10 +32,18 @@ function NTMain() {
 			if(NTConfig_ClearPosition)
 				NTA_ClearPosition();
 			NTSI_PickItems();
-			if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()){
-				OpenChestsInArea();
-			}
-		}
+			if(NTConfig_OpenChest){
+				var _chest;
+				_chest = NTC_GetSpecialChest();
+				if(_chest){
+					if(NTC_OpenChest(_chest))
+						NTSI_PickItems();
+					}
+				}
+			}	
+
+
+
 	}
 	if(NTConfig_ClearGlacialTrail == 1){
 		NTConfig_SkipRegularMonsters = false;
