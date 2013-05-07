@@ -114,7 +114,8 @@ function NTMain(){
 			return;
 		}
 		NTP_DoPrecast();
-		if(NTConfig_OpenChest){
+		if(NTConfig_OpenChest)
+		{      
 			if(!NTM_MoveToPresetUnit4(me.areaid, NTC_UNIT_OBJECT, 397))
 			Print("Error going to the chest.");
 			var _chest;
