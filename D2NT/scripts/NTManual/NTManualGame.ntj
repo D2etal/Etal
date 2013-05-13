@@ -1,4 +1,4 @@
-var Rev = "0.9";
+var Rev = "0.9.1b";
 var warncount;
 
 function NTMain()
@@ -38,7 +38,7 @@ function NTMain()
 		ChickenStuff(); Refresh(); MG_AntiIdle();
 		if(_count++ > 10) {
 			if(MGConfig_AutoParty) { MG_PartyUp(); }
-			if(MGConfig_CheckStuff) { Town_CheckStuff(MG_HPs, MG_MPs, MG_TPs, MG_IDs); }
+			if(MGConfig_CheckStuff) { Town_CheckStuff(MG_CS[0], MG_CS[1], MG_CS[2], MG_CS[3]); }
 			_count = 0;
 		}
 		if(MGConfig_PickAuto) { Delay(400); NTSI_PickItems(); }
@@ -262,18 +262,37 @@ function Refresh()
 	Resi = [(me.GetStat(39) + DiffMod), (me.GetStat(43) + DiffMod), (me.GetStat(41) + DiffMod), (me.GetStat(45) + DiffMod)];
 }
 
+var _NTLW_timerLastDrink = new Array(5);
+
 function ChickenStuff()
 {
+	for(var i = 0 ; i < 5 ; i++)
+		_NTLW_timerLastDrink[i] = 0;
+
+	_LifeMax = me.hpmax;
+	_ManaMax = me.mpmax;
 	if(!InTown()) {
-		if(me.hp < parseInt(me.hpmax * MGConfig_LifeChicken,10) / 100) {
+		if(me.hp < parseInt(_LifeMax * MGConfig_LifeChicken,10) / 100) {
 			ColorForMang = COLOR_1;
 			PrintChicken("HPChicken");
 			CloseD2();
 		}
-		else if(me.mp < parseInt(me.mpmax * MGConfig_ManaChicken,10) / 100) {
+		else if(me.mp < parseInt(_ManaMax * MGConfig_ManaChicken,10) / 100) {
 			ColorForMang = COLOR_3;
 			PrintChicken("MPChicken");
 			CloseD2();
+		}
+		if(parseInt(me.hp*100/_LifeMax) < MGConfig_LifeRejuvThresh) {
+			My_DrinkPotion(2); Delay(Random(200,400));
+		}
+		if(parseInt(me.hp*100/_LifeMax) < MGConfig_LifeThresh) {
+			My_DrinkPotion(0); Delay(Random(200,400));
+		}
+		if(parseInt(me.mp*100/_ManaMax) < MGConfig_ManaRejuvThresh) {
+			My_DrinkPotion(2); Delay(Random(200,400));
+		}
+		if(parseInt(me.mp*100/_ManaMax) < MGConfig_ManaThresh) {
+			My_DrinkPotion(1); Delay(Random(200,400));
 		}
 	}
 	else {
@@ -281,6 +300,41 @@ function ChickenStuff()
 			ChickenWarning();
 		}
 	}
+}
+
+function My_DrinkPotion(type){
+	var _pottype;
+	var _result;
+	var _tNow = new Date();
+
+	if(type == 2 || type == 4){
+		if(_NTLW_timerLastDrink[type] && (_tNow-_NTLW_timerLastDrink[type] < 1000))
+			return false;
+	}
+	else{
+		if(_NTLW_timerLastDrink[type] && (_tNow-_NTLW_timerLastDrink[type] < 3000))
+			return false;
+	}
+	if(me.mode == 0 || me.mode == 17)
+		return false;
+	switch(type){
+		case 0:
+		case 3: _pottype = "hp"; break;
+		case 1: _pottype = "mp"; break;
+		default: _pottype = "rv"; break;
+	}
+	for(var i = 0 ; i < 4 ; i++){
+		if(MGConfig_BeltType[i] == _pottype){
+			if(type < 3)
+				_result = me.UseBelt(i);
+			else
+				_result = me.UseBelt(i, true);
+			if(_result){
+				_NTLW_timerLastDrink[type] = new Date();
+				return true;
+			}
+		}
+	} return false;
 }
 
 function ChickenValues()

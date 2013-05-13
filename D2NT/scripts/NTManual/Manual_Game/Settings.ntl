@@ -11,23 +11,15 @@ function MG_LoadConfig(MyChar)
 			MGConfig_ManaChicken = -1; 		// This is your chicken mana percent. If you go below this mana total, exit game.
 			MGConfig_ChickenWarn = true; 	// This will warn you to heal before exiting town if you'll chicken
 
-			MGConfig_CheckStuff = false; 	// Gives a warning when low on pots/scrolls
-				MG_HPs = 3;					// This many HP potions to at least have
-				MG_MPs = 3;					// This many MP potions to at least have
-				MG_TPs = 3;					// This many TP scrolls to at least have
-				MG_IDs = 3;					// This many ID scrolls to at least have
+			MGConfig_LifeThresh = 85;		// Drink a health potion if under this percent of life.
+			MGConfig_LifeRejuvThresh = 99;	// Drink a rejuvenation potion if under this percent of life. (Will not use health potions under this %)
+			MGConfig_ManaThresh = 30;		// Drink a mana potion if under this percent of mana.
+			MGConfig_ManaRejuvThresh = 0;	// Drink a rejuvenation potion if under this percent of mana. (Will not use mana potions under this %)
 
-			// Pickit stuff... DO NOT FORGET TO SET YOUR PICKIT FILES UP AT THE BOTTOM OF THIS FILE
-			MGConfig_PickItems = true;		// This will turn on/off item picking
-			MGConfig_PickAuto = false;		// This will turn on/off automatic item picking
+			MGConfig_BeltType = ["rv", "rv", "rv", "rv"]; // Belt slots are just as they show in game!
 
-			MGConfig_AutoParty = true; 		// true will auto party with people who join, false won't
-			MGConfig_FriendsOnly = false; 	// true will auto party the people in your MG_SafeList only!
-			MG_SafeList = ["CharName1", "CharName2", "CharName3", "YouGetItRight?"];
-
-			MGConfig_ShowMap = true;
-			MGConfig_ShowEnemy = true;
-			MGConfig_ShowMissile = true;
+			MGConfig_CheckStuff = true; 	// Gives a warning when low on pots/scrolls
+			MG_CS = ["0", "0", "0", "0"];	// Values to check [HPs, MPs, TPs, IDs];
 
 			NTConfig_HostileHandler = false; // true will make you quit when hostiled, false won't
 		break;
@@ -36,30 +28,33 @@ function MG_LoadConfig(MyChar)
 			MGConfig_ManaChicken = -1; 		// This is your chicken mana percent. If you go below this mana total, exit game.
 			MGConfig_ChickenWarn = true; 	// This will warn you to heal before exiting town if you'll chicken
 
-			MGConfig_CheckStuff = false; 	// Gives a warning when low on pots/scrolls
-				MG_HPs = 3;					// This many HP potions to at least have
-				MG_MPs = 3;					// This many MP potions to at least have
-				MG_TPs = 3;					// This many TP scrolls to at least have
-				MG_IDs = 3;					// This many ID scrolls to at least have
+			MGConfig_LifeThresh = 85;		// Drink a health potion if under this percent of life.
+			MGConfig_LifeRejuvThresh = 35;	// Drink a rejuvenation potion if under this percent of life. (Will not use health potions under this %)
+			MGConfig_ManaThresh = 30;		// Drink a mana potion if under this percent of mana.
+			MGConfig_ManaRejuvThresh = 0;	// Drink a rejuvenation potion if under this percent of mana. (Will not use mana potions under this %)
 
-			// Pickit stuff... DO NOT FORGET TO SET YOUR PICKIT FILES UP AT THE BOTTOM OF THIS FILE
-			MGConfig_PickItems = true;		// This will turn on/off item picking
-			MGConfig_PickAuto = false;		// This will turn on/off automatic item picking
+			MGConfig_BeltType = ["hp", "hp", "mp", "rv"]; // Belt slots are just as they show in game!
 
-			MGConfig_AutoParty = true; 		// true will auto party with people who join, false won't
-			MGConfig_FriendsOnly = false; 	// true will auto party the people in your MG_SafeList only!
-			MG_SafeList = ["CharName1", "CharName2", "CharName3", "YouGetItRight?"];
-
-			MGConfig_ShowMap = true;
-			MGConfig_ShowEnemy = true;
-			MGConfig_ShowMissile = true;
-
+			MGConfig_CheckStuff = true; 	// Gives a warning when low on pots/scrolls
+			MG_CS = ["3", "3", "3", "3"];	// Values to check [HPs, MPs, TPs, IDs];
 
 			NTConfig_HostileHandler = false; // true will make you quit when hostiled, false won't
 			break;
 	}
 	
 	// Below is the settings that are global. Currently only the keypresses are a global variable!
+
+	// Pickit stuff... DO NOT FORGET TO SET YOUR PICKIT FILES UP AT THE BOTTOM OF THIS FILE
+	MGConfig_PickItems = true;		// This will turn on/off item picking
+	MGConfig_PickAuto = false;		// This will turn on/off automatic item picking
+
+	MGConfig_AutoParty = true; 		// true will auto party with people who join, false won't
+	MGConfig_FriendsOnly = false; 	// true will auto party the people in your MG_SafeList only!
+	MG_SafeList = ["CharName1", "CharName2", "CharName3", "YouGetItRight?"];
+
+	MGConfig_ShowMap = true;
+	MGConfig_ShowEnemy = true;
+	MGConfig_ShowMissile = true;
 
 	NTConfig_ChatRecording = false;	 	// Logs all in game chat to a .txt file in D2NT/scripts/logs/ChatR folder
 	NTConfig_WhisperToManager = false; 	// Logs whispers from in-game to your manager

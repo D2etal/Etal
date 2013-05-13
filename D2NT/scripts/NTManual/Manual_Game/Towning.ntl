@@ -1,16 +1,16 @@
 function Town_CheckStuff(Hpshort, Mpshort, TPshort, IDshort)
 {
 	if(Town_CheckHPs(Hpshort)) {
-		Print(COLOR_1 + "Getting low on Health Potions!")
+		Print(COLOR_1 + "You are low on Health Potions!")
 	}
 	if(Town_CheckMPs(Mpshort)) {
-		Print(COLOR_3 + "Getting low on Mana Potions!")
+		Print(COLOR_3 + "You are low on Mana Potions!")
 	}
 	if(Town_CheckScrolls(1) < TPshort) {
-		Print(COLOR_4 + "Getting low on TP scrolls!")
+		Print(COLOR_4 + "You are low on TP scrolls!")
 	}
 	if(Town_CheckScrolls(0) < IDshort) {
-		Print(COLOR_4 + "Getting low on ID scrolls!")
+		Print(COLOR_4 + "You are low on ID scrolls!")
 	}
 	return;
 }
