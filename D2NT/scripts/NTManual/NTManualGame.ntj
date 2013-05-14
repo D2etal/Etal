@@ -1,4 +1,4 @@
-var Rev = "0.9.1b";
+var Rev = "0.99";
 var warncount;
 
 function NTMain()
@@ -30,7 +30,6 @@ function NTMain()
 	SetStatusText("Manual Game " + COLOR_8 + Rev + COLOR_4 + " - " + Online);
 	Print(COLOR_4 + "NTManualGame " + COLOR_8 + Rev + COLOR_4 + " Loaded");
 	Delay(Random(800,1200));
-	Print(COLOR_4 + "Please note that you " + COLOR_1 + "MUST" + COLOR_4 + " use the " + COLOR_2 + "Delete" + COLOR_4 + " key to Exit Game!");
 	var _count = 0;
 
 	while(1)
@@ -105,52 +104,18 @@ function CheckMap()
 function NT_KeyEvents(keycode)
 {
 	switch(keycode) {
-		case Key_EnemyOnMap:
-			if(MGConfig_ShowEnemy) {
-				me.showenemyonautomap = false; MGConfig_ShowEnemy = false;
-				Print(COLOR_4 + "Enemy on Automap : " + COLOR_1 + "OFF");
-			}
-			else {
-				me.showenemyonautomap = true; MGConfig_ShowEnemy = true;
-				Print(COLOR_4 + "Enemy on Automap : " + COLOR_2 + "ON");
-			}
-			break;
-		case Key_MissileOnMap:
-			if(MGConfig_ShowMissile) {
-				me.showmissileonautomap = false; MGConfig_ShowMissile = false;
-				Print(COLOR_4 + "Missile on Automap : " + COLOR_1 + "OFF");
-			}
-			else {
-				me.showmissileonautomap = true; MGConfig_ShowMissile = true;
-				Print(COLOR_4 + "Missile on Automap : " + COLOR_2 + "ON");
-			}
-			break;
-		case Key_AutoParty:
-			if(MGConfig_AutoParty) {
-				MGConfig_AutoParty = false;
-				Print(COLOR_4 + "Auto Party : " + COLOR_1 + "OFF");
-			}
-			else {
-				MGConfig_AutoParty = true;
-				Print(COLOR_4 + "Auto Party : " + COLOR_2 + "ON");
-			}
-			break;
-		case Key_PrintRes:
+		case Key_HiddenStats:
 			StackedRes();
-			break;
-		case Key_PrintFCRPlus:
 			FCRPlusPrint();
-			break;
-		case Key_PrintAbsorbs:
 			SorbPrint();
 			break;
-		case Key_PrintBPs:
+		case Key_Breakpoints:
 			T_BPsPrint();
 			break;
-		case Key_PrintChicken:
+		case Key_MyChicken:
 			ChickenValues();
 			break;
-		case Key_PrintStats:
+		case Key_CharStats:
 			NTU_CheckMyStats();
 			break;
 		case Key_HotKeyInfo:
@@ -164,47 +129,12 @@ function NT_KeyEvents(keycode)
 			if(ItemSInfo) ItemSInfo = false;
 			ExitGame();
 			break;
-		case Key_StashCheck:
+		case Key_InvStashCheck:
 			MG_CheckFreeStashSpace(StashChecking);
-			break;
-		case Key_InvCheck:
 			MG_CheckFreeInventorySpace(InvChecking);
 			break;
-		case Key_KeyCodeCheck:
-			if(CheckKeyNumber) {
-				CheckKeyNumber = false; Print(COLOR_4 + "Keycode Checker : " + COLOR_1 + "OFF");
-			}
-			else {
-				CheckKeyNumber = true; Print(COLOR_4 + "Keycode Checker : " + COLOR_2 + "ON");
-				Print(COLOR_1 + "If you hit a key that is set to do something, you will do that action!");
-			}
-			break;
-		case Key_LoadChatR:
-			if(NTConfig_ChatRecording) {
-				NTConfig_ChatRecording = false;
-				Print(COLOR_4 + "Chat Recorder : " + COLOR_1 + "OFF");
-				ClosingChatRLogs();
-			}
-			else {
-				NTConfig_ChatRecording = true;
-				Print(COLOR_4 + "Chat Recorder : " + COLOR_2 + "ON");
-				OpeningChatRLogs();
-			}
 		case Key_DoPrecast:
 			NTP_DoPrecast(true);
-			break;
-		case Key_ItemInfos:
-			if(ItemSInfo) {
-				ItemSInfo = false;
-				Print(COLOR_4 + "Item Info: " + COLOR_1 + "OFF");
-				ClosingChatRLogs();
-			}
-			else {
-				ItemSInfo = true;
-				Print(COLOR_4 + "Item Info: " + COLOR_2 + "ON");
-				Print(COLOR_4 + "Type .help for info on commands");
-				OpeningChatRLogs();
-			}
 			break;
 		case Key_GoToTown:
 			HeadingHome();

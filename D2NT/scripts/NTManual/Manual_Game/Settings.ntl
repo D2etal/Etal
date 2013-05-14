@@ -60,60 +60,29 @@ function MG_LoadConfig(MyChar)
 	NTConfig_WhisperToManager = false; 	// Logs whispers from in-game to your manager
 	NTConfig_WhisperToTab = "common"; 	// Choose which tab whispers go to, either "common" or "item"
 
-	Key_HotKeyInfo = 45;			// Insert
-	Key_ExitGame = 46;				// Del
-	Key_GoToTown = 36;				// Home
-	Key_DoPrecast = 110;			// .
-	Key_PrintRes = 97;				// 1
-	Key_PrintFCRPlus = 98;			// 2
-	Key_PrintAbsorbs = 99;			// 3
-	Key_PrintBPs = 100;				// 4
-	Key_PrintChicken = 101;			// 5
-	Key_PrintStats = 102;			// 6
-		NTConfig_MercStats = true;	// true to get Merc stats, false if not
-	Key_StashCheck = 103;			// 7
-		StashChecking = "Mgr";		// "Game" to print in game "Mgr" to print in CommonLog
-	Key_InvCheck = 104;				// 8
-		InvChecking = "Mgr";		// "Game" to print in game "Mgr" to print in CommonLog
-	Key_GameStats = 105;			// 9
-	Key_EnemyOnMap = 111;			// Num /
-	Key_MissileOnMap = 106;			// Num *
-	Key_AutoParty = 109;			// Num -
-	Key_AntiIdle = 120;				// F9 - Turn on AntiIdle for extended AFK's
-	Key_ItemInfos = 122;			// F11 - Turn on ItemInfo, for information regarding Runewords, runes, gems, crafting
-	Key_LoadChatR = 123;			// F12 - Load ChatRecorder, to log all in game chat
+	
 	Key_PickItems = 17;				// Ctrl - pick items based on your standard item configs!
-		NTConfig_SnagRange = 40;		// Rnage for picking items!
-	Key_KeyCodeCheck = 19;			// Pause/Break - to turn on/off in game keycode checking - will print key and code for key you press
+		NTConfig_SnagRange = 40;	// Range for picking items!
+	Key_HotKeyInfo = 45;			// Insert - Send a list of hotkeys to your manager
+	Key_ExitGame = 46;				// Delete - Exit game with game stats like the normal bot does
+	Key_GoToTown = 36;				// Home - teleports you to town
+	Key_DoPrecast = 96;			 	// Num 0 - Precast your skills, obviously
+	Key_HiddenStats = 97;			// Num 1 - Resistances, FCR, FHR, IAS, %DR, %MDR, and absorbs! 
+	Key_Breakpoints = 100;			// Num 4 - Get your BPs for your character class
+	Key_MyChicken = 103;			// Num 7 - Print your chicken values for HP/MP
+	Key_InvStashCheck = 107; 		// Num + - Stairbuilders Inventory/Stash layout checker!
+		InvChecking = "Mgr";		// "Game" to print in game "Mgr" to print in CommonLog
+		StashChecking = "Mgr";		// "Game" to print in game "Mgr" to print in CommonLog
+	Key_GameStats = 33;				// Pg Up - Log your current game's stats to manager
+	Key_CharStats = 34;			 	// Pg Dn - Log your extended stats to manager
+		NTConfig_MercStats = true;	// true to get Merc stats, false if not
+	Key_AntiIdle = 19;				// Pause/break - Turn on AntiIdle for extended AFK's
 
 	Key_Credits = 0;				// Set this key to check the credits (Currently empty)
 }
 
 function MG_PickitLoad()
 {
-	// Only select one group to use out of normal/advance/extreme/master \\
-	
-	//NTConfig_NIPFilePath.push("normal/normal.nip");
-	//NTConfig_NIPFilePath.push("normal/magic_rare.nip");
-	//NTConfig_NIPFilePath.push("normal/set.nip");
-	//NTConfig_NIPFilePath.push("normal/unique.nip");
-	//NTConfig_NIPFilePath.push("normal/craft.nip");
-	//NTConfig_NIPFilePath.push("normal/key.nip");
-
-	//NTConfig_NIPFilePath.push("advance/normal.nip");
-	//NTConfig_NIPFilePath.push("advance/magic_rare.nip");
-	//NTConfig_NIPFilePath.push("advance/set.nip");
-	//NTConfig_NIPFilePath.push("advance/unique.nip");
-	//NTConfig_NIPFilePath.push("advance/craft.nip");
-	//NTConfig_NIPFilePath.push("advance/key.nip");
-
-	//NTConfig_NIPFilePath.push("extreme/normal.nip");
-	//NTConfig_NIPFilePath.push("extreme/magic_rare.nip");
-	//NTConfig_NIPFilePath.push("extreme/set.nip");
-	//NTConfig_NIPFilePath.push("extreme/unique.nip");
-	//NTConfig_NIPFilePath.push("extreme/craft.nip");
-	//NTConfig_NIPFilePath.push("extreme/key.nip");
-
 	//NTConfig_NIPFilePath.push("Master/Charms.nip");
 	//NTConfig_NIPFilePath.push("Master/Crafted.nip");
 	//NTConfig_NIPFilePath.push("Master/Cubed.nip");

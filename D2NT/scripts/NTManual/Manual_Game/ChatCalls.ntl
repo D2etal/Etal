@@ -1,10 +1,82 @@
 function MG_GameMsgEvent(msg, type)
 {
-	if(ItemSInfo){
 	   if(msg.indexOf(me.name) != -1 && type == 0) {
 			// Main Commands
 			switch(true){
-				case (msg.toLowerCase().indexOf(".help")!= -1):
+				case (msg.toLowerCase().indexOf(".toggles")!= -1):
+					Print(COLOR_2 + ".showenemy " + COLOR_4 + "- show/hide enemy on automap");
+					Print(COLOR_2 + ".showmissile " + COLOR_4 + "- show/hide missiles on automap");
+					Print(COLOR_2 + ".autoparty " + COLOR_4 + "- on/off auto-partying");
+					Print(COLOR_2 + ".keycheck " + COLOR_4 + "- keycode checker");
+					Print(COLOR_2 + ".ChatR " + COLOR_4 + "- load/stop ChatR");
+					Print(COLOR_2 + ".ItemInfo " + COLOR_4 + "- enable Item Info abilities");
+					break;
+				case (msg.toLowerCase().indexOf(".showenemy")!= -1):
+					if(MGConfig_ShowEnemy) {
+						me.showenemyonautomap = false; MGConfig_ShowEnemy = false;
+						Print(COLOR_4 + "Enemy on Automap : " + COLOR_1 + "OFF");
+					}
+					else {
+						me.showenemyonautomap = true; MGConfig_ShowEnemy = true;
+						Print(COLOR_4 + "Enemy on Automap : " + COLOR_2 + "ON");
+					}
+					break;
+				case (msg.toLowerCase().indexOf(".showmissile")!= -1):
+					if(MGConfig_ShowMissile) {
+						me.showmissileonautomap = false; MGConfig_ShowMissile = false;
+						Print(COLOR_4 + "Missile on Automap : " + COLOR_1 + "OFF");
+					}
+					else {
+						me.showmissileonautomap = true; MGConfig_ShowMissile = true;
+						Print(COLOR_4 + "Missile on Automap : " + COLOR_2 + "ON");
+					}
+					break;
+				case (msg.toLowerCase().indexOf(".autoparty")!= -1):
+					if(MGConfig_AutoParty) {
+						MGConfig_AutoParty = false;
+						Print(COLOR_4 + "Auto Party : " + COLOR_1 + "OFF");
+					}
+					else {
+						MGConfig_AutoParty = true;
+						Print(COLOR_4 + "Auto Party : " + COLOR_2 + "ON");
+					}
+					break;
+				case (msg.toLowerCase().indexOf(".keycheck")!= -1):
+					if(CheckKeyNumber) {
+						CheckKeyNumber = false; Print(COLOR_4 + "Keycode Checker : " + COLOR_1 + "OFF");
+					}
+					else {
+						CheckKeyNumber = true; Print(COLOR_4 + "Keycode Checker : " + COLOR_2 + "ON");
+						Print(COLOR_1 + "If you hit a key that is set to do something, you will do that action!");
+					}
+					break;
+				case (msg.toLowerCase().indexOf(".chatr")!= -1):
+					if(NTConfig_ChatRecording) {
+						NTConfig_ChatRecording = false;
+						Print(COLOR_4 + "Chat Recorder : " + COLOR_1 + "OFF");
+						ClosingChatRLogs();
+					}
+					else {
+						NTConfig_ChatRecording = true;
+						Print(COLOR_4 + "Chat Recorder : " + COLOR_2 + "ON");
+						OpeningChatRLogs();
+					}
+					break;
+				case (msg.toLowerCase().indexOf(".iteminfo")!= -1):
+					if(ItemSInfo) {
+						ItemSInfo = false;
+						Print(COLOR_4 + "Item Info: " + COLOR_1 + "OFF");
+						ClosingChatRLogs();
+					}
+					else {
+						ItemSInfo = true;
+						Print(COLOR_4 + "Item Info: " + COLOR_2 + "ON");
+						Print(COLOR_4 + "Type .help for info on commands");
+						OpeningChatRLogs();
+					}
+					break;
+
+				case (msg.toLowerCase().indexOf(".help")!= -1 && ItemSInfo):
 					Delay(100);
 					Print("Type . before your command");
 					Print("Runeword list (.runewords)");
@@ -13,22 +85,22 @@ function MG_GameMsgEvent(msg, type)
 					Print("Set runeword info to public (.public)");
 					Print("Set runeword info to private (.private)");
 					break;
-				case (msg.toLowerCase().indexOf(".baalruns")!= -1):
+				case (msg.toLowerCase().indexOf(".baalruns")!= -1 && ItemSInfo):
 					Delay(100);
 					Print("Type . before your command");
 					Print("Using no Anni (baalexp1)");
 					Print("Using Anni (baalexp2)");
 					break;
-				case (msg.toLowerCase().indexOf(".public")!= -1):
+				case (msg.toLowerCase().indexOf(".public")!= -1 && ItemSInfo):
 					Private = false;
 					Print("Runeword info set to public");
 					break;
-				case (msg.toLowerCase().indexOf(".private")!= -1):
+				case (msg.toLowerCase().indexOf(".private")!= -1 && ItemSInfo):
 					Private = true;
 					Print("Runeword info set to private");
 					break;
 				//Runeword commands
-				case (msg.toLowerCase().indexOf(".runewords")!= -1):
+				case (msg.toLowerCase().indexOf(".runewords")!= -1 && ItemSInfo):
 					Delay(100);
 					Print("Type . before your command");
 					Print("ancients pledge" +  COLOR_1 + "||" + COLOR_0 + "black" +  COLOR_1 + "||" + COLOR_0 + "fury" +  COLOR_1 + "||" + COLOR_0 + "holy thunder" +  COLOR_1 + "||" + COLOR_0 + "honor" +  COLOR_1 + "||" + COLOR_0 + "kings grace" +  COLOR_1 + "||" + COLOR_0 + "leaf" +  COLOR_1 + "||" + COLOR_0 + "lionheart" +  COLOR_1 + "||" + COLOR_0 + "lore");
@@ -41,7 +113,7 @@ function MG_GameMsgEvent(msg, type)
 					Print("wrath" +  COLOR_1 + "||" + COLOR_0 + "bone" +  COLOR_1 + "||" + COLOR_0 + "enlightenment" +  COLOR_1 + "||" + COLOR_0 + "myth" +  COLOR_1 + "||" + COLOR_0 + "peace" +  COLOR_1 + "||" + COLOR_0 + "principle" +  COLOR_1 + "||" + COLOR_0 + "rain" +  COLOR_1 + "||" + COLOR_0 + "treachery" +  COLOR_1 + "||" + COLOR_0 + "malice")
 					break;
 				//Runewords
-				case (msg.toLowerCase().indexOf(".ancients pledge")!= -1):
+				case (msg.toLowerCase().indexOf(".ancients pledge")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Ancient's Pledge");
 					PrintOrSay("Ral + Ort + Tal");
@@ -51,7 +123,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+43% Resistance to Cold");
 					PrintOrSay("10% of Damage goes to Mana");
 					break;
-				case (msg.toLowerCase().indexOf(".black")!= -1):
+				case (msg.toLowerCase().indexOf(".black")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Black");
 					PrintOrSay("Thul + Io + Nef");
@@ -65,7 +137,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Level 4 Corpse Explosion (12 charges)");
 					PrintOrSay("Knockback");
 					break;
-				case (msg.toLowerCase().indexOf(".fury")!= -1):
+				case (msg.toLowerCase().indexOf(".fury")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Fury");
 					PrintOrSay("Jah + Gul + Eth");
@@ -81,7 +153,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Ignores Targets Defense");
 					PrintOrSay("+5 to Frenzy (Barbarian only)");
 					break;
-				case (msg.toLowerCase().indexOf(".holy thunder")!= -1):
+				case (msg.toLowerCase().indexOf(".holy thunder")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Holy Thunder");
 					PrintOrSay("Eth + Ral + Ort + Tal");
@@ -96,7 +168,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+3 to Holy Shock (Paladin only)");
 					PrintOrSay("Level 7 Chain Lightning (60 charges)");
 					break;
-				case (msg.toLowerCase().indexOf(".honor")!= -1):
+				case (msg.toLowerCase().indexOf(".honor")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Honor");
 					PrintOrSay("Amn + El + Ith + Tir + Sol");
@@ -113,7 +185,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+1 to Light Radius");
 					PrintOrSay("+2 to Mana per Kill");
 					break;
-				case (msg.toLowerCase().indexOf(".kings grace")!= -1):
+				case (msg.toLowerCase().indexOf(".kings grace")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("King's Grace");
 					PrintOrSay("Amn + Ral + Thul");
@@ -128,7 +200,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+100 to Attack Rating against Undead");
 					PrintOrSay("7% Life Stolen per hit");
 					break;
-				case (msg.toLowerCase().indexOf(".leaf")!= -1):
+				case (msg.toLowerCase().indexOf(".leaf")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Leaf");
 					PrintOrSay("Tir + Ral");
@@ -142,7 +214,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+ 2 per character level to Defense");
 					PrintOrSay("+33% Cold Resist");
 					break;
-				case (msg.toLowerCase().indexOf(".lionheart")!= -1):
+				case (msg.toLowerCase().indexOf(".lionheart")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Lionheart");
 					PrintOrSay("Hel + Lum + Fal");
@@ -156,7 +228,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+50 to Life");
 					PrintOrSay("+30% to All Resistances");
 					break;
-				case (msg.toLowerCase().indexOf(".lore")!= -1):
+				case (msg.toLowerCase().indexOf(".lore")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Lore");
 					PrintOrSay("Ort + Sol");
@@ -168,7 +240,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Damage reduced by 7");
 					PrintOrSay("+2 to Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".malice")!= -1):
+				case (msg.toLowerCase().indexOf(".malice")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Malice");
 					PrintOrSay("Ith + El + Eth");
@@ -182,7 +254,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+50 to Attack Rating");
 					PrintOrSay("-5 Drain Life");
 					break;
-				case (msg.toLowerCase().indexOf(".melody")!= -1):
+				case (msg.toLowerCase().indexOf(".melody")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Melody");
 					PrintOrSay("Shael + Ko + Nef");
@@ -197,7 +269,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+10 to Dexterity");
 					PrintOrSay("Knockback");
 					break;
-				case (msg.toLowerCase().indexOf(".memory")!= -1):
+				case (msg.toLowerCase().indexOf(".memory")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Memory");
 					PrintOrSay("Lum + Io + Sol + Eth");
@@ -214,7 +286,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Magic Damage reduced by 7");
 					PrintOrSay("+50% Enhanced Defense");
 					break;
-				case (msg.toLowerCase().indexOf(".nadir")!= -1):
+				case (msg.toLowerCase().indexOf(".nadir")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Nadir");
 					PrintOrSay("Nef + Tir");
@@ -228,7 +300,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("-33% extra gold from Monsters");
 					PrintOrSay("-3 to Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".radiance")!= -1):
+				case (msg.toLowerCase().indexOf(".radiance")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Radiance");
 					PrintOrSay("Nef + Sol + Ith");
@@ -243,7 +315,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Damage reduced by 7");
 					PrintOrSay("+5 to Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".rhyme")!= -1):
+				case (msg.toLowerCase().indexOf(".rhyme")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Rhyme");
 					PrintOrSay("Shael + Eth");
@@ -256,7 +328,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("50% extra Gold from Monsters");
 					PrintOrSay("25% better chance of getting Magic Items");
 					break;
-				case (msg.toLowerCase().indexOf(".silence")!= -1):
+				case (msg.toLowerCase().indexOf(".silence")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Silence");
 					PrintOrSay("Dol + Eld + Hel + Ist + Tir + Vex");
@@ -275,7 +347,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+2 to Mana per Kill");
 					PrintOrSay("30% better chance of getting Magic Items");
 					break;
-				case (msg.toLowerCase().indexOf(".smoke")!= -1):
+				case (msg.toLowerCase().indexOf(".smoke")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Smoke");
 					PrintOrSay("Nef + Lum");
@@ -288,7 +360,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+10 to Energy");
 					PrintOrSay("-1 to Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".stealth")!= -1):
+				case (msg.toLowerCase().indexOf(".stealth")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Stealth");
 					PrintOrSay("Tal + Eth");
@@ -302,7 +374,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("25% Faster Cast Rate");
 					PrintOrSay("25% Faster Hit Recovery");
 					break;
-				case (msg.toLowerCase().indexOf(".steel")!= -1):
+				case (msg.toLowerCase().indexOf(".steel")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Steel");
 					PrintOrSay("Tir + El");
@@ -316,7 +388,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+2 to Mana per Kill");
 					PrintOrSay("+1 to Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".strength")!= -1):
+				case (msg.toLowerCase().indexOf(".strength")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Strength");
 					PrintOrSay("Amn + Tir");
@@ -328,7 +400,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+20 to Strength");
 					PrintOrSay("+10 to Vitality");
 					break;
-				case (msg.toLowerCase().indexOf(".venom")!= -1):
+				case (msg.toLowerCase().indexOf(".venom")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Venom");
 					PrintOrSay("Tal + Dol + Mal");
@@ -341,7 +413,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Level 13 Poison Nova (11 charges)");
 					PrintOrSay("+273 Poison Damage for 6 seconds");
 					break;
-				case (msg.toLowerCase().indexOf(".wealth")!= -1):
+				case (msg.toLowerCase().indexOf(".wealth")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Holy Thunder");
 					PrintOrSay("Lem + Ko + Tir");
@@ -351,7 +423,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+2 to Mana per Kill");
 					PrintOrSay("+10 to Dexterity");
 					break;
-				case (msg.toLowerCase().indexOf(".white")!= -1):
+				case (msg.toLowerCase().indexOf(".white")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Holy Thunder");
 					PrintOrSay("Dol + Io");
@@ -366,7 +438,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("20% Faster Cast Rate");
 					PrintOrSay("+13 to Mana");
 					break;
-				case (msg.toLowerCase().indexOf(".zephyr")!= -1):
+				case (msg.toLowerCase().indexOf(".zephyr")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Zephyr");
 					PrintOrSay("Ort + Eth");
@@ -380,7 +452,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("25% Increased Attack Speed");
 					PrintOrSay("7% chance to cast level 1 Twister when hit");
 					break;
-				case (msg.toLowerCase().indexOf(".beast")!= -1):
+				case (msg.toLowerCase().indexOf(".beast")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Beast");
 					PrintOrSay("Ber + Tir + Um + Mal + Lum");
@@ -398,7 +470,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+2 To Mana After Each Kill");
 					PrintOrSay("5 Charges Level 13 Summon Grizzly ");
 					break;
-				case (msg.toLowerCase().indexOf(".bramble")!= -1):
+				case (msg.toLowerCase().indexOf(".bramble")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Bramble");
 					PrintOrSay("Ral + Ohm + Sur + Eth");
@@ -415,7 +487,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+13 Life After Each Kill");
 					PrintOrSay("33 Charges Level 13 Spirit of Barbs");
 					break;
-				case (msg.toLowerCase().indexOf(".botd")!= -1):
+				case (msg.toLowerCase().indexOf(".botd")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Breath of the Dying");
 					PrintOrSay("Vex + Hel + El + Eld + Zod + Eth");
@@ -435,7 +507,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+1 To Light Radius");
 					PrintOrSay("-20% Requirements");
 					break;
-				case (msg.toLowerCase().indexOf(".cta")!= -1):
+				case (msg.toLowerCase().indexOf(".cta")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Call To Arms");
 					PrintOrSay("Amn + Ral + Mal + Ist + Ohm");
@@ -452,7 +524,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+12 Replenish Life");
 					PrintOrSay("30% Better Chance of Getting Magic Items ");
 					break;
-				case (msg.toLowerCase().indexOf(".coh")!= -1):
+				case (msg.toLowerCase().indexOf(".coh")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Chains of Honor");
 					PrintOrSay("Dol + Um + Ber + Ist");
@@ -468,7 +540,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Damage Reduced By 8%");
 					PrintOrSay("25% Better Chance of Getting Magic Items ");
 					break;
-				case (msg.toLowerCase().indexOf(".chaos")!= -1):
+				case (msg.toLowerCase().indexOf(".chaos")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Chaos");
 					PrintOrSay("Fal + Ohm + Um");
@@ -483,7 +555,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+10 To Strength");
 					PrintOrSay("+15 Life After Each Demon Kill");
 					break;
-				case (msg.toLowerCase().indexOf(".crescent moon")!= -1):
+				case (msg.toLowerCase().indexOf(".crescent moon")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Crescent Moon");
 					PrintOrSay("Shael + Um + Tir");
@@ -499,7 +571,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+2 To Mana After Each Kill");
 					PrintOrSay("30 Charges Level 18 Summon Spirit Wolf");
 					break;
-				case (msg.toLowerCase().indexOf(".delirium")!= -1):
+				case (msg.toLowerCase().indexOf(".delirium")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Delirium");
 					PrintOrSay("Lem + Ist + Io");
@@ -515,7 +587,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("25% Better Chance of Getting Magic Items");
 					PrintOrSay("60 Charges Level 17 Attract");
 					break;
-				case (msg.toLowerCase().indexOf(".doom")!= -1):
+				case (msg.toLowerCase().indexOf(".doom")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Doom");
 					PrintOrSay("Hel + Ohm + Um + Lo + Cham");
@@ -532,7 +604,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+3 Freezes Target");
 					PrintOrSay("-20% Requirements");
 					break;
-				case (msg.toLowerCase().indexOf(".duress")!= -1):
+				case (msg.toLowerCase().indexOf(".duress")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Duress");
 					PrintOrSay("Shael + Um + Thul");
@@ -549,7 +621,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+15% Fire Resist");
 					PrintOrSay("+15% Poison Resist");
 					break;
-				case (msg.toLowerCase().indexOf(".enigma")!= -1):
+				case (msg.toLowerCase().indexOf(".enigma")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Enigma");
 					PrintOrSay("Jah + Ith + Ber");
@@ -565,7 +637,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("15% Damage Taken Goes To Mana");
 					PrintOrSay("+ (1 Per Character Level) Better Chance of Getting Magic Items ");
 					break;
-				case (msg.toLowerCase().indexOf(".eternity")!= -1):
+				case (msg.toLowerCase().indexOf(".eternity")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Eternity");
 					PrintOrSay("Amn + Ber + Ist + Sol + Sur");
@@ -584,7 +656,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("30% Better Chance Of Getting Magic Items");
 					PrintOrSay("88 Charges Level 8 Revive");
 					break;
-				case (msg.toLowerCase().indexOf(".exile")!= -1):
+				case (msg.toLowerCase().indexOf(".exile")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Exile");
 					PrintOrSay("Vex + Ohm + Ist + Dol");
@@ -603,7 +675,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("25% Better Chance Of Getting Magic Items");
 					PrintOrSay("Repairs 1 Durability in 4 Seconds ");
 					break;
-				case (msg.toLowerCase().indexOf(".famine")!= -1):
+				case (msg.toLowerCase().indexOf(".famine")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Famine");
 					PrintOrSay("Fal + Ohm + Ort + Jah");
@@ -619,7 +691,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Prevent Monster Heal");
 					PrintOrSay("+10 To Strength ");
 					break;
-				case (msg.toLowerCase().indexOf(".gloom")!= -1):
+				case (msg.toLowerCase().indexOf(".gloom")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Gloom");
 					PrintOrSay("Fal + Um + Pul");
@@ -633,7 +705,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("5% Damage Taken Goes To Mana");
 					PrintOrSay("-3 To Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".hoj")!= -1):
+				case (msg.toLowerCase().indexOf(".hoj")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Hand of Justice");
 					PrintOrSay("Sur + Cham + Amn + Lo");
@@ -651,7 +723,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Hit Blinds Target");
 					PrintOrSay("+3 Freezes Target ");
 					break;
-				case (msg.toLowerCase().indexOf(".hoto")!= -1):
+				case (msg.toLowerCase().indexOf(".hoto")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Heart of the Oak");
 					PrintOrSay("Ko + Vex + Pul + Thul");
@@ -669,7 +741,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("25 Charges Level 4 Oak Sage");
 					PrintOrSay("60 Charges Level 14 Raven");
 					break;
-				case (msg.toLowerCase().indexOf(".kingslayer")!= -1):
+				case (msg.toLowerCase().indexOf(".kingslayer")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Kingslayer");
 					PrintOrSay("Mal + Um + Gul + Fal");
@@ -684,7 +756,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+10 To Strengt");
 					PrintOrSay("40% Extra Gold From Monsters ");
 					break;
-				case (msg.toLowerCase().indexOf(".passion")!= -1):
+				case (msg.toLowerCase().indexOf(".passion")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Passion");
 					PrintOrSay("Dol + Ort + Eld + Lem");
@@ -702,7 +774,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("75% Extra Gold From Monsters");
 					PrintOrSay("12 Charges Level 3 Heart of Wolverine");
 					break;
-				case (msg.toLowerCase().indexOf(".prudence")!= -1):
+				case (msg.toLowerCase().indexOf(".prudence")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Prudence");
 					PrintOrSay("Mal + Tir");
@@ -716,7 +788,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+1 to Light Radius");
 					PrintOrSay("Repairs 1 Durability in 4 seconds");;
 					break;
-				case (msg.toLowerCase().indexOf(".sanctuary")!= -1):
+				case (msg.toLowerCase().indexOf(".sanctuary")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Sanctuary");
 					PrintOrSay("Ko + Ko + Mal");
@@ -731,7 +803,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Magic Damage Reduced By 7");
 					PrintOrSay("60 Charges Level 12 Slow Missiles");
 					break;
-				case (msg.toLowerCase().indexOf(".splendor")!= -1):
+				case (msg.toLowerCase().indexOf(".splendor")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Splendor");
 					PrintOrSay("Eth + Lum");
@@ -747,7 +819,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("20% better chance of getting Magic items");
 					PrintOrSay("+3 to Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".stone")!= -1):
+				case (msg.toLowerCase().indexOf(".stone")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Stone");
 					PrintOrSay("Shael + Um + Pul + Lum");
@@ -763,7 +835,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("16 Charges Level 16 Clay Golem");
 					PrintOrSay("7% chance to cast level 1 Twister when hit");
 					break;
-				case (msg.toLowerCase().indexOf(".wind")!= -1):
+				case (msg.toLowerCase().indexOf(".wind")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Wind");
 					PrintOrSay("Sur + El	");
@@ -779,7 +851,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+1 to Light Radius");
 					PrintOrSay("127 Charges Level 13 Twister");
 					break;
-				case (msg.toLowerCase().indexOf(".brand")!= -1):
+				case (msg.toLowerCase().indexOf(".brand")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Brand");
 					PrintOrSay("Jah + Lo + Mal + Gul");
@@ -795,7 +867,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Knockback");
 					PrintOrSay("Fires explosive arrows or bolts");
 					break;
-				case (msg.toLowerCase().indexOf(".death")!= -1):
+				case (msg.toLowerCase().indexOf(".death")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Death");
 					PrintOrSay("Hel + El + Vex + Ort + Gul");
@@ -814,7 +886,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("15 charges level 22 Blood Golem");
 					PrintOrSay("-20% Requirements");
 					break;
-				case (msg.toLowerCase().indexOf(".gestruction")!= -1):
+				case (msg.toLowerCase().indexOf(".gestruction")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Destruction");
 					PrintOrSay("Vex + Lo + Ber + Jah + Ko");
@@ -832,7 +904,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Prevent Monster Heal");
 					PrintOrSay("+10 to Dexterity");
 					break;
-				case (msg.toLowerCase().indexOf(".dragon")!= -1):
+				case (msg.toLowerCase().indexOf(".dragon")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Dragon");
 					PrintOrSay("Sur + Lo + Sol");
@@ -848,7 +920,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+5% maximum Lightning Resist");
 					PrintOrSay("Damage reduced by 7");
 					break;
-				case (msg.toLowerCase().indexOf(".dream")!= -1):
+				case (msg.toLowerCase().indexOf(".dream")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Dream");
 					PrintOrSay("Io + Jah + Pul");
@@ -864,7 +936,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+5-20 to All Resistances");
 					PrintOrSay("15-25% better chance of getting Magic Items");
 					break;
-				case (msg.toLowerCase().indexOf(".edge")!= -1):
+				case (msg.toLowerCase().indexOf(".edge")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Edge");
 					PrintOrSay("Tir + Tal + Amn");
@@ -880,7 +952,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+2 to Mana after each kill");
 					PrintOrSay("All Vendor Prices Reduced 15%");
 					break;
-				case (msg.toLowerCase().indexOf(".faith")!= -1):
+				case (msg.toLowerCase().indexOf(".faith")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Faith");
 					PrintOrSay("Ohm + Jah + Lem + Eld");
@@ -897,7 +969,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("10% Reaminate as Returned");
 					PrintOrSay("75% extra Gold from Monsters");
 					break;
-				case (msg.toLowerCase().indexOf(".1fort")!= -1):
+				case (msg.toLowerCase().indexOf(".1fort")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Fort (Weapon)");
 					PrintOrSay("El + Sol + Dol + Lo");
@@ -914,7 +986,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("12% Damage taken goes to Mana");
 					PrintOrSay("+1 to Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".2fort")!= -1):
+				case (msg.toLowerCase().indexOf(".2fort")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Fortitude");
 					PrintOrSay("El + Sol + Dol + Lo");
@@ -932,13 +1004,13 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("12% Damage taken goes to Mana");
 					PrintOrSay("+1 to Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".fort")!= -1):
+				case (msg.toLowerCase().indexOf(".fort")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Fort Weapon (1fort)");
 					PrintOrSay("Fort Armor (2fort)");
 					PrintOrSay("To use commands type . before your runeword of choice");
 					break;
-				case (msg.toLowerCase().indexOf(".grief")!= -1):
+				case (msg.toLowerCase().indexOf(".grief")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Grief");
 					PrintOrSay("Eth + Tir + Lo + Mal + Ral");
@@ -956,7 +1028,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+2 to Mana after each kill");
 					PrintOrSay("+10-15 Life after each kill");
 					break;
-				case (msg.toLowerCase().indexOf(".harmony")!= -1):
+				case (msg.toLowerCase().indexOf(".harmony")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Harmony");
 					PrintOrSay("Tir + Ith + Sol + Ko");
@@ -974,7 +1046,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+2 to Light Radius");
 					PrintOrSay("25 charges level 20 Revive");
 					break;
-				case (msg.toLowerCase().indexOf(".ice")!= -1):
+				case (msg.toLowerCase().indexOf(".ice")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Ice");
 					PrintOrSay("Amn + Shael + Jah + Lo");
@@ -991,7 +1063,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("20% Deadly Strike");
 					PrintOrSay("3.125 per character level Extra Gold from Monsters");
 					break;
-				case (msg.toLowerCase().indexOf(".infinity")!= -1):
+				case (msg.toLowerCase().indexOf(".infinity")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Infinity");
 					PrintOrSay("Ber + Mal + Ber + Ist");
@@ -1007,7 +1079,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("30% better chance of getting Magic Items");
 					PrintOrSay("30 charges level 21 Cyclone Armor");
 					break;
-				case (msg.toLowerCase().indexOf(".insight")!= -1):
+				case (msg.toLowerCase().indexOf(".insight")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Insight");
 					PrintOrSay("Ral + Tir + Tal + Sol");
@@ -1024,7 +1096,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+2 to Mana after each kill");
 					PrintOrSay("23% better chance of getting Magic Items");
 					break;
-				case (msg.toLowerCase().indexOf(".lastwish")!= -1):
+				case (msg.toLowerCase().indexOf(".lastwish")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Last Wish");
 					PrintOrSay("Jah + Mal + Jah + Sur + Jah + Ber");
@@ -1040,7 +1112,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Hit Blinds Target");
 					PrintOrSay("0.5% per character level chance of getting Magic Items");
 					break;
-				case (msg.toLowerCase().indexOf(".lw")!= -1):
+				case (msg.toLowerCase().indexOf(".lw")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Last Wish");
 					PrintOrSay("Jah + Mal + Jah + Sur + Jah + Ber");
@@ -1056,7 +1128,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Hit Blinds Target");
 					PrintOrSay("0.5% per character level chance of getting Magic Items");
 					break;
-				case (msg.toLowerCase().indexOf(".lawbringer")!= -1):
+				case (msg.toLowerCase().indexOf(".lawbringer")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Lawbringer");
 					PrintOrSay("Amn + Lem + Ko");
@@ -1072,7 +1144,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+10 to Dexterity");
 					PrintOrSay("75% extra Gold from Monsters");
 					break;
-				case (msg.toLowerCase().indexOf(".oath")!= -1):
+				case (msg.toLowerCase().indexOf(".oath")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Oath");
 					PrintOrSay("Shael + Pul + Mal + Lum");
@@ -1089,7 +1161,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("20 charges level 16 Heart of Wolverine");
 					PrintOrSay("14 charges level 17 Iron Golem");
 					break;
-				case (msg.toLowerCase().indexOf(".obedience")!= -1):
+				case (msg.toLowerCase().indexOf(".obedience")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Obedience");
 					PrintOrSay("Hel + Ko + Thul + Eth + Fal");
@@ -1107,7 +1179,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+20-30 to All Resistances");
 					PrintOrSay("-20% Requirements");
 					break;
-				case (msg.toLowerCase().indexOf(".1pheonix")!= -1):
+				case (msg.toLowerCase().indexOf(".1pheonix")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Phoenix (Weapon)");
 					PrintOrSay("Vex + Vex + Lo + Jah");
@@ -1123,7 +1195,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Ignores Target Defense");
 					PrintOrSay("14% Mana stolen per hit");
 					break;
-				case (msg.toLowerCase().indexOf(".2pheonix")!= -1):
+				case (msg.toLowerCase().indexOf(".2pheonix")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Phoenix (Shield)");
 					PrintOrSay("Vex + Vex + Lo + Jah");
@@ -1139,13 +1211,13 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+10% to maximum Fire Resist");
 					PrintOrSay("+15-21 Fire Absorb");
 					break;
-				case (msg.toLowerCase().indexOf(".pheonix")!= -1):
+				case (msg.toLowerCase().indexOf(".pheonix")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Phoenix Weapon (1pheonix)");
 					PrintOrSay("Phoenix Sheild (2pheonix)");
 					PrintOrSay("To use commands type . before your runeword of choice");
 					break;
-				case (msg.toLowerCase().indexOf(".pride")!= -1):
+				case (msg.toLowerCase().indexOf(".pride")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Pride");
 					PrintOrSay("Cham + Sur + Io + Lo");
@@ -1162,7 +1234,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+8 Replenish Life");
 					PrintOrSay("1.875% per character level Extra Gold from Monsters");
 					break;
-				case (msg.toLowerCase().indexOf(".rift")!= -1):
+				case (msg.toLowerCase().indexOf(".rift")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Rift");
 					PrintOrSay("Hel + Ko + Lem + Gul");
@@ -1179,7 +1251,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("40 charges level 15 Iron Maiden");
 					PrintOrSay("-20% Requirements");
 					break;
-				case (msg.toLowerCase().indexOf(".1spirit")!= -1):
+				case (msg.toLowerCase().indexOf(".1spirit")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Spirit (Weapon)");
 					PrintOrSay("Tal + Thul + Ort + Amn");
@@ -1196,7 +1268,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+89-112 to Mana");
 					PrintOrSay("+3-8 Magic Absorb");
 					break;
-				case (msg.toLowerCase().indexOf(".2spirit")!= -1):
+				case (msg.toLowerCase().indexOf(".2spirit")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Spirit (Shield)");
 					PrintOrSay("Tal + Thul + Ort + Amn");
@@ -1213,13 +1285,13 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+3-8 Magic Absorb");
 					PrintOrSay("Attacker takes Damage of 14");
 					break;
-				case (msg.toLowerCase().indexOf(".spirit")!= -1):
+				case (msg.toLowerCase().indexOf(".spirit")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Spirit Weapon (1spirit)");
 					PrintOrSay("Spirit Sheild (2spirit)");
 					PrintOrSay("To use commands type . before your runeword of choice");
 					break;
-				case (msg.toLowerCase().indexOf(".voice of reason")!= -1):
+				case (msg.toLowerCase().indexOf(".voice of reason")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Voice of Reason");
 					PrintOrSay("Lem + Ko + El + Eld");
@@ -1237,7 +1309,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("75% extra Gold from Monsters");
 					PrintOrSay("+1 to Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".vor")!= -1):
+				case (msg.toLowerCase().indexOf(".vor")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Voice of Reason");
 					PrintOrSay("Lem + Ko + El + Eld");
@@ -1255,7 +1327,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("75% extra Gold from Monsters");
 					PrintOrSay("+1 to Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".wrath")!= -1):
+				case (msg.toLowerCase().indexOf(".wrath")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Wrath");
 					PrintOrSay("Pul + Lum + Ber + Mal");
@@ -1271,7 +1343,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+10 to Energy");
 					PrintOrSay("Cannot Be Frozen");
 					break;
-				case (msg.toLowerCase().indexOf(".bone")!= -1):
+				case (msg.toLowerCase().indexOf(".bone")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Bone (Necromancer)");
 					PrintOrSay("Sol + Um + Um");
@@ -1283,7 +1355,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+30 to All Resistances");
 					PrintOrSay("Damage Reduced by 7");
 					break;
-				case (msg.toLowerCase().indexOf(".enlightenment")!= -1):
+				case (msg.toLowerCase().indexOf(".enlightenment")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Enlightenment (Sorceress)");
 					PrintOrSay("Pul + Ral + Sol");
@@ -1296,7 +1368,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+30% Fire Resist");
 					PrintOrSay("Damage Reduced by 7");
 					break;
-				case (msg.toLowerCase().indexOf(".myth")!= -1):
+				case (msg.toLowerCase().indexOf(".myth")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Myth (Barbarian)");
 					PrintOrSay("Hel + Amn + Nef ");
@@ -1309,7 +1381,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Attacker takes Damage of 14");
 					PrintOrSay("Requirements -15%");
 					break;
-				case (msg.toLowerCase().indexOf(".peace")!= -1):
+				case (msg.toLowerCase().indexOf(".peace")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Peace (Amazon)");
 					PrintOrSay("Shael + Thul + Amn");
@@ -1322,7 +1394,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+30% Cold Resist");
 					PrintOrSay("Attacker Takes Damage of 14");
 					break;
-				case (msg.toLowerCase().indexOf(".principle")!= -1):
+				case (msg.toLowerCase().indexOf(".principle")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Principle (Paladin)");
 					PrintOrSay("Ral + Gul + Eld");
@@ -1333,7 +1405,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("+5% to Maximum Poison Resist");
 					PrintOrSay("+30% Fire Resist");
 					break;
-				case (msg.toLowerCase().indexOf(".rain")!= -1):
+				case (msg.toLowerCase().indexOf(".rain")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Rain (Druid)");
 					PrintOrSay("Ort + Mal + Ith ");
@@ -1346,7 +1418,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("Magic Damage Reduced by 7");
 					PrintOrSay("15% Damage Taken Goes To Mana");
 					break;
-				case (msg.toLowerCase().indexOf(".treachery")!= -1):
+				case (msg.toLowerCase().indexOf(".treachery")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Treachery (Assassin)");
 					PrintOrSay("Shael + Thul + Lem");
@@ -1360,7 +1432,7 @@ function MG_GameMsgEvent(msg, type)
 					PrintOrSay("50% Extra Gold from Monsters");
 					break;
 				//Baalruns
-				case (msg.toLowerCase().indexOf(".baalexp1")!= -1):
+				case (msg.toLowerCase().indexOf(".baalexp1")!= -1 && ItemSInfo):
 					Delay(100);
 					Print("=============");
 					//ITW_ANNI();
@@ -1389,7 +1461,7 @@ function MG_GameMsgEvent(msg, type)
 					Delay(2);
 					Print("99 ----- 3,520,485,254");
 					break;
-				case (msg.toLowerCase().indexOf(".baalexp2")!= -1):
+				case (msg.toLowerCase().indexOf(".baalexp2")!= -1 && ItemSInfo):
 					Delay(100);
 					Print("=============");
 					//ITW_ANNI();
@@ -1418,7 +1490,7 @@ function MG_GameMsgEvent(msg, type)
 					Print("99 ----- 3,520,485,254");
 					break;
 				//Act2 Merc Auras
-				case (msg.toLowerCase().indexOf(".mercs")!= -1):
+				case (msg.toLowerCase().indexOf(".mercs")!= -1 && ItemSInfo):
 					Delay(100);
 					Print("A2 Merc Aruas");
 					Print(".");
@@ -1433,204 +1505,204 @@ function MG_GameMsgEvent(msg, type)
 					Print("Offense (Hell): Blessed Aim");
 					break;
 				// Runes
-				case (msg.toLowerCase().indexOf(".runes")!= -1):
+				case (msg.toLowerCase().indexOf(".runes")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Example .el-rune");
 					PrintOrSay("AHS = Armor/Helm/Shield");
 					break;
-				case (msg.toLowerCase().indexOf(".el-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".el-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("El - Level Req = 11");
 					PrintOrSay("Weapon: +50 AR - +1 Light Radius");
 					PrintOrSay("AHS: +15 Def - +1 Light Radius");
 					break;
-				case (msg.toLowerCase().indexOf(".eld-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".eld-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Eld - Level Req = 11");
 					PrintOrSay("Weapon: +75% Dmg to Undead - +50 AR to Undead");
 					PrintOrSay("AHS: 15% Slower Stam Drain - +7% Chance to Block");
 					break;
-				case (msg.toLowerCase().indexOf(".tir-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".tir-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Tir - Level Req = 13");
 					PrintOrSay("Weapon: +2 Mana After Kill");
 					PrintOrSay("AHS: +2 Mana After Kill");
 					break;
-				case (msg.toLowerCase().indexOf(".nef-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".nef-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Nef - Level Req = 13");
 					PrintOrSay("Weapon: Knockback");
 					PrintOrSay("AHS: +30 Def VS Missile");
 					break;
-				case (msg.toLowerCase().indexOf(".eth-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".eth-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Eth - Level Req = 15");
 					PrintOrSay("Weapon: -25% Target Defense");
 					PrintOrSay("AHS: Regen Mana 15% - ");
 					break;
-				case (msg.toLowerCase().indexOf(".ith-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".ith-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Ith - Level Req = 15");
 					PrintOrSay("Weapon: +9 Max Dmg");
 					PrintOrSay("AHS: 15% Dmg to Mana");
 					break;
-				case (msg.toLowerCase().indexOf(".tal-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".tal-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Tal - Level Req = 17");
 					PrintOrSay("Weapon: +75 Psn/5 seconds - ");
 					PrintOrSay("AHS: +30% PRes - +35% PRes (Shields)");
 					break;
-				case (msg.toLowerCase().indexOf(".ral-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".ral-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Ral - Level Req = 19");
 					PrintOrSay("Weapon: +5-30 Fire Dmg (Varies)");
 					PrintOrSay("AHS: +30% FRes - +35% FRes (Shields)");
 					break;
-				case (msg.toLowerCase().indexOf(".ort-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".ort-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Ort - Level Req = 21");
 					PrintOrSay("Weapon: +1-50 Light Dmg (Varies)");
 					PrintOrSay("AHS: +30% LRes - +35% LRes (Shields)");
 					break;
-				case (msg.toLowerCase().indexOf(".thul-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".thul-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Thul - Level Req = 23");
 					PrintOrSay("Weapon: 3-14 Cold Dmg - 3 Second Duration");
 					PrintOrSay("AHS: +30% CRes - +35% CRes (Shields)");
 					break;
-				case (msg.toLowerCase().indexOf(".amn-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".amn-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Amn - Level Req = 25");
 					PrintOrSay("Weapon: 7% Life Leech");
 					PrintOrSay("AHS: Attacker Takes Dmg of 14");
 					break;
-				case (msg.toLowerCase().indexOf(".sol-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".sol-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Sol - Level Req = 27");
 					PrintOrSay("Weapon: +9 Min Dmg");
 					PrintOrSay("AHS: Damaged Reduced by 7");
 					break;
-				case (msg.toLowerCase().indexOf(".shael-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".shael-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Shael - Level Req = 29");
 					PrintOrSay("Weapon: 20% IAS");
 					PrintOrSay("AHS: +20% FHR - +20% Faster Block (Shields)");
 					break;
-				case (msg.toLowerCase().indexOf(".dol-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".dol-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Dol - Level Req = 31");
 					PrintOrSay("Weapon: Hit Causes Mob to Flee 25%");
 					PrintOrSay("AHS: Replenish Life +7");
 					break;
-				case (msg.toLowerCase().indexOf(".hel-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".hel-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Hel - Level Req = N/A");
 					PrintOrSay("Weapon: Requirements -20%");
 					PrintOrSay("AHS: Requirements -15%");
 					break;
-				case (msg.toLowerCase().indexOf(".io-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".io-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Io - Level Req = 35");
 					PrintOrSay("Weapon: +10 Vitality");
 					PrintOrSay("AHS: +10 Vitality");
 					break;
-				case (msg.toLowerCase().indexOf(".lum-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".lum-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Lum - Level Req = 37");
 					PrintOrSay("Weapon: +10 Energy");
 					PrintOrSay("AHS: +10 Energy");
 					break;
-				case (msg.toLowerCase().indexOf(".ko-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".ko-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Ko - Level Req = 39");
 					PrintOrSay("Weapon: +10 Dexterity");
 					PrintOrSay("AHS: +10 Dexterity");
 					break;
-				case (msg.toLowerCase().indexOf(".fal-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".fal-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Fal - Level Req = 41");
 					PrintOrSay("Weapon: +10 Strength");
 					PrintOrSay("AHS: +10 Strength");
 					break;
-				case (msg.toLowerCase().indexOf(".lem-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".lem-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Lem - Level Req = 43");
 					PrintOrSay("Weapon: +75% Gold Find");
 					PrintOrSay("AHS: +50% Gold Find");
 					break;
-				case (msg.toLowerCase().indexOf(".pul-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".pul-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Pul - Level Req = 45");
 					PrintOrSay("Weapon: +75% Dmg & +100 AR to Demons");
 					PrintOrSay("AHS: +30% Enhanced Defense");
 					break;
-				case (msg.toLowerCase().indexOf(".um-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".um-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Um - Level Req = 47");
 					PrintOrSay("Weapon: 25% Chance of Open Wounds");
 					PrintOrSay("AHS: All Res +15 / All Res +22 (Shields)");
 					break;
-				case (msg.toLowerCase().indexOf(".mal-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".mal-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Mal - Level Req = 49");
 					PrintOrSay("Weapon: Prevent Monster Heal");
 					PrintOrSay("AHS: Magic Damage Reduced By 7");
 					break;
-				case (msg.toLowerCase().indexOf(".ist-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".ist-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Ist - Level Req = 51");
 					PrintOrSay("Weapon: 30% Magic Find");
 					PrintOrSay("AHS: 25% Magic Find");
 					break;
-				case (msg.toLowerCase().indexOf(".gul-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".gul-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Gul - Level Req = 53");
 					PrintOrSay("Weapon: 20% Bonus AR");
 					PrintOrSay("AHS: +5% Max PRes");
 					break;
-				case (msg.toLowerCase().indexOf(".vex-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".vex-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Vex - Level Req = 55");
 					PrintOrSay("Weapon: 7% Mana Leech");
 					PrintOrSay("AHS: +5% Max FRes");
 					break;
-				case (msg.toLowerCase().indexOf(".ohm-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".ohm-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Ohm - Level Req = 57");
 					PrintOrSay("Weapon: 50% Enhanced Def");
 					PrintOrSay("AHS: +5% Max CRes");
 					break;
-				case (msg.toLowerCase().indexOf(".lo-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".lo-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Lo - Level Req = 59");
 					PrintOrSay("Weapon: 20% Deadly Strike");
 					PrintOrSay("AHS: +5% Max LRes");
 					break;
-				case (msg.toLowerCase().indexOf(".sur-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".sur-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Sur - Level Req = 61");
 					PrintOrSay("Weapon: Hit Blinds Target");
 					PrintOrSay("AHS: Max Mana +5% - +50 Mana (Shields)");
 					break;
-				case (msg.toLowerCase().indexOf(".ber-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".ber-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Ber - Level Req = 62");
 					PrintOrSay("Weapon: 20% Change of Crushing Blow");
 					PrintOrSay("AHS: Damage Reduced 8%");
 					break;
-				case (msg.toLowerCase().indexOf(".jah-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".jah-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Jah - Level Req = 65");
 					PrintOrSay("Weapon: Ignore Target Defense");
 					PrintOrSay("AHS: Max Life + 5% - +50 Mana (Shields)");
 					break;
-				case (msg.toLowerCase().indexOf(".cham-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".cham-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Cham - Level Req = 67");
 					PrintOrSay("Weapon: Freeze Target +3");
 					PrintOrSay("AHS: Cannot Be Frozen");
 					break;
-				case (msg.toLowerCase().indexOf(".zod-rune")!= -1):
+				case (msg.toLowerCase().indexOf(".zod-rune")!= -1 && ItemSInfo):
 					Delay(100);
 					PrintOrSay("Zod - Level Req = 69");
 					PrintOrSay("Weapon: Indestructible");
@@ -1638,7 +1710,6 @@ function MG_GameMsgEvent(msg, type)
 					break;
 				default:
 					break;
-			}
 		}
 	}
 	return;
