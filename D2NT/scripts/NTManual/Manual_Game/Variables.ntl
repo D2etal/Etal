@@ -48,7 +48,6 @@ var Key_ExitGame;
 var Key_InvStashCheck;
 	var StashChecking;
 	var InvChecking;
-var Key_Credits;
 var Key_KeyCodeCheck;
 	var CheckKeyNumber = false;
 var Key_LoadChatR;

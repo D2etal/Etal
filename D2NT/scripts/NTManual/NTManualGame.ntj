@@ -1,4 +1,4 @@
-var Rev = "0.99";
+var Rev = "0.99 A1";
 var warncount;
 
 function NTMain()
@@ -213,16 +213,16 @@ function ChickenStuff()
 			CloseD2();
 		}
 		if(parseInt(me.hp*100/_LifeMax) < MGConfig_LifeRejuvThresh) {
-			My_DrinkPotion(2); Delay(Random(200,400));
+			My_DrinkPotion(2); Delay(Random(800,1200));
 		}
 		if(parseInt(me.hp*100/_LifeMax) < MGConfig_LifeThresh) {
-			My_DrinkPotion(0); Delay(Random(200,400));
+			My_DrinkPotion(0); Delay(Random(800,1200));
 		}
 		if(parseInt(me.mp*100/_ManaMax) < MGConfig_ManaRejuvThresh) {
-			My_DrinkPotion(2); Delay(Random(200,400));
+			My_DrinkPotion(2); Delay(Random(800,1200));
 		}
 		if(parseInt(me.mp*100/_ManaMax) < MGConfig_ManaThresh) {
-			My_DrinkPotion(1); Delay(Random(200,400));
+			My_DrinkPotion(1); Delay(Random(800,1200));
 		}
 	}
 	else {

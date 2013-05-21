@@ -75,6 +75,15 @@ function MG_GameMsgEvent(msg, type)
 						OpeningChatRLogs();
 					}
 					break;
+				case (msg.toLowerCase().indexOf(".reload")!= -1):
+					MG_LoadConfig(me.charname);
+					if(MGConfig_PickItems){
+						MG_PickitLoad();
+						if (!NTSI_LoadNIPFiles("NTBot/item_configs")) {
+							MG_LogToOOG(NTC_LOG_COMMON, COLOR_1 + "Error loading NIPFiles");
+						}
+					}
+					break;
 
 				case (msg.toLowerCase().indexOf(".help")!= -1 && ItemSInfo):
 					Delay(100);
