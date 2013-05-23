@@ -237,7 +237,7 @@ function ChatReading(msg, type)
 
 function ClosingChatRLogs()
 {
-	CloseLine = "";
+	var CloseLine = "";
 	for(i = OpenLine.length ; i >= 0 ; i--) { CloseLine = CloseLine + "-"; }
 	ChatLog = FileOpen(ChatRLog, 2);
 	ChatLog.WriteLine(CloseLine);

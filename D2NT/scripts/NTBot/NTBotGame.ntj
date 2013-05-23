@@ -1,11 +1,7 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "86";
+var Rev = "87";
 
-// Provalone Edit //
-//Include("libs/common/NTExp.ntl");
-//NTE_InitializeStats();
-//
 var SoJNotify = false;
 var CloneDiabloString = GetLocaleString(11005);
 var SoJString = GetLocaleString(11004).substr(3);
@@ -25,19 +21,11 @@ function NTMain()
 
 	InitLife = me.hp;
 
-	//Print(COLOR_4 + "[+] NTBot 4.2 [+]");
-
 	Include("libs/common/NTCommon.ntl");
 	NTC_IncludeLibs();
 	NTC_IncludeConfig("NTBot/char_configs");
 	Include("libs/common/NTExp.ntl");
 
-	/*if(!NT_LoadConfig()){
-		while(1){
-			Delay(Random(4000,8000));
-			NT_LoadConfigError();
-		}
-	}*/
 	NT_LoadConfig();
 	NTE_InitializeStats();
 
@@ -48,22 +36,11 @@ function NTMain()
 
 	NT_ClearMessages(); // leech improvements
 
-	//var _time1 = NTU_timeStamp();
-	//Print ("Begin Parse: "+_time1);
 	if (!NTSI_LoadNIPFiles("NTBot/item_configs")) {
 		NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_1 + "Exiting Game- Either no inventory on character or invalid NIP filename/path in character configuration");
 		ExitGame();
 	}
-	//var _time2 = NTU_timeStamp();
-	//Print ("End Parse: "+_time2);
-
-	// ubi21 Enigma reset start
-	////////////////////////////
 	NTU_LogExitStatus("F");
-
-	// ubi21 Enigma reset end
-	////////////////////////////
-
 	if(NTConfig_StartDelay > 0) {
 		NTC_Delay(NTConfig_StartDelay);
 	}
@@ -72,14 +49,10 @@ function NTMain()
 
 	SetUIState(0x0A, true);
 
-	// ubi21 Enigma reset start
-	////////////////////////////
 	if(!NTT_PutBackEnigma()) {
 		NTC_Delay(240000); // Wait 4 mins to prevent r/d 240000
 		ExitGame();
 	}
-	// ubi21 Enigma reset end
-	////////////////////////////
 
 	if(NTConfig_CheckPassword && !me.gamepassword){
 		Print(COLOR_1 + "1No password found exiting game");//s
@@ -98,16 +71,12 @@ function NTMain()
 		NTT_ClearInventory();
 		NTT_ClearBelt();
 
-		// ubi21 Enigma reset start
-		////////////////////////////
 		if(!NTT_LookForEnigma()) {
 			if (GetUIState(0x01))
 				SetUIState(0x01, false);
 			NTC_Delay(240000); // Wait 4 mins to prevent r/d 240000
 			ExitGame();
 		}
-		// ubi21 Enigma reset end
-		////////////////////////////
 
 		if(NTConfig_GoWestFromLut){ // if bot starts in act 2 use warriv to go to act 1
 			GoWestFromLutGholein();
@@ -123,7 +92,7 @@ function NTMain()
 
 		if(DPSMeter)
 			Load("NTBot/tools/DPS.ntj");
-
+			
 		Load("NTBot/tools/ChatR.ntj");
 
 		RegisterEvent(EVENT_GAMEMSG, NT_GameMsgEvents);
@@ -192,7 +161,6 @@ function NTMain()
 				ExitGame();
 			}
 
-			// soj addon by kolton
 			if(SoJNotify)
 			{
 				SoJElapsedTime += 1;
@@ -206,13 +174,9 @@ function NTMain()
 				if(SoJElapsedTime >= NTConfig_SoJWaitTime*60)
 					SoJNotify = false;
 			}
-			// soj addon end
 		}
 	}
-	if(NTConfig_ChatRecording){ ClosingChatRLogs(); }
-	// Provalone Edit
 	NTE_ComputeStats(false);
-	//
 	if(NTConfig_PublicMode && NTConfig_PropsForEtal > 0) {
 		Include("NTBot/char_configs/EtalPR.ntl");
 		for(var i = 0 ; i < NTConfig_PropsForEtal ; i++) {
@@ -228,11 +192,7 @@ function NTMain()
 function NT_GameMsgEvents(msg, type)
 {
 
-	// ubi21 Enigma reset start
-	////////////////////////////
 	var _holdPauseCheck = "";
-	// ubi21 Enigma reset end
-	////////////////////////////
 
 	_area = GetArea();
 
@@ -249,17 +209,12 @@ function NT_GameMsgEvents(msg, type)
 			D2NTStatus(8, 0, CloneDiabloString);
 			me.maxgametime = 0;
 
-			// ubi21 Enigma reset start
-			////////////////////////////
 
 			_holdPauseCheck = NTU_GetExitStatus();
 			while(_holdPauseCheck == "T") {
 				NTC_Delay(500);
 				_holdPauseCheck = NTU_GetExitStatus();
 			}
-			// ubi21 Enigma reset end
-			////////////////////////////
-
 			NTC_StopScript(NTConfig_Script[CurScriptIndex]);
 			NTC_Delay(500);
 
@@ -299,24 +254,18 @@ function NT_GameMsgEvents(msg, type)
 	}
 	else if(type == 0 && msg.indexOf(NTConfig_Leader) != -1){ // leech improvements
 		NTC_CheckPlayer(NTConfig_Leader);
-		//Print(COLOR_1 + "The leader is in " + _leaderareaid);
 		if((_leaderareaid == 130 || _leaderareaid == 131) && msg.indexOf(NTConfig_TakeTpBaal) != -1){ // all baal leech scripts will use the same one
-			//Print(COLOR_8 + "received take baal take tp message")
 			NT_File("logs/messagecomands/"+me.charname+"-baal.txt", 1, "takebtp")
 		}
 		else if((_leaderareaid == 130 || _leaderareaid == 131) && msg.indexOf(NTConfig_GrabShrine) != -1){ // so you can set the var for grabbing shrine different from the take tp one
-			//Print(COLOR_8 + "received take shrine message")
 			NT_File("logs/messagecomands/"+me.charname+"-baal.txt", 1, "grabshrine")
 		}
 		else if(_leaderareaid == 108 && msg.indexOf(NTConfig_TakeTpDiablo) != -1){ // all diablo leech scripts will use the same one
-			//Print(COLOR_8 + "received take diablo tp message")
 			NT_File("logs/messagecomands/"+me.charname+"-diablo.txt", 1, "takedtp")
 		}
 		else if(_leaderareaid == 83 && msg.indexOf(NTConfig_TakeTpTravincal) != -1){ // all diablo leech scripts will use the same one
-			//Print(COLOR_8 + "received take travincal tp message")
 			NT_File("logs/messagecomands/"+me.charname+"-trav.txt", 1, "takettp")
 		}
-		// add in something here that if leader recieves a message indexOf("entered") it will send the join game message.  make sure it is something specific to entered battlenet message
 	}
 }
 
