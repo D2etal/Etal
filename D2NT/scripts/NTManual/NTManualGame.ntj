@@ -1,4 +1,4 @@
-var Rev = "0.99 A1";
+var Rev = "0.99 B2";
 var warncount;
 
 function NTMain()
@@ -10,7 +10,7 @@ function NTMain()
 	MG_LoadConfig(me.charname);
 	CheckMap();
 
-	_checkPlayerTotal();
+	ScanPlayers();
 	MG_InitializeStats();
 
 	if(NTConfig_HostileHandler)

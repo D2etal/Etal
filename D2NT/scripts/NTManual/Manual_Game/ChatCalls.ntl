@@ -10,6 +10,7 @@ function MG_GameMsgEvent(msg, type)
 					Print(COLOR_2 + ".keycheck " + COLOR_4 + "- keycode checker");
 					Print(COLOR_2 + ".ChatR " + COLOR_4 + "- load/stop ChatR");
 					Print(COLOR_2 + ".ItemInfo " + COLOR_4 + "- enable Item Info abilities");
+					Print(COLOR_2 + ".reload " + COLOR_4 + "- reload your config if modifications were made!");
 					break;
 				case (msg.toLowerCase().indexOf(".showenemy")!= -1):
 					if(MGConfig_ShowEnemy) {
@@ -82,7 +83,7 @@ function MG_GameMsgEvent(msg, type)
 						if (!NTSI_LoadNIPFiles("NTBot/item_configs")) {
 							MG_LogToOOG(NTC_LOG_COMMON, COLOR_1 + "Error loading NIPFiles");
 						}
-					}
+					} Print(COLOR_4 + "Config reloaded!");
 					break;
 
 				case (msg.toLowerCase().indexOf(".help")!= -1 && ItemSInfo):

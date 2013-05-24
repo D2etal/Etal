@@ -65,6 +65,5 @@ Include("NTBot/tools/ChatR.ntj");
 
 Include("NTManual/Manual_Game/Settings.ntl");
 Include("NTManual/Manual_Game/ChatCalls.ntl");
-Include("NTManual/Manual_Game/ChatFunctions.ntl");
 Include("NTManual/Manual_Game/KeycodeFunctions.ntl");
 Include("NTManual/Manual_Game/Towning.ntl");
