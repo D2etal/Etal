@@ -111,7 +111,7 @@ function NT_LoadConfig()
 		NTConfig_ClearTheHole = -1;						// 0 : Snag chests only, 1 : Clear All, 2 : Clear While Skipping Regular Monsters, -1 : Disable
 	//NTConfig_Script.push("NTTamoeHighland.ntj");
 		NTConfig_ClearTamoe = 0;						// 0 : Don't Clear, 1 : Clear All, 2 : Clear While Skipping Regular Monsters
-		NTConfig_ClearTamoePit = -1; 					// 0 : Snag chests, 1 : Path only, 2 : Clear Pit level 1, -1 : Disable
+		NTConfig_ClearTamoePit = -1; 					// 0 : Chest Only, 1 : Clear All, 2 : Clear While Skipping Regular Monsters, -1 : Disable
 	//NTConfig_Script.push("NTOuterCloister.ntj");
 		NTConfig_ClearOCloister = 0; 					// 0 : Don't Clear, 1 : Clear All, 2 : Clear While Skipping Regular Monsters
 	//NTConfig_Script.push("NTBarracks.ntj");

@@ -56,18 +56,22 @@ function NTMain() {
 			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeStair()");
 			return;
 		}
-		if(NTConfig_ClearTamoePit == 2) {
-			NTA_ClearLevel();
-			if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()) {
-				OpenChestsInArea();
-			}
-		}
+		NTP_DoPrecast();
 		if(NTConfig_ClearTamoePit == 1) {
-			NTM_MoveToStair(me.areaid, 0, 0, 0, true)
-			if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()) {
-				OpenChestsInArea();
+			NTConfig_SkipRegularMonsters = false;
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
 			}
 		} 
+		if(NTConfig_ClearTamoePit == 2) {
+			NTConfig_SkipRegularMonsters = true;
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+			}
+		}
+		if(NTConfig_OpenChestsInArea && NTU_DontOpenAreas()) {
+			OpenChestsInArea();
+		}
 		if(!NTM_MoveToStair(me.areaid, 16)) {
 			NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToStair()");
 			return;
@@ -77,11 +81,23 @@ function NTMain() {
 			return;
 		}
 		NTP_DoPrecast();
-		var i;
-		var _attackpos = [7540, 14420, 7548, 14440, 7560, 14460, 7574, 14448, 7592, 14438, 7604, 14424, 7572, 14400, 7558, 14412];
-		for (i = 0; i < _attackpos.length; i += 2) {
-			NTM_MoveTo(me.areaid, _attackpos[i], _attackpos[i + 1]);
-			NTA_ClearPosition(20, true, 1);
+		if(NTConfig_ClearTamoePit == 1) {
+			var i;
+			var _attackpos = [7540, 14420, 7548, 14440, 7560, 14460, 7574, 14448, 7592, 14438, 7604, 14424, 7572, 14400, 7558, 14412];
+			for (i = 0; i < _attackpos.length; i += 2) {
+				NTM_MoveTo(me.areaid, _attackpos[i], _attackpos[i + 1]);
+				NTA_ClearPosition(20, true, 1);
+			}
+		} 
+		if(NTConfig_ClearTamoePit == 2) {
+			NTConfig_SkipRegularMonsters = true;
+			if(!NTA_ClearLevel()){
+				NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+			}
+		}
+		if(NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 397, 1, 1)){
+			_target = NTC_GetSpecialChest();
+			if (_target){ NTC_OpenChest(_target); }
 		}
 	}
 	if (NTConfig_OpenChestsInArea && NTU_DontOpenAreas()) {
