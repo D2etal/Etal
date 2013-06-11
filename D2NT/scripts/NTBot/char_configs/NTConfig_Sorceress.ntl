@@ -218,7 +218,8 @@ function NT_LoadConfig()
 		NTConfig_ClearRiverOfFlame = -1; 				// 0 : Hephasto only, 1 : Clear All, 2 : Clear While Skipping Regular Monsters, -1 : Disable
 	//NTConfig_Script.push("NTChaosSanctuary.ntj");
 		NTConfig_Dodge = false;	 						//
-		NTConfig_FastChaos = false;	 					// Set true to clear seals/bosses, false for full
+		NTConfig_FastChaos = false;	 					// Set true to clear seal area/bosses, false for full
+		NTConfig_EvenFasterChaos = false;				// Set to true to clear ONLY the seal bosses at each seal.
 		NTConfig_Entrance = false;	 					// Set true to start from Entrance, false for Star
 		NTConfig_LeechSupport = false;	 				// Set true to support leechers, false if not
 

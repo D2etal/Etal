@@ -206,6 +206,7 @@ var NTConfig_Script = [];
 		var NTConfig_ClearRiverOfFire;
 		var NTConfig_Dodge;
 		var NTConfig_FastChaos;
+		var NTConfig_EvenFasterChaos;
 		var NTConfig_Entrance;
 		var NTConfig_LeechSupport;
 		var NTConfig_CS_EntranceTP;

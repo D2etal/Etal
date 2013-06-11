@@ -24,7 +24,11 @@ function NTMain() {
 		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveTo()");
 		return;
 	}
-
+	
+	if(NTConfig_EvenFasterChaos){		// makes the addition of EvenFasterChaos a little bit easier.
+		NTConfig_FastChaos = true;
+	}
+	
 	if (!NTConfig_FastChaos) {
 		if (NTConfig_Entrance) {
 			NTCS_ClearPosition(30, EntranceSort);
@@ -165,9 +169,13 @@ function NT_OpenVizierSealInt(type) {
 	}
 
 	NTCS_Preattack(GetLocaleString(2851));
-	NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 306 : null);
+	if(!NTConfig_EvenFasterChaos){
+		NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 306 : null);
+	}
 	NTA_KillMonster(GetLocaleString(2851)); // Grand Vizier of Chaos
-	NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 306 : null);
+	if(!NTConfig_EvenFasterChaos){
+		NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 306 : null);
+	}
 	PubSay("Vizier dead.");
 
 	if(NTConfig_IdInField){
@@ -219,9 +227,13 @@ function NT_OpenDeSeisSealInt(type) {
 	}
 
 	NTCS_Preattack(GetLocaleString(2852));
-	NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 310 : null);
+	if(!NTConfig_EvenFasterChaos){
+		NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 310 : null);
+	}
 	NTA_KillMonster(GetLocaleString(2852)); // Lord De Seis
-	NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 310 : null);
+	if(!NTConfig_EvenFasterChaos){
+		NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 310 : null);
+	}
 	PubSay("De Seis dead.");
 
 	if(NTConfig_IdInField){
@@ -268,9 +280,13 @@ function NT_OpenVenomSealInt(type) {
 	}
 
 	NTCS_Preattack(GetLocaleString(2853));
-	NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 362 : null);
+	if(!NTConfig_EvenFasterChaos){
+		NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 362 : null);
+	}
 	NTA_KillMonster(GetLocaleString(2853)); // Infector of Souls
-	NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 362 : null);
+	if(!NTConfig_EvenFasterChaos){
+		NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 362 : null);
+	}
 	PubSay("Infector dead.");
 
 	if(NTConfig_IdInField){
