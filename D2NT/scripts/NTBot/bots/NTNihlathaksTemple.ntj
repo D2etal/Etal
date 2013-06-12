@@ -38,13 +38,11 @@ function NTMain()
 	}
 	if(NTConfig_UseTemplePortal) {
 		if(!NT_PortalMove()) {
-			//Print(COLOR_1 + "You don't have the temple portal!");
 			NT_WPMove();
 		}
 	}
 	else if(!NTConfig_UseTemplePortal){
 		if(!NT_WPMove()) {
-			Print(COLOR_1 + "You don't have the Halls of Pain WP!");
 			NT_PortalMove();
 		}
 	}
