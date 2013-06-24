@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "92";
+var Rev = "93";
 
 var SoJNotify = false;
 var CloneDiabloString = GetLocaleString(11005);
@@ -188,84 +188,117 @@ function NTMain()
 	}
 	ExitGame();
 }
+var WhoDatIs; // Needed for spam catcher addition, DO NOT remove
 
 function NT_GameMsgEvents(msg, type)
 {
-
 	var _holdPauseCheck = "";
-
 	_area = GetArea();
-
-	if(type == 4)
-	{
-		if(msg.indexOf(CloneDiabloString) != -1)
-		{
-			CloneDiabloNotify = true;
-			SoJNotify = false;
-
-			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_4 + CloneDiabloString);
-			SetStatusText(COLOR_1 + CloneDiabloString);
-			D2NTStatus("Stop", 0, "Stop"); //This is a fake ID itll just interrupt the current status loop. Simple but effective.
-			D2NTStatus(8, 0, CloneDiabloString);
-			me.maxgametime = 0;
-
-
-			_holdPauseCheck = NTU_GetExitStatus();
-			while(_holdPauseCheck == "T") {
-				NTC_Delay(500);
-				_holdPauseCheck = NTU_GetExitStatus();
+	switch(type){
+		case 0:
+			if(msg.indexOf(NTConfig_Leader) != -1){ // leech improvements
+				NTC_CheckPlayer(NTConfig_Leader);
+				if((_leaderareaid == 130 || _leaderareaid == 131) && msg.indexOf(NTConfig_TakeTpBaal) != -1){ // all baal leech scripts will use the same one
+					NT_File("logs/messagecomands/"+me.charname+"-baal.txt", 1, "takebtp")
+				}
+				else if((_leaderareaid == 130 || _leaderareaid == 131) && msg.indexOf(NTConfig_GrabShrine) != -1){ // so you can set the var for grabbing shrine different from the take tp one
+					NT_File("logs/messagecomands/"+me.charname+"-baal.txt", 1, "grabshrine")
+				}
+				else if(_leaderareaid == 108 && msg.indexOf(NTConfig_TakeTpDiablo) != -1){ // all diablo leech scripts will use the same one
+					NT_File("logs/messagecomands/"+me.charname+"-diablo.txt", 1, "takedtp")
+				}
+				else if(_leaderareaid == 83 && msg.indexOf(NTConfig_TakeTpTravincal) != -1){ // all diablo leech scripts will use the same one
+					NT_File("logs/messagecomands/"+me.charname+"-trav.txt", 1, "takettp")
+				}
 			}
-			NTC_StopScript(NTConfig_Script[CurScriptIndex]);
-			NTC_Delay(500);
+			else if(msg.length >= 150){
+				Delay(Random(2000,3000));
+				Say("Oh yeah dude?");
+			}
+			break;
+		case 1:
+			if(msg.toLowerCase().indexOf("d2nt") != -1 || msg.toLowerCase().indexOf("error") != -1 || msg.toLowerCase().indexOf("fail") != -1) {
+				var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
+				var logfile = FileOpen("logs/errorlog/"+me.charname+"-errorlog.txt", 2);
+				if(!logfile)
+					var logfile = FileOpen("logs/errorlog/"+me.charname+"-errorlog.txt", 1);
 
-			NTTM_CheckAct();
-		}
-		else if(msg.indexOf(SoJString) != -1 && !CloneDiabloNotify && NTConfig_SoJWaitTime > 0)
-		{ // part of soj addon. !CloneDiabloNotify was added to prevent timer start on oversales after Diablo walks.
-			SoJNotify = true;
-			SoJElapsedTime = 0;
+				logfile.WriteLine(date + " - " + msg);
+				logfile.Close();
+			}
+			else if(msg.toLowerCase().indexOf("skipped") != -1 ) {
+				var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
+				var logfile = FileOpen("logs/skiplog/"+me.charname+"-skiplog.txt", 2);
+				if(!logfile)
+					var logfile = FileOpen("logs/skiplog/"+me.charname+"-skiplog.txt", 1);
 
-			NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_4 + msg);
+				logfile.WriteLine(date + " - " + msg + " ( " + _area.name + " ) ");
+				logfile.Close();
+			}
+			break;
+		case 2:
+			var ends = [".com", ".c0m", ".net", ".org", ".0rg"];
+			var DontIgnore = "ProjectEtal.com";
+			var x;
+			for (x in ends && !DontIgnore){
+				if (msg.toLowerCase().indexOf(ends[x]) != -1 && msg.indexOf(!me.charname) != -1){
+					SpamTastic = msg.split(": ")[0];
+					SpamTastic = stripColorCodes(SpamTastic);
+					Say("/ignore " + SpamTastic);
+				}
+			}
+			break;
+		case 3:
+			if(msg.indexOf("BattleNet>: That character is not") != -1){
+				Say("/ignore " + WhoDatIs);
+				return;
+			}
+			else if(msg.indexOf("BattleNet>: ") != -1){
+				HostileAccount = msg.split("*")[1];
+				HostileAccount = HostileAccount.split(") ")[0];
+				HostileAccount = stripColorCodes(HostileAccount);
+				if(HostileAccount == undefined) HostileAccount = 'N/A';
+				ScanPlayers();
+				return HostileAccount;
+			}
+			break;
+		case 4:
+			if(msg.indexOf(") joined our world") != -1){
+				WhoDatIs = msg.split("(")[0];
+				WhoDatIs = stripColorCodes(WhoDatIs);
+				Say("/whois " + WhoDatIs);
+				return WhoDatIs;
+			}
+			else if(msg.indexOf(CloneDiabloString) != -1) {
+				CloneDiabloNotify = true;
+				SoJNotify = false;
 
-			me.maxgametime = 0;
-		}
-	}
+				NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_4 + CloneDiabloString);
+				SetStatusText(COLOR_1 + CloneDiabloString);
+				D2NTStatus("Stop", 0, "Stop"); //This is a fake ID itll just interrupt the current status loop. Simple but effective.
+				D2NTStatus(8, 0, CloneDiabloString);
+				me.maxgametime = 0;
 
-	else if(type == 1 && (msg.toLowerCase().indexOf("d2nt") != -1 || msg.toLowerCase().indexOf("error") != -1 || msg.toLowerCase().indexOf("fail") != -1))
-	{
-		var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
-		var logfile = FileOpen("logs/errorlog/"+me.charname+"-errorlog.txt", 2);
-		if(!logfile)
-			var logfile = FileOpen("logs/errorlog/"+me.charname+"-errorlog.txt", 1);
+				_holdPauseCheck = NTU_GetExitStatus();
+				while(_holdPauseCheck == "T") {
+					NTC_Delay(500);
+					_holdPauseCheck = NTU_GetExitStatus();
+				}
+				NTC_StopScript(NTConfig_Script[CurScriptIndex]);
+				NTC_Delay(500);
 
-		logfile.WriteLine(date + " - " + msg);
-		logfile.Close();
-	}
+				NTTM_CheckAct();
+			}
+			else if(msg.indexOf(SoJString) != -1 && !CloneDiabloNotify && NTConfig_SoJWaitTime > 0) { // part of soj addon. !CloneDiabloNotify was added to prevent timer start on oversales after Diablo walks.
+				SoJNotify = true;
+				SoJElapsedTime = 0;
 
-	else if(type == 1 && (msg.toLowerCase().indexOf("skipped") != -1 ))
-	{
-		var date = new Date().toLocaleFormat("<%a, %b %d, %H:%M>");
-		var logfile = FileOpen("logs/skiplog/"+me.charname+"-skiplog.txt", 2);
-		if(!logfile)
-			var logfile = FileOpen("logs/skiplog/"+me.charname+"-skiplog.txt", 1);
+				NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_4 + msg);
 
-		logfile.WriteLine(date + " - " + msg + " ( " + _area.name + " ) ");
-		logfile.Close();
-	}
-	else if(type == 0 && msg.indexOf(NTConfig_Leader) != -1){ // leech improvements
-		NTC_CheckPlayer(NTConfig_Leader);
-		if((_leaderareaid == 130 || _leaderareaid == 131) && msg.indexOf(NTConfig_TakeTpBaal) != -1){ // all baal leech scripts will use the same one
-			NT_File("logs/messagecomands/"+me.charname+"-baal.txt", 1, "takebtp")
-		}
-		else if((_leaderareaid == 130 || _leaderareaid == 131) && msg.indexOf(NTConfig_GrabShrine) != -1){ // so you can set the var for grabbing shrine different from the take tp one
-			NT_File("logs/messagecomands/"+me.charname+"-baal.txt", 1, "grabshrine")
-		}
-		else if(_leaderareaid == 108 && msg.indexOf(NTConfig_TakeTpDiablo) != -1){ // all diablo leech scripts will use the same one
-			NT_File("logs/messagecomands/"+me.charname+"-diablo.txt", 1, "takedtp")
-		}
-		else if(_leaderareaid == 83 && msg.indexOf(NTConfig_TakeTpTravincal) != -1){ // all diablo leech scripts will use the same one
-			NT_File("logs/messagecomands/"+me.charname+"-trav.txt", 1, "takettp")
-		}
+				me.maxgametime = 0;
+			}
+			break;
+		default: break;
 	}
 }
 

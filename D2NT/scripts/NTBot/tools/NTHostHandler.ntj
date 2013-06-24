@@ -1,18 +1,16 @@
 //	Original HostileCatch done by Young_Love - Original HostileWatch done by kolton
 //	Additional modifications originate from Diabolic - Implemented by Tru
-//	Combined - Edited/Updated by Tru V2.225 (31 Oct 2012)
+//	Combined - Edited/Updated by Tru V2.3 (23 Jun 2013)
 
-var HH_CampStairs = true;		// Set true to move to Throne of Destruction stairs to wait for hostile to come play
+var HH_CampStairs = false;		// Set true to move to Throne of Destruction stairs to wait for hostile to come play
 var HH_CampSpam = -1;			// Set to the skill id for what attack you want to spam at the stairs
-var HH_ViperScramble = true;	// Set to true to run if the hostiler has revived vipers
 
 var HostileAccount;
 var Accounts = [];
 var Class = [];
 var Levels = [];
 var Names = [];
-var Ver = "2.225";
-var WhoDatIs;
+var Ver = "2.3";
 
 var GetWreckedTaunt = [
 		" is pure weakness!",
@@ -49,7 +47,6 @@ function NTMain()
 					if(!HH_CampStairs || me.areaid != 131){
 						if(GetPlayerFlag(me.gid, _dumbass.gid, 9) && /*GetDistance(me.x, me.y, _dumbass.x, _dumbass.y) < 60*/ me.areaid == _dumbass.areaid && !NTC_InTown() && NTA_IsValidTarget(_dumbass)){
 							NTC_SendMsgToScript("NTBotGame.ntj", "HOSTILE");
-							if(HH_ViperScramble) { ViperChecker(); }
 							if(NTA_KillDumbass(_dumbass.gid) && TauntHostile){
 								t = Random(0,(GotWreckedTaunt.length-1));
 								Say(_dumbass.name + GotWreckedTaunt[t]);
@@ -82,48 +79,7 @@ function NTMain()
 function DumbassCity(msg, type)
 {
 	switch(type){
-		case 0:
-			if(msg.length >= 150){
-				Delay(Random(2000,3000));
-				Say("Oh yeah dude?");
-			}
-			break;
-		case 2:
-			var ends = [".com", ".c0m", ".net", ".org", ".0rg"];
-			var DontIgnore = "ProjectEtal.com";
-			var x;
-			for (x in ends && !DontIgnore){
-				if (msg.toLowerCase().indexOf(ends[x]) != -1 && msg.indexOf(!me.charname) != -1){
-					SpamTastic = msg.split(": ")[0];
-					SpamTastic = stripColorCodes(SpamTastic);
-					Say("/ignore " + SpamTastic);
-				}
-			}
-			break;
-		case 3:
-			if(msg.indexOf("BattleNet>: That character is not") != -1){
-				Say("/ignore " + WhoDatIs);
-				return;
-			}
-			else if(msg.indexOf("BattleNet>: ") != -1){
-				HostileAccount = msg.split("*")[1];
-				HostileAccount = HostileAccount.split(") ")[0];
-				HostileAccount = stripColorCodes(HostileAccount);
-				if(HostileAccount == undefined) HostileAccount = 'N/A';
-				ScanPlayers();
-				return HostileAccount;
-			}
-			break;
-		case 4:
-			if(msg.indexOf(") joined our world") != -1){
-				WhoDatIs = msg.split("(")[0];
-				WhoDatIs = stripColorCodes(WhoDatIs);
-				Say("/whois " + WhoDatIs);
-				return WhoDatIs;
-			}
-			break;
-		//case 8:
-		//	if(msg.indexOf("has expressed hostility") != -1)
+		case 8:
 		case 9:
 			if(msg.indexOf("has expressed hostility") != -1 || msg.indexOf("left") != -1){
 				var TheTime = MyTime();
@@ -221,20 +177,6 @@ function NTA_KillDumbass(id)
 	}
 	NTSI_PickItems();
 	return (_target.hp <= 0 || _target.mode == 0 || _target.mode == 17);
-}
-
-function ViperChecker()
-{
-	var ViperTypes = [NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(2752)), NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(2956)), NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(2957)), NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(2958)), NTC_FindUnit(NTC_UNIT_MONSTER, GetLocaleString(2959))];
-	for(i = 0 ; i < ViperTypes.length ; i++){
-		if(ViperTypes[i]){
-			VipersDaddy = ViperTypes[i].GetParent();
-			if(_dumbass.gid == VipersDaddy.gid){
-				Say("Oh snap, you brought vipers? See ya!");
-				ExitGame();
-			} break;
-		}
-	} return;
 }
 
 function NTA_IsValidTarget(target)
