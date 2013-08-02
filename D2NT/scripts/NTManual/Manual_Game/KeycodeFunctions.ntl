@@ -32,6 +32,8 @@ function Do_KeyHotList()
 	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_HiddenStats) + "]" + COLOR_4 + " Resistances, FCR, FHR, IAS, %DR, %MDR, and absorbs!" + "\n";
 	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_Breakpoints) + "]" + COLOR_4 + " Get your BPs for your character class" + "\n";
 	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_MyChicken) + "]" + COLOR_4 + " Print your chicken values for HP/MP" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_NextWaypoint) + "]" + COLOR_4 + " Auto-tele to the next waypoint!" + "\n";
+	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_POI) + "]" + COLOR_4 + " Auto-tele to the next point of interest (POI)!" + "\n";
 	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_InvStashCheck) + "]" + COLOR_4 + " Stairbuilders Inventory/Stash layout checker!" + "\n";
 	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_GameStats) + "]" + COLOR_4 + " Log your current game's stats to manager" + "\n";
 	HotKeys += COLOR_2 + "[" + WhichHotKey(Key_CharStats) + "]" + COLOR_4 + " Log your extended stats to manager" + MercOnOrNo + "\n";

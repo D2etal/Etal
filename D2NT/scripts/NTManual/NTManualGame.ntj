@@ -1,15 +1,20 @@
-var Rev = "0.99 B2";
+var Rev = "0.993";
 var warncount;
+var _AreaName;
+var busy = false;
+var _Teleport = -1;
 
 function NTMain()
 {
 	Include("libs/common/NTCommon.ntl");
+	Include("NTManual/Manual_Game/AutoTele.ntl");
+	
 	NTC_IncludeLibs();
 
 	Include("NTManual/Manual_Game/Variables.ntl");
 	MG_LoadConfig(me.charname);
 	CheckMap();
-
+	AreaPoi();
 	ScanPlayers();
 	MG_InitializeStats();
 
@@ -27,71 +32,47 @@ function NTMain()
 	RegisterEvent(EVENT_KEYDOWN, NT_KeyEvents);
 	RegisterEvent(EVENT_GAMEMSG, MG_GameMsgEvent);
 
-	SetStatusText("Manual Game " + COLOR_8 + Rev + COLOR_4 + " - " + Online);
-	Print(COLOR_4 + "NTManualGame " + COLOR_8 + Rev + COLOR_4 + " Loaded");
-	Delay(Random(800,1200));
 	var _count = 0;
-
-	while(1)
-	{ Delay(Random(300,600));
+	
+	while(1) {	
 		ChickenStuff(); Refresh(); MG_AntiIdle();
 		if(_count++ > 10) {
 			if(MGConfig_AutoParty) { MG_PartyUp(); }
 			if(MGConfig_CheckStuff) { Town_CheckStuff(MG_CS[0], MG_CS[1], MG_CS[2], MG_CS[3]); }
 			_count = 0;
 		}
-		if(MGConfig_PickAuto) { Delay(400); NTSI_PickItems(); }
+		if(MGConfig_PickAuto) { Delay(200); NTSI_PickItems(); }
+		_AreaName =	AreaPoi();
+		if(_AreaName.length < 2) { SetStatusText(COLOR_4 + Rev + _AreaName[0]); }
+		else { SetStatusText(COLOR_4 + Rev + _AreaName[0] + COLOR_4 + " or" + _AreaName[1]); } 
+		Delay(100);
 	}
 }
 
 function MG_PartyUp()
 {
 	_player = GetPlayerUnit();
-	if(!MGConfig_FriendsOnly){
-		if(_player) {
-			_mypartyid = _player.partyid;
-			while(_player.GetNext()) {
-				if(_player.partyid == 65535 || _player.partyid != _mypartyid) {
-					if(_player.partyflag == 2) {
-						me.ClickParty(_player, 2);
-						break;
-					}
-					if(_player.partyid == 65535) {
-						if(_player.partyflag == 4)
-							break;
-						me.ClickParty(_player, 2);
-						NTC_Delay(NTC_DELAY_FRAME);
-						if(_player.partyflag == 4 || (_player.partyid != 65535 && _player.partyid == _mypartyid))
-							break;
-					}
+	if(_player) {
+		_mypartyid = _player.partyid;
+		while(_player.GetNext()) {
+			if(_player.partyid == 65535 || _player.partyid != _mypartyid) {
+				if(_player.partyflag == 2) {
+					me.ClickParty(_player, 2);
+					break;
 				}
-			}
-		}
-	}
-	else{
-		for(var q = 0; q < MG_SafeList.length; q++){
-			if(_player && MG_SafeList.indexOf(_player.name)) {
-				_mypartyid = _player.partyid;
-				while(_player.GetNext()) {
-					if(_player.partyid == 65535 || _player.partyid != _mypartyid) {
-						if(_player.partyflag == 2) {
-							me.ClickParty(_player, 2);
-							break;
-						}
-						if(_player.partyid == 65535) {
-							if(_player.partyflag == 4)
-								break;
-							me.ClickParty(_player, 2);
-							NTC_Delay(NTC_DELAY_FRAME);
-							if(_player.partyflag == 4 || (_player.partyid != 65535 && _player.partyid == _mypartyid))
-								break;
-						}
-					}
+				if(_player.partyid == 65535) {
+					if(_player.partyflag == 4)
+						break;
+					me.ClickParty(_player, 2);
+					NTC_Delay(NTC_DELAY_FRAME);
+					if(_player.partyflag == 4 || (_player.partyid != 65535 && _player.partyid == _mypartyid))
+						break;
 				}
 			}
 		}
 	} return;
 }
+
 
 function CheckMap()
 {
@@ -103,7 +84,25 @@ function CheckMap()
 
 function NT_KeyEvents(keycode)
 {
+
 	switch(keycode) {
+		case Key_POI:		
+			if(busy)
+				return Print(COLOR_1 + "Other Features are running.");
+			else {
+				if(_Teleport == -1) {
+					_Teleport = 0;
+					Delay(300);
+					if(_Teleport != 0) break;
+				}
+				else if(_Teleport == 0) {_Teleport = 1; }
+				else{ _Teleport = -1; break; }
+				busy = true;
+				TelePoi();
+				_Teleport = -1;
+			}
+			busy = false;
+			break;
 		case Key_HiddenStats:
 			StackedRes();
 			FCRPlusPrint();
@@ -160,10 +159,13 @@ function NT_KeyEvents(keycode)
 		case Key_PickItems:
 			NTSI_PickItems();
 			break;
+		case Key_NextWaypoint:
+				MG_WaypointUp();
+			break;
 		//case 17:
 			//_area = GetArea();
 			//Print(COLOR_8 + " X=" + me.x + ", Y=" + me.y);
-			//Print(COLOR_8 + "  In AreaID " + me.areaid + " , " + _area.name);
+			//Print(COLOR_8 + "In AreaID " + me.areaid + " , " + _area.name);
 			//break;
 		case 48:
 			break;

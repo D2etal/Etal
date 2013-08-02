@@ -6,7 +6,7 @@
 function MG_LoadConfig(MyChar)
 {
 	switch(MyChar){
-		case "TruIce":
+		case "TruIce": // USE THIS AS AN EXAMPLE, modify the "TruIce" to your "Char_Name"
 			MGConfig_LifeChicken = 10; 		// This is your chicken life percent. If you go below this life total, exit game.
 			MGConfig_ManaChicken = -1; 		// This is your chicken mana percent. If you go below this mana total, exit game.
 			MGConfig_ChickenWarn = true; 	// This will warn you to heal before exiting town if you'll chicken
@@ -18,15 +18,15 @@ function MG_LoadConfig(MyChar)
 
 			MGConfig_BeltType = ["hp", "hp", "mp", "mp"]; // Belt slots are just as they show in game!
 
-			MGConfig_CheckStuff = false; 	// Gives a warning when low on pots/scrolls
-			MG_CS = ["0", "0", "0", "0"];	// Values to check [HPs, MPs, TPs, IDs];
+			MGConfig_CheckStuff = true; 	// Gives a warning when low on pots/scrolls
+			MG_CS = ["2", "2", "1", "1"];	// Values to check [HPs, MPs, TPs, IDs];
 
 			NTConfig_HostileHandler = false; // true will make you quit when hostiled, false won't
 		break;
 		default: Print(COLOR_4 + "Loaded default configuration!");
 			MGConfig_LifeChicken = -1; 		// This is your chicken life percent. If you go below this life total, exit game.
 			MGConfig_ManaChicken = -1; 		// This is your chicken mana percent. If you go below this mana total, exit game.
-			MGConfig_ChickenWarn = true; 	// This will warn you to heal before exiting town if you'll chicken
+			MGConfig_ChickenWarn = false; 	// This will warn you to heal before exiting town if you'll chicken
 
 			MGConfig_LifeThresh = 85;		// Drink a health potion if under this percent of life.
 			MGConfig_LifeRejuvThresh = 35;	// Drink a rejuvenation potion if under this percent of life. (Will not use health potions under this %)
@@ -35,8 +35,8 @@ function MG_LoadConfig(MyChar)
 
 			MGConfig_BeltType = ["hp", "hp", "mp", "rv"]; // Belt slots are just as they show in game!
 
-			MGConfig_CheckStuff = true; 	// Gives a warning when low on pots/scrolls
-			MG_CS = ["-1", "-1", "3", "3"];	// Values to check [HPs, MPs, TPs, IDs];
+			MGConfig_CheckStuff = false; 	// Gives a warning when low on pots/scrolls
+			MG_CS = ["-1", "-1", "-1", "-1"];	// Values to check [HPs, MPs, TPs, IDs];
 
 			NTConfig_HostileHandler = false; // true will make you quit when hostiled, false won't
 		break;
@@ -49,8 +49,6 @@ function MG_LoadConfig(MyChar)
 	MGConfig_PickAuto = false;		// This will turn on/off automatic item picking
 
 	MGConfig_AutoParty = true; 		// true will auto party with people who join, false won't
-	MGConfig_FriendsOnly = false; 	// true will auto party the people in your MG_SafeList only!
-	MG_SafeList = ["CharName1", "CharName2", "CharName3", "YouGetItRight?"];
 
 	MGConfig_ShowMap = true;
 	MGConfig_ShowEnemy = true;
@@ -60,7 +58,6 @@ function MG_LoadConfig(MyChar)
 	NTConfig_WhisperToManager = false; 	// Logs whispers from in-game to your manager
 	NTConfig_WhisperToTab = "common"; 	// Choose which tab whispers go to, either "common" or "item"
 
-	
 	Key_PickItems = 17;				// Ctrl - pick items based on your standard item configs!
 		NTConfig_SnagRange = 40;	// Range for picking items!
 	Key_HotKeyInfo = 45;			// Insert - Send a list of hotkeys to your manager
@@ -70,6 +67,8 @@ function MG_LoadConfig(MyChar)
 	Key_HiddenStats = 97;			// Num 1 - Resistances, FCR, FHR, IAS, %DR, %MDR, and absorbs! 
 	Key_Breakpoints = 100;			// Num 4 - Get your BPs for your character class
 	Key_MyChicken = 103;			// Num 7 - Print your chicken values for HP/MP
+	Key_NextWaypoint = 106; 		// Num * - Auto-tele to next waypoint
+	Key_POI = 109; 					// Num - - Auto-tele to Point Of Interest (POI)
 	Key_InvStashCheck = 107; 		// Num + - Stairbuilders Inventory/Stash layout checker!
 		InvChecking = "Mgr";		// "Game" to print in game "Mgr" to print in CommonLog
 		StashChecking = "Mgr";		// "Game" to print in game "Mgr" to print in CommonLog
