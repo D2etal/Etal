@@ -39,66 +39,66 @@
 [Name] == WristSword && [Quality] == Magic # [ItemToHitPerLevel] >= 1 && [IAS] >= 20
 [Name] == BattleCestus && [Quality] == Magic # [ItemToHitPerLevel] >= 1 && [IAS] >= 20
 
-([Type] == handtohand || [Type] == assassinclaw || [Type] == assassinitem) && [Quality] >= magic # [SkillLightningSentry] >= 3 && ([trapsskilltab] >= 3 || [assassinskills] >= 2)
+([Type] == HandToHand || [Type] == AssassinClaw || [Type] == AssassinItem) && [Quality] >= Magic # [SkillLightningSentry] >= 3 && ([TrapsSkillTab] >= 3 || [AssassinSkills] >= 2)
 
-[type] == handtohand && [quality] == magic # ([assassinskills] == 2 || [trapsskilltab] == 3) && [skilllightningsentry] == 3
-[type] == handtohand && [quality] == magic # ([assassinskills] == 2 || [shadowdisciplinesskilltab] == 3) && ([skillvenom] == 3 || [skillfade] == 3)
-[type] == handtohand && [quality] == magic # [assassinskills]+[skilllightningsentry] == 5 && [ias] >= 30
-[type] == handtohand && [quality] == magic # [trapsskilltab]+[skilllightningsentry] >= 5 && [ias] >= 30
+[type] == HandToHand && [Quality] == Magic # ([AssassinSkills] == 2 || [TrapsSkillTab] == 3) && [SkillLightningSentry] == 3
+[type] == HandToHand && [Quality] == Magic # ([AssassinSkills] == 2 || [ShadowDisciplinesSkillTab] == 3) && ([SkillVenom] == 3 || [SkillFade] == 3)
+[type] == HandToHand && [Quality] == Magic # [AssassinSkills]+[SkillLightningSentry] == 5 && [IAS] >= 30
+[type] == HandToHand && [Quality] == Magic # [TrapsSkillTab]+[SkillLightningSentry] >= 5 && [IAS] >= 30
 
-[name] == greatertalons && [quality] == magic # [assassinskills]+[skilllightningsentry] == 5 || [trapsskilltab]+[skilllightningsentry] >= 5
-[name] == greatertalons && [quality] == magic # [assassinskills]+[skillwakeoffire] == 5 || [trapsskilltab]+[skillwakeoffire] >= 5
-[name] == greatertalons && [quality] == magic # [itemtohitperlevel] >= 15 && [ias] >= 30
-[name] == greatertalons && [quality] == magic # [sockets] == 3 && [ias] >= 30
-[name] == greatertalons && [quality] == magic # [assassinskills]+[skilllightningsentry] >= 4 && [ias] >= 30
-[name] == greatertalons && [quality] == magic # [assassinskills]+[skillwakeoffire] >= 4 && [ias] >= 30
-[name] == greatertalons && [quality] == magic # [trapsskilltab]+[skilllightningsentry] >= 5 && [ias] >= 30
-[name] == greatertalons && [quality] == magic # [trapsskilltab]+[skillwakeoffire] >= 5 && [ias] >= 30
+[Name] == GreaterTalons && [Quality] == Magic # [AssassinSkills]+[SkillLightningSentry] == 5 || [TrapsSkillTab]+[SkillLightningSentry] >= 5
+[Name] == GreaterTalons && [Quality] == Magic # [AssassinSkills]+[SkillWakeOfFire] == 5 || [TrapsSkillTab]+[SkillWakeOfFire] >= 5
+[Name] == GreaterTalons && [Quality] == Magic # [ItemToHitPerLevel] >= 15 && [IAS] >= 30
+[Name] == GreaterTalons && [Quality] == Magic # [Sockets] == 3 && [IAS] >= 30
+[Name] == GreaterTalons && [Quality] == Magic # [AssassinSkills]+[SkillLightningSentry] >= 4 && [IAS] >= 30
+[Name] == GreaterTalons && [Quality] == Magic # [AssassinSkills]+[SkillWakeOfFire] >= 4 && [IAS] >= 30
+[Name] == GreaterTalons && [Quality] == Magic # [TrapsSkillTab]+[SkillLightningSentry] >= 5 && [IAS] >= 30
+[Name] == GreaterTalons && [Quality] == Magic # [TrapsSkillTab]+[SkillWakeOfFire] >= 5 && [IAS] >= 30
 
-[name] == greaterclaws && [quality] == magic # [assassinskills]+[skilllightningsentry] == 5 || [trapsskilltab]+[skilllightningsentry] >= 5 && [ias] >= 10
-[name] == greaterclaws && [quality] == magic # [assassinskills]+[skillwakeoffire] == 5 || [trapsskilltab]+[skillwakeoffire] >= 5 && [ias] >= 10
-[name] == greaterclaws && [quality] == magic # [itemtohitperlevel] >= 15 && [ias] >= 40
-[name] == greaterclaws && [quality] == magic # [sockets] == 3 && [ias] >= 40
-[name] == greaterclaws && [quality] == magic # [assassinskills]+[skilllightningsentry] >= 4 && [ias] >= 40
-[name] == greaterclaws && [quality] == magic # [assassinskills]+[skillwakeoffire] >= 4 && [ias] >= 40
-[name] == greaterclaws && [quality] == magic # [trapsskilltab]+[skilllightningsentry] >= 5 && [ias] >= 40
-[name] == greaterclaws && [quality] == magic # [trapsskilltab]+[skillwakeoffire] >= 5 && [ias] >= 40
+[Name] == GreaterClaws && [Quality] == Magic # [AssassinSkills]+[SkillLightningSentry] == 5 || [TrapsSkillTab]+[SkillLightningSentry] >= 5 && [IAS] >= 10
+[Name] == GreaterClaws && [Quality] == Magic # [AssassinSkills]+[SkillWakeOfFire] == 5 || [TrapsSkillTab]+[SkillWakeOfFire] >= 5 && [IAS] >= 10
+[Name] == GreaterClaws && [Quality] == Magic # [ItemToHitPerLevel] >= 15 && [IAS] >= 40
+[Name] == GreaterClaws && [Quality] == Magic # [Sockets] == 3 && [IAS] >= 40
+[Name] == GreaterClaws && [Quality] == Magic # [AssassinSkills]+[SkillLightningSentry] >= 4 && [IAS] >= 40
+[Name] == GreaterClaws && [Quality] == Magic # [AssassinSkills]+[SkillWakeOfFire] >= 4 && [IAS] >= 40
+[Name] == GreaterClaws && [Quality] == Magic # [TrapsSkillTab]+[SkillLightningSentry] >= 5 && [IAS] >= 40
+[Name] == GreaterClaws && [Quality] == Magic # [TrapsSkillTab]+[SkillWakeOfFire] >= 5 && [IAS] >= 40
 
-[name] == bladetalons && [quality] == magic # [assassinskills] == 1 && [ias] == 30
+[Name] == BladeTalons && [Quality] == Magic # [AssassinSkills] == 1 && [IAS] == 30
 
 //=============================================================
 //************ Armor and Shields ******************************
 //=============================================================
 
-[Type] == Armor && [Quality] == Magic && ([Class] == Normal || [Class] == Exceptional) && [Flag] != ethereal # [MaxHP] <= 80 && [MaxHP] >= 60 && [Sockets] == 3
-[Type] == Armor && [Quality] == Magic && [Flag] != ethereal # [Sockets] == 4 && ([MaxHP] >= 60 || [FHR] == 24)
+[Type] == Armor && [Quality] == Magic && ([Class] == Normal || [Class] == Exceptional) && [Flag] != Ethereal # [MaxHP] <= 80 && [MaxHP] >= 60 && [Sockets] == 3
+[Type] == Armor && [Quality] == Magic && [Flag] != Ethereal # [Sockets] == 4 && ([MaxHP] >= 60 || [FHR] == 24)
 
-[name] == ancientarmor && [quality] == magic # [sockets] == 4 && [maxhp] >= 90
-//[name] == ancientarmor && [quality] == magic # [sockets] == 4 && [fhr] == 24
-[name] == archonplate && [quality] == magic # [sockets] == 4 && [maxhp] >= 90
-[name] == archonplate && [quality] == magic # [sockets] == 4 && [fhr] == 24
+[Name] == AncientArmor && [Quality] == Magic # [Sockets] == 4 && [MaxHP] >= 90
+//[Name] == AncientArmor && [Quality] == Magic # [Sockets] == 4 && [FHR] == 24
+[Name] == ArchonPlate && [Quality] == Magic # [Sockets] == 4 && [MaxHP] >= 90
+[Name] == ArchonPlate && [Quality] == Magic # [Sockets] == 4 && [FHR] == 24
 
-[name] == lightplate && [quality] == magic # [sockets] == 3 && [maxhp] == 80 && [itemlevelreq] <= 30
-[name] == mageplate && [quality] == magic # [sockets] == 3 && [maxhp] == 80 && [itemlevelreq] <= 30
+[Name] == LightPlate && [Quality] == Magic # [Sockets] == 3 && [MaxHP] == 80 && [ItemLevelReq] <= 30
+[Name] == MagePlate && [Quality] == Magic # [Sockets] == 3 && [MaxHP] == 80 && [ItemLevelReq] <= 30
 
 
-[name] == towershield && [quality] == magic # [sockets] == 3 && [fbr] == 30 && [itemlevelreq] <= 30
-[name] == pavise && [quality] == magic # [sockets] == 3 && [fbr] == 30 && [itemlevelreq] <= 30
-[name] == kiteshield && [quality] == magic # [sockets] == 3 && [fbr] == 30 && [itemlevelreq] <= 30
-[name] == barbedshield && [quality] == magic # [palicombatskilltab] == 2 && [fbr] == 30
+[Name] == TowerShield && [Quality] == Magic # [Sockets] == 3 && [FBR] == 30 && [ItemLevelReq] <= 30
+[Name] == Pavise && [Quality] == Magic # [Sockets] == 3 && [FBR] == 30 && [ItemLevelReq] <= 30
+[Name] == KiteShield && [Quality] == Magic # [Sockets] == 3 && [FBR] == 30 && [ItemLevelReq] <= 30
+[Name] == BarbedShield && [Quality] == Magic # [PaliCombatSkillTab] == 2 && [FBR] == 30
 
 //=============================================================
 //************ Gloves and Boots ******************************
 //=============================================================
 
-[Type] == Gloves && [Quality] == magic # [IAS] == 20 && [MartialartsSkillTab] == 3
-[Type] == Gloves && [Quality] == magic # [IAS] == 20 && [JavelinandSpearSkillTab] == 3
-[Type] == Gloves && [Quality] == magic # [IAS] == 20 && [BowandCrossbowSkillTab] == 3
-[Name] == VampireboneGloves && [Quality] == magic # [IAS] == 20 && [JavelinandSpearSkillTab] == 3
-[Name] == Vambraces && [Quality] == magic # [IAS] == 20 && [JavelinandSpearSkillTab] == 3
-[Name] == CrusaderGauntlets && [Quality] == magic # [IAS] == 20 && [JavelinandSpearSkillTab] == 3
-[Name] == Vampirebone Gloves && [Quality] == magic # [IAS] == 20 && [JavelinandSpearSkillTab] == 3
-[Name] == Vambraces && [Quality] == magic # [IAS] == 20 && [JavelinandSpearSkillTab] == 3
-[Name] == CrusaderGauntlets && [Quality] == magic # [IAS] == 20 && [JavelinandSpearSkillTab] == 3
+[Type] == Gloves && [Quality] == Magic # [IAS] == 20 && [MartialArtsSkillTab] == 3
+[Type] == Gloves && [Quality] == Magic # [IAS] == 20 && [JavelinAndSpearSkillTab] == 3
+[Type] == Gloves && [Quality] == Magic # [IAS] == 20 && [BowAndCrossbowSkillTab] == 3
+[Name] == VampireboneGloves && [Quality] == Magic # [IAS] == 20 && [JavelinAndSpearSkillTab] == 3
+[Name] == Vambraces && [Quality] == Magic # [IAS] == 20 && [JavelinAndSpearSkillTab] == 3
+[Name] == CrusaderGauntlets && [Quality] == Magic # [IAS] == 20 && [JavelinAndSpearSkillTab] == 3
+[Name] == VampireboneGloves && [Quality] == Magic # [IAS] == 20 && [JavelinAndSpearSkillTab] == 3
+[Name] == Vambraces && [Quality] == Magic # [IAS] == 20 && [JavelinAndSpearSkillTab] == 3
+[Name] == CrusaderGauntlets && [Quality] == Magic # [IAS] == 20 && [JavelinAndSpearSkillTab] == 3
 
-[type] == boots && [quality] == magic # [maxmana] == 40 && [frw] == 40
+[Type] == Boots && [Quality] == Magic # [MaxMana] == 40 && [FRW] == 40
