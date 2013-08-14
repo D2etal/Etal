@@ -58,7 +58,7 @@ var gamepassword = "";
 // if false, the follow bot will never change his CDKey
 // =============================================================================
 
-var UseCDKeyChangeTrick = true;
+var UseCDKeyChangeTrick = false;
 
 // =============================================================================
 // Debug : set to true if you are experiencing problems with your JoinBot
@@ -75,7 +75,7 @@ var joinChatAfterGame    = true;	// Set to true to join the chat after each game
 var firstJoinMessage     = "";		// Message said when you first enter the chat
 var chatMessageAfterGame = "";		// Message said after each game
 var joinRandomChannel    = false; 	// if this is true, will join a random channel, otherwise it will use the channel below..
-var joinChannelInChat    = "";		// Name of the channel you want to join (leave blank if you want to stay in the default channel)
+var joinChannelInChat    = "OP Etal";		// Name of the channel you want to join (leave blank if you want to stay in the default channel)
 
 ////////////////////////////////////////////////////////////////////////////////
 // Delays:
