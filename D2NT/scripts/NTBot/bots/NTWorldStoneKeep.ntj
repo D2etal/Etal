@@ -385,10 +385,15 @@ function achmel(){
 		}
 		if(_holdTargetHp <= _achmel.hp && NTConfig_WalkAround) {
 			x++;
-			if(x % 2 == 0)
+			if(x % 2 == 0) {
 				NTM_WalkTo(me.x+10, me.y);
-			else
+				if(me.classid == NTC_CHAR_CLASS_PALADIN)
+					NTC_PutSkill(NTConfig_AttackSkill[6], NTC_HAND_RIGHT);
+			} else {
 				NTM_WalkTo(me.x-10, me.y);
+				if(me.classid == NTC_CHAR_CLASS_PALADIN)
+					NTC_PutSkill(NTConfig_AttackSkill[6], NTC_HAND_RIGHT);
+			}
 		}
 	}
 	var _company = NTC_FindUnit(NTC_UNIT_MONSTER, 105);
@@ -400,10 +405,15 @@ function achmel(){
 			}
 			if(_holdTargetHp <= _company.hp && NTConfig_WalkAround) {
 				x++;
-				if(x % 2 == 0)
+				if(x % 2 == 0) {
 					NTM_WalkTo(me.x+10, me.y);
-				else
+					if(me.classid == NTC_CHAR_CLASS_PALADIN)
+						NTC_PutSkill(NTConfig_AttackSkill[6], NTC_HAND_RIGHT);
+				} else {
 					NTM_WalkTo(me.x-10, me.y);
+					if(me.classid == NTC_CHAR_CLASS_PALADIN)
+						NTC_PutSkill(NTConfig_AttackSkill[6], NTC_HAND_RIGHT);
+				}
 			}
 		}
 	} while (_company && _company.GetNext());
