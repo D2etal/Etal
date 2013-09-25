@@ -1,4 +1,4 @@
-var Rev = "0.993";
+var Rev = "0.994";
 var warncount;
 var _AreaName;
 var busy = false;
@@ -161,7 +161,10 @@ function NT_KeyEvents(keycode)
 			NTSI_PickItems();
 			break;
 		case Key_NextWaypoint:
-				MG_WaypointUp();
+			MG_WaypointUp();
+			break;
+		case Key_CursoriLvL:
+			NTU_CursorILvl();
 			break;
 		//case 17:
 			//_area = GetArea();

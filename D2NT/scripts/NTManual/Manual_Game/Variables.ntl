@@ -57,6 +57,7 @@ var Key_PickItems;
 var Key_AntiIdle;
 	var MGAntiIdle = false;
 var Key_GameStats;
+var Key_CursoriLvL;
 
 // Adding NTConfig inclusion to avoid errors.
 Include("NTBot/char_configs/NTConfig.ntl");

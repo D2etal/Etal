@@ -974,7 +974,7 @@ function NTV_AncientsWay(isgrabber){
 		return NTV_Error(isgrabber);
 	}
 	if(NTConfig_DoQuests.indexOf("Rite Of Passage") == -1 && !me.GetQuest(39, 0)){
-		if(NTM_TakeWaypoint(109)){
+		if(!NTM_TakeWaypoint(109)){
 			while(1){
 				Say("!All Done!!!");
 				Delay(1e3);

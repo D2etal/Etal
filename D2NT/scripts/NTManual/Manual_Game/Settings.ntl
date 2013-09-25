@@ -7,7 +7,7 @@ function MG_LoadConfig(MyChar)
 {
 	switch(MyChar){
 		case "TruIce": // USE THIS AS AN EXAMPLE, modify the "TruIce" to your "Char_Name"
-			MGConfig_LifeChicken = 10; 		// This is your chicken life percent. If you go below this life total, exit game.
+			MGConfig_LifeChicken = -1; 		// This is your chicken life percent. If you go below this life total, exit game.
 			MGConfig_ManaChicken = -1; 		// This is your chicken mana percent. If you go below this mana total, exit game.
 			MGConfig_ChickenWarn = true; 	// This will warn you to heal before exiting town if you'll chicken
 
@@ -18,7 +18,7 @@ function MG_LoadConfig(MyChar)
 
 			MGConfig_BeltType = ["hp", "hp", "mp", "mp"]; // Belt slots are just as they show in game!
 
-			MGConfig_CheckStuff = true; 	// Gives a warning when low on pots/scrolls
+			MGConfig_CheckStuff = false; 	// Gives a warning when low on pots/scrolls
 			MG_CS = ["2", "2", "1", "1"];	// Values to check [HPs, MPs, TPs, IDs];
 
 			NTConfig_HostileHandler = false; // true will make you quit when hostiled, false won't
@@ -67,6 +67,7 @@ function MG_LoadConfig(MyChar)
 	Key_HiddenStats = 97;			// Num 1 - Resistances, FCR, FHR, IAS, %DR, %MDR, and absorbs! 
 	Key_Breakpoints = 100;			// Num 4 - Get your BPs for your character class
 	Key_MyChicken = 103;			// Num 7 - Print your chicken values for HP/MP
+	Key_CursoriLvL = 105;			// Num 9 - Print the iLvl of the item on your cursor.
 	Key_NextWaypoint = 106; 		// Num * - Auto-tele to next waypoint
 	Key_POI = 109; 					// Num - - Auto-tele to Point Of Interest (POI)
 	Key_InvStashCheck = 107; 		// Num + - Stairbuilders Inventory/Stash layout checker!

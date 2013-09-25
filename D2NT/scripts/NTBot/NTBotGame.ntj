@@ -1,12 +1,11 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "96";
+var Rev = "98";
 
 var SoJNotify = false;
 var CloneDiabloString = GetLocaleString(11005);
 var SoJString = GetLocaleString(11004).substr(3);
 var CloneDiabloNotify = false;
-var SoJNotify = false;
 var SoJElapsedTime = 0;
 var InitLife;
 var Corpses = 0;
@@ -290,12 +289,15 @@ function NT_GameMsgEvents(msg, type)
 				NTTM_CheckAct();
 			}
 			else if(msg.indexOf(SoJString) != -1 && !CloneDiabloNotify && NTConfig_SoJWaitTime > 0) { // part of soj addon. !CloneDiabloNotify was added to prevent timer start on oversales after Diablo walks.
-				SoJNotify = true;
-				SoJElapsedTime = 0;
-
-				NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_4 + msg);
-
-				me.maxgametime = 0;
+				if(me.diff < 2) {
+					NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_4 + "Not waiting for DClone - not in a hell game");
+				}
+				if(me.diff == 2) {
+					SoJNotify = true;
+					SoJElapsedTime = 0;             
+					NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_4 + msg);
+					me.maxgametime = 0;
+                }			
 			}
 			break;
 		default: break;
