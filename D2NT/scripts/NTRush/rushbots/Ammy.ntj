@@ -34,13 +34,13 @@ function Ammy()
 		return false;
 	}
 		
+	NTM_MakeTP();
+		
 	NTC_PingDelay(100);
 		
 	Say(Messages.ammyup);
 		
-	NTM_MakeTP();
-		
-	NTA_ClearPosition(5);
+	NTA_ClearPosition(20);
 
 	while (!NTC_IsQuesterIn()) {
 		NTC_TPGuard(5);

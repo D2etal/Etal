@@ -6,7 +6,7 @@
 function MG_LoadConfig(MyChar)
 {
 	switch(MyChar){
-		case "TruIce": // USE THIS AS AN EXAMPLE, modify the "TruIce" to your "Char_Name"
+		case "TruWind": // USE THIS AS AN EXAMPLE, modify the "TruIce" to your "Char_Name"
 			MGConfig_LifeChicken = -1; 		// This is your chicken life percent. If you go below this life total, exit game.
 			MGConfig_ManaChicken = -1; 		// This is your chicken mana percent. If you go below this mana total, exit game.
 			MGConfig_ChickenWarn = true; 	// This will warn you to heal before exiting town if you'll chicken
@@ -16,7 +16,7 @@ function MG_LoadConfig(MyChar)
 			MGConfig_ManaThresh = 10;		// Drink a mana potion if under this percent of mana.
 			MGConfig_ManaRejuvThresh = 0;	// Drink a rejuvenation potion if under this percent of mana. (Will not use mana potions under this %)
 
-			MGConfig_BeltType = ["hp", "hp", "mp", "mp"]; // Belt slots are just as they show in game!
+			MGConfig_BeltType = ["hp", "hp", "hp", "hp"]; // Belt slots are just as they show in game!
 
 			MGConfig_CheckStuff = false; 	// Gives a warning when low on pots/scrolls
 			MG_CS = ["2", "2", "1", "1"];	// Values to check [HPs, MPs, TPs, IDs];
@@ -28,9 +28,9 @@ function MG_LoadConfig(MyChar)
 			MGConfig_ManaChicken = -1; 		// This is your chicken mana percent. If you go below this mana total, exit game.
 			MGConfig_ChickenWarn = false; 	// This will warn you to heal before exiting town if you'll chicken
 
-			MGConfig_LifeThresh = 85;		// Drink a health potion if under this percent of life.
+			MGConfig_LifeThresh = 90;		// Drink a health potion if under this percent of life.
 			MGConfig_LifeRejuvThresh = 35;	// Drink a rejuvenation potion if under this percent of life. (Will not use health potions under this %)
-			MGConfig_ManaThresh = 30;		// Drink a mana potion if under this percent of mana.
+			MGConfig_ManaThresh = 20;		// Drink a mana potion if under this percent of mana.
 			MGConfig_ManaRejuvThresh = 0;	// Drink a rejuvenation potion if under this percent of mana. (Will not use mana potions under this %)
 
 			MGConfig_BeltType = ["hp", "hp", "mp", "rv"]; // Belt slots are just as they show in game!
@@ -67,6 +67,7 @@ function MG_LoadConfig(MyChar)
 	Key_HiddenStats = 97;			// Num 1 - Resistances, FCR, FHR, IAS, %DR, %MDR, and absorbs! 
 	Key_Breakpoints = 100;			// Num 4 - Get your BPs for your character class
 	Key_MyChicken = 103;			// Num 7 - Print your chicken values for HP/MP
+	Key_DPSMeter = 104;				// Num 8 - DPS Meter above character - YOU CAN NOT CHAT IN GAME WITH THIS ACTIVE!
 	Key_CursoriLvL = 105;			// Num 9 - Print the iLvl of the item on your cursor.
 	Key_NextWaypoint = 106; 		// Num * - Auto-tele to next waypoint
 	Key_POI = 109; 					// Num - - Auto-tele to Point Of Interest (POI)
@@ -86,7 +87,7 @@ function MG_PickitLoad()
 	//NTConfig_NIPFilePath.push("Master/Cubed.nip");
 	//NTConfig_NIPFilePath.push("Master/CustomAdditions.nip");
 	//NTConfig_NIPFilePath.push("Master/FAST.nip");
-	NTConfig_NIPFilePath.push("Master/Gold Potions Runes Gems Essences Keys Organs.nip");
+	//NTConfig_NIPFilePath.push("Master/Gold Potions Runes Gems Essences Keys Organs.nip");
 	//NTConfig_NIPFilePath.push("Master/Magic.nip");
 	//NTConfig_NIPFilePath.push("Master/Rare.nip");
 	//NTConfig_NIPFilePath.push("Master/Set.nip");

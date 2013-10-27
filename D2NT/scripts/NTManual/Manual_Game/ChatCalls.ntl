@@ -1721,8 +1721,7 @@ function MG_GameMsgEvent(msg, type)
 				default:
 					break;
 		}
-	}
-	return;
+	} return;
 }
 
 function PrintOrSay(msg)

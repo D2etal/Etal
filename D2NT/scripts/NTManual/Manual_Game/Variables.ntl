@@ -58,6 +58,7 @@ var Key_AntiIdle;
 	var MGAntiIdle = false;
 var Key_GameStats;
 var Key_CursoriLvL;
+var Key_DPSMeter;
 
 // Adding NTConfig inclusion to avoid errors.
 Include("NTBot/char_configs/NTConfig.ntl");

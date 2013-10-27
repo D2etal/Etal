@@ -1,4 +1,4 @@
-var Rev = "0.994";
+var Rev = "0.995";
 var warncount;
 var _AreaName;
 var busy = false;
@@ -334,6 +334,7 @@ function InTown(MyChar)
 	return (me.areaid == 1 || me.areaid == 40 || me.areaid == 75 || me.areaid == 103 || me.areaid == 109);
 }
 var WarnedMeOnce = false;
+
 function ChickenWarning()
 {
 	if(!WarnedMeOnce){
@@ -412,13 +413,16 @@ function MG_ComputeStats(chickenFlag) {
 		LvLProgXP = "";
 	}
 
-	if(_endGold >= _startGold){
+	if(_endGold > _startGold){
 		_GoldCount = (_endGold - _startGold);
 		GoldenInfo = "\n Gold Gained: " + COLOR_2 + _GoldCount;
 	}
-	else {
+	else if(_endGold < _startGold){
 		_GoldCount = (_startGold - _endGold);
 		GoldenInfo = "\n Gold Lost: " + COLOR_1 + _GoldCount;
+	}
+	else{
+		GoldenInfo = "";
 	}
 
     var RunTime = parseInt(((_endTime - _startTime) / 60000),10) + "m " + (parseInt(((_endTime - _startTime) / 1000),10) - parseInt(((_endTime - _startTime) / 60000),10) * 60) + "s";

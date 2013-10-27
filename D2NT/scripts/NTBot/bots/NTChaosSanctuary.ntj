@@ -270,7 +270,7 @@ function NT_OpenVenomSealInt(type) {
 		PubTP();
 		PubSay(NTConfig_CS_LeechSupTP);
 	}
-	if (!NT_OpenSealInt(393) || !NT_OpenSealInt(392)) {
+	if (!NT_OpenSealInt(392) || !NT_OpenSealInt(393)) {
 		return false;
 	}
 	if (type === 1) {

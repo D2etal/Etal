@@ -17,6 +17,9 @@ function AreaPoi()// returns POI display info
 		case 57:
 		case 60:return [COLOR_8 + " Cube"];
 		case 43:return [COLOR_8 + " Staff"];
+		case 47:
+		case 48:
+		case 49:return [COLOR_8 + " Radament"];
 		case 44:
 		case 45:
 		case 58:
@@ -91,6 +94,10 @@ function TelePoi()// move to POI's
 			break;
 		case 35:	
 		case 35:if(!MG_MoveToStairs([35, 36],[36, 37])) return ErrorHandler();
+			break;
+		case 47:if(!MG_MoveToStairs([47, 48])) return ErrorHandler();
+		case 48:if(!MG_MoveToStairs([48, 49])) return ErrorHandler();
+		case 49:if(!MG_Radament) return ErrorHandler();
 			break;
 		case 56:
 		case 57:
@@ -208,6 +215,12 @@ function MG_Pit()
 	return;
 }
 
+function MG_Radament()
+{
+	SetStatusText(COLOR_4 + Rev + COLOR_8 + " Radament");
+	if(!NTM_KoMoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 355, 1, -1)) return ErrorHandler();
+	return;
+}
 function MG_Sumoner()
 {
 	SetStatusText(COLOR_4 + Rev + COLOR_8 + " Sumoner");
@@ -446,6 +459,7 @@ function MG_WaypointUp()
 		case 120:	if(!MG_MoveToStairs([120, 128])) return ErrorHandler();
 		case 128:	if(!MG_MoveToStairs([128, 129])) return ErrorHandler();
 			if(!NTM_KoMoveToPresetUnit(129, NTC_UNIT_OBJECT, 494)) return ErrorHandler();
+			break;
 		default: Print(COLOR_4 + "No waypoint from here, heading home!"); HeadingHome(); break;
 	} return MG_ClickWaypoint();
 }
