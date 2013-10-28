@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "99";
+var Rev = "100";
 
 var SoJNotify = false;
 var CloneDiabloString = GetLocaleString(11005);
@@ -25,14 +25,7 @@ function NTMain()
 	NTC_IncludeConfig("NTBot/char_configs");
 	Include("libs/common/NTExp.ntl");
 
-	if(!NT_LoadConfig()){
-		while(1){
-		Print(COLOR_2 + "You have a critical error in your character configuration!");
-		Delay(1000);
-		Print(COLOR_2 + "Please read the wiki page for First-Time Configuration again!");
-		Delay(3000);
-		}
-	}
+	NT_LoadConfig();
 	NTE_InitializeStats();
 
 	if(!me.gamename) { Say("/players 5"); } // For SP players to increase MF and such
