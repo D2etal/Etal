@@ -18,14 +18,17 @@ function Izual()
 
 	NT_MoveSafeIzzy(me.areaid, _izzy[0].roomx*5+_izzy[0].x, _izzy[0].roomy*5+_izzy[0].y);
 
+	var xx = me.x; var yy = me.y
 	NTA_ClearPosition(10);
-
-	Say(Messages.izzyup);
+	NTM_MoveTo(me.areaid, xx, yy);
 
 	NTM_MakeTP();
+	
+	Say(Messages.izzyup);
 
 	while (!NTC_IsQuesterIn()) {
 		NTC_TPGuard(20);
+		NTM_MoveTo(me.areaid, xx, yy);
 	}
 
 	NTA_ClearPosition(20);

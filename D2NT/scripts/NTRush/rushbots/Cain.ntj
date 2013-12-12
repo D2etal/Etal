@@ -24,11 +24,12 @@ function Cain()
 		}
 	}
 
-	NTM_MoveTo(me.areaid, _treex, _treey);
+	NTM_MoveTo(me.areaid, _treex-4, _treey);
+	var xx = me.x; var yy = me.y
 
-	NTA_ClearPosition(40);
+	NTA_ClearPosition(30);
 
-	NTM_MoveTo(me.areaid, _treex+2, _treey+2);
+	NTM_MoveTo(me.areaid, xx, yy);
 
 	Say(Messages.cainscroll);
 
@@ -36,10 +37,12 @@ function Cain()
 
 	while (!NTC_IsQuesterIn()) {
 		NTC_TPGuard(20);
+		NTM_MoveTo(me.areaid, xx, yy);
 	}
 
 	while (NTC_IsQuesterIn()) {
-		NTC_TPGuard(20);		
+		NTC_TPGuard(20);
+		NTM_MoveTo(me.areaid, xx, yy);		
 	}
 
 	NTSI_PickItems();
@@ -92,18 +95,20 @@ function Cain()
 		NTA_ClearPosition();
 	}
 
-	Say(Messages.cainstones);
-
 	NTM_MoveTo(me.areaid, _stoneArray[0]-2, _stoneArray[1]-2);
-
+	var xx = me.x; var yy = me.y
+	
 	NTM_MakeTP();
+	Say(Messages.cainstones);	
 
 	while (!NTC_IsQuesterIn()) {
 		NTC_TPGuard(25);
+		NTM_MoveTo(me.areaid, xx, yy);
 	}
 
 	while (!NTC_IsQuesterOut()) {
 		NTC_TPGuard(25);
+		NTM_MoveTo(me.areaid, xx, yy);
 	}
 
 	NTSI_PickItems();						
@@ -111,25 +116,25 @@ function Cain()
 	while (!NTM_UsePortal("Portal", 38)) {
 		NTC_Delay(500);
 	}
-
 	Say(Messages.caintristup);
 
 	NTM_MoveTo(me.areaid, 25134, 5143);
 
-	NTA_ClearPosition();
+	NTA_ClearPosition(30);
 
 	NTM_MoveTo(me.areaid, 25134, 5143);
-
-	Say(Messages.cainup);
-
+	
 	NTM_MakeTP();
+	Say(Messages.cainup);
 	
 	while (!NTC_IsQuesterIn()) {
 		NTC_TPGuard(25);
+		NTM_MoveTo(me.areaid, 25134, 5143);
 	}
 
 	while (!NTC_IsQuesterOut()) {
-		NTC_TPGuard(25);			
+		NTC_TPGuard(25);
+		NTM_MoveTo(me.areaid, 25134, 5143);		
 	}
 
 	Say(Messages.cainfreed);

@@ -35,9 +35,11 @@ function Summoner()
 	if (_journaly > 5500) {
 		NTM_MoveTo(me.areaid, _journalx+15, _journaly-40);
 	}
-
+	var xx = me.x; var yy = me.y
+	
 	for (i = 0; i < 5; i += 1) {
 		NTA_ClearPosition(20);
+		NTM_MoveTo(me.areaid, xx, yy);
 	}
 
 	NTM_MakeTP();
@@ -45,7 +47,8 @@ function Summoner()
 	Say(Messages.summonerup);
 	
 	while (!NTC_IsQuesterIn()) {
-		NTC_TPGuard(10);
+		NTC_TPGuard(20);
+		NTM_MoveTo(me.areaid, xx, yy);
 	}
 
 	if (!NTM_MoveToPresetUnit(me.areaid, 2, 357, 0, 0, true)) {
