@@ -320,10 +320,12 @@ function locationAction(location)
 		break;
 
 	case 8: // Main Menu
-		if(controlData.getCurrentRealmIndex() == me.gatewayid)
+		if(me.playtype == 0);
+		{controlData.click(controlData.gameTypes[me.playtype]);}
+		if(me.playtype == 1 && controlData.getCurrentRealmIndex() == me.gatewayid)
 		{
-			outputGameLength();
-			controlData.click(controlData.gameTypes[me.playtype]);
+		outputGameLength();
+		controlData.click(controlData.gameTypes[me.playtype]);
 		}
 		else
 			controlData.click(controlData.controls.mainMenu.button.gateway);

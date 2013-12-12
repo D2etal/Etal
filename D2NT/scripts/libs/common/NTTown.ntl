@@ -1729,81 +1729,31 @@ function NTT_GetOldItemsInt()
 	return true;
 }
 
-function NTT_FillArrows(npc) {
-
-	var _arrows;
-	var _items;
-	var _weapon;
-	var _name;
-	var _bow =false;
-
-	if(arguments.length < 1) {
-		return false;
+function NTT_FillArrows(npc)
+{
+	var bows=[68,69,70,71,72,73,74,75,161,162,163,164,165,166,167,168,264,265,266,267,268,269,270,271,281,282,291,292,301,302]
+	var xbows = [77,78,79,169,170,171,172,272,273,274,275]
+	var _name,_bow,_xbow;
+	var _items = me.GetItems();
+	
+	for(i = 0; i < _items.length; i++)
+	{
+		if(bows.indexOf(_items[i].classid) != -1 && _items[i].mode == 1 && _items[i].itemloc == 4 || _items[i].itemloc == 5)
+			{
+				_name = _items[i].name.split("\n")[0];
+				_bow = true;
+				break;
+			}
+		if(xbows.indexOf(_items[i].classid) != -1 && _items[i].mode == 1 && _items[i].itemloc == 4 || _items[i].itemloc == 5)
+			{
+				_name = _items[i].name.split("\n")[0];
+				_xbow = true;
+				break;
+			}		
 	}
 	
-	_weapon = me.GetItems();
-
-	if(_weapon) {
-		for(var i = 0 ; i < _weapon.length ; i++) {
-			if(_weapon[i].mode == 1) {
-				switch(_weapon[i].classid) {
-					case 68:   //Short Bow
-					case 69:   //Hunter's Bow
-					case 70:   //Longbow
-					case 71:   //Composite Bow
-					case 72:   //Short Battle Bow
-					case 73:   //Long Battle Bow
-					case 74:   //short war bow
-					case 75:   //Long War Bow
-					case 161:  //Edge Bow
-					case 162:  //Razor Bow
-					case 163:  //Cedar Bow
-					case 164:  //Double Bow
-					case 165:  //Short Siege Bow
-					case 166:  //Large Siege Bow
-					case 167:  //Rune Bow
-					case 168:  //Gothic Bow
-					case 264:  //Spider Bow
-					case 265:  //Blade Bow
-					case 266:  //Shadow Bow
-					case 267:  //Great Bow
-					case 268:  //Diamond Bow
-					case 269:  //Crusader Bow
-					case 270:  //Ward Bow
-					case 271:  //Hydra Bow
-					case 281:  //Stag Bow
-					case 282:  //Reflex Bow
-					case 291:  //Ashwood Bow
-					case 292:  //Cermonial Bow
-					case 301:  //Matriarchal Bow
-					case 302:  //Grand Matron Bow
-						_bow = true;
-						_name = _weapon[i].name.split("\n")[0];
-						break;
-
-					default:
-						_bow = false;
-						_name = _weapon[i].name.split("\n")[0];
-						break;
-				}
-			}
-		}
-	}
-	/*
-	if(_weapon[i].classid == 526 || _weapon[i].classid == 528){
-		if(_weapon[i].GetStat(70) <= 350 && _weapon[i].mode == 1){
-			SetUIState(0x01, true);
-			NTC_PingDelay(200);
-			NTC_ItemToCursor(_weapon[i]);
-			NTC_PingDelay(200);
-			NTC_ClearCursor();
-			NTC_PingDelay(200);
-			me.Cancel(1);
-			break;   
-		}
-	}
-	*/
-	if(_bow) {
+	if(_bow)
+	{
  		Print(COLOR_8 + "Buying Arrows for my " + _name);
 		Print(" ");
 		
@@ -1811,20 +1761,23 @@ function NTT_FillArrows(npc) {
 
 		if(_items && _items.length > 0) {
 			NTT_ShopItem(_items[0], npc, 2);
-			return true; // the true is not used, but the last return is false so....
+			return;
 		}
-	} else {
+	}
+	
+	if(_xbow)
+	{
 		Print(COLOR_8 + "Buying Bolts for my " + _name);
 		Print(" ");			
 		_items = npc.GetItems(528);
 
 		if(_items && _items.length > 0) {
 			NTT_ShopItem(_items[0], npc, 2);
-			return true;
+			return;
 			
 		}
 	}
-	return false;
+	return;
 }
 
 function NTT_TossAmmo() {
