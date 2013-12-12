@@ -27,10 +27,16 @@ function Ammy()
 	if (!NTM_TakeStair(61)) { 
 		return false; 
 	}
+	
+	NTM_MoveTo(me.areaid,15022,14041,0,true);
+	NTM_MoveTo(me.areaid,15022,14061,0,true);
+	NTM_MoveTo(me.areaid,15040,14069,0,true);
+	NTM_MoveTo(me.areaid,15058,14065,0,true);
+	NTM_MoveTo(me.areaid,15063,14052,0,true);
 
-	NTA_ClearPosition(30);
+	NTA_ClearLevel(true);	
 		
-	if (!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 149, +2, +2)) {
+	if (!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_OBJECT, 149, +4, -8)) {
 		return false;
 	}
 		
@@ -40,13 +46,11 @@ function Ammy()
 		
 	Say(Messages.ammyup);
 		
-	NTA_ClearPosition(20);
-
 	while (!NTC_IsQuesterIn()) {
 		NTC_TPGuard(5);
 	}
 
 	NTM_UsePortal("BluePortal", 40, me.charname);
-
+	Say("Talk to Drognan");
 	return true;
 }

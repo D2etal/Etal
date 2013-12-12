@@ -61,7 +61,7 @@ function Staff()
 	}
 
 	NTA_ClearPosition(30);
-	NTM_MoveTo(_Staff.areaid, _Staff.x+3, _Staff.y+3);
+	NTM_MoveTo(_Staff.areaid, _Staff.x-5, _Staff.y-5);
 
 	Say(Messages.staffup);
 

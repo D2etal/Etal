@@ -36,31 +36,61 @@ function Waypoints()
 		
 		for(var i = _start; i < _wps.length; i++) {
 			if(NTM_TakeWaypoint(_wps[i])) {
-				if(NTM_MakeTP()) {
+				NTM_MoveTo(me.areaid, me.x-6, me.y-6);
+				if(NTM_MakeTP()) {					
 					var _wppos = [me.x, me.y];
-					_area = GetArea();
 					
-					//if(NTConfig_MessagingSystem)
-						Say(Messages.waypoint + _area.name);
+					Say(Messages.waypoint + GetArea().name);
 					
 					if(!me.GetState(51))
 						NTP_DoPrecast(true);
 						
 					while(!NTC_IsQuesterIn())
-						NTC_TPGuard(40);
-						
-					var _prevarea = me.areaid;
-					NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+					{
+						NTC_TPGuard(30);
+						NTM_MoveTo(me.areaid, _wppos[0], _wppos[1]);
+					}
 					
-					NTM_TakeWaypoint();  // 75 was here
-					NTTMGR_TownManager();
-					
-					NTTM_TownMove("waypoint");
-					while(!NTC_IsQuesterOut(_prevarea))
+					while(!NTC_IsQuesterOut(me.areaid))
 						NTC_Delay(500);
+					
+					TPCheck();
 				}
 			}
 		}
 	}
 	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function TPCheck()
+{
+	if(NTTMGR_CheckScrolls(1) > 4)
+		return;
+	
+	var townid;
+	var _currentwp = me.areaid;
+	switch(me.act)
+		{
+			case 1:
+				townid = 1;
+				break;
+			case 2:
+				townid = 40;
+				break;
+			case 3:
+				townid = 75;
+				break;
+			case 4:
+				townid = 103;
+				break;
+			case 5:
+				townid = 109;
+				break;
+		}
+	NTM_TakeWaypoint(townid);
+	NTTMGR_TownManager();
+					
+	NTTM_TownMove("waypoint");
+	//NTM_TakeWaypoint(_currentwp);
+	return;
 }
