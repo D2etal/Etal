@@ -128,7 +128,7 @@
 [Name] == Diadem && [Quality] == unique # [Defense] >= 160 && [PassiveLtngMastery]+[PassiveLtngPierce] >= 25 // Griffon's Eye
 
 // ##### Rings #########################
-//[Type] == ring && [Quality] == unique # [ItemMagicBonus] == 15 // Nagelring
+//[Type] == ring && [Quality] == unique # [ItemMagicBonus] >= 15 // Nagelring
 //[Type] == ring && [Quality] == unique # [ManaLeech] >= 4 // Manald Heal
 [Type] == ring && [Quality] == unique # [ItemMaxManaPercent] == 25 // Stone of Jordan
 [Type] == ring && [Quality] == unique # [MaxHP] == 40 // Dwarf Star
