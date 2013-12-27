@@ -84,7 +84,7 @@ function NTMain(){
 			}
 		}
 		if(NTConfig_ClearMausoleum == 2){
-			NTConfig_SkipRegularMonsters = false;
+			NTConfig_SkipRegularMonsters = true;
 			NTP_DoPrecast();
 			if(!NTA_ClearLevel()){
 				NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");

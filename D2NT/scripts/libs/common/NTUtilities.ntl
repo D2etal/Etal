@@ -210,7 +210,7 @@ function WhichHotKey(ThisKey)
 
 function T_BPsPrint()
 {
-	CurFCR = me.GetStat(68);
+	CurFCR = me.GetStat(105);
 	CurFHR = me.GetStat(99);
 	BreakPoints();
 	Print(COLOR_4 + me.charname + " (" + COLOR_9 + IdToName() + COLOR_4 + ") current BPs!");
