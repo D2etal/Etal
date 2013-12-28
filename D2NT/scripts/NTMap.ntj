@@ -4,26 +4,65 @@ function NTMain()
 
 	var _ingame = false;
 
-	while(1)
-	{
-		if(me.ingame)
-		{
-			if(!_ingame)
-			{
+	while(1){
+		if(me.ingame){
+			if(!_ingame){
 				RunGC();
-
 				if(Load("NTMap/NTMapGame.ntj"))
 					_ingame = true;
 			}
-
 			Delay(1000);
 		}
-		else
-		{
-			if(_ingame)
+		else{
+			if(_ingame) { 
 				_ingame = false;
-
-			Delay(500);
+				sendEventToOOG(2, "", 0);
+			}
+			locationAction(controlData.getLocation());
+			Delay(100);
 		}
 	}
 }
+
+function locationAction(location) // Prints location information in Manager
+{
+	switch(location.id)
+	{
+		case 1: // Lobby
+		case 2: // Waiting In Line
+		case 3: // Lobby Chat
+		case 4: // Create Game
+		case 5: // Join Game
+		case 6: // Ladder
+		case 7: // Channel List
+		case 8: // Main Menu
+		case 9: // Login
+		case 10: // Login Error (this is a fatal error, so stop)
+		case 11: // Unable To Connect
+		case 12: // Character Select
+		case 13: // Realm Down - Character Select screen
+		case 14: // Character Select - Disconnected
+		case 15: // New Character
+		case 16: // Character Select - Please Wait popup
+		case 17: // Lobby - Lost Connection - just click okay, since we're toast anyway
+		case 18: // D2 Splash
+		case 19: // Login - Cdkey In Use
+		case 20: // Single Player - Select Difficulty
+		case 21: // Main Menu - Connecting
+		case 22: // Login - Invalid Cdkey (classic or xpac)
+		case 23: // Character Select - Connecting
+		case 24: // Server Down - not much to do but wait..
+		case 25: // Lobby - Please Wait
+		case 26: // Lobby - Game Name Exists
+		case 27: // Gateway Select
+		case 28: // Lobby - Game Does Not Exist
+			sendEventToOOG(8, location.name, 0);
+			break;
+		default:
+			sendEventToOOG(8, "Chillin...", 0);
+			break;
+	}
+}
+
+function sendEventToOOG(locationId, statusString, pendingTime)
+{ return SendCopyData("D2NT Manager", null, (locationId<<16)|pendingTime, statusString); }
