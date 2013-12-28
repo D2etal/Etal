@@ -166,13 +166,11 @@ function NT_KeyEvents(keycode)
 		case Key_CursoriLvL:
 			NTU_CursorILvl();
 			break;
-		//case 17:
+		//case 48:
 			//_area = GetArea();
 			//Print(COLOR_8 + " X=" + me.x + ", Y=" + me.y);
 			//Print(COLOR_8 + "In AreaID " + me.areaid + " , " + _area.name);
 			//break;
-		case 48:
-			break;
 		default:
 			if(CheckKeyNumber)
 				Print(COLOR_2 + WhatHotKey(keycode) + " / " + keycode);

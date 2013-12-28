@@ -69,6 +69,10 @@ function NTMain() {
 		PubSay("Diablo TP up.");
 	}
 	NTM_MoveTo(108, 7792, 5291);
+	while(!GetUnit(NTC_UNIT_MONSTER, GetLocaleString(3060))){
+		NTCS_DiaSpam();
+		Delay(100);
+	}
 	for (i = 0; i < 200; i += 1) {
 		if (GetUnit(NTC_UNIT_MONSTER, 243)) {
 			break;
@@ -409,13 +413,13 @@ function NTCS_Preattack(name) {
 	target = NTC_FindUnit(1, name, 10);
 
 	switch (me.classid) {
-		case 0:
+		case NTC_CHAR_CLASS_AMAZON:
 			break;
-		case 1:
+		case NTC_CHAR_CLASS_SORCERESS:
 			break;
-		case 2:
+		case NTC_CHAR_CLASS_NECROMANCER:
 			break;
-		case 3:
+		case NTC_CHAR_CLASS_PALADIN:
 			if (!target) {
 				return;
 			}
@@ -431,7 +435,7 @@ function NTCS_Preattack(name) {
 				}
 			}
 			break;
-		case 4:
+		case NTC_CHAR_CLASS_BARBARIAN:
 			if (!target || NTConfig_AttackSkill[0] < 0) {
 				return;
 			}
@@ -444,9 +448,9 @@ function NTCS_Preattack(name) {
 				NTC_Delay(150);
 			}
 			break;
-		case 5:
+		case NTC_CHAR_CLASS_DRUID:
 			break;
-		case 6:
+		case NTC_CHAR_CLASS_ASSASSIN:
 			break;
 	}
 }
@@ -691,4 +695,55 @@ function NTA_SortRooms(a, b) {
 		return -1;
 	}
 	return 1;
+}
+
+function NTCS_DiaSpam(){
+	if(me.classid == NTC_CHAR_CLASS_AMAZON){
+		if(NTConfig_DiaSpam > 0)
+			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
+		return;
+	}
+	else if(me.classid == NTC_CHAR_CLASS_SORCERESS){
+		if(NTConfig_DiaSpam > 0)
+			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
+		return;
+	}
+	else if(me.classid == NTC_CHAR_CLASS_NECROMANCER){
+		if(NTConfig_DiaSpam > 0)
+			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
+		return;
+	}
+	else if(me.classid == NTC_CHAR_CLASS_PALADIN){
+		if(NTConfig_AttackSkill[3] == 112){
+			NTC_PutSkill(NTConfig_AttackSkill[3], NTC_HAND_LEFT);
+			NTC_PutSkill(NTConfig_AttackSkill[4], NTC_HAND_RIGHT);
+			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7792, 5291);
+		} return;
+	}
+	else if(me.classid == NTC_CHAR_CLASS_BARBARIAN){
+		if(NTConfig_DiaSpam > 0)
+			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
+		return;
+	}
+	else if(me.classid == NTC_CHAR_CLASS_DRUID){
+		if(NTConfig_AttackSkill[3] == 245)
+			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7792, 5291);
+	}
+	else if(me.classid == NTC_CHAR_CLASS_ASSASSIN){
+		var _attackPos = [7780, 5288, 7792, 5281, 7803, 5289, 7799, 5302, 7785, 5301];
+		if(NTConfig_UseTraps && !_trapsPreCasted){
+			for(var i=0;i<5;i++) {
+				if(i == 0 || i == 2 || i == 3) // Added delays to prevent trap miscast
+					NTC_Delay(25);
+				if(NTConfig_TrapSet[i] > 0)
+					NTC_CastSkill(NTConfig_TrapSet[i], NTC_HAND_RIGHT, _attackPos[i*2],_attackPos[(i*2)+1]);
+			}
+			_trapsPreCasted = true;
+		}
+		if(NTConfig_AttackSkill[3] == 256) {
+			if(me.GetSkillStatus(NTConfig_AttackSkill[3]) != 8) {
+				return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7792, 5291);
+			}
+		}
+	}
 }

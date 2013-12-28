@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "108";
+var Rev = "109";
 
 var SoJNotify = false;
 var CloneDiabloString = GetLocaleString(11005);
@@ -28,7 +28,7 @@ function NTMain()
 	NT_LoadConfig();
 	NTE_InitializeStats();
 
-	if(!me.gamename) { Say("/players 5"); } // For SP players to increase MF and such
+	if(!me.gamename && me.GetStat(12) > 90) { Say("/players 5"); } // For SP players to increase MF and such
 
 	if(NTConfig_FreeSpace == 0)
 		Print(COLOR_2 + "Please don't forget to set NTConfig_FreeSpace in your character config to avoid your inv filling");

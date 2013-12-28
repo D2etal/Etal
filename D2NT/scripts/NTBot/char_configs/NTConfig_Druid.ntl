@@ -220,6 +220,7 @@ function NT_LoadConfig()
 		NTConfig_EvenFasterChaos = false;				// Set to true to clear ONLY the seal bosses at each seal.
 		NTConfig_Entrance = false;	 					// Set true to start from Entrance, false for Star
 		NTConfig_LeechSupport = false;	 				// Set true to support leechers, false if not
+		NTConfig_DiaSpam = 0;							// Skill to spam before Diablo Spawns
 
 	//--------------------------//
 	// "Public Diablo Settings" //
