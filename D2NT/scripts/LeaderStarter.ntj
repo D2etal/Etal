@@ -5,7 +5,6 @@
 // added a while loop and manager print if a bad cd key is used or bad account or password stair 9-25-11 //
 // added txt file joining and added game count over 99 mod 12-1-12										 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Renamed from LeaderStarter2.3 to LeaderStarter on 4/27/2013 by Tru
 // Version of the LeaderStarter remains at 2.3!
 
 ///////////////////////////////////////////////////
@@ -27,6 +26,8 @@ var joinChannelInChat			= "set a channel";	 // Channel you want your bot to join
 ///////////////////////////////////////
 //        Message Settings: 		 	  These control what your bot sais to the leechers will also send a log incommand to a channel bot
 ///////////////////////////////////////
+
+var WhisperFList = false;									// Whisper your friends when you enter a game or not
 
 var chatMessageOnJoin		= "set a login command here";	// Chat Message to say Login command for channel bot will only be sent once
 var chatMessageAfterGame1	= "configure me";				// Optional chat message Line #1 to say after each game on Channel
@@ -153,7 +154,10 @@ function NTMain()
 						NTLG_Log("NTBot.ntj", NTLG_TYPE_LOG, NTLG_LEVEL_INFO, "In Game");
 						sendEventToOOG(D2NT_MGR_INGAME, "In Game", 0);
 					}
-						Say("/f m in_new_game " + me.gamename);  // this is for leechers to join only after leader is in game
+						if(WhisperFList) {
+							FriendMessage = "/f m in_new_game " + me.gamename;
+							//if(saypassword) FriendMessage = FriendMessage + "//" + me.gamepassword;
+							Say(FriendMessage); Delay(Random(500,1000)); // this is for leechers to join only after leader is in game
 					lastGameStatus = 2; // in game successful
 				}
 			}
