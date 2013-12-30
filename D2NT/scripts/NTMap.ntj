@@ -1,3 +1,7 @@
+Include("libs/controlInfo.ntl");
+Include("libs/common/NTColorConverter.ntl");
+var controlData = new controlInfo();
+
 function NTMain()
 {
 	Delay(1000);
