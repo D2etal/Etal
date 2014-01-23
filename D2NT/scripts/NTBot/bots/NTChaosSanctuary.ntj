@@ -274,7 +274,7 @@ function NT_OpenVenomSealInt(type) {
 		PubTP();
 		PubSay(NTConfig_CS_LeechSupTP);
 	}
-	if (!NT_OpenSealInt(392) || !NT_OpenSealInt(393)) {
+	if (!NT_OpenSealInt(392)) {
 		return false;
 	}
 	if (type === 1) {
@@ -290,6 +290,9 @@ function NT_OpenVenomSealInt(type) {
 	NTA_KillMonster(GetLocaleString(2853)); // Infector of Souls
 	if(!NTConfig_EvenFasterChaos){
 		NTCS_ClearPosition(40, DistanceSort, NTConfig_FastChaos && !NTConfig_LeechSupport ? 0x10 : null, NTConfig_FastChaos && !NTConfig_LeechSupport ? 362 : null);
+	}
+	if (!NT_OpenSealInt(393)) {
+		return false;
 	}
 	PubSay("Infector dead.");
 

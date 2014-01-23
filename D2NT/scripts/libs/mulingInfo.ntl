@@ -406,11 +406,8 @@ function locationActionMule(location)
 		break;
 
 	case 29: // New Character - hero class select
-		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);
-		if(MuleNotification) {
-			SendCopyData("D2NT Manager", null, 9<<16, "New mule has been made!");
-		}
-		NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "Mule");
+		SendCopyData("D2NT Manager", null, 9<<16, "Location 29");
+		sendEventToOOG(D2NT_MGR_PRINT_STATUS, location.name, 0);		
 		Delay(500);
 		controlData.clickClass(CreateCharacterClass);
 		Delay(500);
@@ -461,15 +458,28 @@ function locationActionMule(location)
 		}
 		
 		controlData.click(controlData.controls.characterCreate.button.ok);
-		Delay(500);
-		
+		Delay(500);		
 		if(Hardcore)
 		{	
 			controlData.click(controlData.controls.characterCreate.button.continueHardcore);
 		}
 		
-		Delay(500);
+		Delay(2000);
+		
+		if(controlData.getLocation().id == 25){
+			SendCopyData("D2NT Manager", null, 9<<16, "Name Exists or Rejected");
+			Delay(500);
+			controlData.click(controlData.controls.lobby.pleaseWait.button.cancel);
+			Delay(500);
+			break;		
+		}
+
+		if(MuleNotification) {
+			SendCopyData("D2NT Manager", null, 9<<16, "New mule has been made!");
+		}
+		NT_File("AMS/MuleStatus/" + me.account + "_charstatus.txt", 1, "Mule");
 		onMule = true;
+		Delay(500);
 		break;
 
 	case 30: // New Character - Character already exists
