@@ -87,6 +87,7 @@ var NTConfig_Script = [];
 		var NTConfig_StaticBossesOnly;
 		var NTConfig_StaticBossesSelect = [];
 		var KBLSpamPos = [];
+		var NTConfig_EnchantSelf;
 
 // Cloner Var's
 	var NTConfig_HotIP = [];

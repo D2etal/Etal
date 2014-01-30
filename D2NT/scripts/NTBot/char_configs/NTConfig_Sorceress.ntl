@@ -784,6 +784,7 @@ function NT_LoadConfig()
 	NTConfig_AttackSkill[10] = -1; 	// Primary skill to baal this MUST be set if you do baal charged bolt works well here
 
 	NTConfig_ChainLightOnLightImmunes = false;			// Set true to use Chain Lighning automatically on light immune mobs.
+	NTConfig_EnchantSelf = false;						// Set true to chant self during Precasts
 	NTConfig_DancingSorc = false;						// Periodically teleport between attacks, settings below.
 	NTConfig_AttackJump = 5;							// # of attacks before teleporting.
 	NTConfig_BounceRange = 9;							// Range away from mob to keep when teleporting.

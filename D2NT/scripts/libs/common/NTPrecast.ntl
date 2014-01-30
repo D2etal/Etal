@@ -66,6 +66,23 @@ function NTP_DoEnchant()
 			}
 		} while (_unit.GetNext());
 	}
+	
+	if(!NTConfig_EnchantSelf)
+		return;
+		
+	_unit = NTC_FindUnit(NTC_UNIT_PLAYER);
+	if (_haveenchant &&_unit)
+	{
+		do
+		{
+			if (_unit.name == me.name)
+			{
+				NTC_CastSkill(52, NTC_HAND_RIGHT, _unit);
+				return;
+			}
+		} while (_unit.GetNext());
+	}
+ 
 }
 
 function NTP_DoPrecast(refresh, castbo)
