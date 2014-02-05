@@ -78,6 +78,25 @@ function MG_LoadConfig(MyChar)
 	Key_CharStats = 34;			 	// Pg Dn - Log your extended stats to manager
 		NTConfig_MercStats = true;	// true to get Merc stats, false if not
 	Key_AntiIdle = 19;				// Pause/break - Turn on AntiIdle for extended AFK's
+	
+	// -----------------------------------------------------------------------------------------------------------------
+	// Development Tools Settings Only!!
+	// -----------------------------------------------------------------------------------------------------------------
+
+	Key_DevTools = 98;						// Num 2 - Keypress for the following Dev Tools
+	
+	NTMG_GetLocalStringIDs = false;			// pretty much same as objects
+	NTMG_ObjectIDs = false;					// prints the type and id number of objects (shrines/chests/etc)
+	NTMG_MonsterIDs = true;				// prints the name and id number of monsters.  Probably should set a range for it but been using it for summons
+	NTMG_GetState = false;					// prints id # of state and "active" if the state is active
+	NTMG_MonsterIdRange = 	[0, 575];		// set the range of id's you want to look for ie [420, 432] looks for druid summons
+	NTMG_StateIdRange = 	[0, 159];		// set the range of me.states you want to check if active ie [141, 154] looks for druid states
+	NTMG_ObjectIdRange = [0, 600];			// this is range of object id's similar to above ranges
+	NTMG_ObjectLookRange = 5;				// this is the distance that you wish to look for objects from your toon
+	NTMG_StringIdRange = [2500, 4000];		// this is range getlocalstrings  id's similar to above ranges
+	NTMG_StringLookRange = 5;				// this is the distance that you wish to look for getlocalstrings from your toon
+
+	
 }
 
 function MG_PickitLoad()

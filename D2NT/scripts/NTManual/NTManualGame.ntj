@@ -1,4 +1,4 @@
-var Rev = "0.995";
+var Rev = "0.996";
 var warncount;
 var _AreaName;
 var busy = false;
@@ -166,11 +166,14 @@ function NT_KeyEvents(keycode)
 		case Key_CursoriLvL:
 			NTU_CursorILvl();
 			break;
+		case Key_DevTools:
+			NTMG_DevelopementTools();
+			break;
 		//case 48:
-			//_area = GetArea();
-			//Print(COLOR_8 + " X=" + me.x + ", Y=" + me.y);
-			//Print(COLOR_8 + "In AreaID " + me.areaid + " , " + _area.name);
-			//break;
+		//	_area = GetArea();
+		//	Print(COLOR_8 + " X=" + me.x + ", Y=" + me.y);
+		//	Print(COLOR_8 + "In AreaID " + me.areaid + " , " + _area.name);
+		//	break;
 		default:
 			if(CheckKeyNumber)
 				Print(COLOR_2 + WhatHotKey(keycode) + " / " + keycode);

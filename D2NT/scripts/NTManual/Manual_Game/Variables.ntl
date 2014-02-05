@@ -60,6 +60,21 @@ var Key_GameStats;
 var Key_CursoriLvL;
 var Key_DPSMeter;
 
+var NTMG_GetLocalStringIDs;
+var NTMG_ObjectIDs;
+var NTMG_MonsterIDs;
+var NTMG_GetState;
+var _mestate;
+var NTMG_MonsterIdRange;
+var NTMG_MonsterLookRange
+var NTMG_StateIdRange;
+var NTMG_ObjectIdRange;
+var NTMG_ObjectLookRange;
+var NTMG_StringIdRange;
+var NTMG_StringLookRange;
+
+
+
 // Adding NTConfig inclusion to avoid errors.
 Include("NTBot/char_configs/NTConfig.ntl");
 Include("NTBot/tools/ChatR.ntj");
@@ -69,3 +84,4 @@ Include("NTManual/Manual_Game/Settings.ntl");
 Include("NTManual/Manual_Game/ChatCalls.ntl");
 Include("NTManual/Manual_Game/KeycodeFunctions.ntl");
 Include("NTManual/Manual_Game/Towning.ntl");
+Include("NTManual/Manual_Game/DevTools.ntl");

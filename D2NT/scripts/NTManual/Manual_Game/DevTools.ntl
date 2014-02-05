@@ -1,0 +1,66 @@
+function NTMG_DevelopementTools()
+{
+	/*NTMG_getlocalstringids;
+	NTMG_objectids = true;
+	NTMG_monsterids = false;					// prints the name and id number of monsters.  Probably should set a range for it but been using it for summons
+	getstate = false;					// prints id # of state and "active" if the state is active
+	var MonsterIdRange = 	[0, 575];	// set the range of id's you want to look for ie [420, 432] looks for druid summons
+										// you can set the MonsterRange = [0, 575] and it will give all monsters near you, but to be effective need to add a range to it
+	var StateIdRange = 	[0, 159];		// set the range of me.states you want to check if active ie [141, 154] looks for druid states
+	var _mestate;
+	var ObjectIdRange = [0, 600];		// this is range of object id's similar to above ranges
+	var _objectlookrange = 5;			// this is the distance that you wish to look for objects from your toon
+	var StringIdRange = [2500, 4000];	// this is range getlocalstrings  id's similar to above ranges
+	var _stringlookrange = 5;			// this is the distance that you wish to look for getlocalstrings from your toon
+	*/
+	
+	var MonsterInfos = "";
+	var StateInfos = "";
+	var ObjectInfos = "";
+	var LocalStringInfos = "";
+
+	Print(COLOR_2 + IdToName() + " - CharacterClass(" +me.classid+ ")");
+	
+	if(NTMG_MonsterIDs){
+		for(var i = NTMG_MonsterIdRange[0]; i < NTMG_MonsterIdRange[1] ; i++){
+			var _monster = NTC_FindUnit(NTC_UNIT_MONSTER, i);
+			if(NTC_FindUnit(NTC_UNIT_MONSTER, i)){
+				if(_monster.GetParent() != null)
+					MonsterInfos = COLOR_8 + _monster.name + " - monsterid(" + i + ") - parent is (" +_monster.GetParent().name + ")" + " - monster mode is " + "[" + _monster.mode + "]";
+				else
+					MonsterInfos = COLOR_8 + _monster.name + " - monsterid(" + i + ")" + " - monster mode is " + "[" + _monster.mode + "]";
+				Delay(500);
+			}
+		}
+	}
+
+	if(NTMG_GetState){
+		for(var i = NTMG_StateIdRange[0]; i < NTMG_StateIdRange[1]; i++){
+			if(me.GetState(i)){
+				StateInfos = COLOR_9 + StateToName(i).toLowerCase() + " - me.GetState(" + i  +") is active ";
+				Delay(500);	
+			}
+		}
+	}
+
+	if(NTMG_ObjectIDs){
+		for(var i = NTMG_ObjectIdRange[0]; i < NTMG_ObjectIdRange[1] ; i++){
+			var _object = NTC_FindUnit(NTC_UNIT_OBJECT, i);
+			if(NTC_FindUnit(NTC_UNIT_OBJECT, i) && (GetDistance(me.x,me.y,_object.x,_object.y)<NTMG_ObjectLookRange))
+				ObjectInfos = COLOR_14 + "object name is - " + _object.name + " - objectid - (" + i + ")" + " - objects mode is " + "[" + _object.mode + "]";
+			//Delay(500);
+		}
+	}
+	if(NTMG_GetLocalStringIDs){
+		for(var i = NTMG_StringIdRange[0]; i < NTMG_StringIdRange[1]; i++){
+			var _stringobject = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(i));
+			if(NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(i)) && (GetDistance(me.x,me.y,_stringobject.x,_stringobject.y)<NTMG_StringLookRange))
+				LocalStringInfos = COLOR_14 + "String name is - " + _stringobject.name + " - stringid - (" + i + ")" + " - objects mode is " + "[" + _stringobject.mode + "]";
+			//Delay(30);
+		}
+	}
+	if(MonsterInfos != "") 		Print(MonsterInfos);
+	if(StateInfos != "") 		Print(StateInfos);
+	if(ObjectInfos != "") 		Print(ObjectInfos);
+	if(LocalStringInfos != "") 	Print(LocalStringInfos);
+}
