@@ -105,7 +105,7 @@ var NTConfig_Script = [];
 	var NTConfig_LeechBo;
 	var NTConfig_LeechExitDelay;
 	var NTConfig_WaitForCowPortal;
-	var NTConfig_LeechFrom;
+	NTConfig_followDelay;
 	var NTConfig_TakeTpDiablo;
 	var NTConfig_UseChatCommandPortal;
 	var LeechTrav_TakeTp;

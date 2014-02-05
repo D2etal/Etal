@@ -1,0 +1,946 @@
+var Diablo_PreMessage = "";
+var _trapsPreCasted;
+var _portalleech = true, trigger = false;
+var leechwarn = false;
+var SealBoss1 = false, SealBoss2 = false, SealBoss3 = false;
+var DiabloDead = false;
+var myxp = me.GetStat(13);
+
+function NTMain() {
+	Include("libs/common/NTCommon.ntl");
+	NTC_IncludeLibs();
+
+	NTC_IncludeConfig("NTBot/char_configs");
+	NT_LoadConfig();
+
+	NTSI_LoadNIPFiles("NTBot/item_configs");
+
+	NTA_Initialize();
+	
+	if(!NTTM_CheckAct(4)){
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+	NTTM_TownMove("portalspot");
+	
+	if(NTConfig_LeechChaos >= 1)
+	{
+	RegisterEvent(EVENT_GAMEMSG, UCL_Chat);
+	if(NTConfig_UseChatCommandPortal){
+		while(!NT_DiabloLeechMessageHandler()){
+			Delay(500);
+		}
+		for(var i = 0 ; i < 100 && me.areaid == 103 ; i++){
+			NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
+			Delay(500);
+		}
+	}
+	else
+	{
+		myStartArea = me.areaid;
+		while(1){
+			NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
+			if (myStartArea != me.areaid) {
+				break;
+			}
+			Delay(500);
+		}
+	}
+
+	}
+	
+	
+	if(NTConfig_LeechChaos == 2 && me.areaid == 108)
+	{	
+		if(NTConfig_LeechBo){NTP_DoPrecast(true, NTConfig_LeechBo);}
+		if(!NTConfig_LeechBo){ Delay(Random(3000, 5000)); }
+	
+
+	if (me.y > 5353) {
+		NTCS_ClearPosition(30, EntranceSort);
+		var FrontToStarX = [7792, 7794, 7791, 7777, 7813, 7769, 7782, 7802, 7819, 7768, 7770, 7791, 7819, 7804];
+		var FrontToStarY = [5564, 5529, 5495, 5486, 5486, 5445, 5421, 5421, 5446, 5390, 5355, 5355, 5376, 5340];
+		for (var i = 0; i < FrontToStarX.length; i += 1) {
+			NTM_MoveTo(108, FrontToStarX[i], FrontToStarY[i]);
+			NTCS_ClearPosition(35, EntranceSort);
+		}
+	}
+
+	for (i = 0; i < 2; i += 1) {
+		NTM_MoveTo(108, 7784, 5310);
+		NTCS_ClearPosition(30, SealSort);
+		NTC_PingDelay(i < 1 ? 1000 : 10);
+	}
+
+
+		NTCS_ClearPosition(30, SealSort);
+
+	if (!NT_OpenSealsInt()) {
+		NTC_SendMsgToScript("NTBotGame.ntj", "NT_OpenSealsInt()");
+		return;
+	}
+	if(me.classid == NTC_CHAR_CLASS_SORCERESS)
+		NTM_MoveTo(108, 7793, 5278);
+	else
+		NTM_MoveTo(108, 7796, 5294);
+
+	var _diablo
+	while(!_diablo && !DiabloDead)
+	{
+		_diablo = NTC_FindUnit(NTC_UNIT_MONSTER, 243);
+		DiabloSpam();
+	}
+
+	NTA_KillMonster(243);
+	
+	NTSI_PickItems();
+	}
+	
+	if(me.areaid == 108 && NTConfig_LeechChaos == 1)
+			ChaosLeechFollow();
+	
+	if(NTConfig_LeechChaos == 0)
+	{
+		RegisterEvent(EVENT_GAMEMSG, UCL_ChaosChat);
+		while(_portalleech) {NTC_Delay(250);}
+	}
+	
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function NT_OpenSealsInt() {
+	var _unit;
+	var _result;
+
+	_unit = GetPresetUnits(108, NTC_UNIT_OBJECT, 396);
+
+	if (!_unit) {
+		return false;
+	}
+	if (_unit[0].roomy * 5 + _unit[0].y == 5275) {
+		_result = NT_OpenVizierSealInt(1);
+	} else {
+		_result = NT_OpenVizierSealInt(2);
+	}
+
+	NTP_DoPrecast(true);
+
+	_unit = GetPresetUnits(108, NTC_UNIT_OBJECT, 394);
+	if (_unit[0].roomx * 5 + _unit[0].x == 7773) {
+		_result = NT_OpenDeSeisSealInt(1);
+	} else {
+		_result = NT_OpenDeSeisSealInt(2);
+	}
+	if (!_result) {
+		return false;
+	}
+	NTP_DoPrecast(true, NTConfig_LeechBo);
+	NTCS_ClearPosition(40, SealSortB);
+
+	_unit = GetPresetUnits(108, NTC_UNIT_OBJECT, 392);
+	if (!_unit) {
+		return false;
+	}
+	if (_unit[0].roomx * 5 + _unit[0].x == 7893) {
+		_result = NT_OpenVenomSealInt(1);
+	} else {
+		_result = NT_OpenVenomSealInt(2);
+	}
+	NTP_DoPrecast(true);
+	return _result;
+}
+
+function NT_OpenVizierSealInt(type) {
+	var i;
+
+
+		if (type === 1) {
+			var vx = [7767, 7756, 7744, 7747, 7750, 7741, 7729, 7720, 7720, 7721, 7719, 7712, 7700, 7687, 7676, 7666];
+			var vy = [5292, 5284, 5275, 5290, 5303, 5310, 5314, 5312, 5301, 5288, 5273, 5292, 5294, 5294, 5292, 5307];
+		} else {
+			var vx = [7768, 7755, 7741, 7733, 7723, 7714, 7707, 7680, 7666, 7655];
+			var vy = [5289, 5295, 5282, 5291, 5300, 5282, 5315, 5310, 5311, 5282];
+		}
+		for (i = 0; i < vx.length; i += 1) {
+			NTM_MoveTo(108, vx[i], vy[i]);
+			NTCS_ClearPosition(30, SealSort);
+		}
+
+
+	if (!NT_OpenSealInt(395) || !NT_OpenSealInt(396)) {
+		return false;
+	}
+	if (type == 1) {
+		NTM_MoveTo(108, 7691, 5292);
+	} else {
+		NTM_MoveTo(108, 7695, 5316);
+	}
+
+	NTCS_Preattack(GetLocaleString(2851));
+	NTCS_ClearPosition(40, DistanceSort);
+	NTA_KillMonster(GetLocaleString(2851)); // Grand Vizier of Chaos
+	NTCS_ClearPosition(40, DistanceSort);
+
+	if(NTConfig_IdInField){
+		NT_FieldID();
+	} return true;
+}
+
+function NT_OpenDeSeisSealInt(type) {
+	var i, n;
+
+
+		if (type === 1) {
+			var sx = [7791, 7783, 7800, 7809, 7785, 7773, 7773, 7776, 7794, 7811, 7817, 7815, 7798]; // Shape of "2"
+			var sy = [5265, 5256, 5247, 5232, 5230, 5222, 5212, 5194, 5194, 5193, 5177, 5157, 5155];
+		} else {
+			var sx = [7786, 7801, 7786, 7787, 7810, 7811, 7810, 7790, 7774, 7773, 7794]; // shape of an "S" or "5"
+			var sy = [5263, 5249, 5245, 5227, 5233, 5215, 5198, 5194, 5181, 5156, 5154];
+		}
+		for (var i = 0; i < sx.length; i += 1) {
+			NTM_MoveTo(108, sx[i], sy[i]);
+			NTCS_ClearPosition(30, type === 1 ? SealSort : SealSortB);
+		}
+
+	if (!NT_OpenSealInt(394)) {
+		return false;
+	}
+	if (type == 1) {
+		NTM_MoveTo(108, 7797, 5201);
+		for (i = 0; i < 3; i += 1) {
+			NTM_TeleportTo(7794, 5227);
+		}
+	} else {
+		NTM_MoveTo(108, 7798, 5186);
+	}
+
+	NTCS_Preattack(GetLocaleString(2852));
+	NTCS_ClearPosition(40, DistanceSort);
+	NTA_KillMonster(GetLocaleString(2852)); // Lord De Seis
+	NTCS_ClearPosition(40, DistanceSort);
+
+	if(NTConfig_IdInField){
+		NT_FieldID();
+	} return NTM_MoveTo(108, 7800, 5255);
+}
+
+function NT_OpenVenomSealInt(type) {
+
+		if (type === 1) {
+			var IX = [7825, 7827, 7834, 7845, 7855, 7852, 7875, 7896, 7917]; // shape of a "t"
+			var IY = [5293, 5276, 5291, 5315, 5301, 5278, 5293, 5295, 5291];
+		} else {
+			var IX = [7822, 7826, 7832, 7850, 7868, 7877, 7891, 7907, 7927, 7932]; // looks like a hook
+			var IY = [5297, 5278, 5307, 5278, 5297, 5276, 5276, 5276, 5279, 5298];
+		}
+		for (var i = 0; i < IX.length; i += 1) {
+			NTM_MoveTo(108, IX[i], IY[i]);
+			NTCS_ClearPosition(30, type === 1 ? SealSort : SealSortB);
+		}
+
+
+	if (!NT_OpenSealInt(393) || !NT_OpenSealInt(392)) {
+		return false;
+	}
+	if (type === 1) {
+		type = 1; // temp
+	} else {
+		NTM_MoveTo(108, 7933, 5299);
+	}
+
+	NTCS_Preattack(GetLocaleString(2853));
+	NTCS_ClearPosition(40, DistanceSort);
+	NTA_KillMonster(GetLocaleString(2853)); // Infector of Souls
+	NTCS_ClearPosition(40, DistanceSort);
+
+	if(NTConfig_IdInField){
+		NT_FieldID();
+	}
+	if (NTC_PutSkill(124, NTC_HAND_RIGHT)) {
+		NTC_PingDelay(1000);
+	} return true;
+}
+
+function NT_OpenSealInt(classid) {
+	var warn;
+	if(classid == 395 || classid == 393)
+		return true;
+	switch (classid) {
+	case 396:
+	case 394:
+	case 392:
+		warn = true;
+		break;
+	default:
+		warn = false;
+		break;
+	}
+	var i, seal;
+	for (i = 0; i < 5; i += 1) {
+		NTM_MoveToPresetUnit(108, 2, classid, classid === 394 ? 5 : 2, classid === 394 ? -5 : 0);
+		seal = NTC_FindUnit(NTC_UNIT_OBJECT, classid);
+		if (!seal) {
+			return false;
+		}
+
+		//NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, seal);
+		NTC_Delay(classid === 394 ? 1000 : 500);
+
+		while(!seal.mode) {
+				NTC_Delay(350);
+			}
+		if(seal.mode) 
+			return true;
+		}
+	return false;
+}
+
+function NTA_MonsterStats(unit) {
+	this.name = unit.name;
+	this.x = unit.x;
+	this.y = unit.y;
+	this.gid = unit.gid;
+	this.classid = unit.classid;
+	this.spectype = unit.spectype;
+}
+
+function DistanceSort(unitA, unitB) {
+	if (GetDistance(me.x, me.y, unitA.x, unitA.y) < GetDistance(me.x, me.y, unitB.x, unitB.y)) {
+		return -1;
+	}
+	return 1;
+}
+
+function EntranceSort(unitA, unitB) {
+	if (GetDistance(unitA.x, unitA.y, 7790, 5544) < GetDistance(unitB.x, unitB.y, 7790, 5544)) {
+		return -1;
+	}
+	return 1;
+}
+
+function SealSort(unitA, unitB) {
+	if (GetDistance(unitA.x, unitA.y, 7784, 5310) < GetDistance(unitB.x, unitB.y, 7784, 5310)) {
+		return -1;
+	}
+	return 1;
+}
+
+function SealSortB(unitA, unitB) {
+	if (GetDistance(unitA.x, unitA.y, 7800, 5255) < GetDistance(unitB.x, unitB.y, 7800, 5255)) {
+		return -1;
+	}
+	return 1;
+}
+
+function NTCS_Preattack(name) {
+	var i, n, target, pos, positions;
+
+	target = NTC_FindUnit(1, name, 10);
+
+	switch (me.classid) {
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			if (!target) {
+				return;
+			}
+			positions = [[6, 11], [0, 8], [8, -1], [-9, 2], [0, -11], [8, -8]];
+			for (i = 0; i < positions.length; i += 1) {
+				if (CheckCollision(me.areaid, target.x + positions[i][0], target.y + positions[i][1], 1)) { // check if we can move there
+					NTM_MoveTo(108, target.x + positions[i][0], target.y + positions[i][1]);
+					NTC_PutSkill(NTConfig_AttackSkill[2], NTC_HAND_RIGHT);
+					for (n = 0; n < 8; n += 1) {
+						NTC_CastSkill(NTConfig_AttackSkill[1], 2);
+					}
+					break;
+				}
+			}
+			break;
+		case 4:
+			if (!target || NTConfig_AttackSkill[0] < 0) {
+				return;
+			}
+			pos = me.GetOptimalAttackPos(target.areaid, target.x, target.y, 20, 4);
+			if (pos) {
+				NTM_MoveTo(108, pos[0], pos[1]);
+			}
+			for (i = 0; i < 2; i += 1) {
+				NTC_CastSkill(130, NTC_HAND_RIGHT);
+				NTC_Delay(150);
+			}
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+	}
+}
+
+function OpenStashes(range) {
+	var i, unit, 
+		objects = [GetLocaleString(3274)], 
+		orgx = me.x, 
+		orgy = me.y;
+
+	for (i = 0; i < objects.length; i += 1) {
+		unit = NTC_FindUnit(NTC_UNIT_OBJECT, objects[i]);
+		if (unit) {
+			do {
+				if (GetDistance(orgx, orgy, unit.x, unit.y) <= range) {
+					if (NTC_OpenChest(unit)) {
+						NTSI_PickItems();
+					}
+				}
+			} while (unit.GetNext());
+		}
+	}
+}
+
+function NTT_CheckPotionSafe() {
+	var i, items, hpCheck, mpCheck;
+	items = me.GetItems();
+	if (NTConfig_BeltColType.indexOf("hp") > -1) {
+		for (i = 0; i < items.length; i += 1) {
+			if (!hpCheck && items[i].mode === 2 && items[i].code.indexOf("hp") > -1) {
+				hpCheck = true;
+			}
+		}
+	} else {
+		hpCheck = true;
+	}
+	if (NTConfig_BeltColType.indexOf("mp") > -1) {
+		for (i = 0; i < items.length; i += 1) {
+			if (!mpCheck && items[i].mode === 2 && items[i].code.indexOf("mp") > -1) {
+				mpCheck = true;
+			}
+		}
+	} else {
+		mpCheck = true;
+	}
+	return !(hpCheck && mpCheck);
+}
+
+function NTA_Dodge(target, distance) {
+	var i, j, coordx, coordy, monster, count, 
+		maxcount = 999, 
+		coords = [], 
+		goodCoords = [], 
+		monList = [], 
+		angles = [45, 90, 135, 180, 225, 270, 305, 360];
+	for (i = 0; i < angles.length; i += 1) {
+		coordx = Math.round((Math.cos(angles[i] * Math.PI / 180)) * distance + target.x);
+		coordy = Math.round((Math.sin(angles[i] * Math.PI / 180)) * distance + target.y);
+		if (CheckCollision(me.areaid, coordx, coordy, 1)) {
+			coords.push([coordx, coordy]);
+		}
+	}
+	if (coords.length === 0) { // no valid positions - don't move
+		return true;
+	}
+	coords.sort(NTA_SortRooms);
+	monster = GetUnit(1);
+	if (monster) {
+		do {
+			if (monster.hp > 0) {
+				monList.push(new NTA_MonsterStats(target));
+			}
+		} while (monster.GetNext());
+	}
+	for (i = 0; i < coords.length; i += 1) {
+		count = 0;
+		for (j = 0; j < monList.length; j += 1) {
+			if (monList[j].hp > 0 && GetDistance(monList[j].x, monList[j].y, coords[i][0], coords[i][1]) < 10) {
+				count += 1;
+			}
+		}
+		if (count < maxcount) {
+			goodCoords = [coords[i][0], coords[i][1]];
+			maxcount = count;
+			if (count === 0) {
+				break;
+			}
+		}
+	}
+	if (goodCoords.length > 0) { // just in case goodCoords is empty (shouldn't happen)
+		if (Math.abs(me.x - goodCoords[0]) < 3 && Math.abs(me.y - goodCoords[1]) < 3) { // close enough
+			return true;
+		}
+		Say("!Dodge " + target.name);
+		NTM_MoveTo(me.areaid, goodCoords[0], goodCoords[1]);
+	}
+	return true;
+}
+
+function NTCS_ClearPosition(range, sortFunc, spectype, classid) {
+	var i, orgx, orgy, monList, ignoreList, target, result, 
+		gidAttack = [], 
+		dodgeIDs = [310, 362], 
+		attackcount = 0;
+	if (NTConfig_AttackSkill[1] < 0 || NTConfig_AttackSkill[3] < 0) {
+		return false;
+	}
+	switch (arguments.length) {
+	case 0:
+		range = 20;
+	case 1:
+		sortFunc = DistanceSort;
+	case 2:
+		spectype = false;
+	case 3:
+		classid = false;
+		break;
+	}
+	orgx = me.x;
+	orgy = me.y;
+	ignoreList = [];
+	MainLoop : while (attackcount < 300) {
+		monList = [];
+		target = NTC_FindUnit(NTC_UNIT_MONSTER);
+		if (target) {
+			do {
+				if (target.IsAttackable()) {
+					if ((me.classid === 1 || me.classid === 2 || me.classid === 6) && NTConfig_Dodge && GetDistance(me, target) < 7 && dodgeIDs.indexOf(target.classid) > -1) {
+						NTA_Dodge(target, 15);
+						continue MainLoop;
+					}
+					if (ignoreList.indexOf(target.gid) < 0 && GetDistance(orgx, orgy, target.x, target.y) <= range) {
+						if (NTA_IsValidMonster(target)) {
+							monList.push(new NTA_MonsterStats(target));
+						} else {
+							ignoreList.push(target.gid);
+						}
+					}
+				}
+			} while (target.GetNext());
+		}
+		if (monList.length === 0) {
+			break;
+		}
+		monList.sort(sortFunc);
+		target = NTC_FindUnit(NTC_UNIT_MONSTER, monList[0].gid);
+		if (target && target.IsAttackable()) {
+			result = NTA_Attack(target, attackcount % 30 === 0);
+			switch (result) {
+			case 1:
+				monList.shift();
+				ignoreList.push(target.gid);
+				break;
+			case 2:
+			case 3:
+				if(!gidAttack[target.gid]) {
+					gidAttack[target.gid] = 0;
+				}
+				gidAttack[target.gid] += 1;
+				if (gidAttack[target.gid] > NTConfig_LowMaxAttacks) {
+					monList.shift();
+					ignoreList.push(target.gid);
+				}
+				attackcount += 1;
+				if (target.mode === 0 || target.mode === 12) {
+					NTSI_FastPick();
+				}
+				break;
+			default:
+				return false;
+			}
+		} else {
+			monList.shift();
+			ignoreList.push(target.gid);
+		}
+	}
+	switch (me.classid) {
+		case NTC_CHAR_CLASS_PALADIN:
+			if (attackcount > 2 && (parseInt(me.hp * 100/ me.hpmax) < NTConfig_UseRedemptionHP || parseInt(me.mp * 100 / me.mpmax) < NTConfig_UseRedemptionMP)) {
+				if (NTC_PutSkill(124, NTC_HAND_RIGHT)) {
+					NTC_PingDelay(1000);
+				}
+			}
+			break;
+		case NTC_CHAR_CLASS_NECROMANCER:
+			if (typeof(NTA_SkeletonArmy) === 'function') { // old summon code
+				NTA_SkeletonArmy(NTConfig_SkeletonArmy);
+				NTA_MageArmy(NTConfig_MageArmy);
+				NTA_ReviveArmy(NTConfig_ReviveArmy);
+			} else {
+				NTA_RaiseArmy(); // new summon code
+			}
+			break;
+		case NTC_CHAR_CLASS_SORCERESS:
+			if (me.GetState(30) === 0) {
+				NTC_CastSkill(58, NTC_HAND_RIGHT);
+			}
+			break;
+		case NTC_CHAR_CLASS_BARBARIAN:
+			if (attackcount > 0) {
+				if (typeof(MWL_FindItem) === 'function') { // in case of using muddy's item find (like myself)
+					MWL_FindItem(20);
+				} else if (NTConfig_UseFindItem && !NTA_CheckForCloseMonsters(10)) {
+					NTA_FindItem(NTConfig_FindItemRange);
+				}
+			}
+			break;
+	}
+	if (attackcount > 0) {
+		NTSI_PickItems();
+	}
+	if (NTConfig_OpenChest) {
+		OpenStashes(range);
+	}
+	if (NTT_CheckMerc()) {
+		NTTMGR_VisitTown();
+	}
+	if (NTT_CheckPotionSafe()) {
+		NTTMGR_VisitTown();
+	}
+	if (NTConfig_IdInField) {
+		if (!NTT_CheckSpace(NTConfig_FreeSpaceXY[0], NTConfig_FreeSpaceXY[1])) {
+			NT_FieldID();
+		}
+	} return true;
+}
+
+function NTA_SortRooms(a, b) {
+	if (GetDistance(me.x, me.y, a[0], a[1]) < GetDistance(me.x, me.y, b[0], b[1])) {
+		return -1;
+	}
+	return 1;
+}
+
+function NT_DiabloLeechMessageHandler(){///// 
+	var _msg = NT_File("logs/messagecomands/"+me.charname+"-diablo.txt", 0);
+	if (_msg && _msg != Diablo_PreMessage){
+		Diablo_PreMessage = _msg;
+		if(_msg.substring(_msg.indexOf("/") + 1) == "takedtp"){
+			//Print(COLOR_2 + "retrieved take tp message diablo");
+			return true;
+		}
+	}
+	return false;
+}
+
+function UCL_Chat(msg, type)
+{
+	if(type == 0 && (msg.indexOf(NTConfig_TakeTpDiablo) != -1) && (msg.indexOf(NTConfig_Leader) != -1))
+	{
+		if(me.areaid == 103)
+		{
+			if(NTConfig_LeechChaos == 1){Delay(10000);}
+			while(me.areaid != 108)
+			{
+				NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
+				Delay(500);
+			}
+		return;
+		}
+	}
+	
+	if(type == 0 && !trigger && (msg.indexOf(NTConfig_CS_StarTP) != -1) && (msg.indexOf(NTConfig_Leader) != -1) && me.areaid == 108 && me.y > 5405)
+		{
+			trigger = true;return;
+		}
+	
+	if(type == 0 && (msg.indexOf("Vizier dead.") != -1) && (msg.indexOf(NTConfig_Leader) != -1))
+		{SealBoss1 = true; return;}
+		
+	if(type == 0 && (msg.indexOf("De Seis dead.") != -1) && (msg.indexOf(NTConfig_Leader) != -1))
+		{	SealBoss2 = true; return;}
+	
+	if(type == 0 && (msg.indexOf("Infector dead.") != -1) && (msg.indexOf(NTConfig_Leader) != -1))
+		{	SealBoss3 = true; return;}
+	
+	if(type == 0 && (msg.indexOf(NTConfig_CS_NextGame) != -1) && (msg.indexOf(NTConfig_Leader) != -1))
+		{	DiabloDead = true;
+			//if(me.areaid == 103){NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");}
+			//return;
+		}
+		
+	return;
+}
+
+function UCL_ChaosChat(msg, type)
+{
+	if(type == 0) {
+		var _split = msg.split(":");
+		if(_split.length >= 1 && _split[1] != undefined) {
+			var _sender = _split[0].substring(3, _split[0].length - 3);
+			var _msg = _split[1].substring(1);
+			if(_sender == NTConfig_Leader) {
+				switch(_msg) {
+					case "Leech TP up.":
+							NTC_Delay(100);
+							if(me.areaid == 103){
+								NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
+								NTP_DoPrecast(true);
+							}
+							break;
+					case "Vizier dead.":
+					case "De Seis dead.":
+					case "Infector dead.":					
+							NTC_Delay(100);
+							if(me.areaid == 108){
+								NTM_UsePortal("BluePortal", 103, NTConfig_Leader);
+								if(me.areaid != 103){NTTM_CheckAct();}
+								NTTM_TownMove("portalspot");
+							}
+							break;						
+					case "Diablo TP up.":
+							NTC_Delay(100);
+							if(me.areaid == 103){
+								NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
+								Delay(500);
+								NTM_MoveTo(me.areaid, ChaosLocx, ChaosLocy);
+								NTP_DoPrecast(true);
+							}
+							break;
+					}
+				}
+			}
+		}
+	if(type == 0 && (msg.indexOf(NTConfig_CS_NextGame) != -1 || msg.indexOf("Baal") != -1) && (msg.indexOf(NTConfig_Leader) != -1)) {
+			if(me.areaid == 108)
+				{Delay(500);
+				NTM_MoveTo(me.areaid, 7769, 5284);
+				NTM_UsePortal("BluePortal", 103, NTConfig_Leader);
+				_portalleech = false;
+				}
+		}
+		
+	return;
+}
+
+var chaosentrance = [7791, 5571,7793, 5553, 7793, 5535, 7793, 5520, 7793, 5505, 7776, 5490, 7769, 5475,  7769, 5460, 7769, 5445, 7769, 5430, 7776, 5415, 7776, 5400, 7769, 5385, 7769, 5370, 7776, 5355, 7776, 5340, 7776, 5325]
+var chaosfollow = [7776, 5340, 7776, 5325, 7768, 5314, 7752, 5314, 7730, 5314, 7709 , 5291];
+var chaosfollow1 =[7725, 5276, 7750, 5273, 7770, 5271, 7774, 5260, 7777, 5250, 7785, 5241, 7800, 5232, 7814, 5229];
+var chaosfollow2 =[7814, 5232, 7814, 5229, 7814, 5245, 7814, 5262, 7821, 5280, 7835, 5280, 7845, 5280, 7855, 5290, 7874, 5293];
+
+function ChaosLeechFollow()
+{	
+	NTConfig_SnagRange = 15;
+
+	//me.showenemyonautomap = true;
+	
+	if (me.y > 5353 && me.areaid == 108) {
+
+		NTM_MoveTo(108, 7792, 5540);
+		NTP_DoPrecast(true, NTConfig_LeechBo);
+		for(var e = 4 ; e < chaosentrance.length ; e+=2){
+			while(!My_Safetoadvance())
+				{	if( e == 0){FallBack(); return;}
+					if(leechwarn && e >= 2)
+						{e=e-2;NTM_MoveTo(108, chaosentrance[e], chaosentrance[e+1]);}
+					Delay(100);
+					if(trigger)
+					{
+						NTTM_CheckAct();
+						//Print("Trigger");
+						Delay(300);
+						while(me.areaid !=108){	NTM_UsePortal("BluePortal", 108, NTConfig_Leader);Delay(300);}
+						return ChaosLeechFollow();
+					}
+					//Say("!XP Gain " + (me.GetStat(13)-myxp));
+				}
+			NTM_MoveTo(108, chaosentrance[e], chaosentrance[e+1]);
+			//Say("!XP Gain " + (me.GetStat(13)-myxp));
+			//Delay(100);
+		}
+	}
+	
+	sealbosswaitloc(396);
+
+	NTP_DoPrecast(true, NTConfig_LeechBo);
+	
+	for(var e = 2 ; e < chaosfollow.length ; e+=2){
+			while(!My_Safetoadvance())
+				{	if(leechwarn && e == 0){FallBack(); return;}
+					if(leechwarn && e > 0)
+						{e=e-2;NTM_MoveTo(108, chaosfollow[e], chaosfollow[e+1]);}
+					Delay(100);
+					//Say("!XP Gain " + (me.GetStat(13)-myxp));
+				}
+			NTM_MoveTo(108, chaosfollow[e], chaosfollow[e+1]);
+			//Say("!XP Gain " + (me.GetStat(13)-myxp));
+			//Delay(100);
+		}
+	
+	while(!SealBoss1){Delay(200);}//Say("!XP Gain " + (me.GetStat(13)-myxp));}
+	
+	sealbosswaitloc(394);
+	NTP_DoPrecast(true, NTConfig_LeechBo);
+	for(var e = 0 ; e < chaosfollow1.length ; e+=2){
+			while(!My_Safetoadvance())
+				{	if(leechwarn && e == 0){FallBack(); return;}
+					if(leechwarn && e > 0)
+						{e=e-2;NTM_MoveTo(108, chaosfollow1[e], chaosfollow1[e+1]);}
+					Delay(100);
+					//Say("!XP Gain " + (me.GetStat(13)-myxp));
+				}
+			NTM_MoveTo(108, chaosfollow1[e], chaosfollow1[e+1]);
+			//Say("!XP Gain " + (me.GetStat(13)-myxp));
+			//Delay(100);
+		}
+	
+	while(!SealBoss2){Delay(200);}//Say("!XP Gain " + (me.GetStat(13)-myxp));}
+
+	sealbosswaitloc(392);
+	NTP_DoPrecast(true, NTConfig_LeechBo);	
+	for(var e = 0 ; e < chaosfollow2.length ; e+=2){
+			while(!My_Safetoadvance())
+				{	if(leechwarn && e == 0){FallBack(); return;}
+					if(leechwarn && e > 0)
+						{e=e-2;NTM_MoveTo(108, chaosfollow2[e], chaosfollow2[e+1]);}
+					Delay(100);
+					//Say("!XP Gain " + (me.GetStat(13)-myxp));
+				}
+			NTM_MoveTo(108, chaosfollow2[e], chaosfollow2[e+1]);
+			//Say("!XP Gain " + (me.GetStat(13)-myxp));
+			//Delay(100);
+		}
+	
+	while(!SealBoss3){Delay(200);}//Say("!XP Gain " + (me.GetStat(13)-myxp));}
+
+	NTM_MoveTo(108, 7821, 5280, 2);
+	NTM_MoveTo(108, ChaosLocx, ChaosLocy, 2);
+	NTP_DoPrecast(true, NTConfig_LeechBo);
+	while(!DiabloDead)
+			Delay(300)
+
+	Delay(5000);
+	NTM_MoveTo(108, 7769, 5284);
+	NTM_UsePortal("BluePortal", 103, NTConfig_Leader)
+
+	return;
+}
+
+function My_Safetoadvance()
+{	var monstdist = 100
+	var _enemy = NTC_FindUnit(NTC_UNIT_MONSTER);
+	if(!_enemy){Say("!Very Safe"); leechwarn = false; return true;}
+	while(_enemy.GetNext())
+	{
+		if(_enemy.hp > 0 && _enemy.IsAttackable())
+		{
+			if(_enemy.x < 7765 && _enemy.y > 5321)
+				continue;
+			if(_enemy.x < 7767 && _enemy.y < 5268)
+				continue
+			if(_enemy.x < 7787 && _enemy.y > 5510)
+				continue
+			if(_enemy.x > 7821 && me.y < 5250)
+				continue
+			if(GetDistance(me, _enemy) <= 30)
+			{	Say("!Danger!!!!");
+				leechwarn = true;
+				return false;
+			}
+			if(GetDistance(me, _enemy) <= 50)
+			{	//Say("!Getting XP");
+				leechwarn = false;
+				return false;
+			}
+		}
+	}
+	//Say("!Safe");
+	leechwarn = false;
+	My_Shrine();
+	return true;
+}
+
+function sealbosswaitloc(classid)
+{
+
+	var _leechseal = GetPresetUnits(108, NTC_UNIT_OBJECT, classid);
+	
+	locx = (_leechseal[0].roomx * 5 + _leechseal[0].x);
+	locy = (_leechseal[0].roomy * 5 + _leechseal[0].y)
+
+	if (locx == 7655 && locy == 5275)
+		{chaosfollow.push(7709, 5273);return;}
+			
+	if (locx == 7815 && locy == 5155)
+		{chaosfollow1.push(7810,5215);return;}
+		
+	if (locx == 7915 && locy == 5315)
+		{chaosfollow2.push(7880, 5307);return;}
+
+		
+	if (locx == 7893 && locy == 5313)
+		chaosfollow2.push(7885, 5318);
+		
+	return;
+}
+
+function DiabloSpam()
+{
+
+	if(me.classid == NTC_CHAR_CLASS_SORCERESS){
+		if(NTConfig_PreWaveSpam > 0){
+				return NTC_CastSkill(NTConfig_PreWaveSpam, 0, 7793, 5293);
+			}
+	}
+	else if(me.classid == NTC_CHAR_CLASS_DRUID){
+		if(NTConfig_AttackSkill[3] == 245){
+			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7793, 5293);
+		}
+	}
+	else if(me.classid == NTC_CHAR_CLASS_NECROMANCER){
+		if(NTConfig_PreWaveSpam > 0)
+			return NTC_CastSkill(NTConfig_PreWaveSpam, _NTA_SkillHand[NTConfig_PreWaveSpam], 7793, 5293);
+	}
+	else if(me.classid == NTC_CHAR_CLASS_PALADIN){
+		if(NTConfig_AttackSkill[3] == 112){
+			NTC_PutSkill(NTConfig_AttackSkill[3], NTC_HAND_LEFT);
+			NTC_PutSkill(NTConfig_AttackSkill[4], NTC_HAND_RIGHT);
+			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7793, 5293);
+		}
+	}
+	else if(me.classid == NTC_CHAR_CLASS_ASSASSIN){
+		var _attackPos = [7782, 5289, 7785, 5301, 7799, 5302, 7802, 5288, 7792, 5282];
+		if(NTConfig_UseTraps && !_trapsPreCasted){
+			for(var i=0;i<5;i++) {
+				if(i == 0 || i == 2 || i == 3) // Added delays to prevent trap miscast
+					NTC_Delay(25);
+				if(NTConfig_TrapSet[i] > 0)
+					NTC_CastSkill(NTConfig_TrapSet[i], NTC_HAND_RIGHT, _attackPos[i*2], _attackPos[(i*2)+1]);
+			}
+			_trapsPreCasted = true;
+		}
+		if(NTConfig_AttackSkill[3] == 256)
+			if(me.GetSkillStatus(NTConfig_AttackSkill[3]) != 8)
+				return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7793, 5293);
+	}
+	Delay(200);
+	return;
+}
+
+function FallBack()
+{
+	NTTM_CheckAct();
+	Print("Follow Failed");
+	NTConfig_LeechChaos = 0;
+	
+	return;
+}
+
+function My_Shrine()
+{	
+	var xx = me.x, yy = me.y;
+	NTSI_PickItems();
+	NTM_MoveTo(me.areaid, xx, yy);
+	var shrine = NTC_FindUnit(NTC_UNIT_OBJECT, "shrine");
+	if(shrine && shrine.shrinetype == 15 && shrine.mode == 0)
+	{	if(GetDistance(me.x, me.y, shrine.x, shrine.y)<=25)
+			NTM_MoveTo(108, shrine.x, shrine.y+3);
+		if(GetDistance(me.x, me.y, shrine.x, shrine.y)<5)
+		{
+			NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, shrine);
+			NTM_MoveTo(me.areaid, xx, yy);
+		}
+	}
+	return;
+}

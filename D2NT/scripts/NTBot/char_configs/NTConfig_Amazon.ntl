@@ -51,19 +51,19 @@ function NT_LoadConfig()
 	//NTConfig_Script.push("NTLeechCows.ntj");			// Leech fighter cow script.  Must run leader with NTCow.ntj
 		NTConfig_WaitForCowPortal = 240;					// time in seconds to wait for the leader to make cow portal before aborting the script
 
-	//NTConfig_Script.push("NTPassiveChaosLeader.ntj"); // passive chaos leader script for NTPassiveChaosLeecher
-	//NTConfig_Script.push("NTPassiveChaosLeecher.ntj");// passive chaos leecher script. MUST use NTPassiveChaosLeader with it
-
-	//NTConfig_Script.push("NTDiabloLeechFight.ntj");	// (NTConfig_Leader must be configured above).
-		NTConfig_LeechFrom = "S"; 						// (E)ntrance | (S)tar  (Must match leader's setting).
-		NTConfig_TakeTpDiablo = "config me";			// Message from leader signifying you to take portal. (Must be different than Baal & Trav tp messages.)
-		NTConfig_UseChatCommandPortal = true;			// Use portal after TakeTpDiablo message? (False will attempt taking first TP made by leader, ignores TakeTpDiablo.)
-
 	//NTConfig_Script.push("NTTravLeader.ntj");			// Trav Leader
 		LeechTrav_TakeTp =  "config me";				// Message from leader signifying you to take portal. (Must be different than Diablo & Baal tp messages.)
 	//NTConfig_Script.push("NTTravLeech.ntj");			// Trav Leecher (NTConfig_Leader must be configured above).
 		NTConfig_TakeTpTravincal = "config me";			// This must match leaders LeechTrav_TakeTp & must be different than Diablo & Baal tp messages.
 
+	//NTConfig_Script.push("NTUniversalDiabloLeech.ntj");	// (NTConfig_Leader must be configured above).
+		NTConfig_LeechChaos = 0;						// 0 = Portal Leecher, 1 = Leech follow, 2 = Leech Fighter  (leech portals).
+		NTConfig_followDelay = 8000;					// Delay in milliseconds to enter follow portal
+		ChaosLocx = 7763; ChaosLocy = 5267;				//  Hide location for Passive leecher alternate = ChaosLocx = 7767; ChaosLocy = 5263;
+		NTConfig_TakeTpDiablo = "config me";		// Message from leader signifying you to take portal. (Must be different than Baal & Trav tp messages.)
+		NTConfig_UseChatCommandPortal = true;			// Use portal after TakeTpDiablo message? (False will attempt taking first TP made by leader, ignores TakeTpDiablo.)
+		
+		
 	//NTConfig_Script.push("NTUniversalBaalLeech.ntj");
 		NTConfig_LeechBaal = 1; 						// 1 = Leech Fighter (Tele), 2 = Leech Fighter (Walking), 3 = Passive Leecher (Corner dunce).
 		NTConfig_TakeTpBaal = "config me";				// Message from leader signifying you to take portal. (Must be different than Diablo & Trav tp messages.)
