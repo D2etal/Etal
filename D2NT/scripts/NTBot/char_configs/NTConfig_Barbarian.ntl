@@ -75,6 +75,17 @@ function NT_LoadConfig()
 		NTConfig_GrabShrine = "config me";				// Use shrine & return to act 5 portal Area (Leaders hot tp message is very effective, also must be different than Diablo & Trav tp messages).
 		_FindXPArea = [];								// Area ID's, (2, 3, 4, 5, 6, 7). Set array empty "[]" to leech without grabbing shrines.
 		NTConfig_ClearAroundShrine = false;				// Clear around shrine before going back to town?
+	
+	//NTConfig_Script.push("NTHelper.ntj");														// See http://www.projectetal.com/forums/index.php?threads/beta-ish-release-of-nthelper-ntj.14623/
+		NTConfig_DoNotFollowAreas = [34, 35, 36, 107, 128, 129, 130, 124, 100, 101, 102];		// Won't take a WP or TP to these areas
+		NTConfig_DoNotAttackAreas = [34, 35, 36, 107, 128, 129, 130, 124, 100, 101, 102];		// Won't attack in these areas
+		NTConfig_AllowCommands = false;															// Allows leader to issue commands such as 'exit', 'town', 'follow', etc.  'follow' is ON by default.
+		NTConfig_PortalAtLeechersCorpses = true;												// Make a TP at players corpses when they die near you
+			NTConfig_MessageDeadPlayers = false;														// Send a msg to those players when they die
+			NTConfig_DeadPlayerMsg = "My tp for your corpse";										// The actual message to send
+		NTConfig_GreetPlayers = false;															// Greet players who join your party
+			NTConfig_GreetMsg = "Hello, %name%!";													// The message to send
+		NTConfig_HelperHumor = false;															// 0.3% chance to say a silly phrase and skip doing the command you issued.
 
 	//------------------------------------------------------------------------------
 	// Boss Configuration

@@ -82,6 +82,17 @@ function NT_LoadConfig()
 		NTConfig_UsePaliAura = 0; 						// Set to the skill # of the aura you want to use.
 		NTConfig_LeechHolyBoltBaal = false;				// Use Holy bolt attack sequence?
 		NTConfig_LeechWalkAround = false;				// Will cause you char to move slightly if Holy Bolt is being blocked.
+	
+	//NTConfig_Script.push("NTHelper.ntj");														// See http://www.projectetal.com/forums/index.php?threads/beta-ish-release-of-nthelper-ntj.14623/
+		NTConfig_DoNotFollowAreas = [34, 35, 36, 107, 128, 129, 130, 124, 100, 101, 102];		// Won't take a WP or TP to these areas
+		NTConfig_DoNotAttackAreas = [34, 35, 36, 107, 128, 129, 130, 124, 100, 101, 102];		// Won't attack in these areas
+		NTConfig_AllowCommands = false;															// Allows leader to issue commands such as 'exit', 'town', 'follow', etc.  'follow' is ON by default.
+		NTConfig_PortalAtLeechersCorpses = true;												// Make a TP at players corpses when they die near you
+			NTConfig_MessageDeadPlayers = false;														// Send a msg to those players when they die
+			NTConfig_DeadPlayerMsg = "My tp for your corpse";										// The actual message to send
+		NTConfig_GreetPlayers = false;															// Greet players who join your party
+			NTConfig_GreetMsg = "Hello, %name%!";													// The message to send
+		NTConfig_HelperHumor = false;															// 0.3% chance to say a silly phrase and skip doing the command you issued.
 
 	//------------------------------------------------------------------------------
 	// Boss Configuration

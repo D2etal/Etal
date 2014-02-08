@@ -1,0 +1,1871 @@
+// *** Global vars ***
+var pathRushBots = "NTRush/rushbots/";
+var isBusy = false;
+var isPaused;
+var isFollowingEnabled = true;
+var isAttackEnabled = true;
+var isAutoEnchantEnabled = false;
+var leaderUnit;
+var leaderPlayerUnit;
+var followRange = 5;
+var attackRange = 15;
+// *** Global vars ***
+
+//NTConfig_Quest_Cain				= true;
+//NTConfig_Quest_Radament			= true;
+//NTConfig_Quest_Izual			= true;
+//NTConfig_Quest_Tome				= true;
+//NTConfig_Quest_Shenk			= true;
+//NTConfig_Quest_Anya				= true;
+//NTConfig_Quest_Ancients			= true;
+//NTConfig_Quest_Baal				= true;
+//NTConfig_TpHarem				= true;
+//NTConfig_KillCouncils			= true;
+
+
+function NTMain()
+{
+    Include("libs/common/NTCommon.ntl");
+    NTC_IncludeLibs();
+    NTC_IncludeConfig("NTBot/char_configs");
+	
+    NT_LoadConfig();
+    NTSI_LoadNIPFiles("NTBot/item_configs");
+	
+    NTA_Initialize();
+	
+	// From Diabolic's script
+	IncludeFuncs();
+	Include("NTRush/funcs/Message.ntl");
+	
+	// Wait for the leader to join the game
+	var leaderInGame = false;
+	for(i = 0; i < NTConfig_PartyMaxTime+1; i++)
+	{
+		if(CheckLeader(NTConfig_Leader))
+		{
+			leaderName = NTConfig_Leader;
+			leaderInGame = true;
+			break;
+		}
+		else
+		if(CheckLeader(NT_File("logs/" + me.account + ".leaderName.txt", 0)))
+		{
+			leaderName = NT_File("logs/" + me.account + ".leaderName.txt", 0);
+			leaderInGame = true;
+			break;
+		}
+		else
+		if(CheckLeader(NT_File("AILS/Logs/TristLeader.leadername.txt", 0)))
+		{
+			leaderName = NT_File("AILS/Logs/TristLeader.leadername.txt", 0);
+			leaderInGame = true;
+			break;
+		}
+		Delay(1000);
+	}
+	
+	// End script if the leader wasn't found
+	if(!leaderInGame)
+	{
+		Say("Leader: " + leaderName + " - not found!");
+		NTC_Delay(500);
+		NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+	}
+	else
+	{
+		RegisterEvent( EVENT_GAMEMSG, ChatHandler );
+		Say("!Leader: " + leaderName)
+		leaderUnit = GetLeaderUnit(leaderName);
+		leaderPlayerUnit = GetLeader(leaderName);
+	}
+	
+	if(NTC_InTown(me))
+	{
+		NTTMGR_TownManager();
+	}
+	
+	while(CheckLeader(leaderName))
+	{
+		Action();
+		NTC_Delay(100);
+	}
+	
+	NTC_Delay(500);
+	NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+}
+
+function Action()
+{
+	if(me.mode === 0 || me.mode === 17)
+	{
+		isBusy = 0;
+		me.Cancel(0);
+		me.Cancel(1);
+		Delay(1000);
+		if(me.mode !== 0 && me.mode !== 17)
+		{
+			Say("I'm alive!");
+			isFollowingEnabled = false;
+		}
+	}
+	
+	if(!isBusy && NTC_InMyParty(leaderName))
+	{
+		if(isFollowingEnabled)
+		{
+			Follow();
+		}
+	}
+	
+	if(!isBusy && isAutoEnchantEnabled)
+	{
+		// TBA with a global tick counter
+		// Maybe a player array with some kind of player-specific timer
+		// Who knows...
+	}
+	
+	if(NTC_InTown(me))
+	{
+		if(NTTMGR_CheckScrolls(1) < 4)
+		{
+			NTTMGR_TownManager();
+		}
+	}
+}
+
+function ChatHandler( msg, type )
+{
+	if(NTConfig_HelperHumor)
+	{
+		// My attempt at making the bot have humour
+		// 3 checks per 1000 === 0.3% chance
+		var _funny = Random(1, 1000);
+		var _skip = false;
+		switch(_funny)
+		{
+			case 1:
+				Say("Hmm... I don't feel like it.  Ask me later.");
+				_skip = true;
+				break;
+			case 500:
+				Say("Why don't you do it?  I'm tired.");
+				_skip = true;
+				break;
+			case 1000:
+				Say("Hah, you wish...");
+				_skip = true;
+				break;
+		}
+		if(_skip)
+		{
+			return;
+		}
+	}
+	
+	switch( type )
+	{
+		case 0: // white
+			if(!NTConfig_AllowCommands)
+			{
+				return;
+			}
+			_msgsplit = msg.toLowerCase().split(":");
+			if( _msgsplit.length >= 1 && _msgsplit[1] !== undefined )
+			{
+				var _name = _msgsplit[0].substring(3, _msgsplit[0].length - 3);
+				var _commands = _msgsplit[1].substring(1).split(" ");
+			}
+			else
+				return;
+			
+			if(_name == me.name.toLowerCase())
+				return;
+			
+			if( _commands[0] == me.name.toLowerCase() ) 	// remove char name.  
+				for(var f = 0; f <= _commands.length-1; f++)
+					_commands[f] = _commands[f+1];
+			
+			if(_commands.length > 1) 		// make sure nothing is undefined. grr.
+				for(var i = 0; i <= _commands.length-1; i++)
+					if(!_commands[i])
+						_commands[i] = "";
+			
+			while(_commands.length < 5)
+				_commands.push("");
+			
+			if(_commands[0] == "p" && _name == leaderName)
+			{
+				isPaused = !isPaused;
+				if(isPaused)
+					Say("~Paused chat commands");
+				else
+					Say("~Unpaused chat commands");
+			}
+			
+			if( !isBusy && !isPaused && _name == leaderName.toLowerCase())
+				CommandHandler( _commands[0], _commands[1], _commands[2], _commands[3], _commands[4] );
+			break;
+		case 1: // red
+			break;
+		case 2: // green
+			if(!NTConfig_AllowCommands)
+			{
+				return;
+			}
+			if(msg.indexOf("From ") > -1 && msg.indexOf(" (*") > -1)
+			{
+				_msgsplit = msg.toLowerCase().split(" (*");
+				if( _msgsplit.length == 2 && _msgsplit[1] !== undefined )
+				{         
+					var _name = _msgsplit[0].split(" ")[1];
+					var _commands = _msgsplit[1].split("):")[1].substring(1).split(" ");
+				}
+				else
+					return;
+			}
+			else
+			if(msg.indexOf(" whispers: ") > -1)
+			{
+				_msgsplit = msg.toLowerCase().split(" whispers:");
+				if( _msgsplit.length == 2 && _msgsplit[1] !== undefined )
+				{
+					var _name = _msgsplit[0];
+					var _commands = _msgsplit[1].substring(1).split(" ");
+				}
+				else
+					return;
+			}
+			else
+			{
+				if(msg.indexOf("has joined your party to fight the forces of evil") > -1)
+				{
+					if(NTConfig_GreetPlayers)
+					{
+						_split = msg.split("has joined");
+						_name = _split[0];
+						var saystring;
+						if(NTConfig_GreetMsg.indexOf("%name%") !== -1)
+						{
+							saystring = NTConfig_GreetMsg.replace("%name%", _name);
+							Whisper(_name, saystring);
+						}
+						else
+						{
+							Whisper(_name, NTConfig_GreetMsg);
+						}
+					}
+				}
+				return;
+			}
+			
+			if(_name == me.name.toLowerCase())
+				return;
+			
+			if( _commands[0] == me.name.toLowerCase() ) 	// remove char name.  
+				for(var f = 0; f <= _commands.length-1; f++)
+					_commands[f] = _commands[f+1];
+			
+			if(_commands.length > 1) 		// make sure nothing is undefined. grr.
+				for(var i = 0; i <= _commands.length-1; i++)
+					if(!_commands[i])
+						_commands[i] = "";
+			
+			while(_commands.length < 5)
+				_commands.push("");
+			
+			if(_commands[0] == "p" && _name == leaderName)
+			{
+				isPaused = !isPaused;
+				if(isPaused)
+					Say("~Paused chat commands");
+				else
+					Say("~Unpaused chat commands");
+			}
+			
+			if( !isBusy && !isPaused && _name == leaderName.toLowerCase())
+				CommandHandler( _commands[0], _commands[1], _commands[2], _commands[3], _commands[4] );
+			break;
+		case 3: // blue
+			break;
+		case 4: // brown
+			/*
+			if(NTConfig_GreetPlayers)
+			{
+				if(msg.indexOf("joined our world. Diablo") != -1)
+				{
+					_split = msg.split("(");
+					_name = _split[0];
+					var saystring;
+					if(NTConfig_GreetMsg.indexOf("%name%") != -1)
+					{
+						saystring = NTConfig_GreetMsg.replace("%name%", _name);
+						Whisper(_name, saystring);
+					}
+					else
+					{
+						Whisper(_name, NTConfig_GreetMsg);
+					}
+				}
+			}
+			*/
+			if(NTConfig_PortalAtLeechersCorpses)
+			{
+				if(msg.indexOf(" was slain by ") != -1)
+				{
+					_split = msg.split(" was slain by ");
+					_name = _split[0].substring(3, _split[0].length - 3);
+					TPAtPlayersBody(_split[0], _split[1]);
+				}
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+function CommandHandler( msg1, msg2, msg3, msg4, msg5 )
+{
+	switch( msg1 )
+	{
+	case "dbg": // keep right above goto command without a break
+		Say("Debug:  Leader Coordinates: X: " + leaderPlayerUnit.x + " " + "Y: " + leaderPlayerUnit.y);
+		Say("Debug:  Leader Area ID: " + leaderPlayerUnit.areaid);
+		msg2 = leaderPlayerUnit.areaid;
+		msg3 = leaderPlayerUnit.x;
+		msg4 = leaderPlayerUnit.y;
+	case "goto":
+		if(msg2 == 'trist')
+		{
+			if(!NTTM_CheckAct(1))
+			{
+				NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+				return;
+			}
+			NTTMGR_TownManager();
+			NTTM_TownMove("waypoint");
+			NTM_TakeWaypoint(4);
+			if(!NTM_MoveToPresetUnit(me.areaid, NTC_UNIT_MONSTER, 737, 10, 10, false))
+			{
+				NTM_MakeTP();
+				Say("Failed to move to unit");
+				//Delay(7500);
+				//NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+				return;
+			}
+			NTA_ClearPosition( 20 );
+			NTM_MakeTP();
+		}
+		else
+		if(me.areaid === parseInt(msg2))
+		{
+			if(parseInt(msg3) >= 0 && parseInt(msg4) >= 0)
+			{
+				Say("Moving to: " + msg3 + ", " + msg4);
+				if(!NTM_MoveTo(parseInt(msg2), parseInt(msg3), parseInt(msg4)))
+				{
+					Say("!Failed to move");
+				}
+			}
+		}
+		break;
+	case "exit":
+		NTC_SendMsgToScript("NTBotGame.ntj", "SCRIPT_END");
+		break;
+	case "range":
+		if(msg2 == "")
+			followRange = 5;
+		if(msg2 >= 3 && msg2 <= 30)
+			followRange = msg2;
+		else
+			Say("~Valid range is 3-30.  Default is 5.");
+		Say("~Follow range set to: " + followRange);
+		break;
+	case "come":
+		if(!isBusy && NTC_InTown(me))
+		{
+			NTTM_TownMove("portalspot");
+			TakeLeaderTP();
+		}
+		break;
+	case "my":
+		if(msg2 == "tp" && !isBusy && NTC_InTown(me))
+		{
+			NTTM_TownMove("portalspot");
+			Delay(250);
+			TakeLeaderTP();
+		}
+		break;
+	case "go":
+		if(!isBusy && !NTC_InTown(me))
+			if(!TakeLeaderTP())
+				Town();
+		break;
+	case "follow":
+		if(msg2 == "on")
+		{
+			isFollowingEnabled = true;
+			break;
+		}
+		else
+		if(msg2 == "off")
+		{
+			isFollowingEnabled = false;
+			break;
+		}
+		else
+		{
+			isFollowingEnabled = !isFollowingEnabled;
+		}
+		if(isFollowingEnabled)
+			Say("~Follow on");
+		else
+			Say("~Follow off");
+		break;
+	case "bo":
+	case "buff":
+		if(!isBusy)
+		{
+			NTP_DoPrecast( true );
+			Chant( msg2 );
+		}
+		break;
+	case "help":
+		if(!isBusy)
+			DisplayHelp( msg2 );		// Display help menu.
+		break;
+	case "clear":
+		if(!isBusy)
+			CommandClear( msg2 );		// Clear function.
+		break;
+	case "tp":
+		if(!isBusy)
+			TP(msg2);					// TP functions.
+		break;
+	case "quest":
+		if(!isBusy)
+			Quest( msg2 );				// Quest functions.
+		break;
+	case "rush":
+		if(!isBusy)
+			Rush( msg2 );				// Rush functions.
+		break;
+	case "chant":
+		if(!isBusy)
+			Chant( msg2 );				// Chant functions.
+		break;
+	case "town":
+		if(!isBusy)
+		{
+			isFollowingEnabled = false;
+			Say("~Follow off");
+			if(!TakeLeaderTP())
+				Town();
+		}
+		break;
+	case "gold":
+		if(!isBusy)
+			GiveGold(msg2);
+		break;
+	default:						// Say this when you receive an invalid command.
+		//Say("!Invalid command: " + msg1 + " " + msg2 + " " + msg3 + "." );
+		return 0;
+	}
+	return 1;
+}
+
+function DisplayHelp(msg) // Eventually add multiple menus via 'help commandname'. 
+{
+	isBusy = 1;
+	switch(msg)
+	{
+		case "":
+			Say("With multiple followers, you can speak to them individually by saying their name first.  Example: '" + me.name + " follow' would make me follow!");
+			Say("'follow'                       toggle following");
+			Say("'tp'                             make tp");
+			Say("'tp areaname'            tp at waypoint");
+			Say("'range 3-30'               set following range");
+			Say("'bo'                             prebuffs");
+			Say("'rush'                          starts rush");
+			Say("'rush 1-5'                   specific acts");
+			Say("'quest questname'    specific quests");
+			Say("'chant'                       enchants players");
+			Say("'come' or 'go'             portal commands");
+			Say("'gold 1-50000'           drops gold");
+			Say("'clear'                        clears my position");
+			break;
+		case "tp":
+			Say("Type 'tp waypointname' and I will make a tp at that waypoint.  For the Nith waypoint, you must say 'nit' instead.");
+			Say("Example: tp stony");
+			break;
+		default:
+			Say("'" + msg + "' does not have a help menu yet, or is an invalid command.");
+			break;
+	}
+	NTC_Delay(500);
+	isBusy = 0;
+	return;
+}
+
+function Invalid(){Say("!Invalid Command");}
+function NI(){Say("Function not implemented. (yet)");}
+function Busy(){Say("I'm busy!")}
+
+function Follow( target )
+{
+	var _distance = -1;
+	var leaderPlayerUnitintown, _meintown;
+	
+	if(!leaderUnit) // Make sure we have the leaders unit.
+	{
+		leaderUnit = GetLeaderUnit(leaderName);
+	}
+	
+	if(leaderPlayerUnit.areaid <= 0) // Don't do anything if we don't know the area yet.
+	{
+		return;
+	}
+	
+	// Get the distance between our character and the leader
+	if(leaderUnit)
+	{
+		_distance = GetDistance(me, leaderUnit);
+	}
+	else
+	{
+		_distance = -1;
+	}
+	
+	if(CheckAct(me) !== CheckAct(leaderPlayerUnit) && NTC_InTown(me) && NTC_InTown(leaderPlayerUnit))
+	{
+		NTM_TakeWaypoint(GetPlayerActWaypointID(leaderPlayerUnit));
+	}
+		
+	
+	// If we get a valid distance, and we're inside the follow range, we don't need to do anything except attack.
+	if(_distance <= followRange && _distance !== -1 && me.areaid == leaderPlayerUnit.areaid)
+	{
+		if(isAttackEnabled)
+		{
+			var _atk = true;
+			if(NTConfig_DoNotAttackAreas.length >= 1)
+			{
+				for(var i = 0; i < NTConfig_DoNotAttackAreas.length; i++)
+				{
+					if(NTConfig_DoNotAttackAreas[i] === me.areaid)
+					{
+						_atk = false;
+						break;
+					}
+				}
+			}
+			if(_atk) 
+			{
+				hAttack();
+				return;
+			}
+		}
+		return;
+	}
+	
+	// If we get a valid distance, and we're outside the follow range, but still inside the range for GetDistance() to work,  attempt to get closer!
+	if(_distance >= followRange && _distance !== -1 && me.areaid == leaderPlayerUnit.areaid)
+	{
+		if(leaderUnit)
+		{
+			if(me.areaid === 131)
+			{
+				if(me.x !== 15092 && me.y !== 5040)
+				{
+					NTM_MoveTo(me.areaid, 15091, 5039);
+				}
+				hAttack();
+				Delay(1000);
+			}
+			else
+			{
+				NTM_GetCloserInt(leaderUnit);
+			}
+		}
+		else
+		{
+			NTM_MoveTo(leaderPlayerUnit.areaid, leaderPlayerUnit.x, leaderPlayerUnit.y);
+		}
+		return;
+	}
+	
+	// If we get an INVALID distance (too far away for GetDistance()), but we're in the same area, attempt to move to the leader
+	if(_distance === -1 && me.areaid === leaderPlayerUnit.areaid && !NTC_InTown(me) && !NTC_InTown(leaderPlayerUnit))
+	{
+		NTM_MoveTo(leaderPlayerUnit.areaid, leaderPlayerUnit.x, leaderPlayerUnit.y);
+		return;
+	}
+	
+	// If we are in different acts and helper is outside, go to town
+	if(_distance === -1 && CheckAct(me) !== CheckAct(leaderPlayerUnit) && !NTC_InTown(me))
+	{
+		Town();
+		return;
+	}
+	
+	// If the leader is not in town, but we are
+	if(!NTC_InTown(leaderPlayerUnit) && NTC_InTown(me))
+	{
+		// Get the distance between our character and the leader
+		if(leaderUnit)
+		{
+			_distance = GetDistance(me, leaderUnit);
+		}
+		else
+		{
+			_distance = -1;
+		}
+		
+		// If we get a valid distance, and we're outside the follow range, attempt to get closer!
+		// This covers walking out of acts
+		if(_distance >= followRange && _distance !== -1)
+		{
+			if(leaderUnit)
+			{
+				NTM_GetCloserInt(leaderUnit);
+			}
+			else
+			{
+				NTM_MoveTo(leaderPlayerUnit.areaid, leaderPlayerUnit.x, leaderPlayerUnit.y);
+			}
+			return;
+		}
+		
+		// If leader took a WP to a different act, we want to try that wp, or just go to that act
+		if(CheckAct(leaderPlayerUnit) !== CheckAct(me))
+		{
+			if(NTConfig_DoNotFollowAreas.length >= 1)
+			{
+				for(var i = 0; i < NTConfig_DoNotFollowAreas.length; i++)
+				{
+					if(NTConfig_DoNotFollowAreas[i] === leaderPlayerUnit.areaid)
+					{
+						NTTM_TownMove("waypoint");
+						Delay(200);
+						NTM_TakeWaypoint(GetPlayerActWaypointID(leaderPlayerUnit));
+						Delay(200);
+						NTTM_TownMove("portalspot");
+						return;
+					}
+				}
+			}
+			var _mta = (AreaHasWaypoint(leaderPlayerUnit.areaid) ? leaderPlayerUnit.areaid : GetPlayerActWaypointID(leaderPlayerUnit));
+			NTTM_TownMove("waypoint");
+			Delay(200);
+			NTM_TakeWaypoint(_mta);
+			return;
+		}
+		
+		// Return if leader is in a no-follow-zone 
+		for(var i = 0; i < NTConfig_DoNotFollowAreas.length; i++)
+		{
+			if(NTConfig_DoNotFollowAreas[i] === leaderPlayerUnit.areaid)
+			{
+				return;
+			}
+		}
+		
+		// Try to take any available portals
+		if(NTC_InTown(me))
+		{
+			NTTM_TownMove("portalspot");
+			Delay(250);
+		}
+		
+		if(TakeLeaderTP(leaderPlayerUnit.areaid))
+		{
+			Delay(250);
+			return;
+		}
+		else
+		if(AreaHasWaypoint(leaderPlayerUnit.areaid))
+		{
+			for(var i = 0; i < NTConfig_DoNotFollowAreas.length; i++)
+			{
+				if(NTConfig_DoNotFollowAreas[i] === leaderPlayerUnit.areaid)
+				{
+					return;
+				}
+			}
+			
+			NTM_TakeWaypoint(leaderPlayerUnit.areaid);
+		}
+		return;
+	}
+	
+	// If we are in town, but the leader is not
+	if(NTC_InTown(leaderPlayerUnit) && !NTC_InTown(me))
+	{
+		// Get the distance between our character and the leader
+		if(leaderUnit)
+		{
+			_distance = GetDistance(me, leaderUnit);
+		}
+		else
+		{
+			_distance = -1;
+		}
+		
+		// If we get a valid distance, and we're outside the follow range, attempt to get closer!
+		// This covers walking back in/out of acts and in/out of new areas
+		if(_distance >= followRange && _distance !== -1)
+		{
+			if(leaderUnit)
+			{
+				NTM_GetCloserInt(leaderUnit);
+			}
+			else
+			{
+				NTM_MoveTo(leaderPlayerUnit.areaid, leaderPlayerUnit.x, leaderPlayerUnit.y);
+			}
+			return;
+		}
+		
+		// If leader took a WP to a different act, we want to try that wp, otherwise we simply get back to town
+		if(_distance == -1 && CheckAct(leaderPlayerUnit) !== CheckAct(me))
+		{
+			if(AreaHasWaypoint(leaderPlayerUnit.areaid))
+			{
+				if(!NTM_TakeWaypoint(leaderPlayerUnit.areaid))
+				{
+					if(!Town(""))
+					{
+						Whisper(leaderPlayerUnit.name, "I seem to be stuck!");
+					}
+				}
+			}
+			return;
+		}
+		
+		// If leader went back to town
+		// Try to take any available portals
+		if(_distance == -1 && CheckAct(leaderPlayerUnit) == CheckAct(me) && me.areaid !== leaderPlayerUnit.areaid)
+		{
+			if(!TakeLeaderTP())
+			{
+				// Try to take waypoints next
+				if(AreaHasWaypoint(leaderPlayerUnit.areaid))
+				{
+					if(!NTM_TakeWaypoint(leaderPlayerUnit.areaid))
+					{
+						if(!NTC_InTown(me))
+						{
+							// Last ditch effort, just go back to town
+							if(!Town(""))
+							{
+								Whisper(leaderPlayerUnit.name, "I seem to be stuck!");
+							}
+						}
+					}
+				}
+			}
+			//return;
+		}
+		return;
+	}
+	
+	// If we are both outside but in different areas
+	if(me.areaid !== leaderPlayerUnit.areaid && !NTC_InTown(leaderPlayerUnit) && !NTC_InTown(me))
+	{
+		// Get the distance between our character and the leader
+		if(leaderUnit)
+		{
+			_distance = GetDistance(me, leaderUnit);
+		}
+		else
+		{
+			_distance = -1;
+		}
+		
+		// If we get a valid distance, and we're outside the follow range, attempt to get closer!
+		// This covers walking to new area id's
+		if(_distance >= followRange && _distance !== -1 && me.areaid === leaderPlayerUnit.areaid)
+		{
+			if(leaderUnit)
+			{
+				NTM_GetCloserInt(leaderUnit);
+			}
+			else
+			{
+				NTM_MoveTo(leaderPlayerUnit.areaid, leaderPlayerUnit.x, leaderPlayerUnit.y);
+			}
+			return;
+		}
+		
+		// Check to see if we entered a doorway or stairs
+		var _unit = GetPresetUnits(me.areaid, NTC_UNIT_TILE);
+		if (_unit)
+		{
+			for (var i = 0; i < _unit.length; i += 1)
+			{
+				if (_unit[i].subareaid == leaderPlayerUnit.areaid)
+				{
+					NTM_TakeStair(leaderPlayerUnit.areaid); // take stairs
+					return;
+				}
+			}
+		}
+		
+		// This covers outside-to-outside waypoint changes
+		if(AreaHasWaypoint(leaderPlayerUnit.areaid))
+		{
+			if(NTM_TakeWaypoint(leaderPlayerUnit.areaid))
+			{
+				return;
+			}
+		}
+		
+		// Check for special doors
+		// Leaving Arcane Sanctuary
+		if(me.areaid == 74 && leaderPlayerUnit.areaid == 54)
+		{
+			if(!NTM_TakeUnit(NTC_UNIT_OBJECT, 298))
+			{
+				Town("");
+			}
+			return;
+		}
+		
+		// Entering Arcane Sanctuary
+		if(me.areaid == 54 && leaderPlayerUnit.areaid == 74)
+		{
+			if(!NTM_TakeUnit(NTC_UNIT_OBJECT, 298))
+			{
+				Town("");
+			}
+			return;
+		}
+		
+		// Entering Duriel's Chamber
+		if(me.areaid >= 66 && me.areaid <= 72 && leaderPlayerUnit.areaid == 73)
+		{
+			if(!NTM_TakeUnit(NTC_UNIT_OBJECT, 100))
+			{
+				Town("");
+			}
+			return;
+		}
+		
+		// Entering Tristram
+		if(me.areaid == 4 && leaderPlayerUnit.areaid == 38)
+		{
+			if(!NTM_UsePortal("Portal", 38))
+			{
+				Town("");
+			}
+			return;
+		}
+		
+		// Exiting Tristram
+		if(me.areaid == 38 && leaderPlayerUnit.areaid == 4)
+		{
+			if(!NTM_UsePortal("Portal", 4))
+			{
+				Town("");
+			}
+			return;
+		}
+		
+		// Entering Baal's Chamber
+		if(me.areaid == 131 && leaderPlayerUnit.areaid == 132)
+		{
+			if(NTConfig_FollowtoWorldStone)
+			{
+				if(!NTM_TakeUnit(NTC_UNIT_OBJECT, 563))
+				{
+					Town("");
+				}
+				return;
+			}
+		}
+		
+		// Entering Mephisto's portal
+		// TBA
+		
+		// Entering Cow Portal
+		// TBA
+		
+		// Exiting Cow Portal
+		// TBA
+		Town("");
+		return;
+	}
+	
+	// If we are both outside and in the same area
+	if(me.areaid === leaderPlayerUnit.areaid && !NTC_InTown(me) && !NTC_InTown(leaderPlayerUnit))
+	{
+		// Get the distance between our character and the leader
+		if(leaderUnit)
+		{
+			_distance = GetDistance(me, leaderUnit);
+		}
+		else
+		{
+			_distance = -1;
+		}
+		
+		// If we get a valid distance, and we're outside the follow range, attempt to get closer!
+		// This covers general moving
+		if(_distance >= followRange && _distance !== -1)
+		{
+			if(leaderUnit)
+			{
+				NTM_GetCloserInt(leaderUnit);
+			}
+			else
+			{
+				NTM_MoveTo(leaderPlayerUnit.areaid, leaderPlayerUnit.x, leaderPlayerUnit.y);
+			}
+			return;
+		}
+		else if(_distance === -1 && leaderPlayerUnit.areaid >= 1 && me.areaid >= 1)
+		{
+			NTM_MoveTo(leaderPlayerUnit.areaid, leaderPlayerUnit.x, leaderPlayerUnit.y);
+			return;
+		}
+	}
+}
+
+function TPAtPlayersBody(playerName, enemysName)
+{
+	var _playerUnit = aGetPlayerUnit(playerName);
+	var _playerUnit2 = GetLeader(playerName);
+	var _playerDistance;
+	if(_playerUnit)
+		_playerDistance = GetDistance(me, _playerUnit);
+	else
+		_playerDistance = -1;
+	var _playerArea = _playerUnit2.areaid;
+	var _myArea = me.areaid;
+	
+	if(_playerDistance > 0 && _myArea == _playerArea)
+	{
+		if(_playerUnit)
+			NTM_GetCloserInt(_playerUnit);
+		else
+			NTM_MoveTo(leaderPlayerUnit.areaid, leaderPlayerUnit.x, leaderPlayerUnit.y);
+		TP("");
+		Whisper(playerName, "My TP for your corpse");
+	}	
+}
+
+function Guard() // Done
+{
+	if(!NTC_InTown(me))
+	{
+		NTA_ClearPosition(15);
+	}
+	return;
+}
+
+function hAttack()
+{
+	if(!NTC_InTown(me))
+	{
+		if(NTA_CheckForCloseMonsters(30))
+		{
+			NTA_ClearPosition(30);
+			Delay(1000);
+			return;
+		}
+		return;
+	}
+	Delay(1000);
+}
+
+function isATown(id)
+{
+	var _ret = false;
+	switch(id)
+	{
+		case 1: _ret = true; break;
+		case 40: _ret = true; break;
+		case 75: _ret = true; break;
+		case 103: _ret = true; break;
+		case 109: _ret = true; break;
+	}
+	return _ret;
+}
+
+function TakeLeaderTP(toArea) // Done
+{
+	isBusy = 1;
+	while(me.areaid == 0)
+		NTC_Delay(100);
+	var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226), 15);
+	var _prearea = me.areaid;
+	var _ret = false;
+	if(_portal)
+	{
+		do 
+		{
+			if(NTC_CheckOwner(_portal, leaderPlayerUnit.name))
+			{
+				if(GetDistance(me, _portal) !== -1 && !NTC_InTown(me))
+				{
+					NTM_MoveTo(me.areaid, _portal.x, _portal.y);
+				}
+				if(GetDistance(me, _portal) <= 15)
+				{
+					var p0 = _portal.subareaid;
+					var p1 = p0 - 768;
+					var p2 = p0 - 256;
+					var leaderArea = leaderPlayerUnit.areaid;
+					if(leaderArea === p0 || leaderArea === p1 || leaderArea === p2 || isATown(p0))
+					{
+						Say("!Found Portal");
+						if(NTC_InTown(me) && NTC_GetSkillLevel(43))
+						{
+							NTC_CastSkill(43, NTC_HAND_RIGHT, _portal);
+						}
+						else
+						{
+							NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+						}
+						Delay(750);
+						if(!NTC_InTown(me))
+						{
+							NTP_DoPrecast( true );
+						}
+						Delay(250);
+						break;
+					}
+				}
+			}
+			if(me.areaid !== _prearea)
+			{
+				_ret = true;
+				break;
+			}
+		}while(_portal.GetNext());
+		
+		Delay(250);
+		
+		if(NTC_InTown(me))
+		{
+			if(NTTMGR_CheckScrolls(1) < 4)
+			{
+				Whisper(leaderPlayerUnit.name, "Buying scrolls");
+				NTTMGR_TownManager();
+			}
+		}
+		
+		if(_prearea !== me.areaid)
+			_ret = true;
+		else
+			_ret = false;
+	}
+	else
+	{
+		_ret = false;
+	}
+	isBusy = 0;
+	return _ret;
+}		
+
+function GiveGold( amount ) // Done
+{
+	isBusy = 1;
+	_gold = me.GetStat(14);
+	if(amount != "")
+	{
+		if( parseInt(amount) <= 50000 && parseInt(amount) >= 1 )
+		{
+			if(parseInt(amount) <= _gold)
+			{
+				Gold(0, parseInt(amount))
+			}
+			else
+			{
+				Say("Sorry, I am out of gold!");
+			}
+			NTC_Delay(1000);
+		}
+		else
+		{
+			Say("Invalid amount.  Valid range is 1-10000.");
+		}
+	}
+	else
+	{
+		Say("Invalid amount.  Valid range is 1-10000.");
+	}
+	isBusy = 0;
+}
+
+function Quest( msg ) // Done (needs testing)
+{
+	if(!NTC_InTown(me))
+		Town();
+	switch(msg)
+	{
+		case "":
+			break;
+		case "cain":
+			Cain();
+			break;
+		case "andy":
+		case "andariel":
+			Andy();
+			break;
+		case "radament":
+		case "rada":
+			Radament();
+			break;
+		case "cube":
+			Cube();
+			break;
+		case "staff":
+			Staff();
+			break;
+		case "ammy":
+			Ammy();
+			break;
+		case "summoner":
+			Summoner();
+			break;
+		case "duriel":
+			Duriel();
+			break;
+		case "tome":
+			Tome();
+			break;
+		case "travincal":
+		case "trav":
+			Travincal();
+			break;
+		case "mephisto":
+		case "meph":
+			Mephisto();
+			break;
+		case "izual":
+		case "izzy":
+			Izual();
+			break;
+		case "diablo":
+			Diablo();
+			break;
+		case "shenk":
+			Shenk();
+			break;
+		case "anya":
+			Anya();
+			break;
+		case "ancients":
+			Ancients();
+			break;
+		case "baal":
+			Baal();
+			break;
+		case "imbue":
+			Imbue();
+			break;
+		default:
+			Invalid();
+	}
+}
+
+function Town() // Done
+{
+	if(!NTC_InTown(me))
+	{
+		isBusy = 1;
+		// Try to take our own tp or the leader's tp
+		var _portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226), 10);
+		var _prearea = me.areaid;
+		if(_portal)
+		{
+			do 
+			{
+				if(NTC_CheckOwner(_portal, me.charname) || NTC_CheckOwner(_portal, leaderName))
+				{
+					if(GetDistance(me, _portal) < 15)
+					{
+						NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+						Delay(1500);
+					}
+				}
+				
+				while(me.areaid === 0)
+					NTC_Delay(100);
+				
+				if(me.areaid !== _prearea)
+				{
+					if(NTC_InTown(me))
+						NTTMGR_TownManager();
+					break;
+				}
+					
+			}while(_portal.GetNext());
+			Delay(500);
+		}
+		
+		if(me.areaid == _prearea) // If we failed, we need to make our own tp and try again
+		{
+			TP("");
+			Delay(500);
+			_portal = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(3226), 10);
+			var _prearea = me.areaid;
+			
+			if(_portal)
+			{
+				do 
+				{
+					if(NTC_CheckOwner(_portal, me.charname)) 
+						if(GetDistance(me, _portal) < 10)
+							NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _portal);
+					
+					if(me.areaid !== _prearea)
+					{
+						if(NTC_InTown(me))
+							NTTMGR_TownManager();
+						break;
+					}
+					
+					while(me.areaid == 0)
+						NTC_Delay(100);
+					
+				}while(_portal.GetNext());
+				Delay(500);
+			}
+		}
+		
+		if(me.areaid !== _prearea)
+		{	
+			isBusy = 0;
+			return true;
+		}
+		else
+		{
+			isBusy = 0;
+			return false;
+		}
+	}
+	else
+	{
+		isBusy = 1;
+		NTTMGR_TownManager();
+		isBusy = 0;
+		return true;
+	}
+}
+
+function Chant( msg ) // Done
+{
+	if(msg == "on")
+	{
+		Say("!Auto enchant turned on!");
+		Say("Following and attacking disabled!");
+		isAutoEnchantEnabled = true;
+		return;
+	}
+	
+	if(msg == "off")
+	{
+		Say("!Auto enchant turned off!");
+		isAutoEnchantEnabled = false;
+		return;
+	}
+	
+	isBusy = 1;
+	if(!NTC_InTown(me) && NTC_GetSkillLevel(52))
+	{
+		// Enchant player
+		var _player = NTC_FindUnit(NTC_UNIT_PLAYER);
+		//var _merc = NTC_FindUnit(NTC_UNIT_MERC);
+		if(!_player)
+			return;
+		do
+		{
+			if(_player.name !== me.name && GetDistance(me, _player) <= 20 && NTC_InMyParty(_player.name))
+			{	
+				NTC_Delay(750);
+				NTC_CastSkill(52, NTC_HAND_RIGHT, _player);
+			}
+			
+			// Enchant merc
+			var _merc = NTC_FindUnit(NTC_UNIT_MERC);
+			if (_merc)
+			{
+				do
+				{
+					if(NTC_CheckOwner(_merc, _player.name) && GetDistance(me, _merc) < 20 && _merc.hp > 0 && _player.name !== me.name)
+					{
+						NTC_Delay(750);
+						NTC_CastSkill(52, NTC_HAND_RIGHT, _merc);
+					}
+				} while (_merc.GetNext());
+			}
+		} while( _player.GetNext() )
+	}
+	else
+	{
+		Say("I'm in town!  Say 'help tp' for more information.");
+	}
+	isBusy = 0;
+}	
+
+function TP(msg) // Done
+{
+	isBusy = 1;
+	switch(msg)
+	{
+		case "":
+			if(!NTC_InTown(me))
+			{
+				if(!NTM_MakeTP())
+				{
+					Say("Out of tp scrolls!");
+				}
+				break;
+			}
+			if(NTC_InTown(me))
+			{
+				Say("I'm in town! Say 'help tp' for more information.");
+			}
+			isBusy = 0;
+			break;
+			
+		default:
+			var wpID = WaypointNameToID(msg);
+			if(wpID == -1)
+			{
+				Invalid();
+				isBusy = 0;
+				return;
+			}
+			
+			if(!NTC_InTown(me))
+			{
+				if(wpID != -1)
+				{
+					Town();
+					if(NTTMGR_CheckScrolls(1) <= 4)
+					{
+						Say("Buying scrolls first!");
+						NTTMGR_TownManager();
+					}
+					NTTM_TownMove("waypoint")
+					NTM_TakeWaypoint(wpID);
+					if(!NTM_MakeTP())
+					{
+						Say("Out of tp scrolls!");
+					}
+					break;
+				}
+			}
+			else
+			{
+				if(wpID != -1)
+				{
+					if(NTTMGR_CheckScrolls(1) <= 4)
+					{
+						Say("Buying scrolls first!");
+						NTTMGR_TownManager();
+					}
+					NTTM_TownMove("waypoint")
+					NTM_TakeWaypoint(wpID);
+					if(!NTM_MakeTP())
+					{
+						Say("Out of tp scrolls!"); // this too
+					}
+				}
+			}
+			break;
+	}
+	isBusy = 0;
+}
+
+function CommandClear(msg) // Done
+{
+	isBusy = 1;
+	if(!NTC_InTown(me))
+	{
+		switch(msg)
+		{
+			case "":
+				NTA_ClearPosition( 30 )
+				break;
+			case "level":
+					NTA_ClearLevel();
+				break;
+			default:
+				if(msg >= 5 && msg <= 40)
+					NTA_ClearPosition(msg);
+				break;
+		}
+	}
+	else
+	{
+		Say("I'm in town!");
+	}
+	isBusy = 0;
+}
+
+function Rush( msg ) // Done (needs testing)
+{
+	isBusy = 1;
+	isFollowingEnabled = false;
+	isAutoEnchantEnabled = false;
+	switch(msg)
+	{
+		case "":
+			Rush1();
+			Rush2();
+			Rush3();
+			Rush4();
+			Rush5();
+			break;
+		case "1":
+			Say("Starting act 1");
+			Rush1();
+			break;
+		case "2":
+			Say("Starting act 2");
+			Rush2();
+			break;
+		case "3":
+			Say("Starting act 3");
+			Rush3();
+			break;
+		case "4":
+			Say("Starting act 4");
+			Rush4();
+			break;
+		case "5":
+			Say("Starting act 5");
+			Rush5();
+			break;
+		default:
+			Invalid();
+	}
+	isBusy = 0;
+}
+
+function Rush1()
+{
+	if(NTConfig_Quest_Cain)
+		Cain();
+	Andy();
+}
+
+function Rush2()
+{
+	if(NTConfig_Quest_Radament)
+		Radament();
+	if(me.diff == 0)
+		Cube();
+	Ammy();
+	Staff();
+	Summoner();
+	Duriel();
+}
+
+function Rush3()
+{
+	if(NTConfig_Quest_Tome)
+		Tome();
+	Travincal();
+	Mephisto();
+}
+
+function Rush4()
+{
+	if(NTConfig_Quest_Izual)
+		Izual();
+	Diablo();
+}
+
+function Rush5()
+{
+	if(NTConfig_Quest_Shenk)
+		Shenk();
+	if(NTConfig_Quest_Anya)
+		Anya();
+	if(NTConfig_Quest_Ancients)
+		Ancients();
+	if(NTConfig_Quest_Baal)
+		Baal();
+}
+
+function Imbue()
+{
+	if(!NTTM_CheckAct(1))
+	{
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
+		return;
+	}
+
+	NTTMGR_TownManager();
+
+	if(!NTTM_TownMove("waypoint"))
+	{
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_TownMove()");
+		return;
+	}
+
+	if(!NTM_TakeWaypoint(27))
+	{
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_TakeWaypoint()");
+		return;
+	}   
+
+	NTP_DoPrecast(true);
+
+	if(!NTM_MoveToPresetUnit(28, NTC_UNIT_OBJECT, 108, 5, 5, false))
+	{
+		NTC_SendMsgToScript("NTBotGame.ntj", "NTM_MoveToPresetUnit()");
+		return;
+	}
+	NTM_MakeTP();
+	NTC_Delay(500);
+
+	// if(!NTA_KillMonster(GetLocaleString(2889)))
+	// { 
+		// NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()"); 
+		// return; 
+	// }
+	NTA_ClearPosition(10);
+	Town();
+}
+
+// ******************************************************************************
+// Internal functions
+// ******************************************************************************
+
+function WaypointNameToID(name) // for Nith, you have to say 'nit' instead of 'hal'.  Conflicts with 'hal'ls of the dead.
+{
+	var partial = name.substring(0, 3);
+	var returnID = -1;
+	
+	// Area name to area ID
+	switch(partial)
+	{
+		// Act 1
+		case "col": // cold plains
+			returnID = 3;
+			break;
+		case "sto": // stony field
+			returnID = 4;
+			break;
+		case "dar": // dark wood
+			returnID = 5;
+			break;
+		case "bla": // black marsh
+			returnID = 6;
+			break;
+		case "out": // outer cloister
+			returnID = 27;
+			break;
+		case "jai": // jail level 1
+			returnID = 29;
+			break;
+		case "inn": // inner cloister
+			returnID = 32;
+			break;
+		case "cat": // catacombs level 2
+			returnID = 35;
+			break;
+			
+		// Act 2
+		case "sew": // sewers level 2
+			returnID = 48;
+			break;
+		case "hal": // halls of the dead level 2
+			returnID = 57;
+			break;
+		case "far": // far oasis
+			returnID = 43;
+			break;
+		case "los": // lost city
+			returnID = 44;
+			break;
+		case "pal": // palace
+			returnID = 52;
+			break;
+		case "arc": // arcane
+			returnID = 74;
+			break;
+		case "can": // canyon
+			returnID = 46;
+			break;
+			
+		// Act 3
+		case "spi": // spider forest
+			returnID = 76;
+			break;
+		case "gre": // great marsh
+			returnID = 77;
+			break;
+		case "fla": // flayer jungle
+			returnID = 78;
+			break;
+		case "low": // lower kurast
+			returnID = 79;
+			break;
+		case "kur": // kurast bazar
+			returnID = 80;
+			break;
+		case "upp": // upper kurast
+			returnID = 81;
+			break;
+		case "tra": // travincal
+			returnID = 83;
+			break;
+		case "dur": // durance of hate level 2
+			returnID = 101;
+			break;
+			
+		// Act 4
+		case "cit": // city of the damned
+			returnID = 106;
+			break;
+		case "riv": // river of flame
+			returnID = 107;
+			break;
+			
+		// Act 5
+		case "fri": // fridgid highlands
+			returnID = 111;
+			break;
+		case "arr": // arreat summit
+			returnID = 112;
+			break;
+		case "cry": // crystalline passage
+			returnID = 113;
+			break;
+		case "gla": // glacial trail
+			returnID = 115;
+			break;
+		case "fro": // frozen tundra
+			returnID = 117;
+			break;
+		case "nit": // nith
+			returnID = 123;
+			break;
+		case "anc": // ancients
+			returnID = 118;
+			break;
+		case "wor": // worldstone
+			returnID = 129;
+			break;
+		default:
+			returnID = -1;
+	}
+	return returnID;
+}
+
+function AreaHasWaypoint(area)
+{
+	var _ret = false;
+	switch(area)
+	{
+											// ACT_1
+		case 3: _ret = true; break; 		// LEVEL_COLD_PLAINS
+		case 4: _ret = true; break;			// LEVEL_STONY_FIELD
+		case 5: _ret = true; break;			// LEVEL_DARK_WOOD
+		case 6: _ret = true; break;			// LEVEL_BLACK_MARSH
+		case 27: _ret = true; break;		// LEVEL_OUTER_CLOISTER
+		case 29: _ret = true; break;		// LEVEL_JAIL_LEVEL_1
+		case 32: _ret = true; break;		// LEVEL_INNER_CLOISTER
+		case 35: _ret = true; break;		// LEVEL_CATACOMBS_LEVEL_2
+		
+											// ACT_2
+		case 40: _ret = true; break;		// LEVEL_LUT_GHOLEIN
+		case 42: _ret = true; break;		// LEVEL_DRY_HILLS
+		case 43: _ret = true; break;		// LEVEL_FAR_OASIS
+		case 44: _ret = true; break;		// LEVEL_LOST_CITY
+		case 46: _ret = true; break;		// LEVEL_CANYON_OF_THE_MAGI
+		case 48: _ret = true; break;		// LEVEL_SEWERS_LEVEL_2
+		case 52: _ret = true; break;		// LEVEL_PALACE_CELLAR_LEVEL_1
+		case 57: _ret = true; break;		// LEVEL_HALLS_OF_THE_DEAD_LEVEL_2
+		case 74: _ret = true; break;		// LEVEL_ARCANE_SANCTUARY
+		
+											// ACT_3
+		case 76: _ret = true; break;		// LEVEL_SPIDER_FOREST
+		case 77: _ret = true; break;		// LEVEL_GREAT_MARSH
+		case 78: _ret = true; break;		// LEVEL_FLAYER_JUNGLE
+		case 79: _ret = true; break;		// LEVEL_LOWER_KURASH
+		case 80: _ret = true; break;		// LEVEL_KURASH_BAZAAR
+		case 81: _ret = true; break;		// LEVEL_UPPER_KURAST
+		case 83: _ret = true; break;		// LEVEL_TRAVINCAL
+		case 101: _ret = true; break;		// LEVEL_DURANCE_OF_HATE_LEVEL_2
+
+											// ACT_4
+		case 103: _ret = true; break;		// LEVEL_PANDEMONIUM_FORTRESS
+		case 106: _ret = true; break;		// LEVEL_CITY_OF_THE_DAMNED
+		case 107: _ret = true; break;		// LEVEL_RIVER_OF_FLAME
+		
+											// ACT_5
+		case 109: _ret = true; break;		// LEVEL_HARROGATH
+		case 111: _ret = true; break;		// LEVEL_FRIGID_HIGHLANDS
+		case 112: _ret = true; break;		// LEVEL_ARREAT_PLATEAU
+		case 113: _ret = true; break;		// LEVEL_CRYSTALLINE_PASSAGE
+		case 115: _ret = true; break;		// LEVEL_GLACIAL_TRAIL
+		case 117: _ret = true; break;		// LEVEL_FROZEN_TUNDRA
+		case 118: _ret = true; break;		// LEVEL_GLACIAL_CAVES_LEVEL_1
+		case 123: _ret = true; break;		// LEVEL_HALLS_OF_DEATHS_CALLING
+		case 129: _ret = true; break;		// LEVEL_THE_WORLDSTONE_KEEP_LEVEL_2
+		
+		default: _ret = false; break;		// All other areas have no waypoints
+	}
+	return _ret;
+}
+
+// from koltons script
+function GetLeader(name) 
+{
+	_party = GetPlayerUnit();
+	
+	if (_party) {
+		do {
+			if (_party.name === name) {
+				return _party;
+			}
+		} while (_party.GetNext());
+	}
+	
+	return false;
+}
+
+// from koltons script
+function GetLeaderUnit(name) 
+{
+	var _unit = NTC_FindUnit(NTC_UNIT_PLAYER);
+	
+	if (_unit) {
+		do {
+			if (_unit.name === name) {
+				return _unit;
+			}
+		} while (_unit.GetNext());
+	}
+	return false;
+}
+
+function aGetPlayerUnit(name) 
+{
+	var _unit = NTC_FindUnit(NTC_UNIT_PLAYER);
+	
+	if (_unit) {
+		do {
+			if (_unit.name === name) {
+				return _unit;
+			}
+		} while (_unit.GetNext());
+	}
+	return false;
+}
+
+// from koltons script
+function CheckAct(leader) 
+{
+	if (leader.areaid <= 39) {
+		return 1;
+	} else if(leader.areaid >= 40 && leader.areaid <= 74) {
+		return 2;
+	} else if(leader.areaid >= 75 && leader.areaid <= 102) {
+		return 3;
+	} else if(leader.areaid >= 103 && leader.areaid <= 108) {
+		return 4;
+	}
+	else return 5;
+}
+
+function GetPlayerActWaypointID(leader)
+{
+	if (leader.areaid <= 39) {
+		return 1;
+	} else if(leader.areaid >= 40 && leader.areaid <= 74) {
+		return 40;
+	} else if(leader.areaid >= 75 && leader.areaid <= 102) {
+		return 75;
+	} else if(leader.areaid >= 103 && leader.areaid <= 108) {
+		return 103;
+	}
+	else return 109;
+}
+
+function CheckLeader(name)
+{	
+	_player = GetPlayerUnit();
+	if(_player)
+	{
+		do
+		{
+			if( _player.name != name )
+				continue;
+			if( _player.name == name)
+				return true;
+		} while( _player.GetNext() )
+	}
+	return false;
+}
+
+function NTH_GetDistance(sx, sy, ex, ey)
+{
+	// Laziness
+}
+
+function Whisper(name, msg)
+{
+	// Sends a in-game whisper via @charname msg
+	// This does NOT get you IP bans or realms downs
+	// :)
+	Say("@" + name + " " + msg);
+}
+
+function LogActionPl0x(message)
+{
+	// Debugging stuff
+	var time = new Date();
+	var hour   = time.getHours();
+	var minute = time.getMinutes();
+	var second = time.getSeconds();
+	var millisecond = time.getMilliseconds();
+	var DoN = "AM";
+	if (hour > 11) { DoN = "PM"; }
+	if (hour > 12) { hour = hour - 12; }
+	if (hour == 0) { hour = 12; }
+	if (hour < 10) { hour = "0" + hour; }
+	if (minute < 10) { minute = "0" + minute; }
+	if (second < 10) { second = "0" + second; }
+	if (String(millisecond).length == 2) { millisecond = millisecond + "0"; }
+	if (String(millisecond).length == 1) { millisecond = millisecond + "00"; }
+	var timeString = "[" + hour + ':' + minute + ':' + second + ":" + millisecond + " " + DoN + "]";
+	
+	var file = FileOpen("logs/NTHelperDebug.txt", 2);
+	if(!file)
+		file = FileOpen("logs/NTHelperDebug.txt", 1);
+	
+	file.WriteLine(timeString + ": " + message);
+	file.Close();
+}
+
+// from diabolic's script (aswell as all of the ones it loads)
+function IncludeFuncs() 
+{
+	Include(pathRushBots + "Cain.ntj");
+	Include(pathRushBots + "Andy.ntj");
+	Include(pathRushBots + "Radament.ntj");
+	Include(pathRushBots + "Cube.ntj");
+	Include(pathRushBots + "Staff.ntj");
+	Include(pathRushBots + "Ammy.ntj");
+	Include(pathRushBots + "Summoner.ntj");
+	Include(pathRushBots + "Duriel.ntj");
+	Include(pathRushBots + "Tome.ntj");
+	Include(pathRushBots + "Travincal.ntj");
+	Include(pathRushBots + "Mephisto.ntj");
+	Include(pathRushBots + "Izual.ntj");
+	Include(pathRushBots + "Diablo.ntj");
+	Include(pathRushBots + "Shenk.ntj");
+	Include(pathRushBots + "Anya.ntj");
+	Include(pathRushBots + "Ancients.ntj");
+	Include(pathRushBots + "Baal.ntj");
+	Include(pathRushBots + "Waypoints.ntj");
+}

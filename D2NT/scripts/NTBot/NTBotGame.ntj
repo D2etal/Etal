@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "121";
+var Rev = "122";
 
 var SoJNotify = false;
 var CloneDiabloString = GetLocaleString(11005);
@@ -114,7 +114,7 @@ function NTMain()
 
 			for(var i = 0 ; i < NTConfig_Script.length && !leaderParty ; i++)
 			{
-				if(NTConfig_Script[i].toLowerCase().indexOf("leech") != -1)
+				if(NTConfig_Script[i].toLowerCase().indexOf("leech") != -1 || NTConfig_Script[i].toLowerCase().indexOf("helper") != -1)
 				{
 					for(var j = 0 ; j < NTConfig_PartyMaxTime && !NTC_InMyParty(NTConfig_Leader) ; j++)
 						Delay(1000);

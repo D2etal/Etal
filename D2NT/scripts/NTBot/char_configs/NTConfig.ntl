@@ -492,3 +492,14 @@ var NTConfig_Announcer;
 var NTConfig_LevelMin;
 var NTConfig_Output;
 var NTConfig_LogIt;
+
+// NTHelper.ntj
+var NTConfig_AllowCommands;
+var NTConfig_DoNotFollowAreas;
+var NTConfig_DoNotAttackAreas;
+var NTConfig_PortalAtLeechersCorpses;
+var NTConfig_MessageDeadPlayers;
+var NTConfig_DeadPlayerMsg;
+var NTConfig_GreetPlayers;
+var NTConfig_GreetMsg;
+var NTConfig_HelperHumor;
