@@ -1,3 +1,6 @@
+var poscount = 1;
+var _trapsPreCasted;
+
 function NTMain() {
 	Include("libs/common/NTCommon.ntl");
 	NTC_IncludeLibs();
