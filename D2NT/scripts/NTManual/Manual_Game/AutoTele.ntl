@@ -42,6 +42,10 @@ function AreaPoi()// returns POI display info
 		case 114: return [COLOR_8 + " Anya"];
 		case 117: return [COLOR_8 + " Infernal Pit"];
 		case 118: return [COLOR_8 + " Arreat Summit"];
+		case 121:
+		case 122:
+		case 123:
+		case 123: return [COLOR_8 + " Halls of Vaught"];
 		case 129:
 		case 130:
 		case 131:return [COLOR_8 + " Throne Room"];
@@ -142,6 +146,10 @@ function TelePoi()// move to POI's
 			if(!NTM_TakeUnit(NTC_UNIT_OBJECT, 60)) return ErrorHandler();
 			break;
 		case 118:if(!MG_MoveToStairs([118, 120])) return ErrorHandler();
+			break;
+		case 121:
+		case 122:
+		case 123:if(!MG_MoveToStairs([121,122], [122,123], [123,124])) return ErrorHandler();
 			break;
 		case 129:
 		case 130:if(!MG_MoveToStairs([129, 130], [130, 131])) return ErrorHandler();
@@ -455,6 +463,11 @@ function MG_WaypointUp()
 		case 117:	if(!MG_MoveToStairs([117, 118])) return ErrorHandler();
 			if(!NTM_KoMoveToPresetUnit(118, NTC_UNIT_OBJECT, 511)) return ErrorHandler();
 			break;
+		case 121:	if(!MG_MoveToStairs([121, 122])) return ErrorHandler();
+		case 122:	if(!MG_MoveToStairs([122, 123])) return ErrorHandler();
+			if(!NTM_KoMoveToPresetUnit(123, NTC_UNIT_OBJECT, 496)) return ErrorHandler();
+			Print(COLOR_2 + "Get this waypoint only if you want the portal to close!");
+			break;
 		case 118:	if(!MG_MoveToStairs([118, 120])) return ErrorHandler();
 		case 120:	if(!MG_MoveToStairs([120, 128])) return ErrorHandler();
 		case 128:	if(!MG_MoveToStairs([128, 129])) return ErrorHandler();
@@ -474,7 +487,7 @@ function MG_ClickWaypoint()
 {
 	var _waypoint = NTC_FindUnit(NTC_UNIT_OBJECT, GetLocaleString(22526), 5);
 
-	if(_waypoint) {
+	if(_waypoint && (me.areaid != 123)) {
 		for (var i = 0; i < 55; i++) {
 			if((i % 10) == 0)
 				NTC_DoClick(NTC_CLICK_LDOWN, NTC_SHIFT_NONE, _waypoint);
