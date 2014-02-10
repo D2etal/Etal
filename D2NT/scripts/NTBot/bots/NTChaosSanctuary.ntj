@@ -47,18 +47,21 @@ function NTMain() {
 				NTCS_ClearPosition(35, EntranceSort);
 			}
 		}
-		for (i = 0; i < 2; i += 1) {
-			NTM_MoveTo(108, 7784, 5310);
+		
+		NTM_MoveTo(108, 7775, 5311);
+		for (i = 0; i < 2; i += 1) {			
 			NTCS_ClearPosition(30, SealSort);
 			NTC_PingDelay(i < 1 ? 1000 : 10);
+			NTM_MoveTo(108, 7775, 5311);
 		}
 		PubTP();
 		PubSay(NTConfig_CS_StarTP);
 		BO_Party();
 		NTCS_ClearPosition(30, SealSort);
 	} else {
-		NTM_MoveTo(108, 7784, 5310);
+		NTM_MoveTo(108, 7775, 5311);
 		NTCS_ClearPosition(20, DistanceSort);
+		NTM_MoveTo(108, 7775, 5311);
 		PubTP();
 	}
 	if (!NT_OpenSealsInt()) {
@@ -72,15 +75,12 @@ function NTMain() {
 		PubSay("Diablo TP up.");
 	}
 	NTM_MoveTo(108, 7792, 5291);
-	while(!GetUnit(NTC_UNIT_MONSTER, GetLocaleString(3060))){
-		NTCS_DiaSpam();
-		Delay(100);
-	}
-	for (i = 0; i < 200; i += 1) {
+
+	for (i = 0; i < 60; i += 1) {
 		if (GetUnit(NTC_UNIT_MONSTER, 243)) {
 			break;
 		}
-		NTC_Delay(500);
+		NTCS_DiaSpam();
 	}
 	if (!NTA_KillMonster(243)) {
 		NTC_SendMsgToScript("NTBotGame.ntj", "NTA_KillMonster()");
@@ -752,4 +752,5 @@ function NTCS_DiaSpam(){
 			}
 		}
 	}
+	Delay(200);
 }

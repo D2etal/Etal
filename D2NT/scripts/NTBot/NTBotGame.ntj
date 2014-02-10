@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "123";
+var Rev = "124";
 
 var SoJNotify = false;
 var CloneDiabloString = GetLocaleString(11005);
