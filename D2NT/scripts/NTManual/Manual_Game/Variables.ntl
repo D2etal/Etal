@@ -72,7 +72,7 @@ var NTMG_ObjectIdRange;
 var NTMG_ObjectLookRange;
 var NTMG_StringIdRange;
 var NTMG_StringLookRange;
-
+var NTMG_AreaIDs;
 
 
 // Adding NTConfig inclusion to avoid errors.

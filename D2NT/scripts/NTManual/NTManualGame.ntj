@@ -1,4 +1,4 @@
-var Rev = "0.996.5";
+var Rev = "1.001";
 var warncount;
 var _AreaName;
 var busy = false;
@@ -34,7 +34,7 @@ function NTMain()
 
 	var _count = 0;
 	me.maxgametime = 0;
-	Delay(Random(2000,4000));
+	Delay(Random(100,200));
 	while(1) {	
 		ChickenStuff(); Refresh(); MG_AntiIdle();
 		if(_count++ > 10) {
@@ -169,11 +169,6 @@ function NT_KeyEvents(keycode)
 		case Key_DevTools:
 			NTMG_DevelopementTools();
 			break;
-		//case 48:
-		//	_area = GetArea();
-		//	Print(COLOR_8 + " X=" + me.x + ", Y=" + me.y);
-		//	Print(COLOR_8 + "In AreaID " + me.areaid + " , " + _area.name);
-		//	break;
 		default:
 			if(CheckKeyNumber)
 				Print(COLOR_2 + WhatHotKey(keycode) + " / " + keycode);
