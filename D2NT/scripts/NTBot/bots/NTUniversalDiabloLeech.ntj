@@ -27,27 +27,28 @@ function NTMain() {
 	
 	if(NTConfig_LeechChaos >= 1)
 	{
-	RegisterEvent(EVENT_GAMEMSG, UCL_Chat);
-	if(NTConfig_UseChatCommandPortal){
-		while(!NT_DiabloLeechMessageHandler()){
-			Delay(500);
-		}
-		for(var i = 0 ; i < 100 && me.areaid == 103 ; i++){
-			NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
-			Delay(500);
-		}
-	}
-	else
-	{
-		myStartArea = me.areaid;
-		while(1){
-			NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
-			if (myStartArea != me.areaid) {
-				break;
+		RegisterEvent(EVENT_GAMEMSG, UCL_Chat);
+		if(NTConfig_UseChatCommandPortal){
+			while(!NT_DiabloLeechMessageHandler() && !DiabloDead){				
+				Delay(500);
 			}
-			Delay(500);
+			for(var i = 0 ; i < 100 && me.areaid == 103 ; i++){
+				if(DiabloDead == true){break;}
+				NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
+				Delay(500);
+			}
 		}
-	}
+		else
+		{
+			myStartArea = me.areaid;
+			while(1){
+				NTM_UsePortal("BluePortal", 108, NTConfig_Leader);
+				if(me.areaid == 108){
+					break;
+				}
+				Delay(500);
+			}
+		}
 
 	}
 	
@@ -58,44 +59,44 @@ function NTMain() {
 		if(!NTConfig_LeechBo){ Delay(Random(3000, 5000)); }
 	
 
-	if (me.y > 5353) {
-		NTCS_ClearPosition(30, EntranceSort);
-		var FrontToStarX = [7792, 7794, 7791, 7777, 7813, 7769, 7782, 7802, 7819, 7768, 7770, 7791, 7819, 7804];
-		var FrontToStarY = [5564, 5529, 5495, 5486, 5486, 5445, 5421, 5421, 5446, 5390, 5355, 5355, 5376, 5340];
-		for (var i = 0; i < FrontToStarX.length; i += 1) {
-			NTM_MoveTo(108, FrontToStarX[i], FrontToStarY[i]);
-			NTCS_ClearPosition(35, EntranceSort);
+		if (me.y > 5353){
+			NTCS_ClearPosition(30, EntranceSort);
+			var FrontToStarX = [7792, 7794, 7791, 7777, 7813, 7769, 7782, 7802, 7819, 7768, 7770, 7791, 7819, 7804];
+			var FrontToStarY = [5564, 5529, 5495, 5486, 5486, 5445, 5421, 5421, 5446, 5390, 5355, 5355, 5376, 5340];
+			for (var i = 0; i < FrontToStarX.length; i += 1) {
+				NTM_MoveTo(108, FrontToStarX[i], FrontToStarY[i]);
+				NTCS_ClearPosition(35, EntranceSort);
+			}
 		}
-	}
 
-	for (i = 0; i < 2; i += 1) {
-		NTM_MoveTo(108, 7784, 5310);
+		for (i = 0; i < 2; i += 1) {
+			NTM_MoveTo(108, 7784, 5310);
+			NTCS_ClearPosition(30, SealSort);
+			NTC_PingDelay(i < 1 ? 1000 : 10);
+		}
+
+
 		NTCS_ClearPosition(30, SealSort);
-		NTC_PingDelay(i < 1 ? 1000 : 10);
-	}
 
+		if (!NT_OpenSealsInt()) {
+			NTC_SendMsgToScript("NTBotGame.ntj", "NT_OpenSealsInt()");
+			return;
+		}
+		if(me.classid == NTC_CHAR_CLASS_SORCERESS)
+			NTM_MoveTo(108, 7793, 5278);
+		else
+			NTM_MoveTo(108, 7796, 5294);
 
-		NTCS_ClearPosition(30, SealSort);
-
-	if (!NT_OpenSealsInt()) {
-		NTC_SendMsgToScript("NTBotGame.ntj", "NT_OpenSealsInt()");
-		return;
-	}
-	if(me.classid == NTC_CHAR_CLASS_SORCERESS)
-		NTM_MoveTo(108, 7793, 5278);
-	else
-		NTM_MoveTo(108, 7796, 5294);
-
-	var _diablo
-	while(!_diablo && !DiabloDead)
-	{
-		_diablo = NTC_FindUnit(NTC_UNIT_MONSTER, 243);
+	for (i = 0; i < 60 || DiabloDead; i += 1) {
+		if (GetUnit(NTC_UNIT_MONSTER, 243)) {
+			break;
+		}
 		DiabloSpam();
 	}
 
-	NTA_KillMonster(243);
+		NTA_KillMonster(243);
 	
-	NTSI_PickItems();
+		NTSI_PickItems();
 	}
 	
 	if(me.areaid == 108 && NTConfig_LeechChaos == 1)
