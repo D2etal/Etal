@@ -76,7 +76,7 @@ function NTMain() {
 	}
 	NTM_MoveTo(108, 7792, 5291);
 
-	for (i = 0; i < 60; i += 1) {
+	for (i = 0; i < 200; i += 1) {
 		if (GetUnit(NTC_UNIT_MONSTER, 243)) {
 			break;
 		}

@@ -4,7 +4,6 @@ var _portalleech = true, trigger = false;
 var leechwarn = false;
 var SealBoss1 = false, SealBoss2 = false, SealBoss3 = false;
 var DiabloDead = false;
-var myxp = me.GetStat(13);
 
 function NTMain() {
 	Include("libs/common/NTCommon.ntl");
@@ -87,12 +86,12 @@ function NTMain() {
 		else
 			NTM_MoveTo(108, 7796, 5294);
 
-	for (i = 0; i < 60 || DiabloDead; i += 1) {
-		if (GetUnit(NTC_UNIT_MONSTER, 243)) {
-			break;
+		var _diablo
+		while(!_diablo && !DiabloDead)
+		{
+			_diablo = NTC_FindUnit(NTC_UNIT_MONSTER, 243);
+			NTCS_DiaSpam();
 		}
-		DiabloSpam();
-	}
 
 		NTA_KillMonster(243);
 	
@@ -744,11 +743,10 @@ function ChaosLeechFollow()
 						while(me.areaid !=108){	NTM_UsePortal("BluePortal", 108, NTConfig_Leader);Delay(300);}
 						return ChaosLeechFollow();
 					}
-					//Say("!XP Gain " + (me.GetStat(13)-myxp));
+					
 				}
 			NTM_MoveTo(108, chaosentrance[e], chaosentrance[e+1]);
-			//Say("!XP Gain " + (me.GetStat(13)-myxp));
-			//Delay(100);
+
 		}
 	}
 	
@@ -762,14 +760,12 @@ function ChaosLeechFollow()
 					if(leechwarn && e > 0)
 						{e=e-2;NTM_MoveTo(108, chaosfollow[e], chaosfollow[e+1]);}
 					Delay(100);
-					//Say("!XP Gain " + (me.GetStat(13)-myxp));
 				}
 			NTM_MoveTo(108, chaosfollow[e], chaosfollow[e+1]);
-			//Say("!XP Gain " + (me.GetStat(13)-myxp));
-			//Delay(100);
+
 		}
 	
-	while(!SealBoss1){Delay(200);}//Say("!XP Gain " + (me.GetStat(13)-myxp));}
+	while(!SealBoss1){Delay(200);}
 	
 	sealbosswaitloc(394);
 	NTP_DoPrecast(true, NTConfig_LeechBo);
@@ -779,14 +775,11 @@ function ChaosLeechFollow()
 					if(leechwarn && e > 0)
 						{e=e-2;NTM_MoveTo(108, chaosfollow1[e], chaosfollow1[e+1]);}
 					Delay(100);
-					//Say("!XP Gain " + (me.GetStat(13)-myxp));
 				}
 			NTM_MoveTo(108, chaosfollow1[e], chaosfollow1[e+1]);
-			//Say("!XP Gain " + (me.GetStat(13)-myxp));
-			//Delay(100);
 		}
 	
-	while(!SealBoss2){Delay(200);}//Say("!XP Gain " + (me.GetStat(13)-myxp));}
+	while(!SealBoss2){Delay(200);}
 
 	sealbosswaitloc(392);
 	NTP_DoPrecast(true, NTConfig_LeechBo);	
@@ -796,14 +789,12 @@ function ChaosLeechFollow()
 					if(leechwarn && e > 0)
 						{e=e-2;NTM_MoveTo(108, chaosfollow2[e], chaosfollow2[e+1]);}
 					Delay(100);
-					//Say("!XP Gain " + (me.GetStat(13)-myxp));
 				}
 			NTM_MoveTo(108, chaosfollow2[e], chaosfollow2[e+1]);
-			//Say("!XP Gain " + (me.GetStat(13)-myxp));
-			//Delay(100);
+
 		}
 	
-	while(!SealBoss3){Delay(200);}//Say("!XP Gain " + (me.GetStat(13)-myxp));}
+	while(!SealBoss3){Delay(200);}
 
 	NTM_MoveTo(108, 7821, 5280, 2);
 	NTM_MoveTo(108, ChaosLocx, ChaosLocy, 2);
@@ -876,47 +867,56 @@ function sealbosswaitloc(classid)
 	return;
 }
 
-function DiabloSpam()
-{
-
-	if(me.classid == NTC_CHAR_CLASS_SORCERESS){
-		if(NTConfig_PreWaveSpam > 0){
-				return NTC_CastSkill(NTConfig_PreWaveSpam, 0, 7793, 5293);
-			}
+function NTCS_DiaSpam(){
+	if(me.classid == NTC_CHAR_CLASS_AMAZON){
+		if(NTConfig_DiaSpam > 0)
+			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
+		return;
 	}
-	else if(me.classid == NTC_CHAR_CLASS_DRUID){
-		if(NTConfig_AttackSkill[3] == 245){
-			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7793, 5293);
-		}
+	else if(me.classid == NTC_CHAR_CLASS_SORCERESS){
+		if(NTConfig_DiaSpam > 0)
+			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
+		return;
 	}
 	else if(me.classid == NTC_CHAR_CLASS_NECROMANCER){
-		if(NTConfig_PreWaveSpam > 0)
-			return NTC_CastSkill(NTConfig_PreWaveSpam, _NTA_SkillHand[NTConfig_PreWaveSpam], 7793, 5293);
+		if(NTConfig_DiaSpam > 0)
+			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
+		return;
 	}
 	else if(me.classid == NTC_CHAR_CLASS_PALADIN){
 		if(NTConfig_AttackSkill[3] == 112){
 			NTC_PutSkill(NTConfig_AttackSkill[3], NTC_HAND_LEFT);
 			NTC_PutSkill(NTConfig_AttackSkill[4], NTC_HAND_RIGHT);
-			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7793, 5293);
-		}
+			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7792, 5291);
+		} return;
+	}
+	else if(me.classid == NTC_CHAR_CLASS_BARBARIAN){
+		if(NTConfig_DiaSpam > 0)
+			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
+		return;
+	}
+	else if(me.classid == NTC_CHAR_CLASS_DRUID){
+		if(NTConfig_AttackSkill[3] == 245)
+			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7792, 5291);
 	}
 	else if(me.classid == NTC_CHAR_CLASS_ASSASSIN){
-		var _attackPos = [7782, 5289, 7785, 5301, 7799, 5302, 7802, 5288, 7792, 5282];
+		var _attackPos = [7780, 5288, 7792, 5281, 7803, 5289, 7799, 5302, 7785, 5301];
 		if(NTConfig_UseTraps && !_trapsPreCasted){
 			for(var i=0;i<5;i++) {
 				if(i == 0 || i == 2 || i == 3) // Added delays to prevent trap miscast
 					NTC_Delay(25);
 				if(NTConfig_TrapSet[i] > 0)
-					NTC_CastSkill(NTConfig_TrapSet[i], NTC_HAND_RIGHT, _attackPos[i*2], _attackPos[(i*2)+1]);
+					NTC_CastSkill(NTConfig_TrapSet[i], NTC_HAND_RIGHT, _attackPos[i*2],_attackPos[(i*2)+1]);
 			}
 			_trapsPreCasted = true;
 		}
-		if(NTConfig_AttackSkill[3] == 256)
-			if(me.GetSkillStatus(NTConfig_AttackSkill[3]) != 8)
-				return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7793, 5293);
+		if(NTConfig_AttackSkill[3] == 256) {
+			if(me.GetSkillStatus(NTConfig_AttackSkill[3]) != 8) {
+				return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7792, 5291);
+			}
+		}
 	}
 	Delay(200);
-	return;
 }
 
 function FallBack()
