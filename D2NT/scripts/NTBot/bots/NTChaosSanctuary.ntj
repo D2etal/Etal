@@ -704,32 +704,24 @@ function NTA_SortRooms(a, b) {
 }
 
 function NTCS_DiaSpam(){
-	if(me.classid == NTC_CHAR_CLASS_AMAZON){
-		if(NTConfig_DiaSpam > 0)
+	if(me.classid == NTC_CHAR_CLASS_AMAZON && NTConfig_DiaSpam > 0){
 			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
-		return;
 	}
-	else if(me.classid == NTC_CHAR_CLASS_SORCERESS){
-		if(NTConfig_DiaSpam > 0)
+	else if(me.classid == NTC_CHAR_CLASS_SORCERESS && NTConfig_DiaSpam > 0){
 			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
-		return;
 	}
-	else if(me.classid == NTC_CHAR_CLASS_NECROMANCER){
-		if(NTConfig_DiaSpam > 0)
+	else if(me.classid == NTC_CHAR_CLASS_NECROMANCER && NTConfig_DiaSpam > 0){
 			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
-		return;
 	}
 	else if(me.classid == NTC_CHAR_CLASS_PALADIN){
 		if(NTConfig_AttackSkill[3] == 112){
 			NTC_PutSkill(NTConfig_AttackSkill[3], NTC_HAND_LEFT);
 			NTC_PutSkill(NTConfig_AttackSkill[4], NTC_HAND_RIGHT);
 			return NTC_CastSkill(NTConfig_AttackSkill[3], 2, 7792, 5291);
-		} return;
+		}
 	}
-	else if(me.classid == NTC_CHAR_CLASS_BARBARIAN){
-		if(NTConfig_DiaSpam > 0)
-			return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
-		return;
+	else if(me.classid == NTC_CHAR_CLASS_BARBARIAN  && NTConfig_DiaSpam > 0){
+				return NTC_CastSkill(NTConfig_DiaSpam, 0, 7792, 5291);
 	}
 	else if(me.classid == NTC_CHAR_CLASS_DRUID){
 		if(NTConfig_AttackSkill[3] == 245)
@@ -752,5 +744,5 @@ function NTCS_DiaSpam(){
 			}
 		}
 	}
-	Delay(200);
+	Delay(250);
 }
