@@ -640,7 +640,7 @@ function UCL_Chat(msg, type)
 		}
 	}
 	
-	if(type == 0 && !trigger && (msg.indexOf(NTConfig_CS_StarTP) != -1) && (msg.indexOf(NTConfig_Leader) != -1) && me.areaid == 108 && me.y > 5405)
+	if(type == 0 && !trigger && (msg.indexOf(NTConfig_CS_SafeTP) != -1) && (msg.indexOf(NTConfig_Leader) != -1) && me.areaid == 108 && me.y > 5405)
 		{
 			trigger = true;return;
 		}
