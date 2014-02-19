@@ -62,8 +62,8 @@ function NT_LoadConfig()
 		ChaosLocx = 7763; ChaosLocy = 5267;				//  Hide location for Passive leecher alternate = ChaosLocx = 7767; ChaosLocy = 5263;
 		NTConfig_TakeTpDiablo = "config me";			// Message from leader signifying you to take portal. (Must be different than Baal & Trav tp messages.)
 		NTConfig_UseChatCommandPortal = true;			// Use portal after TakeTpDiablo message? (False will attempt taking first TP made by leader, ignores TakeTpDiablo.)
-		
-		
+
+
 	//NTConfig_Script.push("NTUniversalBaalLeech.ntj");
 		NTConfig_LeechBaal = 1; 						// 1 = Leech Fighter (Tele), 2 = Leech Fighter (Walking), 3 = Passive Leecher (Corner dunce).
 		NTConfig_TakeTpBaal = "config me";				// Message from leader signifying you to take portal. (Must be different than Diablo & Trav tp messages.)
@@ -82,10 +82,10 @@ function NT_LoadConfig()
 		NTConfig_DoNotAttackAreas = [34, 35, 36, 107, 128, 129, 130, 124, 100, 101, 102];		// Won't attack in these areas
 		NTConfig_AllowCommands = false;															// Allows leader to issue commands such as 'exit', 'town', 'follow', etc.  'follow' is ON by default.
 		NTConfig_PortalAtLeechersCorpses = true;												// Make a TP at players corpses when they die near you
-			NTConfig_MessageDeadPlayers = false;														// Send a msg to those players when they die
-			NTConfig_DeadPlayerMsg = "My tp for your corpse";										// The actual message to send
+			NTConfig_MessageDeadPlayers = false;												// Send a msg to those players when they die
+			NTConfig_DeadPlayerMsg = "My tp for your corpse";									// The actual message to send
 		NTConfig_GreetPlayers = false;															// Greet players who join your party
-			NTConfig_GreetMsg = "Hello, %name%!";													// The message to send
+			NTConfig_GreetMsg = "Hello, %name%!";												// The message to send
 		NTConfig_HelperHumor = false;															// 0.3% chance to say a silly phrase and skip doing the command you issued.
 
 	//------------------------------------------------------------------------------
@@ -232,8 +232,8 @@ function NT_LoadConfig()
 	// "Public Diablo Settings" //
 	//--------------------------//
 
-	NTConfig_CS_EntranceTP 		= "Entrance TP up.";		// Message for the Entrance TP
-	NTConfig_CS_StarTP 			= "Star TP up.";			// Message for the Star TP
+	NTConfig_CS_SafeTP 			= "Chaos TP up.";			// Message for the Safe TP
+	NTConfig_CS_HotTP 			= "Chaos Hot TP.";			// Message for the Hot TP
 	NTConfig_CS_NextGame		= "New Game Is ";			// Message after Diablo is dead
 	NTConfig_CS_LeechSupTP		= "Leech TP up.";			// Message for LeechSupport
 	NTConfig_CS_SealBasher		= "Don't hit the seals.";	// Message if people hit seals (Seal bashers, lol)
@@ -658,7 +658,7 @@ function NT_LoadConfig()
 	NTConfig_ChatRecording = false;						// Logs all in game chat to a .txt file in D2NT/scripts/logs/ChatR folder
 	NTConfig_WhisperToManager = false;					// Logs whispers from in-game to your manager
 	NTConfig_WhisperToTab = "common";					// Choose which tab whispers go to, either "common" or "item"
-	
+
 	//-------------------------------------------------------------------------------
 	// Advanced XML Item Logging
 	//-------------------------------------------------------------------------------
@@ -782,7 +782,7 @@ function NT_LoadConfig()
 	NTConfig_AttackSkill[9] = -1; 	// Primary skill to boss (diablo/baal/meph/etc) Not immune to spells I guess.
 
 	NTConfig_DiaSpam = 0;								// Skill to spam before Diablo Spawns
-	
+
 	prewavespot = [15092, 5040];						// Pre-Wave standing (X,Y) coordinates. (For Baal Scripts.)
 
 	NTconfig_HighMaxAttack = false;						// Use HighMaxAttacks? (False = LowMaxAttacks.) High/Low are below.
@@ -817,7 +817,7 @@ function NT_LoadConfig()
 	//------------------------------------------------------------------------------
 	// Class Specific Settings
 	//------------------------------------------------------------------------------
-	
+
 	NTConfig_FarCastAma = false;		// Set to true to use FarCasting, look at the ReadMe.txt in trunk/extras/farcast/ folder
 	NTConfig_FCRange = 24;				// The range for your FarCastomg. 25 is good, but you can modify it.
 }

@@ -52,7 +52,7 @@ function NT_LoadConfig()
 	NTConfig_LeechExitDelay = 500;						// Delay before leecher exits game after leader in milliseconds.  Use this to stagger leechers exit times to avoid crashes.
 
 	//NTConfig_Script.push("NTLeechCows.ntj");			// Leech fighter cow script.  Must run leader with NTCow.ntj
-		NTConfig_WaitForCowPortal = 240;					// time in seconds to wait for the leader to make cow portal before aborting the script
+		NTConfig_WaitForCowPortal = 240;				// time in seconds to wait for the leader to make cow portal before aborting the script
 
 	//NTConfig_Script.push("NTTravLeader.ntj");			// Trav Leader
 		LeechTrav_TakeTp =  "config me";				// Message from leader signifying you to take portal. (Must be different than Diablo & Baal tp messages.)
@@ -78,7 +78,7 @@ function NT_LoadConfig()
 		NTConfig_GrabShrine = "config me";				// Use shrine & return to act 5 portal Area (Leaders hot tp message is very effective, also must be different than Diablo & Trav tp messages).
 		_FindXPArea = [];								// Area ID's, (2, 3, 4, 5, 6, 7). Set array empty "[]" to leech without grabbing shrines.
 		NTConfig_ClearAroundShrine = false;				// Clear around shrine before going back to town?
-	
+
 	//NTConfig_Script.push("NTHelper.ntj");														// See http://www.projectetal.com/forums/index.php?threads/beta-ish-release-of-nthelper-ntj.14623/
 		NTConfig_DoNotFollowAreas = [34, 35, 36, 107, 128, 129, 130, 124, 100, 101, 102];		// Won't take a WP or TP to these areas
 		NTConfig_DoNotAttackAreas = [34, 35, 36, 107, 128, 129, 130, 124, 100, 101, 102];		// Won't attack in these areas
@@ -237,8 +237,8 @@ function NT_LoadConfig()
 	// "Public Diablo Settings" //
 	//--------------------------//
 
-	NTConfig_CS_EntranceTP 		= "Entrance TP up.";		// Message for the Entrance TP
-	NTConfig_CS_StarTP 			= "Star TP up.";			// Message for the Star TP
+	NTConfig_CS_SafeTP 			= "Chaos TP up.";			// Message for the Safe TP
+	NTConfig_CS_HotTP 			= "Chaos Hot TP.";			// Message for the Hot TP
 	NTConfig_CS_NextGame		= "New Game Is ";			// Message after Diablo is dead
 	NTConfig_CS_LeechSupTP		= "Leech TP up.";			// Message for LeechSupport
 	NTConfig_CS_SealBasher		= "Don't hit the seals.";	// Message if people hit seals (Seal bashers, lol)
@@ -668,7 +668,7 @@ function NT_LoadConfig()
 	NTConfig_ChatRecording = false;						// Logs all in game chat to a .txt file in D2NT/scripts/logs/ChatR folder
 	NTConfig_WhisperToManager = false;					// Logs whispers from in-game to your manager
 	NTConfig_WhisperToTab = "common";					// Choose which tab whispers go to, either "common" or "item"
-	
+
 	//-------------------------------------------------------------------------------
 	// Advanced XML Item Logging
 	//-------------------------------------------------------------------------------
@@ -801,7 +801,7 @@ function NT_LoadConfig()
 	NTConfig_DanceStartMp = -1;							// Auto dance if below this % mana? (Set -1 to disable, 101 to always.)
 
 	NTConfig_DiaSpam = 0;								// Skill to spam before Diablo Spawns
-	
+
 	prewavespot = [15092, 5040];							// Pre-Wave standing (X,Y) coordinates. (For Baal Scripts.)
 	NTConfig_PreWaveSpam = 0;								// Attack skill to spam between waves.  Set "0" to disable.
 	KBLSpamPos = [15090, 5028, 15099, 5028, 15093, 5028];	// (X,Y) coordinates to attack with NTConfig_PreWaveSpam.

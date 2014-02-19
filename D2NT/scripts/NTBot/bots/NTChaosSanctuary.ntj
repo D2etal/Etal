@@ -33,11 +33,12 @@ function NTMain() {
 	}
 	
 	if (!NTConfig_FastChaos) {
+
 		if (NTConfig_Entrance) {
+			PubTP();	PubSay(NTConfig_CS_HotTP);
 			NTCS_ClearPosition(30, EntranceSort);
 			NTM_MoveTo(108, 7790, 5544);
-			PubTP();
-			PubSay(NTConfig_CS_EntranceTP);
+			PubSay(NTConfig_CS_SafeTP);
 			BO_Party();
 			NTCS_ClearPosition(30, EntranceSort);
 			var FrontToStarX = [7792,7794,7791,7777,7813,7769,7782,7802,7819,7768,7770,7791,7819, 7804];
@@ -49,13 +50,15 @@ function NTMain() {
 		}
 		
 		NTM_MoveTo(108, 7775, 5311);
+		PubTP();
+		if (!NTConfig_Entrance)
+			PubSay(NTConfig_CS_HotTP);
 		for (i = 0; i < 2; i += 1) {			
 			NTCS_ClearPosition(30, SealSort);
 			NTC_PingDelay(i < 1 ? 1000 : 10);
 			NTM_MoveTo(108, 7775, 5311);
 		}
-		PubTP();
-		PubSay(NTConfig_CS_StarTP);
+		PubSay(NTConfig_CS_SafeTP);		
 		BO_Party();
 		NTCS_ClearPosition(30, SealSort);
 	} else {
@@ -76,7 +79,7 @@ function NTMain() {
 	}
 	NTM_MoveTo(108, 7792, 5291);
 
-	for (i = 0; i < 200; i += 1) {
+	for (i = 0; i < 80; i += 1) {
 		if (GetUnit(NTC_UNIT_MONSTER, 243)) {
 			break;
 		}
@@ -615,7 +618,7 @@ function NTCS_ClearPosition(range, sortFunc, spectype, classid) {
 		}
 		monList.sort(sortFunc);
 		target = NTC_FindUnit(NTC_UNIT_MONSTER, monList[0].gid);
-		if (target && target.IsAttackable()) {
+		if (target && target.IsAttackable() && OutOfBounds(target)) {
 			result = NTA_Attack(target, attackcount % 30 === 0);
 			switch (result) {
 			case 1:
@@ -745,4 +748,34 @@ function NTCS_DiaSpam(){
 		}
 	}
 	Delay(250);
+}
+
+function OutOfBounds(Monst){
+	
+			if(Monst.x < 7787 && Monst.y > 5501)
+				return false;
+			if(Monst.x > 7901 && Monst.y > 5501)
+				return false;				
+			if(Monst.x < 7767 && Monst.y > 5321)
+				return false;
+			if(Monst.x >7821 && Monst.y > 5321)
+				return false;
+			if(Monst.x < 7816 && Monst.x > 7772 && Monst.y > 5452 && Monst.y < 5477)
+				return false;
+			//if(Monst.x < 7792 && Monst.x > 7772 && Monst.y > 5451 && Monst.y < 5432)// location changes ? fix
+				//return false;	
+				
+			//if(Monst.x < 7816 && Monst.x > 7791 && Monst.y < 5412 && Monst.y > 5387)// location changes ? fix
+				//return false;
+			
+			if(Monst.x < 7816 && Monst.x > 7772 && Monst.y < 5387 && Monst.y > 5366)
+				return false;
+				
+			if(Monst.x <7767 && Monst.y < 5267)
+				return false;
+			if(Monst.x >7822 && Monst.y < 5267)
+				return false;
+			if(Monst.y < 5147)
+				return false;
+	return true;
 }

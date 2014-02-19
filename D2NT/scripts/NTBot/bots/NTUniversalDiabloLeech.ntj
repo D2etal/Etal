@@ -20,7 +20,8 @@ function NTMain() {
 		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
 		return;
 	}
-
+	me.revealautomap = true;
+	me.showenemyonautomap = true;
 	NTTMGR_TownManager();
 	NTTM_TownMove("portalspot");
 	
@@ -524,7 +525,7 @@ function NTCS_ClearPosition(range, sortFunc, spectype, classid) {
 		}
 		monList.sort(sortFunc);
 		target = NTC_FindUnit(NTC_UNIT_MONSTER, monList[0].gid);
-		if (target && target.IsAttackable()) {
+		if (target && target.IsAttackable() && OutOfBounds(target)) {
 			result = NTA_Attack(target, attackcount % 30 === 0);
 			switch (result) {
 			case 1:
@@ -944,4 +945,34 @@ function My_Shrine()
 		}
 	}
 	return;
+}
+
+function OutOfBounds(Monst){
+	
+			if(Monst.x < 7787 && Monst.y > 5501)
+				return false;
+			if(Monst.x > 7901 && Monst.y > 5501)
+				return false;				
+			if(Monst.x < 7767 && Monst.y > 5321)
+				return false;
+			if(Monst.x >7821 && Monst.y > 5321)
+				return false;
+			if(Monst.x < 7816 && Monst.x > 7772 && Monst.y > 5452 && Monst.y < 5477)
+				return false;
+			//if(Monst.x < 7792 && Monst.x > 7772 && Monst.y > 5451 && Monst.y < 5432)
+				//return false;	
+				
+			//if(Monst.x < 7816 && Monst.x > 7791 && Monst.y < 5412 && Monst.y > 5387)
+				//return false;
+			
+			if(Monst.x < 7816 && Monst.x > 7772 && Monst.y < 5387 && Monst.y > 5366)
+				return false;
+				
+			if(Monst.x <7767 && Monst.y < 5267)
+				return false;
+			if(Monst.x >7822 && Monst.y < 5267)
+				return false;
+			if(Monst.y < 5147)
+				return false;
+	return true;
 }
