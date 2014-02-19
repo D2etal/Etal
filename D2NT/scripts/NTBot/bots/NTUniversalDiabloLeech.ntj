@@ -20,8 +20,7 @@ function NTMain() {
 		NTC_SendMsgToScript("NTBotGame.ntj", "NTTM_CheckAct()");
 		return;
 	}
-	me.revealautomap = true;
-	me.showenemyonautomap = true;
+
 	NTTMGR_TownManager();
 	NTTM_TownMove("portalspot");
 	
