@@ -658,6 +658,7 @@ function NTTMGR_VisitJamella(gamble)
 	var _npc;
 	
 	var myy = me.y;
+	var myx = me.x;
 	if(myx > 5040 && myx < 5060 && myy < 5060 && myy > 5040)
 	{
 		NTM_MoveTo(me.areaid, 5041, 5036);
