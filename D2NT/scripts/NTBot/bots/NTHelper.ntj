@@ -11,18 +11,6 @@ var followRange = 5;
 var attackRange = 15;
 // *** Global vars ***
 
-//NTConfig_Quest_Cain				= true;
-//NTConfig_Quest_Radament			= true;
-//NTConfig_Quest_Izual			= true;
-//NTConfig_Quest_Tome				= true;
-//NTConfig_Quest_Shenk			= true;
-//NTConfig_Quest_Anya				= true;
-//NTConfig_Quest_Ancients			= true;
-//NTConfig_Quest_Baal				= true;
-//NTConfig_TpHarem				= true;
-//NTConfig_KillCouncils			= true;
-
-
 function NTMain()
 {
     Include("libs/common/NTCommon.ntl");

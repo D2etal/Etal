@@ -140,6 +140,7 @@ function NTMain(){
 
 			if(NTConfig_PartyOnlyLeader){
 				_player = GetPlayerUnit();
+				var NTLeader_LoggedFromFile = NT_File("logs/" + me.account + ".leaderName.txt", 0);
 
 				if(_player){
 					_mypartyid = _player.partyid;
@@ -151,7 +152,7 @@ function NTMain(){
 								ExitGame();
 							}
 						}
-						if(_player.name == NTConfig_Leader && _player.partyflag == 2
+						if((_player.name == NTConfig_Leader || _player.name == NTLeader_LoggedFromFile) && _player.partyflag == 2
 						&& (_player.partyid == 65535 || _player.partyid != _mypartyid)){
 
 						me.ClickParty(_player, 2);

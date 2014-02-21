@@ -656,7 +656,13 @@ function NTTMGR_VisitAlkor()
 function NTTMGR_VisitJamella(gamble)
 {
 	var _npc;
-
+	
+	var myy = me.y;
+	if(myx > 5040 && myx < 5060 && myy < 5060 && myy > 5040)
+	{
+		NTM_MoveTo(me.areaid, 5041, 5036);
+	}
+	
 	NTTM_TownMove("jamella");
 
 	_npc = NTC_FindUnit(NTC_UNIT_NPC, NTC_NPC_ID_JAMELLA, 5);

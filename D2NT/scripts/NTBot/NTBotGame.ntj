@@ -1,6 +1,6 @@
 var CurScriptIndex = 0;
 var LastScript = false;
-var Rev = "132";
+var Rev = "139-WW";
 
 var SoJNotify = false;
 var CloneDiabloString = GetLocaleString(11005);
@@ -43,6 +43,9 @@ function NTMain()
 	if(NTConfig_StartDelay > 0) {
 		NTC_Delay(NTConfig_StartDelay);
 	}
+
+	NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "Notice: As of Friday the 21st of february this Bot and repo for update and download");
+	NTC_SendLogToOOG(NTC_LOG_COMMON, COLOR_2 + "Will be out of date. Please refer to the News forum on ProjetEtal for more information.");
 
 	GetPath(me.areaid, me.x, me.y, me.x, me.y, true);
 
@@ -107,8 +110,11 @@ function NTMain()
 		NTC_LogCurScript(NTConfig_Script[CurScriptIndex]);//jinay item log
 
 		var leaderParty = false;
-
-		while(!LastScript || CloneDiabloNotify || SoJNotify || NTC_InMyParty(NTConfig_Leader)) // SoJNotify is a part of soj addon
+		
+		// Dynamic leaders
+		var NTLeader_LoggedFromFile = NT_File("logs/" + me.account + ".leaderName.txt", 0);
+		
+		while(!LastScript || CloneDiabloNotify || SoJNotify || NTC_InMyParty(NTConfig_Leader) || NTC_InMyParty(NTLeader_LoggedFromFile)) // SoJNotify is a part of soj addon
 		{
 			NTC_Delay(1000);
 
@@ -116,10 +122,10 @@ function NTMain()
 			{
 				if(NTConfig_Script[i].toLowerCase().indexOf("leech") != -1 || NTConfig_Script[i].toLowerCase().indexOf("helper") != -1)
 				{
-					for(var j = 0 ; j < NTConfig_PartyMaxTime && !NTC_InMyParty(NTConfig_Leader) ; j++)
+					for(var j = 0 ; j < NTConfig_PartyMaxTime && !NTC_InMyParty(NTConfig_Leader) && !NTC_InMyParty(NTLeader_LoggedFromFile) ; j++)
 						Delay(1000);
 
-					if(NTC_InMyParty(NTConfig_Leader))
+					if(NTC_InMyParty(NTConfig_Leader) || NTC_InMyParty(NTLeader_LoggedFromFile))
 					{
 						leaderParty = true;
 					}
@@ -145,7 +151,7 @@ function NTMain()
 				checkActOnce = true; // this is added so if you need to go back in someplace the bot doesn't keep towning
 			}
 
-			if(leaderParty && !NTC_InMyParty(NTConfig_Leader)){
+			if(leaderParty && !NTC_InMyParty(NTConfig_Leader) && !NTC_InMyParty(NTLeader_LoggedFromFile)){
 				if(!LastScript) {
 					NTE_ComputeStats(false);
 				}
